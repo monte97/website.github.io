@@ -1,6 +1,6 @@
 # section information
 section:
-  name: Experiences
+  name: Esperienze
   id: experiences
   enable: true
   weight: 3
@@ -12,9 +12,9 @@ section:
 experiences:
 - company:
     name: Freelance
-    url: "https://francesco.montelli.dev"
+    #url: "https://francesco.montelli.dev"
     location: Italia
-    logo: /images/sections/experiences/freelance.jpg
+    #logo: /images/sections/experiences/freelance.jpg
     # Can optionally show a different logo for dark theme
     # darkLogo: /images/sections/experiences/freelance.jpg
     # company overview
@@ -35,9 +35,9 @@ experiences:
 
 - company:
     name: Operai dell'Arte APS
-    url: "#"
+    #url: "https://www.instagram.com/operaidellarte/"
     location: Italia
-    logo: /images/sections/experiences/operai-arte.jpg
+    #logo: /images/sections/experiences/oda.jpg
     # Can optionally show a different logo for dark theme
     # darkLogo: /images/sections/experiences/operai-arte.jpg
     overview: Associazione che promuove la formazione, la cultura e la coesione sociale, con particolare attenzione alla sensibilizzazione sulla protezione del patrimonio culturale.
@@ -54,9 +54,9 @@ experiences:
 
 - company:
     name: HyperVista
-    url: "#"
+    #url: "#"
     location: Startup
-    logo: /images/sections/experiences/hypervista.jpg
+    #logo: /images/sections/experiences/hypervista.jpg
     # Can optionally show a different logo for dark theme
     # darkLogo: /images/sections/experiences/hypervista.jpg
     overview: Startup dedicata allo sviluppo di software per l'applicazione di tecnologie Industria 4.0 nel settore edile.
@@ -73,7 +73,7 @@ experiences:
 
 - company:
     name: Consorzio Ediltecnica
-    url: "#"
+    #url: "https://www.ediltecnica.com/"
     location: Ravenna, Italia
     logo: /images/sections/experiences/ediltecnica.jpg
     # Can optionally show a different logo for dark theme

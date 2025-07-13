@@ -20,9 +20,9 @@ module:
 # Manage languages
 # For any more details, you can check the official documentation: https://gohugo.io/content-management/multilingual/
 languages:
-  en:
-    languageCode: en
-    languageName: English
+  it:
+    languageCode: it
+    languageName: Italiano
     title: "Francesco Montelli"
     weight: 1
   # bn:
@@ -31,7 +31,7 @@ languages:
   #   title: জনের ব্লগ
   #   weight: 2
 # default language for the content
-defaultContentLanguage: en
+defaultContentLanguage: it
 
 
 # Allow raw html in markdown file

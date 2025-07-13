@@ -1,6 +1,6 @@
 # section information
 section:
-  name: Publications
+  name: Pubblicazioni
   id: publications
   enable: true
   weight: 6
@@ -23,28 +23,28 @@ section:
 publications:
 - title: "Comparison of two technologies in 3D surveying of Real Estate Assets and Cultural Heritage"
   publishedIn:
-    name: "Atti di Convegno"
+    name: "IMEKO - Internetionam Measurement Confederation"
     date: 2023
     url: "https://doi.org/10.21014/tc4-ARC-2023.083"
   authors:
-   - name: Francesco Montelli
-     url: "#"
+   - name:  Giulia Fiorini, Maria Alessandra Tini, Francesco Montelli, Gabriele Bitelli 
+     #url: "#"
   paper:
     summary: "Studio comparativo di due tecnologie per il rilievo 3D di beni immobiliari e patrimonio culturale, con focus sull'applicazione pratica e l'efficacia delle metodologie utilizzate."
     url: "https://doi.org/10.21014/tc4-ARC-2023.083"
   categories: ["3d-surveying", "cultural-heritage", "real-estate"]
-  tags: ["3D Surveying", "Cultural Heritage", "Real Estate", "Technology Comparison"]
+  tags: ["3D Technologies", "Cultural Heritage", "Real Estate", "Technology Comparison"]
 
 - title: "3D technologies in surveying real estate assets and industrial archaeology"
   publishedIn:
     name: "Tesi Laurea Magistrale - Dip. Geomatica"
     date: 2023
     url: "#"
-  authors:
-   - name: Francesco Montelli
-     url: "#"
+  # authors:
+  #  - name: Francesco Montelli
+  #    url: "#"
   paper:
     summary: "Tesi di laurea magistrale focalizzata sull'applicazione delle tecnologie 3D nel rilievo di beni immobiliari e archeologia industriale, con supervisione di Francesco Montelli."
-    url: "#"
+    url: "https://amslaurea.unibo.it/id/eprint/28217"
   categories: ["3d-surveying", "real-estate"]
   tags: ["3D Technologies", "Real Estate", "Industrial Archaeology", "Thesis Supervision"]
