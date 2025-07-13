@@ -6,7 +6,6 @@ section:
   showOnNavbar: true # Boolean to determine if a link should be shown for this section on the navbar
   hideTitle: false # Can optionally hide the title in sections (default: false)
 
-# posts to feature
+# posts to feature (Blogpost name)
 posts:
-  - markdown-sample
-  - shortcodes
+  - Docker Internals
