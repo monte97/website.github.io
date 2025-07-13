@@ -11,9 +11,9 @@ section:
 designation: Freelance Software Engineer
 
 # your company information
-company:
-  name: Freelance
-  url: "https://francesco.montelli.dev"
+# company:
+#   name: Freelance
+#   url: "https://francesco.montelli.dev"
 
 # your resume. this file path should be relative to you "static" directory
 # Deprecated. Use resourceLinks instead.
@@ -30,9 +30,9 @@ socialLinks:
   url: "mailto:francesco@montelli.dev"
 
 # Qui mettere telegram
-- name: Phone
-  icon: "fas fa-phone"
-  url: "tel:+393382081124"
+# - name: Phone
+#   icon: "fas fa-phone"
+#   url: "tel:+393382081124"
 
 - name: Location
   icon: "fas fa-map-marker-alt"
@@ -44,7 +44,7 @@ socialLinks:
 
 - name: Github
   icon: "fab fa-github"
-  url: "https://github.com/francesco-montelli"
+  url: "https://github.com/monte97"
 
 # You can put custom buttons to link your relevant resources.
 # For example, you can put link for your resume.
