@@ -9,74 +9,42 @@ section:
   # hideTitle: true
 
 # filter buttons
-buttons:
-- name: All
-  filter: "all"
-- name: "Machine Learning"
-  filter: "machinelearning"
-- name: "Image Processing"
-  filter: "image-processing"
-- name: Security
-  filter: "security"
+# buttons:
+# - name: All
+#   filter: "all"
+# - name: "3D Surveying"
+#   filter: "3d-surveying"
+# - name: "Cultural Heritage"
+#   filter: "cultural-heritage"
+# - name: "Real Estate"
+#   filter: "real-estate"
 
 # your publications
 publications:
-- title: An Example Paper on Machine Learning
+- title: "Comparison of two technologies in 3D surveying of Real Estate Assets and Cultural Heritage"
   publishedIn:
-    name: 2020 IEEE Region Symposium (TENSYMP)
-    date: 7 June 2020
-    url: https://example.com
+    name: "Atti di Convegno"
+    date: 2023
+    url: "https://doi.org/10.21014/tc4-ARC-2023.083"
   authors:
-  - name: Dr. Madman
-    url: https://example.com
-  - name: Dr. Lessmad
-    url: https://example.com
-  - name: Dr. Moremad
-    url: https://example.com
-  - name: Dr. Goodman
-    url: https://example.com
+   - name: Francesco Montelli
+     url: "#"
   paper:
-    summary: Voluptate in id id voluptate laboris. Minim mollit aliquip sit aliqua ut exercitation voluptate eiusmod consequat pariatur sunt enim veniam. Velit esse tempor laboris anim tempor officia. Magna non labore duis do esse sit do ipsum culpa. Officia consequat id non duis culpa dolor. Excepteur magna non nostrud cupidatat aute aliqua aliquip.
-    url: https://example.com
-  categories: ["machinelearning","image-processing"]
-  tags: ["Machine Learning", "Autonomous Driving", "Computer Vision"]
+    summary: "Studio comparativo di due tecnologie per il rilievo 3D di beni immobiliari e patrimonio culturale, con focus sull'applicazione pratica e l'efficacia delle metodologie utilizzate."
+    url: "https://doi.org/10.21014/tc4-ARC-2023.083"
+  categories: ["3d-surveying", "cultural-heritage", "real-estate"]
+  tags: ["3D Surveying", "Cultural Heritage", "Real Estate", "Technology Comparison"]
 
-- title: An Sample Paper on Image Processing
+- title: "3D technologies in surveying real estate assets and industrial archaeology"
   publishedIn:
-    name: 2020 IEEE Region Symposium (TENSYMP)
-    date: 7 June 2020
-    url: https://example.com
+    name: "Tesi Laurea Magistrale - Dip. Geomatica"
+    date: 2023
+    url: "#"
   authors:
-  - name: Dr. Madman
-    url: https://example.com
-  - name: Dr. Lessmad
-    url: https://example.com
-  - name: Dr. Moremad
-    url: https://example.com
-  - name: Dr. Goodman
-    url: https://example.com
+   - name: Francesco Montelli
+     url: "#"
   paper:
-    summary: Ullamco magna minim cupidatat Lorem ea ex aliqua fugiat et. Dolor quis cillum ea duis irure et commodo aliquip consectetur ullamco labore ut anim nisi. Commodo reprehenderit est consectetur tempor adipisicing occaecat exercitation amet do aliquip dolor do irure. Labore officia ut magna pariatur reprehenderit et ex sit sunt. Magna proident ullamco adipisicing sit.
-    url: https://example.com
-  categories: ["image-processing"]
-  tags: ["Image Processing", "Computer Vision"]
-
-- title: An Example Paper on Security
-  publishedIn:
-    name: 2020 IEEE Region Symposium (TENSYMP)
-    date: 7 June 2020
-    url: https://example.com
-  authors:
-  - name: Dr. Madman
-    url: https://example.com
-  - name: Dr. Lessmad
-    url: https://example.com
-  - name: Dr. Moremad
-    url: https://example.com
-  - name: Dr. Goodman
-    url: https://example.com
-  paper:
-    summary: Dolor ad cupidatat pariatur nulla ipsum ex ullamco nisi anim ullamco. Dolore elit esse in exercitation minim aliqua. Amet velit incididunt magna laboris. Proident reprehenderit deserunt ad officia duis dolor. Tempor nostrud ullamco ullamco sint deserunt cupidatat irure minim consectetur nulla adipisicing sunt.
-    url: https://example.com
-  categories: ["security"]
-  tags: ["Machine Learning", "Autonomous Driving", "Machine Vision"]
+    summary: "Tesi di laurea magistrale focalizzata sull'applicazione delle tecnologie 3D nel rilievo di beni immobiliari e archeologia industriale, con supervisione di Francesco Montelli."
+    url: "#"
+  categories: ["3d-surveying", "real-estate"]
+  tags: ["3D Technologies", "Real Estate", "Industrial Archaeology", "Thesis Supervision"]

@@ -6,68 +6,87 @@ section:
   weight: 3
   showOnNavbar: true
   # Can optionally hide the title in sections
-  # hideTitle: true 
+  # hideTitle: true
 
 # Your experiences
 experiences:
 - company:
-    name: Example Co.
-    url: "https://www.example.com"
-    location: Dhaka Branch
-    logo: /images/sections/experiences/company1.jpg
+    name: Freelance
+    url: "https://francesco.montelli.dev"
+    location: Italia
+    logo: /images/sections/experiences/freelance.jpg
     # Can optionally show a different logo for dark theme
-    # darkLogo: /images/sections/experiences/company1.jpg
+    # darkLogo: /images/sections/experiences/freelance.jpg
     # company overview
-    overview: Example Co. is a widely recognized company for cloud-native development. It builds tools for Kubernetes.
+    overview: Attività di consulenza freelance specializzata in Fullstack Software Development, DevOps, System Design & Architecture e formazione di team di sviluppo.
   positions:
-  - designation: Senior Software Engineer
-    start: Nov 2019
-    # don't provide end date if you are currently working there. It will be replaced by "Present"
-    # end: Dec 2020
-    # give some points about what was your responsibilities at the company.
-    responsibilities:
-    - Design and develop XYZ tool for ABC task
-    - Design, develop and manage disaster recovery tool [Xtool](https://www.example.com) that backup Kubernetes volumes, databases, and cluster's resource definition.
-    - Lead backend team.
-
-  - designation: Junior Software Engineer
-    start: Nov 2017
-    end: Oct 2019
-    responsibilities:
-    - Implement and test xyz feature for abc tool.
-    - Support client for abc tool.
-    - Learn k,d,w technology for xyz.
+   - designation: Freelance Software Engineer
+     start: 2025
+     # don't provide end date if you are currently working there. It will be replaced by "Present"
+     # end: 
+     # give some points about what was your responsibilities at the company.
+     responsibilities:
+      - Iscrizione all'Ordine degli Ingegneri della Provincia di Ravenna (N. 2467)
+      - Consulenza in Fullstack Software Development e architetture scalabili
+      - Implementazione di metodologie DevOps e CI/CD pipeline
+      - System Design & Architecture per sistemi distribuiti
+      - Formazione e gestione di team di sviluppo per migliorare la Developer Experience (DevEx)
+      - Progettazione di architetture basate sugli eventi e sistemi di observability
 
 - company:
-    name: PreExample Co.
-    url: "https://www.example.com"
-    location: Nowhere
-    logo: /images/sections/experiences/company2.jpg
+    name: Operai dell'Arte APS
+    url: "#"
+    location: Italia
+    logo: /images/sections/experiences/operai-arte.jpg
     # Can optionally show a different logo for dark theme
-    # darkLogo: /images/sections/experiences/company2.jpg
-    overview: PreExample Co. is a gateway company to enter into Example co. So, nothing special here.
+    # darkLogo: /images/sections/experiences/operai-arte.jpg
+    overview: Associazione che promuove la formazione, la cultura e la coesione sociale, con particolare attenzione alla sensibilizzazione sulla protezione del patrimonio culturale.
   positions:
-  - designation: Software Engineer
-    start: March 2016
-    end: May 2017
-    responsibilities:
-    - Write lots of example codes.
-    - Read lots of examples.
-    - See lots of example videos.
+   - designation: Membro del Comitato Tecnico Scientifico
+     start: 2022
+     # end: 
+     responsibilities:
+      - Supporto agli studenti nella stesura di tesi di laurea e ricerca accademica
+      - Guida nella pubblicazione di articoli scientifici su riviste peer-reviewed
+      - Mentoring nella ricerca, redazione e revisione di contenuti scientifici
+      - Collaborazione con istituzioni accademiche per progetti di ricerca
+      - Promozione della cultura scientifica e della protezione del patrimonio culturale
 
 - company:
-    name: Intern Counting Company (ICC).
-    url: "https://www.example.com"
-    location: Intern Land
-    logo: /images/sections/experiences/company3.jpg
+    name: HyperVista
+    url: "#"
+    location: Startup
+    logo: /images/sections/experiences/hypervista.jpg
     # Can optionally show a different logo for dark theme
-    # darkLogo: /images/sections/experiences/company3.jpg
-    overview: Intern counting Company (ICC) is responsible for counting worldwide intern Engineers.
+    # darkLogo: /images/sections/experiences/hypervista.jpg
+    overview: Startup dedicata allo sviluppo di software per l'applicazione di tecnologie Industria 4.0 nel settore edile.
   positions:
-  - designation: Intern
-    start: Jun 2015
-    end: Jan 2016
-    responsibilities:
-    - Count lost of interns.
-    - Count more interns.
-    - Count me as an intern.
+   - designation: R&D Engineer
+     start: 2022
+     end: 2024
+     responsibilities:
+      - Progettazione e sviluppo di Data Platform per la gestione del ciclo di vita dei dati prodotti dai macchinari
+      - Implementazione di sistemi di Project Workflow Management per ottimizzare i processi aziendali
+      - Sviluppo di soluzioni di Gestione Documentale integrate con tecnologie Industria 4.0
+      - Ricerca e sviluppo di nuove tecnologie per il settore edile
+      - Collaborazione con team multidisciplinari per l'innovazione tecnologica
+
+- company:
+    name: Consorzio Ediltecnica
+    url: "#"
+    location: Ravenna, Italia
+    logo: /images/sections/experiences/ediltecnica.jpg
+    # Can optionally show a different logo for dark theme
+    # darkLogo: /images/sections/experiences/ediltecnica.jpg
+    overview: Consorzio che raggruppa diverse società operanti nel settore edilizio e tecnologico, con focus su innovazione e digitalizzazione.
+  positions:
+   - designation: Sistemista & Sviluppatore
+     start: 2016
+     end: 2021
+     responsibilities:
+      - Evoluzione dal supporto IT di base all'amministrazione completa dell'infrastruttura IT
+      - Sviluppo di applicativi personalizzati per le esigenze specifiche delle società del consorzio
+      - Gestione e manutenzione di sistemi server e reti aziendali
+      - Collaborazione con diverse società del consorzio durante il percorso di studi universitari
+      - Implementazione di soluzioni tecnologiche per migliorare l'efficienza operativa
+

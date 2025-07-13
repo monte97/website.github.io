@@ -4,7 +4,7 @@ section:
   id: skills
   enable: true
   weight: 2
-  showOnNavbar: true
+  showOnNavbar: tre
   filter: true
   # Can optionally hide the title in sections
   # hideTitle: true
@@ -26,46 +26,113 @@ buttons:
 # Give a summary of you each skill in the summary section.
 skills:
 - name: Kubernetes
-  logo: /images/sections/skills/kubernetes.png
+  # logo: /images/sections/skills/kubernetes.png
   summary: "Capable of deploying, managing application on Kubernetes. Experienced in writing Kubernetes controllers for CRDs."
   categories: ["container"]
   url: "https://kubernetes.io/"
 
 - name: Go Development
-  logo: /images/sections/skills/go.png
+  # logo: /images/sections/skills/go.png
   summary: "Using as the main language for professional development. Capable of writing scalable, testable, and maintainable program."
   categories: ["basic", "language"]
   url: "https://golang.org/"
 
 - name: Cloud Computing
-  logo: /images/sections/skills/cloud.png
+  # logo: /images/sections/skills/cloud.png
   summary: "Worked with most of the major clouds such as GCP, AWS, Azure etc."
   categories: ["others"]
 
 - name: Docker
-  logo: /images/sections/skills/docker.svg
+  # logo: /images/sections/skills/docker.svg
   summary: "Write most of the programs as dockerized container. Experienced with multi-stage, multi-arch build process."
   categories: ["container"]
   url: "https://www.docker.com/"
 
 - name: Prometheus
-  logo: /images/sections/skills/prometheus.png
+  # logo: /images/sections/skills/prometheus.png
   summary: "Capable of setup, configure Prometheus metrics. Experienced with PromQL, AlertManager. Also, experienced with writing metric exporters."
   categories: ["basic"]
   url: "https://prometheus.io/"
 
 - name: Linux
-  logo: /images/sections/skills/linux.png
+  # logo: /images/sections/skills/linux.png
   summary: "Using as the main operating system. Capable of writing bash/shell scripts."
   categories: ["others"]
 
 - name: Git
-  logo: /images/sections/skills/git.png
+  # logo: /images/sections/skills/git.png
   summary: "Experienced with git-based development. Mostly, use Github. Also, have experience in working with GitLab."
   categories: ["basic"]
   url: "https://git-scm.com/"
 
-- name: C++
-  logo: /images/sections/skills/c++.png
-  summary: "Know basic C/C++ programming. Used for contest programming and problem solving."
-  categories: ["basic", "language"]
+- name: C#
+  # logo: /images/sections/skills/git.png
+  summary: "Linguaggio principale per lo sviluppo professionale. Esperienza nello sviluppo di applicazioni enterprise e sistemi distribuiti."
+  categories: ["languages"]
+  url: "https://docs.microsoft.com/en-us/dotnet/csharp/"
+
+- name: Java
+  # logo: /images/sections/skills/java.png
+  summary: "Utilizzato per lo sviluppo di applicazioni enterprise e sistemi distribuiti. Esperienza con Spring Framework e architetture microservizi."
+  categories: ["languages"]
+  url: "https://www.oracle.com/java/"
+
+- name: Scala
+  # logo: /images/sections/skills/scala.png
+  summary: "Linguaggio funzionale utilizzato per sistemi distribuiti e processing di grandi volumi di dati."
+  categories: ["languages"]
+  url: "https://www.scala-lang.org/"
+
+- name: Python
+  # logo: /images/sections/skills/python.png
+  summary: "Utilizzato per scripting, automazione, data analysis e sviluppo di applicazioni backend."
+  categories: ["languages"]
+  url: "https://www.python.org/"
+
+- name: Akka
+  # logo: /images/sections/skills/akka.png
+  summary: "Framework per sistemi distribuiti e architetture basate su attori. Esperienza con Akka Streams e Akka Cluster."
+  categories: ["frameworks"]
+  url: "https://akka.io/"
+
+- name: Apache Kafka
+  # logo: /images/sections/skills/kafka.png
+  summary: "Piattaforma di streaming distribuito per architetture event-driven. Esperienza con Kafka Streams e Kafka Connect."
+  categories: ["frameworks"]
+  url: "https://kafka.apache.org/"
+
+- name: Vue.js
+  # logo: /images/sections/skills/vue.png
+  summary: "Framework JavaScript progressivo per lo sviluppo di interfacce utente moderne e responsive."
+  categories: ["frameworks"]
+  url: "https://vuejs.org/"
+
+- name: PostgreSQL
+  # logo: /images/sections/skills/postgresql.png
+  summary: "Database relazionale avanzato. Esperienza con query complesse, ottimizzazione delle performance e design di schema."
+  categories: ["database"]
+  url: "https://www.postgresql.org/"
+
+- name: MongoDB
+  # logo: /images/sections/skills/mongodb.png
+  summary: "Database NoSQL orientato ai documenti. Esperienza con aggregation pipeline e modellazione dei dati."
+  categories: ["database"]
+  url: "https://www.mongodb.com/"
+
+- name: Docker
+  # logo: /images/sections/skills/docker.svg
+  summary: "Containerizzazione di applicazioni. Esperienza con multi-stage builds e orchestrazione con Docker Compose."
+  categories: ["devops"]
+  url: "https://www.docker.com/"
+
+- name: Jenkins
+  # logo: /images/sections/skills/jenkins.png
+  summary: "Piattaforma CI/CD per automazione di build, test e deployment. Esperienza con pipeline declarative e scripted."
+  categories: ["devops"]
+  url: "https://www.jenkins.io/"
+
+- name: AWS
+  # logo: /images/sections/skills/aws.png
+  summary: "Cloud provider principale. Esperienza con EC2, S3, Lambda, RDS e altri servizi core per architetture scalabili."
+  categories: ["cloud"]
+  url: "https://aws.amazon.com/"
