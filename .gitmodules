@@ -1,0 +1,3 @@
+[submodule "content/posts/docker-internals"]
+	path = content/posts/docker-internals
+	url = git@github.com:monte97/docker-internals.git
