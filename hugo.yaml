@@ -58,7 +58,7 @@ enableEmoji: true
 # Site parameters
 params:
   # Background image of the landing page
-  background: /images/site/background3.jpg
+  background: /images/site/background3_comp.jpg
   # Background image of the landing page for dark theme
   #darkBackground: /images/site/background.jpg
 
@@ -70,7 +70,7 @@ params:
     favicon: /images/site/favicon-3.png
 
   # GitHub repo of your site
-  gitRepo: https://github.com/hugo-toha/hugo-toha.github.io
+  gitRepo: https://github.com/monte97/website.github.io
   # Default branch of your Git repo
   gitBranch: main
 

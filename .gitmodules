@@ -1,3 +1,7 @@
 [submodule "content/posts/docker-internals"]
 	path = content/posts/docker-internals
 	url = git@github.com:monte97/docker-internals.git
+[submodule "content/posts/homelab-n8n"]
+	path = content/posts/homelab-n8n
+	url = git@github.com:monte97/homelab-n8n-article.git
+	branch = master
