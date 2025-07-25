@@ -5,3 +5,6 @@
 	path = content/posts/homelab-n8n
 	url = git@github.com:monte97/homelab-n8n-article.git
 	branch = master
+[submodule "content/posts/homelab-capi"]
+	path = content/posts/homelab-capi
+	url = git@github.com:monte97/homelab-capi-article.git
