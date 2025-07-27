@@ -8,3 +8,6 @@
 [submodule "content/posts/homelab-capi"]
 	path = content/posts/homelab-capi
 	url = git@github.com:monte97/homelab-capi-article.git
+[submodule "content/posts/performance-engineering"]
+	path = content/posts/performance-engineering
+	url = git@github.com:monte97/performance-monitoring-article.git
