@@ -14,6 +14,3 @@
 [submodule "content/posts/otel-website-material"]
 	path = content/posts/otel-website-material
 	url = git@github.com:monte97/otel-website-material.git
-[submodule "content/posts/devcontainer-article"]
-	path = content/posts/devcontainer-article
-	url = git@github.com:monte97/devcontainer-article.git
