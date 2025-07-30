@@ -11,3 +11,6 @@
 [submodule "content/posts/performance-engineering"]
 	path = content/posts/performance-engineering
 	url = git@github.com:monte97/performance-monitoring-article.git
+[submodule "content/posts/otel-website-material"]
+	path = content/posts/otel-website-material
+	url = git@github.com:monte97/otel-website-material.git
