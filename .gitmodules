@@ -14,3 +14,9 @@
 [submodule "content/posts/devcontainer"]
 	path = content/posts/devcontainer
 	url = git@github.com:monte97/devcontainer-article.git
+[submodule "content/posts/kubernates/fondamenti/article-ingress-k8s"]
+	path = content/posts/kubernates/fondamenti/article-ingress-k8s
+	url = git@github.com:monte97/article-ingress-k8s.git
+[submodule "content/posts/kubernates/homelab-capi"]
+	path = content/posts/kubernates/homelab-capi
+	url = git@github.com:monte97/homelab-capi-article.git
