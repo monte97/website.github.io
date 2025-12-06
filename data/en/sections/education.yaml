@@ -1,0 +1,45 @@
+# section information
+section:
+  name: Education
+  id: education
+  template: sections/education.html # Use "sections/education-alt.html for alternate template.
+  enable: true
+  weight: 4
+  showOnNavbar: true
+  # Can optionally hide the title in sections
+  # hideTitle: true
+
+degrees:
+- name: Master's Degree in Computer Engineering and Sciences
+  icon: fa-graduation-cap
+  timeframe: 2019-2021
+  institution:
+    name: University of Bologna (UNIBO)
+    url: "https://www.unibo.it"
+    logo: /images/sections/education/unibo.jpg
+    # Can optionally show a different logo for dark theme
+    # darkLogo: /images/sections/education/unibo.jpg
+  grade: #(optional)
+    scale: /110
+    achieved: 110 cum Laude
+    outOf: 110
+  customSections: #(optional)
+    - name: Thesis
+      content: "Design and Implementation of a Data Platform for Stream Analysis: WeLASER as a Case Study - Architectural base for European Project WeLaser"
+
+- name: Bachelor's Degree in Computer Engineering and Sciences
+  icon: fa-university
+  timeframe: 2016-2019
+  institution:
+    name: University of Bologna (UNIBO)
+    url: "https://www.unibo.it"
+    logo: /images/sections/education/unibo.jpg
+    # Can optionally show a different logo for dark theme
+    # darkLogo: /images/sections/education/unibo.jpg
+  grade: #(optional)
+    scale: /110
+    achieved: 105
+    outOf: 110
+  customSections: #(optional)
+    - name: Thesis
+      content: "Study and Experimentation of Machine Learning Technologies in Genomics and Healthcare"

@@ -1,0 +1,91 @@
+# section information
+section:
+  name: Experiences
+  id: experiences
+  enable: true
+  weight: 3
+  showOnNavbar: true
+  # Can optionally hide the title in sections
+  # hideTitle: true
+
+# Your experiences
+experiences:
+- company:
+    name: Freelance
+    #url: "https://francesco.montelli.dev"
+    location: Italy
+    #logo: /images/sections/experiences/freelance.jpg
+    # Can optionally show a different logo for dark theme
+    # darkLogo: /images/sections/experiences/freelance.jpg
+    # company overview
+    overview: Freelance consulting activity specialized in Fullstack Software Development, DevOps, System Design & Architecture and training of development teams.
+  positions:
+   - designation: Freelance Software Engineer
+     start: 2025
+     # don't provide end date if you are currently working there. It will be replaced by "Present"
+     # end:
+     # give some points about what was your responsibilities at the company.
+     responsibilities:
+      - Registration with the Engineers Association of Ravenna Province (N. 2467)
+      - Consulting in Fullstack Software Development and scalable architectures
+      - Implementation of DevOps methodologies and CI/CD pipelines
+      - System Design & Architecture for distributed systems
+      - Training and leading development teams to improve Developer Experience (DevEx)
+      - Design of event-based architectures and observability systems
+
+- company:
+    name: Operai dell'Arte APS
+    #url: "https://www.instagram.com/operaidellarte/"
+    location: Italy
+    #logo: /images/sections/experiences/oda.jpg
+    # Can optionally show a different logo for dark theme
+    # darkLogo: /images/sections/experiences/operai-arte.jpg
+    overview: Association that promotes education, culture and social cohesion, with particular attention to raising awareness about cultural heritage protection.
+  positions:
+   - designation: Member of the Scientific Technical Committee
+     start: 2022
+     # end:
+     responsibilities:
+      - Supporting students in writing thesis and academic research
+      - Guidance in publishing scientific papers in peer-reviewed journals
+      - Mentoring in research, writing and reviewing of scientific content
+      - Collaboration with academic institutions for research projects
+      - Promotion of scientific culture and cultural heritage protection
+
+- company:
+    name: HyperVista
+    #url: "#"
+    location: Startup
+    #logo: /images/sections/experiences/hypervista.jpg
+    # Can optionally show a different logo for dark theme
+    # darkLogo: /images/sections/experiences/hypervista.jpg
+    overview: Startup dedicated to developing software for Industry 4.0 technologies in the construction sector.
+  positions:
+   - designation: R&D Engineer
+     start: 2022
+     end: 2024
+     responsibilities:
+      - Design and development of Data Platforms for managing data lifecycle from machinery
+      - Implementation of Project Workflow Management systems to optimize business processes
+      - Development of integrated Document Management solutions with Industry 4.0 technologies
+      - Research and development of new technologies for the construction sector
+      - Collaboration with multidisciplinary teams for technological innovation
+
+- company:
+    name: Consorzio Ediltecnica
+    #url: "https://www.ediltecnica.com/"
+    location: Ravenna, Italy
+    logo: /images/sections/experiences/ediltecnica.jpg
+    # Can optionally show a different logo for dark theme
+    # darkLogo: /images/sections/experiences/ediltecnica.jpg
+    overview: Consortium that groups several companies operating in the construction and technology sectors, focusing on innovation and digitalization.
+  positions:
+   - designation: System Administrator & Developer
+     start: 2016
+     end: 2021
+     responsibilities:
+      - Evolution from basic IT support to complete IT infrastructure administration
+      - Development of custom applications for the specific needs of consortium companies
+      - Management and maintenance of server systems and corporate networks
+      - Collaboration with various consortium companies during university studies
+      - Implementation of technological solutions to improve operational efficiency
