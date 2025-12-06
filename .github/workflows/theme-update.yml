@@ -10,6 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.1.1
         with:
+          submodules: false
           ref: main
 
       - name: Setup Node
