@@ -9,7 +9,7 @@
 &lt;li&gt;&lt;strong&gt;Prometheus&lt;/strong&gt; richiedeva metriche in formato specifico con naming conventions rigide.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;AWS X-Ray&lt;/strong&gt;, &lt;strong&gt;Google Cloud Trace&lt;/strong&gt;, &lt;strong&gt;Azure Monitor&lt;/strong&gt; - ognuno con SDK proprietari.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Questa frammentazione creava problemi sistemici:&lt;/p&gt;</description></item><item><title>Introduzione all'analisi delle performance: dalla teoria alla pratica</title><link>https://hugo-toha.github.io/posts/performance-engineering/01-intro/</link><pubDate>Sat, 26 Jul 2025 10:00:00 +0200</pubDate><guid>https://hugo-toha.github.io/posts/performance-engineering/01-intro/</guid><description>&lt;h2 id="introduzione"&gt;Introduzione&lt;/h2&gt;
+&lt;p&gt;Questa frammentazione creava problemi sistemici:&lt;/p&gt;</description></item><item><title>Introduzione all'analisi delle performance: dalla teoria alla pratica</title><link>https://hugo-toha.github.io/posts/testing/performance-engineering/01-intro/</link><pubDate>Sat, 26 Jul 2025 10:00:00 +0200</pubDate><guid>https://hugo-toha.github.io/posts/testing/performance-engineering/01-intro/</guid><description>&lt;h2 id="introduzione"&gt;Introduzione&lt;/h2&gt;
 &lt;blockquote&gt;
 &lt;p&gt;Cosa, come, perché&lt;/p&gt;
 &lt;/blockquote&gt;
