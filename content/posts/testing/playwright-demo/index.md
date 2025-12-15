@@ -18,7 +18,7 @@ Il testing end-to-end rappresenta uno dei pilastri fondamentali per garantire la
 
 Tuttavia, secondo la [Test Automation Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html), i test E2E occupano il vertice della piramide proprio per le loro caratteristiche problematiche.
 
-![Test Automation Pyramid](./imgs/playwright-e2e-testing/test_piramid.png)
+![Test Automation Pyramid](./imgs/test_piramid.png)
 
 ### Vantaggi
 
@@ -89,7 +89,7 @@ Questi problemi portano a test "flaky" che falliscono in modo non deterministico
 
 L'adozione di Playwright è cresciuta esponenzialmente dal suo rilascio nel 2020. Confrontato con alternative consolidate come Selenium e Cypress, Playwright ha rapidamente superato la concorrenza in termini di popolarità GitHub (oltre 70.000 stars) e trend di adozione.
 
-![Playwright GitHub Stars Growth](./imgs/playwright-e2e-testing/star-history-20251111.png)
+![Playwright GitHub Stars Growth](./imgs/star-history-20251111.png)
 
 Framework utilizzato da aziende come Microsoft, Airbnb, Uber, e molte altre per garantire la qualità delle loro applicazioni web mission-critical.
 
@@ -283,7 +283,7 @@ Il tool:
 3. Genera codice Playwright ottimizzato con i selettori migliori
 4. Supporta generazione di assertions con un click
 
-![Playwright Codegen - Selector Picker](./imgs/playwright-e2e-testing/generator-demo-selector.png)
+![Playwright Codegen - Selector Picker](./imgs/generator-demo-selector.png)
 
 **Codice generato automaticamente:**
 ```javascript
@@ -294,7 +294,7 @@ await page.getByRole('button', { name: 'Search' }).click();
 await expect(page.getByRole('heading', { name: 'Laptop Pro' })).toBeVisible();
 ```
 
-![Playwright Codegen - Assertions Generation](./imgs/playwright-e2e-testing/generator-demo-assertions.png)
+![Playwright Codegen - Assertions Generation](./imgs/generator-demo-assertions.png)
 
 L'integrazione con l'estensione VS Code permette di avviare Codegen direttamente dall'editor e inserire il codice generato nel file di test.
 
@@ -306,7 +306,7 @@ La **[UI Mode](https://playwright.dev/docs/test-ui-mode)** fornisce un'interfacc
 npx playwright test --ui
 ```
 
-![Playwright UI Mode - Debugging Interface](./imgs/playwright-e2e-testing/playwright-ui-mode.png)
+![Playwright UI Mode - Debugging Interface](./imgs/playwright-ui-mode.png)
 
 **Funzionalità principali:**
 - **Watch mode**: esecuzione automatica dei test al salvataggio del file
@@ -427,7 +427,7 @@ test('homepage layout', async ({ page }) => {
 });
 ```
 
-![Visual Regression Testing Example](./imgs/playwright-e2e-testing/visual-test-example.png)
+![Visual Regression Testing Example](./imgs/visual-test-example.png)
 
 Al primo run, Playwright crea lo screenshot di riferimento in `tests/__screenshots__/`. Nei run successivi, confronta pixel-per-pixel e fallisce se rileva differenze superiori alla soglia configurata.
 
