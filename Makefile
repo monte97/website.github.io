@@ -1,0 +1,36 @@
+.PHONY: help build build-prod dev clean new-post update-modules
+
+help:
+	@echo "Comandi disponibili:"
+	@echo "  make build           - Compila il sito (minificazione abilitata)"
+	@echo "  make build-prod      - Compila il sito per la produzione (con garbage collection)"
+	@echo "  make dev             - Avvia il server di sviluppo con live reload"
+	@echo "  make clean           - Elimina la cartella 'public'"
+	@echo "  make new-post        - Crea un nuovo blog post interattivo"
+	@echo "  make update-modules  - Aggiorna i moduli Hugo e le dipendenze npm"
+	@echo "  make help            - Mostra questo aiuto"
+
+build:
+	hugo --minify
+
+build-prod:
+	hugo --gc --minify
+
+dev:
+	hugo server
+
+clean:
+	rm -rf public/
+
+update-modules:
+	@echo "Aggiornamento moduli Hugo..."
+	hugo mod tidy
+	@echo "Preparazione dipendenze npm..."
+	hugo mod npm pack
+	@echo "Installazione dipendenze npm..."
+	npm install
+	@echo "Build del sito..."
+	hugo --minify
+
+new-post:
+	@./scripts/new_post.sh

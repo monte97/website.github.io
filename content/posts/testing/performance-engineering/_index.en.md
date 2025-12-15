@@ -4,5 +4,6 @@ menu:
   sidebar:
     name: Performance Engineering
     identifier: PERFT
-    weight: 4
+    parent: testing
+    weight: 1
 ---
