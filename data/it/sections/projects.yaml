@@ -1,65 +1,38 @@
 # section information
 section:
-  name: Projects
+  name: Progetti
   id: projects
-  enable: false
+  enable: true
   weight: 5
-  showOnNavbar: false
-  # Can optionally hide the title in sections
-  # hideTitle: true
+  showOnNavbar: true
 
-# filter buttons
-buttons:
-- name: All
-  filter: "all"
-- name: Professional
-  filter: "professional"
-- name: Academic
-  filter: "academic"
-- name: Hobby
-  filter: "hobby"
-
-# your projects
 projects:
-- name: Kubernetes
-  logo: /images/sections/projects/kubernetes.png
-  role: Contributor
-  timeline: "March 2018 - Present"
-  repo: https://github.com/kubernetes/kubernetes # If your project is a public repo on GitHub, then provide this link. it will show star count.
-  #url: ""  # If your project is not a public repo but it has a website or any external details url then provide it here. don't provide "repo" and "url" simultaneously.
-  summary: Production-Grade Container Scheduling and Management.
-  tags: ["professional", "kubernetes", "cloud"]
+- name: Order Processing Platform
+  url: /posts/projects/order-processing-platform/
+  summary: "Progetto demo e-commerce che implementa pattern enterprise: architettura event-driven con Kafka, saga pattern per transazioni distribuite, CQRS. Stack: .NET, PostgreSQL, Docker Compose."
+  tags: ["event-driven", "platform"]
 
-- name: Tensorflow
-  logo: /images/sections/projects/tensorflow.png
-  role: Developer
-  timeline: "Jun 2018 - Present"
-  repo: https://github.com/tensorflow/tensorflow
-  #url: ""
-  summary: An Open Source Machine Learning Framework for Everyone.
-  tags: ["professional", "machine-learning"]
+- name: Internal Developer Platform
+  url: /posts/projects/internal-developer-platform/
+  summary: "Piattaforma interna per standardizzare provisioning e deploy. GitOps con ArgoCD, infrastructure as code con Terraform, ambiente ibrido on-premise/AWS."
+  tags: ["platform"]
 
-- name: A sample academic paper
-  role: Team Lead
-  timeline: "Jan 2017 - Nov 2017"
-  url: "https://www.example.com"
-  summary: Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente eius reprehenderit animi suscipit autem eligendi esse amet aliquid error eum. Accusantium distinctio soluta aliquid quas placeat modi suscipit eligendi nisi.
-  tags: ["academic","iot"]
+- name: Real-time Analytics Pipeline
+  url: /posts/projects/realtime-analytics-pipeline/
+  summary: "Pipeline IoT per raccolta e analisi dati da sensori industriali. Architettura event-driven con Kafka, dashboard custom per visualizzazione real-time e alerting. Tech lead in startup early-stage."
+  tags: ["event-driven", "observability"]
 
-- name: Nocode
-  logo: /images/sections/projects/no-code.png
-  role: Nothing
-  timeline: "Oct 2019 - Dec 2019"
-  repo: https://github.com/kelseyhightower/nocode
-  #url: ""
-  summary: The best way to write secure and reliable applications. Write nothing; deploy nowhere.
-  tags: ["hobby", "fun"]
+- name: Observability-as-a-Service
+  url: /posts/projects/observability-as-a-service/
+  summary: "Stack di observability completo: Grafana, Loki, Tempo, Mimir con OpenTelemetry per auto-instrumentation. Progettazione architetturale per progetto pilota, in evoluzione verso multi-tenant."
+  tags: ["observability", "platform"]
 
-- name: Toha
-  logo: /images/sections/projects/toha.png
-  image: /images/sections/projects/toha_website.png
-  role: Owner
-  timeline: "Jun 2019 - Present"
-  repo: https://github.com/hossainemruz/toha
-  summary: A Hugo theme for personal portfolio.
-  tags: ["hobby","hugo","theme","professional"]
+- name: E2E Testing Workshop
+  url: /posts/projects/e2e-testing-infrastructure/
+  summary: "Workshop completo su E2E testing con Playwright: setup, page object pattern, fixtures, integrazione CI/CD con GitHub Actions. Repository e slides pubblici."
+  tags: ["testing"]
+
+- name: Homelab Infrastructure
+  url: /posts/projects/homelab-infrastructure/
+  summary: "Homelab Kubernetes su Proxmox. Provisioning automatizzato con Cluster API, deployment GitOps con ArgoCD. Repository pubblico con configurazioni IaC."
+  tags: ["platform"]
