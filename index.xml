@@ -1,4 +1,38 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Francesco Montelli</title><link>https://hugo-toha.github.io/</link><description>Recent content on Francesco Montelli</description><generator>Hugo -- gohugo.io</generator><language>it</language><lastBuildDate>Mon, 17 Nov 2025 10:00:00 +0100</lastBuildDate><atom:link href="https://hugo-toha.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Playwright: Testing E2E Moderno e Affidabile</title><link>https://hugo-toha.github.io/posts/testing/playwright-demo/</link><pubDate>Mon, 17 Nov 2025 10:00:00 +0100</pubDate><guid>https://hugo-toha.github.io/posts/testing/playwright-demo/</guid><description>&lt;h2 id="la-sfida-del-testing-end-to-end"&gt;La Sfida del Testing End-to-End&lt;/h2&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Francesco Montelli</title><link>https://hugo-toha.github.io/</link><description>Recent content on Francesco Montelli</description><generator>Hugo -- gohugo.io</generator><language>it</language><lastBuildDate>Thu, 08 Jan 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://hugo-toha.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Kubectl Tips</title><link>https://hugo-toha.github.io/notes/kubectl-tips/</link><pubDate>Thu, 08 Jan 2026 00:00:00 +0000</pubDate><guid>https://hugo-toha.github.io/notes/kubectl-tips/</guid><description>&lt;div class="note-card "&gt;
+&lt;div class="item"&gt;
+&lt;h5 class="note-title"&gt;&lt;span&gt;Kubectl Context Rapido&lt;/span&gt;&lt;/h5&gt;
+&lt;div class="card"&gt;
+&lt;div class="card-body"&gt;&lt;p&gt;Cambia rapidamente context e namespace:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Alias utili per .bashrc / .zshrc&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;alias kctx&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;kubectl config use-context&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;alias kns&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;kubectl config set-context --current --namespace&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Uso&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;kctx production
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;kns monitoring
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="note-card "&gt;
+&lt;div class="item"&gt;
+&lt;h5 class="note-title"&gt;&lt;span&gt;Port Forward Multi-Pod&lt;/span&gt;&lt;/h5&gt;
+&lt;div class="card"&gt;
+&lt;div class="card-body"&gt;&lt;p&gt;Forward verso tutti i pod di un deployment:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Forward su singolo pod&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;kubectl port-forward deploy/my-app 8080:80
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Con label selector&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;kubectl port-forward &lt;span style="color:#66d9ef"&gt;$(&lt;/span&gt;kubectl get pod -l app&lt;span style="color:#f92672"&gt;=&lt;/span&gt;my-app -o name | head -1&lt;span style="color:#66d9ef"&gt;)&lt;/span&gt; 8080:80
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="note-card "&gt;
+&lt;div class="item"&gt;
+&lt;h5 class="note-title"&gt;&lt;span&gt;Debug Container Temporaneo&lt;/span&gt;&lt;/h5&gt;
+&lt;div class="card"&gt;
+&lt;div class="card-body"&gt;&lt;p&gt;Esegui un container di debug nel namespace:&lt;/p&gt;</description></item><item><title>Playwright: Testing E2E Moderno e Affidabile</title><link>https://hugo-toha.github.io/posts/testing/playwright-demo/</link><pubDate>Mon, 17 Nov 2025 10:00:00 +0100</pubDate><guid>https://hugo-toha.github.io/posts/testing/playwright-demo/</guid><description>&lt;h2 id="la-sfida-del-testing-end-to-end"&gt;La Sfida del Testing End-to-End&lt;/h2&gt;
 &lt;p&gt;Il testing end-to-end rappresenta uno dei pilastri fondamentali per garantire la qualità delle applicazioni web moderne. Simulando l&amp;rsquo;esperienza utente reale e verificando il flusso completo dell&amp;rsquo;applicazione, i test E2E forniscono un livello di confidenza impossibile da ottenere con test unitari o di integrazione isolati.&lt;/p&gt;
 &lt;p&gt;Tuttavia, secondo la &lt;a href="https://martinfowler.com/articles/practical-test-pyramid.html" target="_blank" rel="noopener"&gt;Test Automation Pyramid&lt;/a&gt;, i test E2E occupano il vertice della piramide proprio per le loro caratteristiche problematiche.&lt;/p&gt;
 &lt;p&gt;&lt;img src="https://hugo-toha.github.io/posts/testing/playwright-demo/imgs/test_piramid.png" alt="Test Automation Pyramid"&gt;&lt;/p&gt;</description></item><item><title>CAPI Parte 5: Ubuntu su Proxmox - Image Builder e Deploy</title><link>https://hugo-toha.github.io/posts/kubernates/fondamenti/homelab-capi-article/capi-part5-ubuntu/</link><pubDate>Thu, 23 Oct 2025 14:00:00 +0100</pubDate><guid>https://hugo-toha.github.io/posts/kubernates/fondamenti/homelab-capi-article/capi-part5-ubuntu/</guid><description>&lt;p&gt;Dopo aver esplorato Talos Linux nei precedenti articoli, è tempo di cambiare approccio e utilizzare Ubuntu come sistema operativo base per i nostri nodi Kubernetes. In questo post vedremo come creare un cluster Kubernetes su Proxmox utilizzando Cluster API (CAPI) e le immagini ufficiali generate con image-builder.&lt;/p&gt;

@@ -1,1 +1,35 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Notes on Francesco Montelli</title><link>https://hugo-toha.github.io/notes/</link><description>Recent content in Notes on Francesco Montelli</description><generator>Hugo -- gohugo.io</generator><language>it</language><lastBuildDate>Tue, 08 Jun 2010 08:06:25 +0600</lastBuildDate><atom:link href="https://hugo-toha.github.io/notes/index.xml" rel="self" type="application/rss+xml"/></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Notes on Francesco Montelli</title><link>https://hugo-toha.github.io/notes/</link><description>Recent content in Notes on Francesco Montelli</description><generator>Hugo -- gohugo.io</generator><language>it</language><lastBuildDate>Thu, 08 Jan 2026 00:00:00 +0000</lastBuildDate><atom:link href="https://hugo-toha.github.io/notes/index.xml" rel="self" type="application/rss+xml"/><item><title>Kubectl Tips</title><link>https://hugo-toha.github.io/notes/kubectl-tips/</link><pubDate>Thu, 08 Jan 2026 00:00:00 +0000</pubDate><guid>https://hugo-toha.github.io/notes/kubectl-tips/</guid><description>&lt;div class="note-card "&gt;
+&lt;div class="item"&gt;
+&lt;h5 class="note-title"&gt;&lt;span&gt;Kubectl Context Rapido&lt;/span&gt;&lt;/h5&gt;
+&lt;div class="card"&gt;
+&lt;div class="card-body"&gt;&lt;p&gt;Cambia rapidamente context e namespace:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Alias utili per .bashrc / .zshrc&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;alias kctx&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;kubectl config use-context&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;alias kns&lt;span style="color:#f92672"&gt;=&lt;/span&gt;&lt;span style="color:#e6db74"&gt;&amp;#39;kubectl config set-context --current --namespace&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Uso&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;kctx production
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;kns monitoring
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="note-card "&gt;
+&lt;div class="item"&gt;
+&lt;h5 class="note-title"&gt;&lt;span&gt;Port Forward Multi-Pod&lt;/span&gt;&lt;/h5&gt;
+&lt;div class="card"&gt;
+&lt;div class="card-body"&gt;&lt;p&gt;Forward verso tutti i pod di un deployment:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Forward su singolo pod&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;kubectl port-forward deploy/my-app 8080:80
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;&lt;span style="color:#75715e"&gt;# Con label selector&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;kubectl port-forward &lt;span style="color:#66d9ef"&gt;$(&lt;/span&gt;kubectl get pod -l app&lt;span style="color:#f92672"&gt;=&lt;/span&gt;my-app -o name | head -1&lt;span style="color:#66d9ef"&gt;)&lt;/span&gt; 8080:80
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="note-card "&gt;
+&lt;div class="item"&gt;
+&lt;h5 class="note-title"&gt;&lt;span&gt;Debug Container Temporaneo&lt;/span&gt;&lt;/h5&gt;
+&lt;div class="card"&gt;
+&lt;div class="card-body"&gt;&lt;p&gt;Esegui un container di debug nel namespace:&lt;/p&gt;</description></item></channel></rss>
