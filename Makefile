@@ -1,4 +1,4 @@
-.PHONY: help build build-prod dev clean new-post update-modules
+.PHONY: help build build-prod dev clean new-post new-project new-note update-modules
 
 help:
 	@echo "Comandi disponibili:"
@@ -7,6 +7,8 @@ help:
 	@echo "  make dev             - Avvia il server di sviluppo con live reload"
 	@echo "  make clean           - Elimina la cartella 'public'"
 	@echo "  make new-post        - Crea un nuovo blog post interattivo"
+	@echo "  make new-project     - Crea un nuovo progetto interattivo"
+	@echo "  make new-note        - Crea una nuova nota interattiva"
 	@echo "  make update-modules  - Aggiorna i moduli Hugo e le dipendenze npm"
 	@echo "  make help            - Mostra questo aiuto"
 
@@ -34,3 +36,9 @@ update-modules:
 
 new-post:
 	@./scripts/new_post.sh
+
+new-project:
+	@./scripts/new_project.sh
+
+new-note:
+	@./scripts/new_note.sh
