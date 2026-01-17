@@ -1,0 +1,15 @@
+[submodule "content/posts/keycloak-workshop"]
+	path = content/posts/keycloak-workshop
+	url = git@github.com:monte97/keycloak-articles.git
+[submodule "_workshop/workshop-keycloak/demo"]
+	path = _workshop/workshop-keycloak/demo
+	url = git@github.com:monte97/keycloak-demo.git
+[submodule "content/posts/protobuf-workshop"]
+	path = content/posts/protobuf-workshop
+	url = git@github.com:monte97/protobuf-articles.git
+[submodule "content/posts/otel-workshop"]
+	path = content/posts/otel-workshop
+	url = git@github.com:monte97/otel-articles.git
+[submodule "content/posts/playwright-workshop"]
+	path = content/posts/playwright-workshop
+	url = git@github.com:monte97/playwright-articles.git

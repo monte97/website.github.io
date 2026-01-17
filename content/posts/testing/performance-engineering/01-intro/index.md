@@ -254,4 +254,4 @@ La vera forza si manifesta quando i metodi RED e USE vengono utilizzati insieme.
 
 Iniziate implementando il monitoraggio RED per avere una visione immediata delle prestazioni percepite dall'utente e, quando identificate un problema, usate il metodo USE per approfondire e individuare la causa principale a livello di risorsa.
 
-Adottare queste metodologie nel vostro performance testing e nelle vostre strategie di monitoraggio vi permetterà di costruire sistemi più robusti, scalabili e performanti.
+Adottare queste metodologie nel performance testing e nelle strategie di monitoraggio permette di costruire sistemi più robusti, scalabili e performanti.

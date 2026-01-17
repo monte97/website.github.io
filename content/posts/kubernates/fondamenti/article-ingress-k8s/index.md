@@ -14,7 +14,7 @@ categories: ["Kubernetes", "Cloud Native", "Infrastruttura"]
 
 ## Il Problema: Accedere ai Servizi in un Ambiente di Sviluppo Locale
 
-Ammettiamolo: tutti abbiamo iniziato così. Hai la tua nuova app fiammante su Kubernetes, e per testarla apri 12 terminali diversi, uno per ogni `kubectl port-forward ...`. Funziona, ma è scomodo e non simula affatto un ambiente reale.
+Un pattern comune nello sviluppo locale con Kubernetes è aprire diversi terminali, uno per ogni `kubectl port-forward ...`. Funziona, ma è scomodo e non simula affatto un ambiente reale.
 
 Per comprendere meglio questi concetti, è utile consultare la [documentazione ufficiale di Kubernetes](https://kubernetes.io/docs/home/).
 
@@ -35,7 +35,7 @@ Questo è il "workaround" più comune. Dobbiamo creare manualmente un tunnel dal
     kubectl port-forward service/bar-service 8081:80
     ```
 
-Ora, per testare, dovresti usare URL diversi su porte diverse:
+Per testare, è necessario usare URL diversi su porte diverse:
 
   * Per FOO: `curl http://localhost:8080`
   * Per BAR: `curl http://localhost:8081`
@@ -349,7 +349,7 @@ curl http://miodominio.local/foo
 curl http://miodominio.local/bar
 # Risposta: Ehilà, qui parla BAR
 ```
-Fantastico! Abbiamo un unico punto d'ingresso che smista il traffico ai servizi corretti.
+Un unico punto d'ingresso che smista il traffico ai servizi corretti.
 
 ### Dove girano i Pod? (E perché non ci importa)
 
@@ -359,7 +359,7 @@ Questo è il cuore dell'astrazione di Kubernetes: grazie al `Service` che ci for
 
 ### Aggiungere un Nuovo Servizio (La Magia Dichiarativa)
 
-E se ora volessimo aggiungere un servizio "baz"? Con questo setup, è un gioco da ragazzi.
+Per aggiungere un nuovo servizio "baz", il processo è semplice.
 
 1.  **Deploya la nuova app** (`baz-app.yaml`, simile a `foo` e `bar`).
     ```bash
@@ -487,7 +487,7 @@ Abbiamo visto come:
 3.  L'implementazione corretta su `kind` richiede una mappazione di porte stabile tramite un **`Service` di tipo `NodePort` statico**.
 4.  Grazie alle astrazioni come `Service` e `Deployment`, possiamo gestire le nostre applicazioni senza preoccuparci della loro posizione fisica nel cluster.
 
-Ora puoi buttare via tutti quegli script `port-forward`.
+Con questo setup, gli script `port-forward` non sono più necessari.
 
 Per ulteriori approfondimenti su questi concetti, ti consiglio di consultare la [documentazione ufficiale di Kubernetes](https://kubernetes.io/docs/home/).
 
@@ -532,7 +532,7 @@ Quando hai finito, elimina tutto con un singolo comando:
 ```bash
 kind delete cluster --name kind-lb-demo
 ```
-E non dimenticare di rimuovere `miodominio.local` dal tuo file `hosts`!
+Ricordare di rimuovere `miodominio.local` dal file `hosts`.
 
 ---
 
