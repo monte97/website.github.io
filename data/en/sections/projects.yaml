@@ -7,6 +7,11 @@ section:
   showOnNavbar: true
 
 projects:
+- name: Keycloak Workshop
+  url: /posts/projects/keycloak-workshop/
+  summary: "Complete series on Identity Management with Keycloak: OAuth 2.0, OpenID Connect, Zero Trust, LDAP Federation, Identity Brokering. 7 technical articles with working Docker Compose demos."
+  tags: ["cloud", "platform"]
+
 - name: Order Processing Platform
   url: /posts/projects/order-processing-platform/
   summary: "E-commerce demo project implementing enterprise patterns: event-driven architecture with Kafka, saga pattern for distributed transactions, CQRS. Stack: .NET, PostgreSQL, Docker Compose."
