@@ -1,7 +1,7 @@
 ---
 title: "Workshop Keycloak: Identity Management Completo"
 date: 2025-01-23T10:26:00Z
-draft: false
+draft: true
 description: "Serie completa di articoli su Keycloak, OAuth 2.0, OpenID Connect e architetture Zero Trust con demo pratiche"
 menu:
   sidebar:
