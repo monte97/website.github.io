@@ -219,7 +219,7 @@ Il [TalosControlPlane](https://github.com/siderolabs/cluster-api-control-plane-p
 
 ### Infrastructure Provider
 
-L'infrastrucure provider è il componente che si occupa di dialogare con le risorse hardware, siano essere cloud o on-premise, con lo scopo di inizializzare le risorse che formeranno il cluster.
+L'infrastructure provider è il componente che si occupa di dialogare con le risorse hardware, siano essere cloud o on-premise, con lo scopo di inizializzare le risorse che formeranno il cluster.
 
 A differenza del bootstrap provider e del control plane provider, che si concentrano specificamente sulla configurazione di Kubernetes, l'infrastructure provider si occupa di tutto ciò che sta "sotto" il cluster.
 
@@ -563,7 +563,7 @@ kubeconfig := &corev1.Secret{
 
 ---
 
-## Debugging e Resouce Inspection
+## Debugging e Resource Inspection
 
 ### Monitoring Controller Health
 

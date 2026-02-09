@@ -16,7 +16,7 @@ duration: "Ongoing"
 team_size: "Personal"
 client_type: "Personal"
 featured: true
-related_posts: ["/posts/kubernates/fondamenti/homelab-capi-article/capi-part1-intro/", "/posts/kubernates/fondamenti/homelab-capi-article/capi-part2-internals/", "/posts/kubernates/fondamenti/homelab-capi-article/capi-part3-talos/", "/posts/kubernates/fondamenti/homelab-capi-article/capi-part4-day1/", "/posts/kubernates/fondamenti/homelab-capi-article/capi-part5-ubuntu/", "/posts/homelab-n8n/"]
+related_posts: ["/posts/kubernetes/fondamenti/homelab-capi-article/capi-part1-intro/", "/posts/kubernetes/fondamenti/homelab-capi-article/capi-part2-internals/", "/posts/kubernetes/fondamenti/homelab-capi-article/capi-part3-talos/", "/posts/kubernetes/fondamenti/homelab-capi-article/capi-part4-day1/", "/posts/kubernetes/fondamenti/homelab-capi-article/capi-part5-ubuntu/", "/posts/homelab-n8n/"]
 ---
 
 ## Overview
@@ -100,11 +100,11 @@ Full LGTM stack (Loki, Grafana, Tempo, Mimir) to monitor the entire infrastructu
 ## Related Articles
 
 ### CAPI Series (Cluster API)
-* [CAPI Part 1: From Chaos to Automation](/posts/kubernates/fondamenti/homelab-capi-article/capi-part1-intro/)
-* [CAPI Part 2: Internals and Reconciliation Loop](/posts/kubernates/fondamenti/homelab-capi-article/capi-part2-internals/)
-* [CAPI Part 3: Talos Linux for Immutable Nodes](/posts/kubernates/fondamenti/homelab-capi-article/capi-part3-talos/)
-* [CAPI Part 4: Day-1 and Day-2 Operations](/posts/kubernates/fondamenti/homelab-capi-article/capi-part4-day1/)
-* [CAPI Part 5: Ubuntu and Alternative OSes](/posts/kubernates/fondamenti/homelab-capi-article/capi-part5-ubuntu/)
+* [CAPI Part 1: From Chaos to Automation](/posts/kubernetes/fondamenti/homelab-capi-article/capi-part1-intro/)
+* [CAPI Part 2: Internals and Reconciliation Loop](/posts/kubernetes/fondamenti/homelab-capi-article/capi-part2-internals/)
+* [CAPI Part 3: Talos Linux for Immutable Nodes](/posts/kubernetes/fondamenti/homelab-capi-article/capi-part3-talos/)
+* [CAPI Part 4: Day-1 and Day-2 Operations](/posts/kubernetes/fondamenti/homelab-capi-article/capi-part4-day1/)
+* [CAPI Part 5: Ubuntu and Alternative OSes](/posts/kubernetes/fondamenti/homelab-capi-article/capi-part5-ubuntu/)
 
 ### Services and Applications
 * [Homelab n8n: Self-Hosted Automation](/posts/homelab-n8n/) — Workflow automation deployed on workload cluster

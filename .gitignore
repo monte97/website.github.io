@@ -1,3 +1,9 @@
 resources/*
 node_modules/*
 public/*
+.claude/*
+DOCS.md
+CLAUDE.md
+DOCS.md
+GETTING-STARTED.md
+USE-CASES.md

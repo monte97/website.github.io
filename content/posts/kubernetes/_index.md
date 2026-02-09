@@ -1,8 +1,8 @@
 ---
-title: Kubernates
+title: Kubernetes
 menu:
   sidebar:
-    name: Kubernates
+    name: Kubernetes
     identifier: K8S
     weight: 2
 ---

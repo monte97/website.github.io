@@ -18,10 +18,10 @@ Abbiamo esplorato i principi dell'observability e il ruolo fondamentale di OpenT
 
 LGTM è un acronimo che sta per:
 
-  * **L**oki (per i **L**og)
-  * **G**rafana (per la **G**rafica e Visualizzazione)
-  * **T**empo (per i **T**race)
-  * **M**imir (per le **M**etriche)
+  * **L**oki (per i Log)
+  * **G**rafana (per la Gafica e Visualizzazione)
+  * **T**empo (per i Trace)
+  * **M**imir (per le Metriche)
 
 Questo stack è progettato per lavorare in perfetta sinergia con OpenTelemetry, fornendo i backend scalabili e resilienti necessari per immagazzinare e interrogare l'enorme volume di dati di telemetria generato dai moderni sistemi distribuiti. La sua architettura cloud-native lo rende ideale per ambienti dinamici come Kubernetes, offrendo una visione olistica della salute e delle performance delle applicazioni.
 
