@@ -6,28 +6,27 @@ tags: ["OpenTelemetry", "Observability", "TailSampling", "DataManagement", "Prod
 categories: ["Observability", "DevOps"]
 ---
 
-Questo articolo mostra come gestire il volume di dati OpenTelemetry in un ambiente simil-produzione. Per chi non ha familiarità con distributed tracing e OTel, consiglio prima la lettura del [tutorial introduttivo](../01_correlation_OK/article_tutorial.md).
+Nel [tutorial precedente](https://montelli.dev/posts/otel-website-material/04-correlation/) abbiamo strumentato un e-commerce con OpenTelemetry e risolto tre scenari di debug: silent failure, latency spike, fan-out. Tutto funzionava: trace complete, errori visibili, latenza misurabile.
+
+C'è un dettaglio che non abbiamo affrontato: ogni singola request generava una trace. In sviluppo è il comportamento desiderato. In produzione, è un problema. Per chi non ha familiarità con distributed tracing e OTel, si consiglia la lettura del [tutorial introduttivo](https://theredcode.it/devops/observability-monitoring-intro/).
 
 **Struttura dell'articolo:**
 1. Il problema: volume e crescita infinita
-2. Stima del volume: calcolo per scenario
-3. Tail Sampling: decidere cosa tenere
-4. Retention: raggiungere lo steady state
-5. Scenario demo: verificare che funzioni
-6. Monitoring: verificare il funzionamento
-7. Cardinality explosion: un rischio da considerare
-8. Analisi costi: con e senza observability
-9. Checklist finale
+2. Tail Sampling: decidere cosa tenere
+3. Retention: raggiungere lo steady state
+4. Scenario demo: verificare che funzioni
+5. Monitoring: verificare il funzionamento
+6. Cardinality explosion: un rischio da considerare
+7. Sostenibilità: con e senza data management
+8. Checklist finale
 
 ---
 
 ## Il Problema: Volume e Crescita Infinita
 
-Il tutorial precedente traccia tutto al 100%. In sviluppo funziona. In produzione, i numeri cambiano.
+Il setup del tutorial precedente tracciava il 100% del traffico. In un ambiente con poche request al minuto questo è trascurabile. Proviamo a proiettare lo stesso approccio su numeri realistici, usando come riferimento il [checkout flow di MockMart](https://github.com/monte97/MockMart): una singola operazione che coinvolge 5 servizi e produce ~8 span.
 
-### Problema 1: Volume di Ingest
-
-**Esempio concreto (MockMart in produzione simulata):**
+### Quanto pesano le trace
 
 | Parametro | Valore |
 |-----------|--------|
@@ -35,26 +34,31 @@ Il tutorial precedente traccia tutto al 100%. In sviluppo funziona. In produzion
 | Span per trace | ~8 (checkout flow) |
 | Dimensione span | ~500 bytes |
 
-**Calcolo volume giornaliero:**
-
-```
-100 req/s x 8 span x 500 bytes x 86400 sec = 34 GB/giorno
+```text
+100 req/s × 8 span × 500 bytes × 86400 sec = 34 GB/giorno
 ```
 
-**In un mese:** ~1 TB di sole trace.
+1 TB al mese di sole trace, senza contare log e metriche. Scalando il traffico, i numeri peggiorano rapidamente:
 
-### Problema 2: Crescita Infinita
+| Scenario | Volume/Giorno | Volume/Mese |
+|----------|--------------|-------------|
+| **Low traffic (100 req/s)** | 34 GB | ~1 TB |
+| **Medium traffic (1K req/s)** | 345 GB | ~10 TB |
+| **High traffic (10K req/s)** | 3.4 TB | ~100 TB |
 
-Anche riducendo l'ingest, senza retention policy lo storage cresce per sempre:
+**Assunzioni:** ~8 span per trace, ~500 bytes per span.
 
+**Formula:**
+
+```text
+1. Span/sec = req/sec × span_per_trace
+2. GB/giorno = span/sec × 500 bytes × 86400 / 1e9
+3. GB/mese = GB/giorno × 30
 ```
-Mese 1:   1 TB
-Mese 2:   2 TB
-Mese 6:   6 TB
-Mese 12: 12 TB
-```
 
-**Il valore delle trace decade nel tempo:**
+### Il valore decade, il volume no
+
+A peggiorare il quadro c'è un'asimmetria: il volume di dati cresce in modo costante, ma il valore che offrono decresce nel tempo. Dopo la risoluzione di un incident, le trace correlate perdono progressivamente utilità.
 
 | Periodo | Valore | Uso tipico |
 |---------|--------|------------|
@@ -62,67 +66,16 @@ Mese 12: 12 TB
 | Giorno 7-30 | Medio | Post-mortem, pattern analysis |
 | Giorno 30+ | Basso | Audit (solo operazioni critiche) |
 
-Conservare trace di 6 mesi fa senza una necessità specifica rappresenta un consumo di risorse non giustificato.
+Conservare tutto in modo indefinito costa come se ogni dato fosse prezioso, ma il 99% del traffico che non ha generato errori o anomalie non verrà mai consultato.
 
-### La Soluzione: Due Leve
+### Due leve per risolvere il problema
 
-1. **Tail Sampling** - Riduce ciò che entra (~90%)
-2. **Retention Policy** - Elimina ciò che è vecchio
+Per rendere sostenibile un sistema di observability servono due meccanismi complementari: uno che riduca ciò che entra, e uno che elimini ciò che è vecchio.
 
-**Risultato:** Storage che raggiunge un plateau invece di crescere linearmente.
+1. **Tail Sampling** - Decide *quali* trace tenere dopo averle osservate per intero. Riduce il volume in ingresso (~90%) mantenendo il 100% di errori e anomalie.
+2. **Retention Policy** - Elimina automaticamente i dati più vecchi di una soglia. Lo storage raggiunge uno steady state invece di crescere linearmente.
 
----
-
-## Stima del Volume: Calcolo per Scenario
-
-Prima di implementare, è utile quantificare il problema per lo scenario specifico.
-
-### Input Necessari
-
-**Tre parametri da determinare:**
-
-1. **Quante request/sec gestisce il sistema?**
-   - Verificabile dal load balancer o API gateway
-   - Comando: `grep "GET\|POST" /var/log/nginx/access.log | wc -l` (dividi per secondi)
-
-2. **Quanti span per trace?**
-   - Regola empirica: servizi nel path critico × 2 span/servizio
-   - Default sicuro: **8 span/trace**
-
-3. **Quanti giorni di retention?**
-   - Debug: 7 giorni
-   - Post-mortem: 30 giorni
-   - Compliance: 90 giorni
-
-### Calculator: 3 Scenari Tipici
-
-| Scenario | Volume/Giorno (RAW) | Con Sampling 10% | Storage Steady (7d) | Costo/Mese |
-|----------|---------------------|------------------|---------------------|------------|
-| **Low traffic (100 req/s)** | 34 GB | 3.4 GB | 24 GB | ~$0.55 |
-| **Medium traffic (1K req/s)** | 345 GB | 34 GB | 238 GB | ~$5.50 |
-| **High traffic (10K req/s)** | 3.4 TB | 345 GB | 2.4 TB | ~$55 |
-
-**Assunzioni:** Span ~500 bytes, sampling 10% + 100% errori, storage S3 $0.023/GB.
-
-### Formula Generale
-
-```
-1. Span/sec = req/sec × span_per_trace × sampling_rate
-2. GB/giorno = span/sec × 500 bytes × 86400 / 1e9
-3. Storage steady = GB/giorno × retention_days
-4. Costo/mese = storage_GB × $0.023
-```
-
-**Esempio (1000 req/s, 10% sampling, 7d retention):**
-
-```
-Span/sec = 1000 × 8 × 0.1 = 800
-GB/giorno = 800 × 500 × 86400 / 1e9 = 34 GB
-Storage = 34 × 7 = 238 GB
-Costo = 238 × $0.023 = $5.50/mese
-```
-
-Una volta stimati i numeri, si può procedere con la configurazione.
+Nelle prossime sezioni vediamo come configurare entrambi.
 
 ---
 
@@ -130,12 +83,12 @@ Una volta stimati i numeri, si può procedere con la configurazione.
 
 ### Head vs Tail Sampling
 
-**Head sampling** decide all'inizio della trace: "questa la tengo al 10%".
-Problema: se quel 10% scartato conteneva un errore, è perso.
+**Head sampling** decide all'inizio della trace: "questa trace viene mantenuta al 10%".
+Problema: se il 90% scartato conteneva un errore, è perso.
 
 **Tail sampling** decide alla fine: aspetta che la trace sia completa, poi valuta.
 
-```
+```text
 Head Sampling:            Tail Sampling:
 
 Request -> Keep 10%       Request -> Trace completa -> Errore? -> KEEP
@@ -143,20 +96,24 @@ Request -> Keep 10%       Request -> Trace completa -> Errore? -> KEEP
                                                     -> Normale -> Sample 10%
 ```
 
-**Vantaggio:** 100% degli errori catturati, anche con 90% di riduzione (purché tutte le trace passino dallo stesso Collector e il `decision_wait` sia sufficiente).
+**Vantaggio:** le trace con errori o latenza anomala vengono sempre mantenute, riducendo al contempo il volume complessivo.
 
-> **Nota sulla logica delle policy:** Con le policy di tipo `status_code`, `latency`, `string_attribute` e `probabilistic`, la logica è di fatto OR: basta che una policy decida "Sampled" perché la trace venga mantenuta. Policy di tipo `and` o `composite` permettono logiche più complesse.
+### Tre regole per decidere cosa tenere
 
-### Le 4 Policy Fondamentali
+OTel mette a disposizione [diverse policy standard](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/tailsamplingprocessor), da integrare in modo diretto all'interno delle pipeline, ad esempio:
 
 | Policy | Cosa fa | Rationale |
 |--------|---------|-----------|
-| `errors` | KEEP 100% trace con errori | Non perdere mai un problema |
+| `status_code` | KEEP 100% trace con errori (status=ERROR) | Nessun errore escluso dal campionamento |
 | `latency` | KEEP 100% trace >1s | Performance issue visibili |
-| `audit` | KEEP 100% operazioni critiche | Checkout (nella demo), login e payment in produzione |
 | `probabilistic` | SAMPLE 10% del resto | Baseline per capire il "normale" |
 
+Oltre a queste, il processor supporta policy basate sul contenuto degli span: è possibile filtrare per attributi (`string_attribute`), nome del servizio, o combinazioni di condizioni (`and`, `composite`). Un esempio concreto viene mostrato più avanti con la [policy per audit events](#aggiungere-una-policy-custom-audit-events).
+
+
 ### Configurazione OTel Collector
+
+Il blocco seguente mostra come tradurre le tre policy nella configurazione del `tail_sampling` processor. Le policy vengono valutate indipendentemente: se almeno una policy (es. `status_code` o `latency`) decide di mantenere la trace, questa viene mantenuta anche se altre policy (es. `probabilistic`) deciderebbero di scartarla.
 
 ```yaml
 processors:
@@ -179,26 +136,51 @@ processors:
         latency:
           threshold_ms: 1000
 
-      # 3. KEEP audit events (richiede attributo nel codice)
-      - name: audit-policy
-        type: string_attribute
-        string_attribute:
-          key: audit.event
-          values: ["true"]
-          enabled_regex_matching: false
-
-      # 4. SAMPLE 10% del resto
+      # 3. SAMPLE 10% del resto
       - name: probabilistic-policy
         type: probabilistic
         probabilistic:
           sampling_percentage: 10
 ```
 
-> **Pipeline completa:** In produzione, il tail sampling va affiancato da `memory_limiter` (per evitare OOM) e `batch` (per efficienza di rete). L'ordine nella pipeline è importante: `[memory_limiter, tail_sampling, batch]`. La config completa è in `otel-config/data-management/otel-collector-config.yaml`.
+### Pipeline Completa
 
-### Marcare Audit Events nel Codice
+La configurazione sopra definisce *cosa* tenere e *cosa* scartare. Resta da definire *come* inserire il tail sampling in pipeline. Da solo non basta: il Collector deve anche proteggersi da picchi di memoria e ottimizzare l'invio dei dati verso il backend. Per questo servono due processor aggiuntivi:
 
-Per la policy `audit`, serve un attributo sullo span:
+- **`memory_limiter`** (primo): limita l'uso di memoria del Collector. Se il consumo supera la soglia, il Collector inizia a rifiutare dati in ingresso invece di andare in OOM.
+- **`batch`** (ultimo): raggruppa gli span in batch prima dell'export, riducendo il numero di chiamate di rete verso Tempo.
+
+L'ordine è importante: `memory_limiter` protegge il processo, `tail_sampling` decide cosa tenere, `batch` ottimizza l'invio.
+
+```yaml
+# otel-collector-config.yaml (sezione service)
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, tail_sampling, batch]
+      exporters: [otlp/tempo]
+```
+
+La config completa è in [`otel-config/data-management/otel-collector-config.yaml`](https://github.com/monte97/MockMart/blob/master/otel-config/data-management/otel-collector-config.yaml).
+
+### Aggiungere una Policy Custom: Audit Events
+
+Le tre policy base coprono errori, latenza e traffico normale. Resta un caso: le operazioni critiche per il business o la sicurezza (checkout, login, payment) che vanno mantenute sempre, indipendentemente da errori o latenza.
+
+Il `tail_sampling` processor supporta policy basate su attributi. È sufficiente aggiungere una policy `string_attribute` che cerchi un attributo specifico sugli span:
+
+```yaml
+# Da aggiungere alle policies del tail_sampling
+- name: audit-policy
+  type: string_attribute
+  string_attribute:
+    key: audit.event
+    values: ["true"]
+    enabled_regex_matching: false
+```
+
+L'attributo `audit.event` non viene aggiunto automaticamente: va impostato nel codice, nei punti che rappresentano operazioni critiche.
 
 ```javascript
 const { trace } = require('@opentelemetry/api');
@@ -210,18 +192,18 @@ app.post('/api/checkout', async (req, res) => {
 });
 ```
 
-MockMart ha già questo attributo configurato nel checkout.
-
 ---
 
 ## Retention: Raggiungere lo Steady State
 
-Il tail sampling riduce l'ingest. Ma senza retention, lo storage continua a crescere.
+Nella sezione precedente è stato mostrato come ridurre il volume in ingresso. Resta il problema della crescita indefinita: senza un meccanismo di pulizia, anche i dati campionati al 10% si accumulano.
 
-### Il Concetto di Steady State
+### Quando lo storage smette di crescere
+
+Lo **steady state** è la condizione in cui il volume di storage si stabilizza: la quantità di dati eliminati dal compactor per scadenza della retention eguaglia la quantità di dati nuovi in ingresso. Da quel punto in avanti, lo storage rimane costante indipendentemente dalla durata di funzionamento del sistema.
 
 **Senza retention:**
-```
+```text
 Giorno 1:   34 GB
 Giorno 7:  238 GB
 Giorno 30:   1 TB
@@ -229,7 +211,7 @@ Giorno 90:   3 TB   <- cresce per sempre
 ```
 
 **Con retention 7 giorni:**
-```
+```text
 Giorno 1:   34 GB
 Giorno 7:  238 GB
 Giorno 8:  238 GB   <- steady state
@@ -238,17 +220,24 @@ Giorno 30: 238 GB
 
 Il compactor elimina i dati più vecchi della retention, lo storage si stabilizza.
 
+> Per scenari con requisiti di conservazione più lunghi (audit, compliance), è possibile adottare strategie di tiering hot/warm/cold invece di eliminare i dati.
+
 ### Configurazione Tempo
 
 ```yaml
 # tempo-config.yaml
 compactor:
   compaction:
-    # Produzione: 168h (7 giorni) | Demo MockMart: 5m (per test rapidi)
     block_retention: 168h
 ```
 
-> **Nota:** La demo MockMart usa `block_retention: 5m` per rendere il test riproducibile in pochi minuti. In produzione, 7 giorni (168h) è un buon punto di partenza.
+> **Nota:** La demo usa `block_retention: 5m` per rendere il test riproducibile in pochi minuti.
+
+---
+
+## Scenario 4: Verifica su MockMart
+
+Questo scenario dimostra tail sampling e retention su [MockMart](https://github.com/monte97/MockMart/blob/master/otel-config/data-management/otel-collector-config.yaml).
 
 ### Due Stack, Due Approcci
 
@@ -259,27 +248,7 @@ MockMart offre due configurazioni:
 | **Base** | `make up` | grafana-lgtm all-in-one, 100% sampling | Sviluppo, tutorial (scenari 1-2-3) |
 | **Data Management** | `make up-data-management` | Collector separato, tail sampling, retention | Simil-produzione (scenario 4) |
 
-Gli scenari 1-2-3 del tutorial precedente usano lo stack base.
-Questo articolo usa lo stack data management.
-
-### Verifica Configurazione
-
-```bash
-# Avvia lo stack data management
-make up-data-management
-
-# Verifica health
-make health-data-management
-
-# Verifica che il Collector abbia tail sampling attivo
-make check-sampling
-```
-
----
-
-## Scenario 4: Data Management in Azione
-
-Questo scenario dimostra tail sampling e retention su MockMart.
+Gli scenari 1-2-3 del tutorial precedente usano lo stack base. Questo articolo usa lo stack data management.
 
 ### Setup
 
@@ -292,6 +261,9 @@ make up-data-management
 
 # Verifica health
 make health-data-management
+
+# Verifica che il Collector abbia tail sampling attivo
+make check-sampling
 ```
 
 ### Esecuzione Demo Completa
@@ -310,7 +282,7 @@ Lo script:
 
 **Output atteso:**
 
-```
+```text
 Tail Sampling Metrics:
   Span ricevuti (accepted):    ~400
   Span scartati (dropped):     ~350
@@ -322,24 +294,24 @@ Tail Sampling Metrics:
 
 ### Verifica in Grafana
 
-In Grafana (`http://localhost:3005`) -> Explore -> Tempo:
+In Grafana (`http://localhost/grafana`) -> Explore -> Tempo:
 
 **1. Trace con errore (deve esistere):**
-```
+```text
 { status = error }
 ```
 
 <img src="images/webp/scenario4-error-traces.webp" alt="Trace con errore mantenute dal tail sampling" width="80%">
 
 **2. Trace lenta (deve esistere):**
-```
+```text
 { duration > 1s }
 ```
 
 <img src="images/webp/scenario4-slow-traces.webp" alt="Trace lente mantenute dal tail sampling" width="80%">
 
 **3. Trace normali (solo ~10% esistono):**
-```
+```text
 { resource.service.name = "shop-api" }
 ```
 
@@ -357,8 +329,6 @@ La demo usa una retention di 5 minuti per rendere il test riproducibile.
 Il compactor ha eliminato la trace.
 
 <img src="images/webp/scenario4-retention.webp" alt="Trace non più trovata dopo la retention" width="80%">
-
-> **Nota:** In produzione il valore tipico è `block_retention: 168h` (7 giorni), non 5 minuti.
 
 ### Comandi Aggiuntivi
 
@@ -386,20 +356,23 @@ Con tail sampling e retention configurati, è importante verificare che tutto fu
 
 ```bash
 # Accedi alle metriche
-curl http://localhost:8888/metrics
+curl http://localhost/services/collector/metrics
 ```
 
 | Metrica | Significato | Valore Atteso |
 |---------|-------------|---------------|
-| `otelcol_receiver_accepted_spans` | Span in ingresso | Proporzionale al traffico |
-| `otelcol_processor_tail_sampling_count_spans_sampled` | Span campionati/scartati (label `decision`) | ~90% `not_sampled` |
-| `otelcol_exporter_sent_spans` | Span inviati a Tempo | ~10% degli accepted |
+| `otelcol_receiver_accepted_spans_total` | Span in ingresso | Proporzionale al traffico |
+| `otelcol_processor_tail_sampling_global_count_traces_sampled_total` | Trace campionate/scartate globalmente (label `sampled`) | ~90% `false` |
+| `otelcol_processor_tail_sampling_count_traces_sampled_total` | Trace campionate/scartate per policy (label `policy`, `sampled`) | Dettaglio per policy |
+| `otelcol_exporter_sent_spans_total` | Span inviati a Tempo | ~10% degli accepted |
 
-> **Nota:** Nella versione 0.96.0 del Collector (usata nella demo) esiste anche `otelcol_processor_dropped_spans`, deprecata nelle versioni successive. Le metriche `tail_sampling_count_spans_sampled` con label `decision=sampled|not_sampled` sono più stabili tra le versioni.
+> I nomi riportati includono il suffisso `_total` visibile nell'endpoint Prometheus (`/metrics`). Dashboard e alert usano `rate()` che opera su counter con questo suffisso.
+
+> **Nota:** Il tail sampling processor espone metriche proprie (`global_count_traces_sampled`) invece delle generiche `incoming_items`/`outgoing_items`. La metrica globale con label `sampled=true|false` indica quante trace sono state mantenute o scartate. La metrica per-policy aggiunge il dettaglio su quale policy ha preso la decisione.
 
 **Formula drop rate:**
-```
-drop_rate = (dropped / accepted) * 100
+```text
+drop_rate = not_sampled / (sampled + not_sampled) * 100
 ```
 
 Se drop rate < 50%, il tail sampling non sta funzionando come atteso.
@@ -408,7 +381,7 @@ Se drop rate < 50%, il tail sampling non sta funzionando come atteso.
 
 Lo stack data management include una dashboard pre-configurata:
 
-```
+```text
 Grafana -> Dashboards -> Data Management -> OTel Collector - Data Management
 ```
 
@@ -420,30 +393,76 @@ Pannelli principali:
 - **Export Failures (rate):** Target 0
 - **Collector Memory Usage:** Consumo RAM del Collector
 
-### Alert Configurati
+### Alert Rules
 
-Prometheus ha alert pronti in `otel-config/data-management/alerts/` (8 alert in totale, tra cui anche `OtelCollectorDown`, `OtelCollectorHighMemory`, `TempoIngestionFailures`). I tre principali:
+Lo stack include 8 alert rules in [`otel-config/data-management/alerts/`](https://github.com/monte97/MockMart/tree/master/otel-config/data-management/alerts), organizzate in due gruppi. Non si tratta di regole preconfezionate: sono scritte su misura per monitorare il comportamento specifico di questo stack (tail sampling al 90%, retention breve, singola istanza Collector).
 
-| Alert | Trigger | Significato |
-|-------|---------|-------------|
-| `OtelCollectorBackpressure` | Queue > 5000 | Collector sovraccarico |
-| `OtelCollectorExportFailures` | Export failure rate > 100 span/sec (finestra 5m) | Tempo non raggiungibile |
-| `OtelSamplingRateTooLow` | Drop rate < 50% | Config sampling errata |
+**Gruppo 1: `otel-collector-health`** (6 regole)
+
+Monitora il Collector come componente infrastrutturale: è raggiungibile? Sta esportando? Il sampling funziona?
+
+| Alert | Severity | Trigger | Significato |
+|-------|----------|---------|-------------|
+| `OtelCollectorDown` | critical | `up{job="otel-collector"} == 0` per 1m | Collector non raggiungibile. Nessuna telemetria raccolta. |
+| `OtelCollectorExportFailures` | critical | Export failure rate > 100 span/sec (5m) | Collector non riesce a inviare dati a Tempo. |
+| `OtelCollectorBackpressure` | warning | Queue size > 5000 per 5m | Collector sovraccarico, rischio perdita span. |
+| `OtelCollectorHighMemory` | warning | RSS > 500 MB per 5m | Consumo memoria elevato, considerare scaling. |
+| `OtelSamplingRateTooLow` | info | Drop rate < 50% per 10m | Il sampling non sta scartando abbastanza. Config errata o traffico anomalo. |
+| `OtelSamplingRateTooHigh` | warning | Drop rate > 99% per 10m | Il sampling scarta quasi tutto. Rischio perdita dati importanti. |
+
+Gli alert sul sampling rate meritano un approfondimento. Il drop rate atteso è ~90% (sampling probabilistico al 10%). La PromQL calcola la percentuale di trace scartate rispetto al totale:
+
+```promql
+# Drop rate = trace_scartate / (trace_mantenute + trace_scartate)
+(
+  rate(otelcol_processor_tail_sampling_global_count_traces_sampled_total{sampled="false"}[5m])
+  /
+  (
+    rate(...{sampled="true"}[5m]) +
+    rate(...{sampled="false"}[5m])
+  )
+)
+```
+
+Due soglie complementari delimitano la finestra operativa:
+- **< 50%** (`TooLow`): il sampling non funziona. Possibili cause: policy mancanti, errori di config, traffico prevalentemente anomalo (tutti errori o tutti lenti).
+- **> 99%** (`TooHigh`): il sampling scarta quasi tutto. Possibile causa: policy probabilistica assente o percentuale a 0%.
+
+**Gruppo 2: `tempo-health`** (2 regole)
+
+Monitora il backend di storage delle trace.
+
+| Alert | Severity | Trigger | Significato |
+|-------|----------|---------|-------------|
+| `TempoIngestionFailures` | warning | Failure rate > 0 per 5m | Errori nell'ingestione trace. Tempo potrebbe avere problemi di storage. |
+| `TempoCompactorBehind` | warning | `tempodb_compaction_outstanding_blocks` > 100 per 15m | Il compactor non riesce a tenere il passo. Retention a rischio. |
+
+Il secondo alert è collegato alla retention: se il compactor accumula ritardo, i blocchi scaduti non vengono eliminati e lo storage cresce oltre lo steady state atteso.
+
+**Verifica alert:**
 
 ```bash
-# Verifica alert in Prometheus
-open http://localhost:9090/alerts
+# Stato alert in Prometheus (dal container)
+docker exec prometheus wget -qO- http://localhost:9090/alerts
 ```
 
 ---
 
 ## Cardinality Explosion: Un Rischio da Considerare
 
-Oltre alle trace, un altro aspetto rilevante riguarda **le metriche**.
+Il tail sampling controlla il volume delle trace. Per le metriche, il rischio equivalente è la **cardinality explosion**.
 
-### Il Problema
+### Come una label può generare milioni di time series
 
-**Metrics cardinality** = numero di time series uniche nel sistema.
+In Prometheus, ogni metrica è una **time series**: una sequenza di coppie (timestamp, valore). Ciò che rende unica una time series è la combinazione di nome metrica e label:
+
+```text
+http_requests_total{service="api", endpoint="/users",    status_code="200"}  → serie 1
+http_requests_total{service="api", endpoint="/users",    status_code="500"}  → serie 2
+http_requests_total{service="api", endpoint="/products", status_code="200"}  → serie 3
+```
+
+Ogni combinazione unica di label occupa spazio dedicato: un buffer in memoria, un blocco su disco, un indice. La **metrics cardinality** è il numero totale di queste combinazioni nel sistema. Con poche label a valori limitati (service, endpoint, status_code) il numero resta contenuto. Il problema nasce quando una label ha valori unbounded.
 
 **Esempio con cardinality elevata:**
 
@@ -460,16 +479,16 @@ counter.add(1, {
 ```
 
 **Calcolo:**
-```
+```text
 5 services × 50 endpoints × 10000 users × 5 status codes
 = 12.5 MILIONI di time series
 
-Storage: 12.5M × 1 sample/sec × 1 byte = 12.5 MB/sec = 1 TB/giorno
+Storage (stima conservativa): 12.5M × 1 sample/sec × ~2 bytes (TSDB compresso) = 25 MB/sec ≈ 2 TB/giorno
 ```
 
 Un volume superiore a quello delle trace.
 
-### La Soluzione
+### Eliminare le label unbounded
 
 **Principio fondamentale:** evitare `user_id`, `session_id`, o valori unbounded come label.
 
@@ -484,7 +503,7 @@ counter.add(1, {
 ```
 
 **Cardinality risultante:**
-```
+```text
 5 services × 50 endpoints × 5 status codes = 1,250 time series
 Storage: ~108 MB/giorno - un volume gestibile
 ```
@@ -501,6 +520,7 @@ Metriche con >1000 series richiedono investigazione.
 ### Alert Cardinality
 
 ```yaml
+# prometheus-alerts.yaml
 - alert: HighCardinalityMetric
   expr: count by(__name__) ({__name__=~".+"}) > 10000
   labels:
@@ -511,64 +531,53 @@ Metriche con >1000 series richiedono investigazione.
 
 ---
 
-## Analisi Costi: Con e Senza Observability
+## Sostenibilità: Con e Senza Data Management
 
-Un'obiezione frequente riguarda il costo di OTel (~$20/mese per lo stack self-hosted). I numeri seguenti sono stime illustrative per un e-commerce medio e aiutano a contestualizzare il trade-off.
+L'observability ha valore solo se è sostenibile nel tempo. Senza gestione del volume, lo storage cresce linearmente fino a rendere necessarie scelte drastiche: disabilitare il tracing o ridurre la retention a poche ore. I numeri seguenti si riferiscono allo scenario low-traffic (100 req/s) visto nella sezione iniziale.
 
-### Costo del Downtime
+### Proiezione Costi Storage
 
-**Scenario senza observability:**
-```
-- Incident ogni 2 mesi
-- Tempo diagnosi: 4 ore (grep logs, tentativi manuali)
-- Tempo fix: 2 ore
-- Downtime totale: 6 ore/incident
-```
-
-**Scenario con observability:**
-```
-- Stesso numero di incident
-- Tempo diagnosi: 15 minuti (trace mostra subito il problema)
-- Tempo fix: 2 ore
-- Downtime totale: 2.25 ore/incident
+**Senza data management (100% sampling, no retention):**
+```text
+Mese 1:    1 TB   → $23/mese
+Mese 6:    6 TB   → $138/mese
+Mese 12:  12 TB   → $276/mese   ← cresce per sempre
 ```
 
-**Risparmio: 3.75 ore per incident.**
-
-### Calcolo ROI
-
-```
-Revenue/ora (e-commerce medio): $5000
-Risparmio/incident: 3.75 ore × $5000 = $18,750
-Incident/anno: 6
-Risparmio/anno: $112,500
-
-Costo OTel: $20/mese = $240/anno
-
-ROI: 468x
+**Con data management (10% sampling + 7d retention):**
+```text
+Mese 1:   24 GB   → $0.55/mese
+Mese 6:   24 GB   → $0.55/mese
+Mese 12:  24 GB   → $0.55/mese  ← steady state
 ```
 
-### Costo del Debug Manuale
+### Impatto per Scenario di Traffico
 
-**Senza observability:**
-- Un engineer dedica circa 5 ore/settimana al debug senza strumenti adeguati
-- Costo: 5h × 52 settimane × $100/h = $26,000/anno
+Applicando il sampling al 10% e una retention di 7 giorni, lo storage si stabilizza:
 
-**Con observability:**
-- Debug time: -70%
-- Risparmio: ~$18,000/anno
+| Scenario | Con Sampling 10% | Storage Steady (7d) | Costo/Mese |
+|----------|------------------|---------------------|------------|
+| **Low (100 req/s)** | 3.4 GB/giorno | 24 GB | ~$0.55 |
+| **Medium (1K req/s)** | 34 GB/giorno | 238 GB | ~$5.50 |
+| **High (10K req/s)** | 345 GB/giorno | 2.4 TB | ~$55 |
 
-### Trade-off Finale
+**Assunzioni:** storage S3 $0.023/GB, sampling 10% + 100% errori.
 
-| Aspetto | Senza Observability | Con OTel (gestito) |
-|---------|--------------------|--------------------|
-| Setup | $0 | 1-2 giorni |
-| Costo mensile | $0 | ~$20 |
-| Downtime/anno | ~$112k | ~$30k |
-| Debug time/anno | ~$26k | ~$8k |
-| **Net cost** | **-$138k** | **+$100k risparmio** |
+### Confronto a 12 Mesi (Low Traffic)
 
-In molti scenari, il costo dell'assenza di observability supera di gran lunga quello dell'infrastruttura.
+| Aspetto | Senza gestione | Con gestione |
+|---------|---------------|--------------|
+| Storage cumulativo | 12 TB | 24 GB (steady) |
+| Costo storage/anno | ~$1,800 | ~$7 |
+| Errori catturati | 100% | 100% |
+| Request lente catturate | 100% | 100% |
+| Scalabilità | Insostenibile | Prevedibile |
+
+### Il costo della rinuncia
+
+Il costo diretto dello storage è spesso gestibile nei primi mesi. Il rischio maggiore è la reazione a costi crescenti: disabilitare il tracing o ridurre la retention a poche ore. In entrambi i casi si perde la capacità di debug che l'observability doveva garantire.
+
+Con tail sampling e retention configurati, il sistema resta sostenibile senza perdere visibilità sugli errori e sulle anomalie.
 
 ---
 
@@ -618,17 +627,17 @@ In molti scenari, il costo dell'assenza di observability supera di gran lunga qu
 
 - [ ] Drop rate ~90% (check metriche Collector)
 - [ ] Storage steady state (non cresce linearmente)
-- [ ] Zero alert fired (no backpressure, no export failures)
+- [ ] Nessun alert scattato (no backpressure, no export failures)
 - [ ] Errori e slow request catturati (verifica in Grafana)
 
 Se tutti i check passano, la configurazione di observability è pronta per un roll-out iniziale.
 
 ### Next Steps
 
-1. **Week 1:** Deploy su 1 servizio in production
-2. **Week 2-3:** Monitor, valida numeri reali
-3. **Week 4+:** Roll out graduale ad altri servizi
-4. **Ongoing:** Tune sampling rate e retention in base ai dati reali
+1. **Settimana 1:** Deploy su 1 servizio in production
+2. **Settimana 2-3:** Monitor, valida numeri reali
+3. **Settimana 4+:** Roll out graduale ad altri servizi
+4. **Continuo:** Tune sampling rate e retention in base ai dati reali
 
 ---
 
@@ -639,7 +648,7 @@ Se tutti i check passano, la configurazione di observability è pronta per un ro
 
 **Documentazione:**
 - [OTel Collector Tail Sampling](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/tailsamplingprocessor)
-- [Tempo Compactor](https://grafana.com/docs/tempo/latest/operations/compaction/)
+- [Tempo Configuration](https://grafana.com/docs/tempo/latest/configuration/)
 
 **Prossimi argomenti:**
 - Sampling strategies avanzate (composite policy)
