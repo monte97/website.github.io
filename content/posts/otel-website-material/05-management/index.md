@@ -2,8 +2,14 @@
 title: "OpenTelemetry in Produzione: Tail Sampling e Retention"
 date: 2026-02-05T10:00:00+01:00
 description: "Come ridurre il volume dati del 90% senza perdere visibilità sugli errori. Guida pratica con config template e scenario demo."
-tags: ["OpenTelemetry", "Observability", "TailSampling", "DataManagement", "Production"]
-categories: ["Observability", "DevOps"]
+menu:
+  sidebar:
+    name: Correlation Demo
+    identifier: OTEL-5
+    weight: 50
+    parent: OBS
+tags: ["OpenTelemetry", "Observability", "LGTM Stack", "Loki", "Grafana", "Tempo", "Mimir", "Prometheus", "Tracing", "Metrics", "Logging", "Instrumentation", "DevOps", "Telemetry", "Sistemi Distribuiti", "Docker"]
+categories: ["Monitoring", "DevOps", "Architettura Software", "Cloud Native"]
 ---
 
 Nel [tutorial precedente](https://montelli.dev/posts/otel-website-material/04-correlation/) abbiamo strumentato un e-commerce con OpenTelemetry e risolto tre scenari di debug: silent failure, latency spike, fan-out. Tutto funzionava: trace complete, errori visibili, latenza misurabile.

@@ -12,7 +12,7 @@ tags: ["OpenTelemetry", "Observability", "LGTM Stack", "Loki", "Grafana", "Tempo
 categories: ["Monitoring", "DevOps", "Architettura Software", "Cloud Native"]
 ---
 
-Questo tutorial mostra il valore pratico del distributed tracing attraverso tre scenari di debug reali. Per chi non ha familiarità con i concetti base di OTel (spans, traces, context propagation), si consiglia prima la lettura di [Introduzione a OpenTelemetry](https://theredcode.it/devops/observability-monitoring-intro/).
+Chi ha strumentato un'applicazione con OpenTelemetry ha trace e log centralizzati. Resta una domanda pratica: come si usa concretamente questa telemetria per risolvere problemi? Questo tutorial risponde con tre scenari di debug reali. Per chi non ha familiarita con i concetti base di OTel (spans, traces, context propagation), si consiglia prima la lettura di [Introduzione a OpenTelemetry](https://theredcode.it/devops/observability-monitoring-intro/).
 
 **Struttura dell'articolo:**
 1. Quick Start - avvia la demo
@@ -34,7 +34,7 @@ Gateway (nginx:80)
 │   ├── Payment Service (:3010)
 │   └── Notification Service (:3009)
 ├── Keycloak (:8080)
-└── Grafana LGTM (:3005)
+└── Grafana LGTM (:3000, via gateway :80)
 ```
 
 **Flusso checkout (fan-out pattern):**
@@ -67,7 +67,7 @@ make up
 
 # Verifica
 docker ps  # tutti i container healthy
-open http://localhost:3005  # Grafana
+open http://localhost/grafana  # Grafana
 
 # Scenari demo
 ./scripts/scenario-1-silent-failure.sh   # Silent failure
@@ -84,7 +84,7 @@ open http://localhost:3005  # Grafana
 
 ## Scenario 1: Silent Failure
 
-### Il Problema
+### Il checkout risponde 200, la notifica non parte
 
 L'utente completa il checkout, riceve conferma ("Ordine completato!"), ma non riceve mai la notifica email.
 
@@ -113,7 +113,7 @@ Lo script:
 3. Esegue un checkout
 4. Mostra che l'ordine viene salvato ma la notifica fallisce
 
-### Debug con OpenTelemetry
+### Il waterfall rivela lo span che fallisce
 
 **Step 1:** Apri [Grafana](http://localhost/grafana) → Explore → Tempo
 
@@ -169,7 +169,7 @@ Lo span della chiamata a notification service mostra:
 
 ## Scenario 2: Latency Spike
 
-### Il Problema
+### Stesso endpoint, tempi diversi
 
 Report utenti:
 - "Il checkout è lentissimo, 3-4 secondi!" (Luigi)
@@ -191,7 +191,7 @@ Lo script:
 
 > **Nota sulla simulazione:** Il template "premium" simula un'operazione lunga con un delay artificiale. In un sistema reale potrebbe essere: rendering PDF complesso, chiamate a servizi esterni, query database non ottimizzate, etc. La simulazione serve a creare uno scenario riproducibile per imparare il flusso di debug.
 
-### Debug con OpenTelemetry
+### La trace mostra dove si accumula il tempo
 
 **Step 1:** Query trace lente
 
@@ -265,9 +265,9 @@ histogram_quantile(0.95,
 
 ## Scenario 3: Fan-out Debug
 
-### Il Problema
+### Quattro servizi, ventiquattro combinazioni
 
-Questo scenario dimostra il vero valore del distributed tracing: debugging di un sistema con **[pattern fan-out](https://en.wikipedia.org/wiki/Fan-out_(software))** dove una singola richiesta attraversa più servizi in parallelo.
+Questo scenario dimostra il distributed tracing applicato a un **[pattern fan-out](https://en.wikipedia.org/wiki/Fan-out_(software))** dove una singola richiesta attraversa piu servizi in parallelo.
 
 Ticket di supporto:
 > "Il checkout è lentissimo, ci mette più di 3 secondi!"
@@ -342,7 +342,7 @@ docker logs notification-service | grep "order"
 
 **Problema:** I timestamp sono su macchine diverse, non sincronizzati. Non è possibile sommare i tempi né determinare quali chiamate sono sequenziali e quali parallele.
 
-### Debug con Distributed Tracing
+### Il fan-out visibile in un unico waterfall
 
 **Grafana → Explore → Tempo**
 
@@ -426,14 +426,14 @@ Ogni test isola un singolo servizio. Il waterfall mostra **esattamente** quale s
 | Ipotesi su 4 servizi | Certezza: inventory check + notification |
 | Debug per esclusione su 4 servizi | Root cause visibile nel waterfall |
 
-### Il Vero Valore del Distributed Tracing
+### Dove il distributed tracing ripaga
 
 Questo scenario dimostra dove il distributed tracing offre il vantaggio maggiore:
 
 1. **Fan-out visibility**: Vedi tutte le chiamate parallele e sequenziali
 2. **Proportional blame**: Il waterfall mostra quanto ogni servizio contribuisce
 3. **Cross-service correlation**: I log di 4 servizi correlati automaticamente
-4. **No clock sync needed**: La timeline è basata su span parent-child, non su timestamp
+4. **Clock skew mitigato**: Il waterfall usa timestamp assoluti e relazioni parent-child per ricostruire il flusso. NTP sui nodi e' raccomandato per minimizzare il clock skew tra servizi
 
 **Senza tracing distribuito**, con 4 servizi, ci sono 4! = 24 possibili combinazioni da investigare. **Con il tracing**, il bottleneck è visibile nel waterfall in pochi minuti.
 
@@ -465,7 +465,7 @@ Se conosci già dove cercare, grep sui log è più veloce di una query TraceQL.
 
 L'auto-instrumentation ha overhead:
 - CPU: ~2-5% per servizio
-- Memoria: ~50-100MB per SDK
+- Memoria: ~10-30MB per SDK Node.js (con auto-instrumentation)
 - Network: dipende dal volume di trace
 - Storage: può crescere rapidamente senza sampling
 
@@ -504,9 +504,9 @@ Con 2-3 servizi in catena lineare (A→B→C) e un team che conosce bene il sist
    - Rate limiting
 
 3. **Costi e storage**: Il volume di dati può crescere rapidamente. Calcola:
-   - ~1KB per span (media)
-   - 100 req/s × 5 span/req × 1KB × 86400s = ~43GB/giorno
-   - Con sampling 10%: ~4.3GB/giorno
+   - ~500 bytes per span (media compressa su disco)
+   - 100 req/s x 5 span/req x 500B x 86400s = ~21.6 GB/giorno
+   - Con sampling 10%: ~2.16 GB/giorno
 
 4. **Security**: Attenzione a non loggare:
    - Token e credenziali
@@ -546,6 +546,8 @@ Prima di iniziare, chiariamo cosa significa "auto-instrumentation" e che richied
 npm install @opentelemetry/sdk-node \
   @opentelemetry/auto-instrumentations-node \
   @opentelemetry/exporter-trace-otlp-grpc \
+  @opentelemetry/exporter-logs-otlp-grpc \
+  @opentelemetry/sdk-logs \
   @opentelemetry/resources \
   @opentelemetry/api \
   pino
@@ -556,6 +558,8 @@ npm install @opentelemetry/sdk-node \
 | `sdk-node` | SDK principale per Node.js, orchestra tutti i componenti |
 | `auto-instrumentations-node` | Bundle di instrumentazioni automatiche (Express, HTTP, pg, etc.) |
 | `exporter-trace-otlp-grpc` | Esporta trace via protocollo OTLP su gRPC |
+| `exporter-logs-otlp-grpc` | Esporta log via protocollo OTLP su gRPC |
+| `sdk-logs` | SDK per la gestione dei log record (processor, exporter) |
 | `resources` | Definizione delle risorse (service name, attributi) |
 | `api` | API per interagire con trace nel codice applicativo |
 | `pino` | Logger ad alte prestazioni per Node.js |
@@ -569,6 +573,8 @@ npm install @opentelemetry/sdk-node \
 const { NodeSDK } = require('@opentelemetry/sdk-node');
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
 const { OTLPTraceExporter } = require('@opentelemetry/exporter-trace-otlp-grpc');
+const { OTLPLogExporter } = require('@opentelemetry/exporter-logs-otlp-grpc');
+const { BatchLogRecordProcessor } = require('@opentelemetry/sdk-logs');
 const { resourceFromAttributes } = require('@opentelemetry/resources');
 
 const serviceName = process.env.OTEL_SERVICE_NAME || 'my-service';
@@ -581,6 +587,9 @@ const resource = resourceFromAttributes({
 const sdk = new NodeSDK({
   resource,
   traceExporter: new OTLPTraceExporter({ url: otlpEndpoint }),
+  logRecordProcessors: [
+    new BatchLogRecordProcessor(new OTLPLogExporter({ url: otlpEndpoint })),
+  ],
   instrumentations: [
     getNodeAutoInstrumentations({
       '@opentelemetry/instrumentation-fs': { enabled: false },
@@ -613,6 +622,8 @@ In `package.json`:
   }
 }
 ```
+
+> **Nota:** Nel repo MockMart, il flag `--require` e' specificato nel `command` del docker-compose (vedi sezione [Lato Infrastruttura](#lato-infrastruttura)), e lo start script del package.json rimane `"start": "node server.js"`. Per esecuzione locale senza Docker, modificare lo start script come mostrato sopra.
 
 **4. Logger con Pino (trace context iniettato automaticamente):**
 
@@ -689,7 +700,7 @@ app.post('/api/checkout', requireAuth, async (req, res) => {
 **LGTM all-in-one (per sviluppo/staging):**
 ```yaml
 grafana:
-  image: grafana/otel-lgtm:latest
+  image: grafana/otel-lgtm:0.17.1
   ports:
     - "3005:3000"   # Grafana UI
     - "4317:4317"   # OTLP gRPC
