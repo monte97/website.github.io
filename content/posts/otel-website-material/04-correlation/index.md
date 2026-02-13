@@ -4,7 +4,7 @@ date: 2026-01-29T10:00:00+01:00
 description: "Guida pratica al distributed tracing con OpenTelemetry e LGTM stack. Tre scenari di debug: silent failure, latency spike, fan-out."
 menu:
   sidebar:
-    name: Correlation Demo
+    name: Sampling & Retention
     identifier: OTEL-4
     weight: 40
     parent: OBS
