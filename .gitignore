@@ -2,6 +2,7 @@ resources/*
 node_modules/*
 public/*
 .claude/*
+.pipeline/
 DOCS.md
 CLAUDE.md
 DOCS.md
