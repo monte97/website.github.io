@@ -8,7 +8,7 @@ menu:
     identifier: playwright-otel
     weight: 10
     parent: PLAYWRIGHT
-tags: ["Playwright", "E2E Testing", "OpenTelemetry", "Visual Testing", "Observability"]
+tags: ["Playwright", "E2E", "Testing", "OpenTelemetry", "VisualTesting", "Observability"]
 categories: ["Testing", "DevOps"]
 draft: true
 ---
@@ -210,7 +210,10 @@ interface TraceCollector {
 function parseTraceparent(header: string | null): string | null {
   if (!header) return null;
   const parts = header.split('-');
-  return parts.length >= 2 ? parts[1] : null;
+  if (parts.length < 2) return null;
+  const traceId = parts[1];
+  if (traceId.length !== 32) return null;
+  return traceId;
 }
 
 export const test = base.extend<{ traceCollector: TraceCollector }>({

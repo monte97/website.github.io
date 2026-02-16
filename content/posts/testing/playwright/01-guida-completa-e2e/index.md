@@ -1,7 +1,7 @@
 ---
 title: "Playwright: Testing E2E Moderno e Affidabile"
 date: 2025-11-17T10:00:00+01:00
-description: Guida completa a Playwright per automatizzare test end-to-end con affidabilità, velocità e developer experience superiore. Esempi pratici, pattern avanzati e integrazione CI/CD
+description: Guida completa a Playwright per test end-to-end affidabili e veloci. Architettura, pattern avanzati e integrazione CI/CD
 tags: ["Playwright", "Testing", "E2E", "Automation", "DevOps", "CI/CD", "JavaScript", "TypeScript"]
 categories: ["Testing", "Web Development", "Automazione"]
 menu:
@@ -138,7 +138,7 @@ Prima di eseguire il click, Playwright verifica automaticamente che:
 4. L'elemento **non sia coperto** da altri elementi
 5. L'elemento **non sia disabilitato**
 
-Questi controlli vengono ripetuti automaticamente con retry fino al timeout delle azioni (`actionTimeout`, di default illimitato, limitato solo dal test timeout di 30s), eliminando completamente la necessità di `sleep()` o wait espliciti.
+Questi controlli vengono ripetuti automaticamente con retry fino al timeout delle azioni (`actionTimeout`, che di default non ha un valore proprio e eredita il test timeout globale di 30s), eliminando completamente la necessità di `sleep()` o wait espliciti.
 
 ### Web-First Assertions
 
@@ -191,7 +191,7 @@ npx playwright test --shard=4/4  # Job 4
 
 ### Comunicazione Efficiente
 
-Playwright comunica con i browser tramite **WebSocket diretto** utilizzando il [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/) (per Chromium) e protocolli proprietari specifici per Firefox e WebKit. Questo approccio risulta più efficiente rispetto al classico protocollo HTTP di WebDriver, anche se Selenium 4+ ha introdotto WebDriver BiDi (basato su WebSocket) per ridurre il divario.
+Playwright comunica con Chromium tramite il [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/) (CDP), che opera su WebSocket, e utilizza protocolli proprietari specifici per Firefox e WebKit. Questo approccio risulta più efficiente rispetto al classico protocollo HTTP di WebDriver, anche se Selenium 4+ ha introdotto WebDriver BiDi (basato su WebSocket) per ridurre il divario.
 
 ### 3. Semplicità: Developer Experience Superiore
 
@@ -231,7 +231,7 @@ await page.getByTestId('submit-btn');                    // Test ID
 Questi selettori sono:
 - **Resilienti**: non si rompono con refactoring CSS o modifiche alla struttura DOM
 - **Semantici**: leggibili e self-documenting
-- **Accessibili**: seguono le [best practice WCAG](https://www.w3.org/WAI/standards-guidelines/wcag/)
+- **Accessibili**: seguono le [best practice di selezione basata sull'accessibilità](https://playwright.dev/docs/locators#locate-by-role)
 - **Stabili**: minimizzano la manutenzione dei test
 
 ### Accessibility Tree

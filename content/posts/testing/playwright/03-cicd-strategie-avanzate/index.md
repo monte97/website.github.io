@@ -57,7 +57,7 @@ jobs:
       # 2. Imposta l'ambiente Node.js
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22 # Usa la versione LTS corrente
 
       # 3. Installa le dipendenze del progetto
       - name: Install dependencies
@@ -120,7 +120,7 @@ export default defineConfig({
 
 ### Sharding: dividere la suite su più macchine
 
-Quando una suite di test supera i 10-15 minuti anche con la parallelizzazione su una singola macchina, lo [sharding](https://playwright.dev/docs/test-sharding) permette di distribuire i test su **più macchine in parallelo**. Con 200 test distribuiti su 4 shard, ciascuna macchina ne esegue 50, riducendo il tempo totale di circa 4 volte.
+Quando una suite di test supera i 10-15 minuti (il valore esatto dipende dall'infrastruttura CI e dalla tolleranza del team) anche con la parallelizzazione su una singola macchina, lo [sharding](https://playwright.dev/docs/test-sharding) permette di distribuire i test su **più macchine in parallelo**. Con 200 test distribuiti su 4 shard, ciascuna macchina ne esegue 50, riducendo il tempo totale di circa 4 volte.
 
 **Esempio di sharding con GitHub Actions:**
 
@@ -181,7 +181,7 @@ Dopo che tutti gli shard hanno completato l'esecuzione, un job dedicato scarica 
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22 # Usa la versione LTS corrente
       - run: npm ci
 
       - name: Download blob reports
@@ -203,6 +203,8 @@ Dopo che tutti gli shard hanno completato l'esecuzione, un job dedicato scarica 
 ```
 
 Senza questo passaggio, ci ritroveremmo con report frammentati e inutilizzabili: un report per shard, ciascuno con solo un quarto dei risultati. La [documentazione ufficiale sullo sharding](https://playwright.dev/docs/test-sharding) tratta il blob reporter come parte integrante del flusso.
+
+---
 
 ## Emulazione mobile e API testing
 
