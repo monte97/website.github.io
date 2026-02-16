@@ -13,3 +13,9 @@
 [submodule "content/posts/playwright-workshop"]
 	path = content/posts/playwright-workshop
 	url = git@github.com:monte97/playwright-articles.git
+[submodule "content/posts/homelab-capi"]
+	path = content/posts/homelab-capi
+	url = git@github.com:monte97/homelab-capi-article.git
+[submodule "content/posts/performance-engineering"]
+	path = content/posts/performance-engineering
+	url = git@github.com:monte97/performance-monitoring-article.git
