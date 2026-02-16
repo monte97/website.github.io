@@ -1,22 +1,29 @@
 ---
 title: "OpenLayers e Vue 3: integrazione con composables e TypeScript"
 date: 2026-02-14T10:00:00+01:00
-description: "Pattern per integrare OpenLayers in Vue 3 con shallowRef, composables e TypeScript"
+description: "Pattern concreti per integrare OpenLayers in Vue 3 con shallowRef, composables tipizzati e lifecycle management"
+menu:
+  sidebar:
+    name: OpenLayers + Vue 3
+    identifier: openlayers-vue3-composables
+    weight: 20
+    parent: WEBDEV
 tags: ["Vue3", "OpenLayers", "TypeScript", "Nuxt3", "Composables"]
+categories: ["Frontend", "Web Development"]
 draft: true
 ---
 
-## Reattivita' e oggetti imperativi: il conflitto
+## Reattività e oggetti imperativi: il conflitto
 
-In un progetto Vue 3 con dati geolocalizzati, la scelta ricade spesso su OpenLayers: matura, completa, ben documentata. Il problema e' che OL e' una libreria imperativa: si crea un oggetto `Map`, gli si passa un target DOM, si aggiungono layer, fonti dati, stili. Ogni operazione e' un metodo che muta lo stato interno. Vue 3 funziona al contrario: il template e' dichiarativo, lo stato e' reattivo, e il framework si occupa di aggiornare il DOM quando i dati cambiano.
+In un progetto Vue 3 con dati geolocalizzati, la scelta ricade spesso su OpenLayers: matura, completa, ben documentata. Il problema è che OL è una libreria imperativa: si crea un oggetto `Map`, gli si passa un target DOM, si aggiungono layer, fonti dati, stili. Ogni operazione è un metodo che muta lo stato interno. Vue 3 funziona al contrario: il template è dichiarativo, lo stato è reattivo, e il framework si occupa di aggiornare il DOM quando i dati cambiano.
 
-Questa differenza filosofica crea un conflitto concreto. Se metti un'istanza di `Map` in un `ref()`, Vue cerca di renderla deep-reactive: wrappa ogni proprieta' interna in un Proxy, incluse le centinaia di proprieta' interne di OpenLayers. Il risultato e' un rallentamento misurabile, e in alcuni casi un crash silenzioso perche' OL non si aspetta che i suoi oggetti vengano intercettati da un Proxy.
+Questa differenza filosofica crea un conflitto concreto. Se si inserisce un'istanza di `Map` in un `ref()`, Vue cerca di renderla deep-reactive: wrappa ogni proprietà interna in un Proxy, incluse le centinaia di proprietà interne di OpenLayers. Il risultato è unrallentamento misurabile, e in alcuni casi un crash silenzioso perché OL non si aspetta che i suoi oggetti vengano intercettati da un Proxy.
 
-I tutorial online propongono due soluzioni, entrambe problematiche. La prima: mettere tutto in `data()` e accedere alla mappa con `this.map`. Deep reactivity, stessi problemi. La seconda: creare un plugin Nuxt che inietta OL come `$ol`, e usarlo ovunque con `this.$ol.Map(...)`. Funziona, ma nasconde le dipendenze: ogni componente dipende da un oggetto globale iniettato, non c'e' tree-shaking, e i tipi TypeScript richiedono dichiarazioni manuali.
+I tutorial online propongono due soluzioni, entrambe problematiche. La prima: mettere tutto in `data()` e accedere alla mappa con `this.map`. Deep reactivity, stessi problemi. La seconda: creare un plugin Nuxt che inietta OL come `$ol`, e usarlo ovunque con `this.$ol.Map(...)`. Funziona, ma nasconde le dipendenze: ogni componente dipende da un oggetto globale iniettato, non c'è tree-shaking, e i tipi TypeScript richiedono dichiarazioni manuali.
 
-La soluzione e' un pattern diverso. Lasciare gli oggetti OL **fuori** dal sistema reattivo di Vue, usando `shallowRef` invece di `ref`, e incapsulare tutta la logica mappa in composables che gestiscono il lifecycle. Vue controlla i dati (coordinate, filtri, stili). OL controlla la mappa. I composables fanno da ponte.
+La soluzione è unpattern diverso. Lasciare gli oggetti OL **fuori** dal sistema reattivo di Vue, usando `shallowRef` invece di `ref`, e incapsulare tutta la logica mappa in composables che gestiscono il lifecycle. Vue controlla i dati (coordinate, filtri, stili). OL controlla la mappa. I composables fanno da ponte.
 
-In questo articolo descrivo i quattro pattern che uso in produzione per questa integrazione. Ho preparato anche un [repository demo](https://github.com/monte97/olm-vue-demo) con un'applicazione Nuxt 3 minimale che li implementa tutti.
+Questo articolo descrive i quattro pattern usati in produzione per questa integrazione. Il [repository demo](https://github.com/monte97/olm-vue-demo) con un'applicazione Nuxt 3 minimale che li implementa tutti.
 
 ## Una dipendenza, nessun plugin
 
@@ -26,9 +33,9 @@ Prima di entrare nei pattern, il setup. In un progetto Nuxt 3 esistente:
 npm install ol
 ```
 
-Nessun plugin, nessun wrapper. OpenLayers si importa direttamente dove serve. Questo e' intenzionale: ogni componente dichiara esplicitamente le sue dipendenze OL, il tree-shaking funziona, e TypeScript inferisce i tipi senza configurazione.
+Nessun plugin, nessun wrapper. OpenLayers si importa direttamente dove serve. Questo è intenzionale: ogni componente dichiara esplicitamente le sue dipendenze OL, il tree-shaking funziona, e TypeScript inferisce i tipi senza configurazione.
 
-I tipi condivisi li definisco in un file dedicato:
+I tipi condivisi si definiscono in un file dedicato:
 
 ```typescript
 // types/map.ts
@@ -57,7 +64,7 @@ export interface MapClickEvent {
 }
 ```
 
-`GeoLocatable` e' l'interfaccia base per qualsiasi entita' con coordinate. La uso come vincolo nei composables: se un oggetto ha `latitude` e `longitude`, puo' essere mostrato sulla mappa.
+`GeoLocatable` è l'interfaccia base per qualsiasi entità con coordinate. Si usa come vincolo nei composables: se un oggetto ha `latitude` e `longitude`, può essere mostrato sulla mappa.
 
 ## Pattern 1: useOlMap - la mappa come composable
 
@@ -109,13 +116,13 @@ export function useOlMap(
 
 Tre punti chiave.
 
-**`shallowRef` e' obbligatorio.** A differenza di `ref`, `shallowRef` rende reattivo solo il riferimento all'oggetto, non le sue proprieta' interne. Quando assegni `map.value = new Map(...)`, Vue notifica i watcher. Ma Vue non crea Proxy sulle proprieta' interne di Map. Questo e' critico: un `Map` di OpenLayers ha centinaia di proprieta' e metodi interni che non devono essere intercettati.
+**`shallowRef` è obbligatorio.** A differenza di `ref`, `shallowRef` rende reattivo solo il riferimento all'oggetto, non le sue proprietà interne. Quando assegni `map.value = new Map(...)`, Vue notifica i watcher. Ma Vue non crea Proxy sulle proprietà interne di Map. Questo è critico: un `Map` di OpenLayers ha centinaia di proprietà e metodi interni che non devono essere intercettati.
 
-**La mappa si crea in `onMounted`.** OpenLayers ha bisogno di un elemento DOM reale per il rendering. In `setup()` il template non e' ancora montato, quindi `target.value` sarebbe `undefined`. `onMounted` garantisce che il `ref` del template sia disponibile.
+**La mappa si crea in `onMounted`.** OpenLayers ha bisogno di un elemento DOM reale per il rendering. In `setup()` il template non è ancora montato, quindi `target.value` sarebbe `undefined`. `onMounted` garantisce che il `ref` del template sia disponibile.
 
 **`dispose()` previene memory leak.** Quando il componente viene distrutto, la mappa deve essere smontata. `setTarget(undefined)` sgancia la mappa dal DOM, `dispose()` libera le risorse interne (canvas, event listener, tile cache). Senza questa pulizia, ogni navigazione tra pagine accumula mappe fantasma in memoria.
 
-L'utilizzo nel componente e' minimale:
+L'utilizzo nel componente è minimale:
 
 ```vue
 <template>
@@ -128,7 +135,7 @@ const { map, setCenter } = useOlMap(mapRef)
 </script>
 ```
 
-Due righe di logica. La mappa appare, si pulisce da sola, e `setCenter` e' pronto per essere collegato a qualsiasi interazione UI.
+Due righe di logica. La mappa appare, si pulisce da sola, e `setCenter` è pronto per essere collegato a qualsiasi interazione UI.
 
 ## Pattern 2: useVectorLayer - layer reattivi
 
@@ -192,13 +199,13 @@ export function useVectorLayer<T>(options: {
 
 Il design ha quattro aspetti importanti.
 
-**`toFeature` e' il bridge.** E' una funzione che il chiamante fornisce per trasformare un oggetto del dominio (un `Shop`, un `Vehicle`) in un `Feature` di OpenLayers. Questo tiene la logica di conversione coordinate fuori dal composable, che resta generico.
+**`toFeature` è ilbridge.** Èuna funzione che il chiamante fornisce per trasformare un oggetto del dominio (un `Shop`, un `Vehicle`) in un `Feature` di OpenLayers. Questo tiene la logica di conversione coordinate fuori dal composable, che resta generico.
 
-**`watch` su items rende il layer reattivo.** Quando i dati cambiano (nuovo polling, filtro utente, aggiornamento dello store) il watcher scatta, pulisce le vecchie feature e ne crea di nuove. Il pattern `clear()` + `addFeatures()` e' semplice e sufficiente: OL gestisce internamente il re-render in modo efficiente.
+**`watch` su items rende il layer reattivo.** Quando i dati cambiano (nuovo polling, filtro utente, aggiornamento dello store) il watcher scatta, pulisce le vecchie feature e ne crea di nuove. Il pattern `clear()` + `addFeatures()` è semplice e sufficiente: OL gestisce internamente il re-render in modo efficiente.
 
 **Ogni feature porta metadata.** `layerType` identifica a quale layer appartiene la feature (utile per i click), `data` contiene l'oggetto originale. Il terzo argomento `true` in `feature.set()` sopprime gli eventi interni di OL, evitando re-render inutili.
 
-**Due `watch`, un solo composable.** Il primo watch gestisce il caso in cui la mappa non e' ancora pronta (il composable potrebbe essere chiamato prima di `onMounted` di `useOlMap`). Il secondo watch gestisce i dati. Entrambi hanno `immediate: true` per gestire lo stato iniziale.
+**Due `watch`, un solo composable.** Il primo watch gestisce il caso in cui la mappa non è ancora pronta (il composable potrebbe essere chiamato prima di `onMounted` di `useOlMap`). Il secondo watch gestisce i dati. Entrambi hanno `immediate: true` per gestire lo stato iniziale.
 
 Ecco come si usa per due layer diversi:
 
@@ -240,7 +247,7 @@ useVectorLayer<Vehicle>({
 })
 ```
 
-Stessa API, stili diversi. I negozi hanno un'icona statica, i veicoli un cerchio il cui colore dipende dai dati. La funzione `style` di OL riceve la feature come argomento, quindi e' possibile leggere le proprieta' settate in `toFeature` per decidere lo stile al volo.
+Stessa API, stili diversi. I negozi hanno un'icona statica, i veicoli un cerchio il cui colore dipende dai dati. La funzione `style` di OL riceve la feature come argomento, quindi è possibile leggere le proprietà settate in `toFeature` per decidere lo stile al volo.
 
 ## Pattern 3: Interazione mappa verso Vue
 
@@ -270,7 +277,7 @@ watch(map, (m) => {
 }, { once: true })
 ```
 
-Il punto interessante e' `watch(map, ..., { once: true })`. Non uso `onMounted` perche' creerebbe una dipendenza fragile dall'ordine di esecuzione: il watcher di `useOlMap` deve aver gia' creato la mappa prima che io possa registrare handler su di essa. Con `watch`, non importa quando la mappa viene creata: il codice scatta al momento giusto, una sola volta.
+Il punto interessante è `watch(map, ..., { once: true })`. Si evita `onMounted` perché creerebbe una dipendenza fragile dall'ordine di esecuzione: il watcher di `useOlMap` deve aver già creato la mappa prima di poter registrare handler su di essa. Con `watch`, non importa quando la mappa viene creata: il codice scatta al momento giusto, una sola volta.
 
 I metadata `layerType` e `data` che abbiamo settato nelle feature in `useVectorLayer` tornano utili qui. Quando l'utente clicca sulla mappa, so immediatamente se ha cliccato un negozio, un veicolo o il vuoto. Il componente padre reagisce con un `switch`:
 
@@ -317,16 +324,17 @@ export function usePolling(
     }
   }
 
+  onUnmounted(stop)
+
   if (immediate) {
     start()
-    onUnmounted(stop)
   }
 
   return { start, stop }
 }
 ```
 
-Il composable e' volutamente minimale. `start()` chiama la funzione subito (nessun ritardo iniziale), poi la ripete all'intervallo specificato. `stop()` ferma il polling. Se `immediate` e' true (default), il polling parte automaticamente al mount e si ferma all'unmount.
+Il composable è volutamente minimale. `start()` chiama la funzione subito (nessun ritardo iniziale), poi la ripete all'intervallo specificato. `stop()` ferma il polling. Se `immediate` è true (default), il polling parte automaticamente al mount e si ferma all'unmount.
 
 L'utilizzo nella pagina:
 
@@ -345,7 +353,7 @@ async function fetchVehicles() {
 usePolling(fetchVehicles, 5000)
 ```
 
-Il `try/catch` e' importante. Senza, un errore di rete (backend temporaneamente irraggiungibile) genera un'eccezione non gestita ogni 5 secondi. Con il `try/catch`, il polling continua silenziosamente e riprova al prossimo ciclo.
+Il `try/catch` è importante. Senza, un errore di rete (backend temporaneamente irraggiungibile) genera un'eccezione non gestita ogni 5 secondi. Con il `try/catch`, il polling continua silenziosamente e riprova al prossimo ciclo.
 
 Un dettaglio sul lifecycle: `usePolling` chiama `onUnmounted(stop)` internamente, quindi non serve ricordarsi di pulire l'intervallo. Quando si naviga via dalla pagina, Vue smonta il componente, il composable reagisce e il polling si ferma. Nessun intervallo orfano.
 
@@ -418,15 +426,15 @@ La pagina non sa nulla di OpenLayers. Il componente mappa non sa nulla di API. I
 
 ## Cosa resta dopo la produzione
 
-Dopo aver usato questi pattern in produzione, le conclusioni che porto con me:
+Le conclusioni dopo l'uso in produzione:
 
-- **`shallowRef` e' il pattern chiave.** Senza di esso, Vue wrappa gli oggetti OL in Proxy, causando conflitti con lo stato interno di OL. Usa `shallowRef` per qualsiasi oggetto di librerie imperative complesse (OL, Three.js, D3).
+- **`shallowRef` è ilpattern chiave.** Senza di esso, Vue wrappa gli oggetti OL in Proxy, causando conflitti con lo stato interno di OL. Usa `shallowRef` per qualsiasi oggetto di librerie imperative complesse (OL, Three.js, D3).
 
 - **Niente plugin, niente wrapper globale.** Importa le classi OL direttamente dove servono. Il tree-shaking funziona, i tipi sono automatici, e le dipendenze sono esplicite. Un plugin che inietta tutto l'albero OL in un oggetto `$ol` annulla tutti questi vantaggi.
 
-- **I composables sono il bridge naturale.** Vue e' dichiarativa, OL e' imperativa. I composables incapsulano la parte imperativa e espongono un'interfaccia reattiva. E' lo stesso pattern che Vue usa internamente per il DOM.
+- **I composables sono il bridge naturale.** Vue è dichiarativa, OL è imperativa. I composables incapsulano la parte imperativa e espongono un'interfaccia reattiva. È lostesso pattern che Vue usa internamente per il DOM.
 
-- **Cleanup non e' opzionale.** `Map.dispose()`, `clearInterval()`, rimozione dei layer: ogni risorsa creata deve essere distrutta. I composables rendono questo automatico: l'`onUnmounted` e' incapsulato, il consumatore non deve ricordarsene.
+- **Cleanup non è opzionale.** `Map.dispose()`, `clearInterval()`, rimozione dei layer: ogni risorsa creata deve essere distrutta. I composables rendono questo automatico: l'`onUnmounted` è incapsulato, il consumatore non deve ricordarsene.
 
 - **TypeScript come contratto.** Le interfacce `GeoLocatable`, `Shop`, `Vehicle` fanno da contratto tra i layer dell'applicazione. Se i dati API cambiano formato, il compilatore lo segnala ovunque, non un bug silenzioso in produzione.
 
