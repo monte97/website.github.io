@@ -1,4 +1,4 @@
-.PHONY: help build build-prod dev clean new-post new-project new-note update-modules
+.PHONY: help build build-prod dev clean new-post new-project new-note update-modules index
 
 help:
 	@echo "Comandi disponibili:"
@@ -10,6 +10,7 @@ help:
 	@echo "  make new-project     - Crea un nuovo progetto interattivo"
 	@echo "  make new-note        - Crea una nuova nota interattiva"
 	@echo "  make update-modules  - Aggiorna i moduli Hugo e le dipendenze npm"
+	@echo "  make index           - Genera CONTENT_INDEX.md con l'indice dei post"
 	@echo "  make help            - Mostra questo aiuto"
 
 build:
@@ -19,7 +20,7 @@ build-prod:
 	hugo --gc --minify
 
 dev:
-	hugo server
+	hugo server --buildDrafts
 
 clean:
 	rm -rf public/
@@ -42,3 +43,6 @@ new-project:
 
 new-note:
 	@./scripts/new_note.sh
+
+index:
+	@./scripts/content_index.sh
