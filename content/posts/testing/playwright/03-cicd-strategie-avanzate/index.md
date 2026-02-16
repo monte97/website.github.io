@@ -13,9 +13,7 @@ categories: ["Testing", "DevOps", "Workshop"]
 draft: true
 ---
 
-Hai scritto una suite di test E2E completa, tutti i test passano in locale, apri la Pull Request e... il workflow CI fallisce. Timeout, browser che non si avviano, report frammentati e nessuna indicazione utile su cosa sia andato storto. Ti suona familiare?
-
-Una suite di test ha valore solo se viene eseguita in modo sistematico e affidabile. Integrare Playwright in una pipeline CI/CD non si limita ad aggiungere un `npx playwright test` nel workflow: servono configurazioni specifiche per runner con risorse limitate, strategie di parallelizzazione su più macchine e reporter adatti all'ambiente.
+Una suite di test E2E completa che passa in locale e fallisce in CI - timeout, browser che non si avviano, report frammentati - è uno scenario comune. Una suite di test ha valore solo se viene eseguita in modo sistematico e affidabile. Integrare Playwright in una pipeline CI/CD non si limita ad aggiungere un `npx playwright test` nel workflow: servono configurazioni specifiche per runner con risorse limitate, strategie di parallelizzazione su più macchine e reporter adatti all'ambiente.
 
 In questo articolo vediamo come configurare Playwright per la CI, come scalare la suite con sharding ed emulazione mobile, come usare le API per velocizzare il setup dei test, e come i selettori semantici preparino la codebase all'automazione agent-driven.
 
@@ -100,9 +98,9 @@ In CI le risorse e il contesto sono diversi dall'ambiente locale: meno CPU, ness
 const isCI = !!process.env.CI;
 
 export default defineConfig({
-  // In CI Playwright imposta i workers a 1 (non il 50% dei core come in locale).
-  // Questa scelta è intenzionale: garantisce stabilità sui runner con risorse limitate.
-  // Se il runner ha risorse sufficienti, puoi aumentare esplicitamente:
+  // Senza configurazione esplicita, Playwright usa il 50% dei core disponibili.
+  // In CI, con runner a 2 core, questo si traduce in 1 worker.
+  // Se il runner ha risorse sufficienti, è possibile aumentare:
   // workers: process.env.CI ? 2 : undefined,
   retries: isCI ? 2 : 0,
 
@@ -212,7 +210,7 @@ Una volta ottimizzata la pipeline, possiamo allargare la copertura della nostra 
 
 ### Emulazione di viewport e touch
 
-Il [testing su dispositivi mobili](https://playwright.dev/docs/emulation) con Playwright non richiede un dispositivo fisico. L'emulazione integrata simula viewport, user agent ed eventi touch di centinaia di dispositivi mobili, e si integra nella configurazione a progetti. I dispositivi iOS usano il motore **WebKit** (Safari), quelli Android usano **Chromium**.
+Il [testing su dispositivi mobili](https://playwright.dev/docs/emulation) con Playwright non richiede un dispositivo fisico. L'emulazione integrata simula viewport, user agent ed eventi touch di [decine di dispositivi mobili](https://github.com/nicedoc/playwright-devices/blob/master/README.md), e si integra nella configurazione a progetti. I dispositivi iOS usano il motore **WebKit** (Safari), quelli Android usano **Chromium**.
 
 ```typescript
 // playwright.config.ts
@@ -299,7 +297,7 @@ In questo articolo abbiamo coperto il percorso completo dall'integrazione di Pla
 4. **API testing come acceleratore**: usare le API per il setup dei test E2E riduce tempi e flakiness, rendendo la suite più robusta.
 5. **Test semantici per il futuro**: selettori basati su ruoli e accessibilità preparano la codebase all'automazione agent-driven, trasformando i test in documentazione eseguibile.
 
-Con questa serie abbiamo costruito un percorso che va dalle fondamenta del testing E2E fino all'integrazione in pipeline di produzione. I test non sono un costo: sono l'investimento che ti permette di rilasciare con fiducia.
+Con questa serie abbiamo costruito un percorso che va dalle fondamenta del testing E2E fino all'integrazione in pipeline di produzione.
 
 ---
 

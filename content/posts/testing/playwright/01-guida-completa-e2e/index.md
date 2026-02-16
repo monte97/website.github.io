@@ -13,11 +13,9 @@ menu:
 draft: true
 ---
 
-Quante volte hai lanciato una suite di test E2E e ti sei ritrovato a fissare lo schermo, in attesa di un verdetto che sai già essere inaffidabile? Test che passano al terzo tentativo, `sleep(5000)` disseminati nel codice, e quella sensazione che il testing end-to-end sia più un problema che una soluzione.
+Test che passano al terzo tentativo, `sleep(5000)` disseminati nel codice, suite che girano per 20 minuti e falliscono in modo non deterministico. Il testing end-to-end resta un pilastro per la qualità delle applicazioni web moderne - simulare l'esperienza utente reale fornisce un livello di confidenza impossibile da ottenere con test unitari o di integrazione isolati - ma troppo spesso i costi superano i benefici.
 
-Il testing E2E resta uno dei pilastri fondamentali per garantire la qualità delle applicazioni web moderne: simulare l'esperienza utente reale e verificare il flusso completo dell'applicazione fornisce un livello di confidenza impossibile da ottenere con test unitari o di integrazione isolati. Eppure, troppo spesso, i costi superano i benefici.
-
-In questo articolo esploriamo come Playwright risolve sistematicamente le problematiche tradizionali del testing E2E, analizzando architettura, tooling e pattern avanzati. Si tratta di un approfondimento dell'overview pubblicata su TheRedCode: [Testing E2E: perché dovresti iniziare con Playwright](https://theredcode.it/testing/testing-e2e-perche-iniziare-con-playwright/).
+Playwright risolve sistematicamente queste problematiche attraverso un'architettura moderna e un'eccezionale developer experience. In questo articolo ne analizziamo architettura, tooling e pattern avanzati. Si tratta di un approfondimento dell'overview pubblicata su TheRedCode: [Testing E2E: perché iniziare con Playwright](https://theredcode.it/testing/testing-e2e-perche-iniziare-con-playwright/).
 
 👉 Il codice completo degli esempi è nel repository: [monte97/workshop-playwright](https://github.com/monte97/workshop-playwright)
 
@@ -50,19 +48,19 @@ I test E2E offrono benefici significativi:
 
 Nonostante i vantaggi, i test E2E presentano problematiche ben note che ne hanno limitato l'adozione:
 
-**Costi Operativi Elevati** — L'implementazione di test E2E richiede investimenti considerevoli:
+**Costi Operativi Elevati** - L'implementazione di test E2E richiede investimenti considerevoli:
 - **Setup complesso**: configurazione di ambienti di test completi con tutti i servizi necessari
 - **Gestione dati**: creazione e manutenzione di dataset di test realistici
 - **Manutenzione alta**: i test tendono a rompersi frequentemente con modifiche all'UI
 - **Infrastruttura dedicata**: necessità di risorse per eseguire browser completi
 
-**Performance Problematiche** — I test E2E sono notoriamente lenti:
+**Performance Problematiche** - I test E2E sono notoriamente lenti:
 - **Browser rendering**: tempo necessario per il rendering completo delle pagine
 - **Network calls**: latenza delle chiamate HTTP/API
 - **Attese UI**: tempi di caricamento, animazioni, transizioni
 - **Esecuzione sequenziale**: difficoltà nell'eseguire test in parallelo
 
-**Fragilità e Flakiness** — Il problema più critico dei test E2E tradizionali è la loro inaffidabilità:
+**Fragilità e Flakiness** - Il problema più critico dei test E2E tradizionali è la loro inaffidabilità:
 
 ```javascript
 // Approccio tradizionale con Selenium (API legacy, parzialmente mitigato in Selenium 4 con WebDriver BiDi)
@@ -84,7 +82,7 @@ Questi problemi portano a test "flaky" che falliscono in modo non deterministico
 
 ## Playwright: Un Approccio Moderno
 
-È qui che entra in gioco **[Playwright](https://playwright.dev/)**, un framework open source sviluppato da Microsoft che risolve sistematicamente le problematiche tradizionali del testing E2E attraverso un'architettura moderna e un'eccezionale developer experience.
+**[Playwright](https://playwright.dev/)** è un framework open source sviluppato da Microsoft che affronta queste problematiche con un'architettura pensata per la stabilità e una developer experience moderna.
 
 ### Adozione e Ecosistema
 
@@ -112,13 +110,13 @@ L'[estensione VS Code ufficiale](https://marketplace.visualstudio.com/items?item
 
 ## I Tre Pilastri Architetturali
 
-Playwright si basa su tre principi fondamentali che lo differenziano dalle soluzioni tradizionali. Vediamoli nel dettaglio.
+Playwright si basa su tre principi fondamentali che lo differenziano dalle soluzioni tradizionali.
 
 ### 1. Affidabilità: Auto-Waiting e Resilienza
 
 Il problema della fragilità nei test E2E deriva principalmente da race conditions e timing issues. Playwright risolve questo alla radice con il **meccanismo di auto-waiting**.
 
-Vediamo come funziona in pratica. Ogni azione in Playwright esegue automaticamente una serie di controlli prima di procedere:
+In pratica, ogni azione in Playwright esegue automaticamente una serie di controlli prima di procedere:
 
 ```javascript
 import { test, expect } from '@playwright/test';
@@ -163,7 +161,7 @@ Secondo la [documentazione ufficiale](https://playwright.dev/docs/actionability)
 
 ### Esecuzione Parallela Nativa
 
-Playwright è progettato per la parallelizzazione fin dalle fondamenta:
+Playwright è progettato per la parallelizzazione fin dalla sua architettura:
 
 ```javascript
 // playwright.config.ts
@@ -193,7 +191,7 @@ npx playwright test --shard=4/4  # Job 4
 
 ### Comunicazione Efficiente
 
-Playwright comunica con Chromium tramite il [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/) (CDP), che opera su WebSocket, e utilizza protocolli proprietari specifici per Firefox e WebKit. Questo approccio risulta più efficiente rispetto al classico protocollo HTTP di WebDriver, anche se Selenium 4+ ha introdotto WebDriver BiDi (basato su WebSocket) per ridurre il divario.
+Playwright utilizza protocolli proprietari specifici per ciascun browser engine (Chromium, Firefox, WebKit), tutti basati su WebSocket. Anche per Chromium, Playwright non usa direttamente il Chrome DevTools Protocol (CDP) ma un [protocollo custom](https://playwright.dev/docs/api/class-cdpsession) che opera a un livello più basso, ottenendo maggiore controllo e affidabilità. Questo approccio risulta più efficiente rispetto al classico protocollo HTTP di WebDriver, anche se Selenium 4+ ha introdotto WebDriver BiDi (basato su WebSocket) per ridurre il divario.
 
 ### 3. Semplicità: Developer Experience Superiore
 
@@ -362,7 +360,7 @@ export default defineConfig({
 
 ## Implementazione Pratica: Workshop E-Commerce
 
-Per toccare con mano quanto visto finora, consideriamo un'applicazione e-commerce realistica: **TechStore**.
+Per mettere in pratica quanto visto finora, consideriamo un'applicazione e-commerce realistica: **TechStore**.
 
 ### Architettura dell'Applicazione di Test
 
@@ -481,7 +479,7 @@ export default defineConfig({
 
 ## Concetti Avanzati
 
-Una volta padroneggiati i fondamentali, possiamo sfruttare pattern più sofisticati per mantenere la nostra suite di test scalabile e manutenibile.
+Oltre ai fondamentali, esistono pattern più sofisticati per mantenere una suite di test scalabile e manutenibile.
 
 ### Page Object Model
 
@@ -625,7 +623,7 @@ export default defineConfig({
   projects: [
     { name: 'iPhone 13', use: { ...devices['iPhone 13'] } },
     { name: 'Pixel 5', use: { ...devices['Pixel 5'] } },
-    { name: 'iPad Pro', use: { ...devices['iPad Pro'] } },
+    { name: 'iPad Pro 11', use: { ...devices['iPad Pro 11'] } },
   ],
 });
 ```
@@ -679,8 +677,8 @@ await expect(page.locator('.user-name-class')).toHaveText('John');
 await expect(page.getByRole('heading', { level: 1 })).toHaveText('John');
 ```
 
-**User-Centric Testing** --
-Scriviamo i test dal punto di vista dell'utente, usando selettori semantici e verificando comportamenti visibili.
+**User-Centric Testing:**
+i test vanno scritti dal punto di vista dell'utente, usando selettori semantici e verificando comportamenti visibili.
 
 **Test Critical Paths First**
 Prioritizza test per:
@@ -690,8 +688,8 @@ Prioritizza test per:
 
 ### Qualità del Codice
 
-**Principio DRY** --
-Usiamo fixtures e helper functions per evitare duplicazione:
+**Principio DRY:**
+fixtures e helper functions aiutano a evitare duplicazione:
 
 ```typescript
 // helpers/auth.ts
@@ -811,7 +809,7 @@ Per approfondimenti pratici, il [workshop repository](https://github.com/monte97
 
 L'ecosistema Playwright è in rapida evoluzione con release frequenti e community attiva. Per rimanere aggiornati, vale la pena seguire il [blog ufficiale](https://playwright.dev/community/blog) e partecipare alle discussioni su Discord e GitHub.
 
-Testing E2E non deve essere sinonimo di test fragili e lenti. Con Playwright, possiamo finalmente ottenere confidenza elevata senza rinunciare a velocità e affidabilità.
+Il prossimo articolo della serie approfondisce un aspetto complementare: [collegare i test E2E alle trace OpenTelemetry]({{< relref "/posts/testing/playwright/02-opentelemetry-trace-correlation" >}}) per identificare il microservizio responsabile quando un test fallisce.
 
 Foto di <a href="https://unsplash.com/it/@inset_agency?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Paul Knight</a> su <a href="https://unsplash.com/it/foto/maschera-grigia-gTbRw_XcYpE?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
       
