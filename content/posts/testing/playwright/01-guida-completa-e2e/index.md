@@ -19,11 +19,13 @@ Il testing E2E resta uno dei pilastri fondamentali per garantire la qualità del
 
 In questo articolo esploriamo come Playwright risolve sistematicamente le problematiche tradizionali del testing E2E, analizzando architettura, tooling e pattern avanzati. Si tratta di un approfondimento dell'overview pubblicata su TheRedCode: [Testing E2E: perché dovresti iniziare con Playwright](https://theredcode.it/testing/testing-e2e-perche-iniziare-con-playwright/).
 
+👉 Il codice completo degli esempi è nel repository: [monte97/workshop-playwright](https://github.com/monte97/workshop-playwright)
+
 ## La Sfida del Testing End-to-End
 
 Secondo la [Test Automation Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html), i test E2E occupano il vertice della piramide proprio per le loro caratteristiche problematiche.
 
-![Test Automation Pyramid](imgs/test_piramid.png)
+![Test Automation Pyramid](imgs/test-pyramid.png)
 
 ### Vantaggi
 
