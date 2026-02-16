@@ -330,9 +330,7 @@ cd ../demo && npm install && npx playwright test --ui
 
 ---
 
-*Serie Playwright Workshop:*
-1. [Perché i Test E2E Sono un Pilastro della Quality Assurance]({{< relref "/posts/playwright-workshop/01-perche-e2e" >}})
-2. [Introduzione a Playwright: I Tre Pilastri]({{< relref "/posts/playwright-workshop/02-introduzione-playwright" >}})
-3. [I Tuoi Primi Test con Playwright]({{< relref "/posts/playwright-workshop/03-primi-test" >}})
-4. [Architettura e Pattern per Test Scalabili]({{< relref "/posts/playwright-workshop/04-architettura-pattern" >}})
-5. **Playwright in CI/CD: Sharding, Mobile Testing e Automazione Agent-Driven** (questo articolo)
+*Serie Playwright:*
+1. [Playwright: Testing E2E Moderno e Affidabile]({{< relref "/posts/testing/playwright/01-guida-completa-e2e" >}})
+2. [Dal test E2E al debug del backend: Playwright + OpenTelemetry]({{< relref "/posts/testing/playwright/02-opentelemetry-trace-correlation" >}})
+3. **Playwright in CI/CD: Sharding, Mobile Testing e Automazione Agent-Driven** (questo articolo)
