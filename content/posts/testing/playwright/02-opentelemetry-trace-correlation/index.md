@@ -71,6 +71,8 @@ L'app è disponibile su `http://localhost`. Il progetto Playwright è in `demo/m
 
 MockMart usa Keycloak (OAuth2/OIDC) per l'autenticazione. In un contesto E2E, ripetere il flusso OAuth per ogni test è lento e fragile. Playwright risolve con `storageState`: si esegue il login una volta, si salvano cookies e localStorage, e si riusano in tutti i test.
 
+![Keycloak login page di MockMart](imgs/keycloak-login.webp)
+
 ### Setup file di autenticazione
 
 ```typescript
@@ -184,6 +186,8 @@ traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01
 Lo standard W3C definisce `traceparent` come header di **request** per la propagazione tra servizi. Perché sia disponibile nelle **response** HTTP (e quindi catturabile da Playwright), il backend deve essere configurato per propagarlo. MockMart lo fa già. Se il backend non lo supporta, è necessario configurarlo lato server.
 
 Catturando questo header dalle response nel test Playwright, è possibile cercare la trace in Grafana e vedere **esattamente** cosa è successo nel backend.
+
+![Ricerca trace in Grafana Tempo filtrate per service.name=shop-api](imgs/grafana-tempo-traces-list.webp)
 
 ### Implementazione: trace-collector.ts
 
@@ -315,6 +319,8 @@ POST /api/checkout                    (3150ms)
 ├─ pg.query INSERT orders             (12ms)
 └─ POST /api/notifications/order      (3010ms)  ← BOTTLENECK
 ```
+
+![Trace waterfall in Grafana: POST /api/checkout con span dei microservizi](imgs/grafana-trace-waterfall.webp)
 
 Root cause identificato: il notification service impiega 3 secondi. Cliccando "View Logs" sullo span lento:
 
