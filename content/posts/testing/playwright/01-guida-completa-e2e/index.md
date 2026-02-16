@@ -10,6 +10,7 @@ menu:
     identifier: playwright-e2e
     parent: PLAYWRIGHT
     weight: 2
+draft: true
 ---
 
 Quante volte hai lanciato una suite di test E2E e ti sei ritrovato a fissare lo schermo, in attesa di un verdetto che sai già essere inaffidabile? Test che passano al terzo tentativo, `sleep(5000)` disseminati nel codice, e quella sensazione che il testing end-to-end sia più un problema che una soluzione.
