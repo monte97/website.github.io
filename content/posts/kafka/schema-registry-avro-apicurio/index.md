@@ -14,53 +14,53 @@ draft: true
 ---
 ## Il problema: JSON senza contratto
 
-In un sistema a microservizi con Kafka al centro, il JSON e' il formato naturale per i messaggi. E' leggibile, tutti i linguaggi lo supportano, non richiede setup. Ma quando il sistema cresce, il JSON senza schema diventa un problema silenzioso.
+In un sistema a microservizi con Kafka al centro, il JSON è il formato naturale per i messaggi. È leggibile, tutti i linguaggi lo supportano, non richiede setup. Ma quando il sistema cresce, il JSON senza schema diventa un problema silenzioso.
 
-Il sistema in esame e' una piattaforma di telemetria per mezzi d'opera in cantiere. L'architettura coinvolge tre linguaggi: Node.js per il servizio anagrafica (producer), Scala/Pekko per la standardizzazione e l'aggregazione dei dati telemetrici (consumer e producer), Python/Flask per i servizi di storico, utilizzo e reportistica (consumer). Tutti comunicano attraverso topic Kafka, tutti producono e consumano JSON.
+Il sistema in esame è una piattaforma di telemetria per mezzi d'opera in cantiere. L'architettura coinvolge tre linguaggi: Node.js per il servizio anagrafica (producer), Scala/Pekko per la standardizzazione e l'aggregazione dei dati telemetrici (consumer e producer), Python/Flask per i servizi di storico, utilizzo e reportistica (consumer). Tutti comunicano attraverso topic Kafka, tutti producono e consumano JSON.
 
-Il problema non si manifesta con un errore visibile. Si manifesta cosi':
+Il problema non si manifesta con un errore visibile. Si manifesta così:
 
-- Il servizio Node.js aggiunge un campo `last_update` al messaggio su `registry-equipment`. Il consumer Scala lo ignora silenziosamente perche' non lo conosce. Nessun errore, nessun log. Tre mesi dopo qualcuno scopre che quel campo non e' mai arrivato a destinazione.
+- Il servizio Node.js aggiunge un campo `last_update` al messaggio su `registry-equipment`. Il consumer Scala lo ignora silenziosamente perché non lo conosce. Nessun errore, nessun log. Tre mesi dopo qualcuno scopre che quel campo non è mai arrivato a destinazione.
 
 - Il servizio di standardizzazione Scala cambia il formato del timestamp da stringa ISO a epoch millis. Il consumer Python continua a parsare il campo come stringa, ottiene un numero, lo converte in una data insensata. Nessuna eccezione, solo dati sbagliati nel database.
 
-- Un nuovo sviluppatore deve scrivere un consumer per un topic esistente. L'unica documentazione del formato e' il codice sorgente del producer. Che e' in un altro linguaggio, in un altro repository.
+- Un nuovo sviluppatore deve scrivere un consumer per un topic esistente. L'unica documentazione del formato è il codice sorgente del producer. Che è in un altro linguaggio, in un altro repository.
 
-Il problema di fondo e' che non esiste un **contratto** sul formato dei messaggi. Ogni servizio ha la propria versione implicita dello schema, definita dal codice che serializza o deserializza. Quando queste versioni divergono, il sistema non si rompe: si degrada silenziosamente.
+Il problema di fondo è che non esiste un **contratto** sul formato dei messaggi. Ogni servizio ha la propria versione implicita dello schema, definita dal codice che serializza o deserializza. Quando queste versioni divergono, il sistema non si rompe: si degrada silenziosamente.
 
-## La scelta: perche' Schema Registry
+## La scelta: perché Schema Registry
 
 Per risolvere il problema servono due cose: uno schema formale per ogni topic, e un meccanismo che impedisca di pubblicare messaggi non conformi. Ci sono tre approcci.
 
-**1. Validazione JSON Schema a livello applicativo.** Ogni servizio valida i messaggi contro un JSON Schema prima di produrli o dopo averli consumati. Il problema e' che la validazione e' decentralizzata: ogni servizio deve implementarla, mantenerla aggiornata, e non c'e' nessun meccanismo che impedisca a un producer di pubblicare un messaggio invalido. Se un servizio salta la validazione, i messaggi passano comunque.
+**1. Validazione JSON Schema a livello applicativo.** Ogni servizio valida i messaggi contro un JSON Schema prima di produrli o dopo averli consumati. Il problema è che la validazione è decentralizzata: ogni servizio deve implementarla, mantenerla aggiornata, e non c'è nessun meccanismo che impedisca a un producer di pubblicare un messaggio invalido. Se un servizio salta la validazione, i messaggi passano comunque.
 
-**2. Confluent Schema Registry.** Il registry di riferimento nell'ecosistema Kafka. Maturo, ben documentato, con librerie client per tutti i linguaggi. Ma dalla versione 7.x la licenza e' Confluent Community License, non Apache 2.0. Per un progetto open-source-first, o per un'installazione on-premise dove le licenze contano, questo e' un limite.
+**2. Confluent Schema Registry.** Il registry di riferimento nell'ecosistema Kafka. Maturo, ben documentato, con librerie client per tutti i linguaggi. Ma dalla versione 7.x la licenza è Confluent Community License, non Apache 2.0. Per un progetto open-source-first, o per un'installazione on-premise dove le licenze contano, questo è un limite.
 
-**3. Apicurio Registry.** Progetto open-source, licenza Apache 2.0. Supporta Avro, JSON Schema, Protobuf. Puo' usare Kafka stesso come storage (KafkaSQL), quindi non richiede un database esterno. E soprattutto: espone un'API compatibile con Confluent (`/apis/ccompat/v7`), il che significa che le librerie client standard di Confluent funzionano senza modifiche.
+**3. Apicurio Registry.** Progetto open-source, licenza Apache 2.0. Supporta Avro, JSON Schema, Protobuf. Può usare Kafka stesso come storage (KafkaSQL), quindi non richiede un database esterno. E soprattutto: espone un'API compatibile con Confluent (`/apis/ccompat/v7`), il che significa che le librerie client standard di Confluent funzionano senza modifiche.
 
-La scelta per questo progetto e' ricaduta su Apicurio. Il motivo principale e' pragmatico: zero dipendenze aggiuntive (gli schema vengono salvati in un topic Kafka interno) e compatibilita' con tutto l'ecosistema di librerie client gia' esistente.
+La scelta per questo progetto è ricaduta su Apicurio. Il motivo principale è pragmatico: zero dipendenze aggiuntive (gli schema vengono salvati in un topic Kafka interno) e compatibilità con tutto l'ecosistema di librerie client già esistente.
 
-## Perche' Avro e non JSON Schema
+## Perché Avro e non JSON Schema
 
-Una volta scelto il registry, serve scegliere il formato di serializzazione. La scelta e' tra Avro, JSON Schema e Protobuf. In questo contesto tutti i topic servono alla comunicazione tra microservizi interni: nessun browser, nessun client esterno, nessuna API pubblica. Questo restringe la scelta a due candidati realistici: Avro e JSON Schema.
+Una volta scelto il registry, serve scegliere il formato di serializzazione. La scelta è tra Avro, JSON Schema e Protobuf. In questo contesto tutti i topic servono alla comunicazione tra microservizi interni: nessun browser, nessun client esterno, nessuna API pubblica. Questo restringe la scelta a due candidati realistici: Avro e JSON Schema.
 
 | Caratteristica | Avro | JSON Schema |
 |---|---|---|
 | Formato wire | Binario (nessun nome campo nel payload) | JSON testuale |
 | Dimensione payload | Compatto (solo valori) | Verboso (nomi campo ripetuti) |
 | Schema evolution | Formalizzata (reader/writer schema) | Meno formalizzata |
-| Leggibilita' messaggi | Richiede lo schema per decodificare | Leggibile con qualsiasi tool |
+| Leggibilità messaggi | Richiede lo schema per decodificare | Leggibile con qualsiasi tool |
 | Debugging | Serve un tool (kafka-avro-console-consumer) | `kafkacat` basta |
-| Velocita' serializzazione | Molto veloce (formato binario nativo) | Piu' lenta (parsing testo) |
+| Velocità serializzazione | Molto veloce (formato binario nativo) | Più lenta (parsing testo) |
 | Tipi logici | timestamp-millis, date, decimal, uuid | Dipende dall'implementazione |
 
-La regola pratica adottata e' semplice: **Avro per il core interno** (tutti i topic tra microservizi), **JSON Schema per i bordi** (API REST, webhook, integrazioni esterne).
+La regola pratica adottata è semplice: **Avro per il core interno** (tutti i topic tra microservizi), **JSON Schema per i bordi** (API REST, webhook, integrazioni esterne).
 
-Il vantaggio decisivo di Avro in questo contesto e' la schema evolution formalizzata. In Avro, quando un consumer legge un messaggio scritto con una versione diversa dello schema, il runtime sa esattamente come gestire la differenza: campi nuovi con default vengono aggiunti automaticamente, campi rimossi vengono ignorati. Non c'e' codice applicativo da scrivere per gestire le differenze di versione. Questo e' critico in un sistema dove tre linguaggi diversi consumano gli stessi topic.
+Il vantaggio decisivo di Avro in questo contesto è la schema evolution formalizzata. In Avro, quando un consumer legge un messaggio scritto con una versione diversa dello schema, il runtime sa esattamente come gestire la differenza: campi nuovi con default vengono aggiunti automaticamente, campi rimossi vengono ignorati. Non c'è codice applicativo da scrivere per gestire le differenze di versione. Questo è critico in un sistema dove tre linguaggi diversi consumano gli stessi topic.
 
 ## Infrastruttura: Apicurio + KafkaSQL
 
-L'infrastruttura richiede un singolo container in piu' rispetto a un cluster Kafka standard. Ecco il `docker-compose.yml` della demo:
+L'infrastruttura richiede un singolo container in più rispetto a un cluster Kafka standard. Ecco il `docker-compose.yml` della demo:
 
 ```yaml
 services:
@@ -91,13 +91,13 @@ services:
       - "8081:8080"
 ```
 
-Il punto chiave e' `APICURIO_STORAGE_KIND: kafkasql`. Con questa configurazione, Apicurio salva tutti gli schema in un topic Kafka interno. Nessun PostgreSQL, nessun volume da gestire, nessun backup aggiuntivo. Gli schema vengono replicati e persistiti con le stesse garanzie del broker Kafka.
+Il punto chiave è `APICURIO_STORAGE_KIND: kafkasql`. Con questa configurazione, Apicurio salva tutti gli schema in un topic Kafka interno. Nessun PostgreSQL, nessun volume da gestire, nessun backup aggiuntivo. Gli schema vengono replicati e persistiti con le stesse garanzie del broker Kafka.
 
-Una volta avviato, l'interfaccia web di Apicurio e' disponibile su `http://localhost:8081/ui`. Da li' si possono navigare tutti gli schema registrati, vedere le versioni, testare la compatibilita'. E' uno strumento utile soprattutto nella fase di migrazione, per verificare che gli schema siano stati registrati correttamente.
+Una volta avviato, l'interfaccia web di Apicurio è disponibile su `http://localhost:8081/ui`. Da lì si possono navigare tutti gli schema registrati, vedere le versioni, testare la compatibilità. È uno strumento utile soprattutto nella fase di migrazione, per verificare che gli schema siano stati registrati correttamente.
 
 ## Definire gli schema Avro
 
-Uno schema Avro e' un file `.avsc` (JSON) che descrive la struttura di un record. Ecco lo schema usato nella demo, un `SensorReading` che rappresenta una lettura da sensore:
+Uno schema Avro è un file `.avsc` (JSON) che descrive la struttura di un record. Ecco lo schema usato nella demo, un `SensorReading` che rappresenta una lettura da sensore:
 
 ```json
 {
@@ -120,9 +120,9 @@ Alcune cose da notare:
 
 - **Logical types**: `timestamp-millis` dice al runtime che il campo `long` rappresenta un timestamp in millisecondi. Le librerie client lo convertono automaticamente nel tipo data nativo del linguaggio.
 
-- **Union types per campi opzionali**: `["null", "string"]` con `"default": null` e' il pattern Avro per un campo opzionale. A differenza di JSON, in Avro ogni campo e' obbligatorio a meno che non si usi un union con `null`.
+- **Union types per campi opzionali**: `["null", "string"]` con `"default": null` è il pattern Avro per un campo opzionale. A differenza di JSON, in Avro ogni campo è obbligatorio a meno che non si usi un union con `null`.
 
-In produzione, gli schema sono piu' complessi. Ecco un estratto dello schema `C40Standardized` che rappresenta un dato telemetrico normalizzato:
+In produzione, gli schema sono più complessi. Ecco un estratto dello schema `C40Standardized` che rappresenta un dato telemetrico normalizzato:
 
 ```json
 {
@@ -156,11 +156,11 @@ In produzione, gli schema sono piu' complessi. Ecco un estratto dello schema `C4
 }
 ```
 
-I **record annidati** sono uno dei punti di forza di Avro: `C40Location` contiene `C40GPS`, e ogni sotto-record ha il suo nome e puo' essere referenziato altrove. In JSON avresti lo stesso nesting, ma senza la possibilita' di riusare i tipi.
+I **record annidati** sono uno dei punti di forza di Avro: `C40Location` contiene `C40GPS`, e ogni sotto-record ha il suo nome e può essere referenziato altrove. In JSON avresti lo stesso nesting, ma senza la possibilità di riusare i tipi.
 
 ## Producer Node.js con schema registry
 
-Il producer e' il servizio che registra lo schema nel registry e serializza i messaggi in formato Avro. In Node.js si utilizzano `kafkajs` per la connessione Kafka e `@kafkajs/confluent-schema-registry` per l'integrazione con il registry.
+Il producer è il servizio che registra lo schema nel registry e serializza i messaggi in formato Avro. In Node.js si utilizzano `kafkajs` per la connessione Kafka e `@kafkajs/confluent-schema-registry` per l'integrazione con il registry.
 
 ```javascript
 const { Kafka } = require("kafkajs");
@@ -213,19 +213,19 @@ async function main() {
 }
 ```
 
-Il flusso e' lineare:
+Il flusso è lineare:
 
 1. Si carica lo schema dal file `.avsc`
 2. Lo si registra nel registry con il subject `sensor-data-value` (convenzione: `{topic}-value`)
 3. Si usa `registry.encode(schemaId, record)` per serializzare ogni messaggio
 
-La chiamata `encode` fa due cose: serializza il record in formato binario Avro, e prepone 5 byte al payload (1 byte magic + 4 byte schema ID). Questo prefix e' il meccanismo con cui il consumer sa quale schema usare per decodificare il messaggio, senza doverlo conoscere a priori.
+La chiamata `encode` fa due cose: serializza il record in formato binario Avro, e prepone 5 byte al payload (1 byte magic + 4 byte schema ID). Questo prefix è il meccanismo con cui il consumer sa quale schema usare per decodificare il messaggio, senza doverlo conoscere a priori.
 
-In ambiente Docker, la variabile `SCHEMA_REGISTRY_URL` viene configurata a `http://schema-registry:8080/apis/ccompat/v7`. Quel path `/apis/ccompat/v7` e' l'endpoint di compatibilita' Confluent di Apicurio. La libreria `@kafkajs/confluent-schema-registry` non sa di parlare con Apicurio: vede un'API Confluent standard.
+In ambiente Docker, la variabile `SCHEMA_REGISTRY_URL` viene configurata a `http://schema-registry:8080/apis/ccompat/v7`. Quel path `/apis/ccompat/v7` è l'endpoint di compatibilità Confluent di Apicurio. La libreria `@kafkajs/confluent-schema-registry` non sa di parlare con Apicurio: vede un'API Confluent standard.
 
 ## Consumer Python con Avro
 
-Il consumer e' scritto in Python usando `confluent-kafka` con il modulo `schema_registry`. Il punto chiave e' che il consumer **non ha bisogno dello schema**: lo recupera automaticamente dal registry usando lo schema ID incorporato in ogni messaggio.
+Il consumer è scritto in Python usando `confluent-kafka` con il modulo `schema_registry`. Il punto chiave è che il consumer **non ha bisogno dello schema**: lo recupera automaticamente dal registry usando lo schema ID incorporato in ogni messaggio.
 
 ```python
 import os
@@ -271,15 +271,15 @@ Il flusso del consumer:
 2. Chiede al registry lo schema corrispondente (con cache locale)
 3. Usa quello schema per deserializzare il payload binario in un dizionario Python
 
-Il risultato e' che producer e consumer sono completamente disaccoppiati: il producer puo' evolvere lo schema, e il consumer continuera' a funzionare finche' l'evoluzione e' compatibile.
+Il risultato è che producer e consumer sono completamente disaccoppiati: il producer può evolvere lo schema, e il consumer continuerà a funzionare finché l'evoluzione è compatibile.
 
 ## Schema evolution: aggiungere un campo senza rompere
 
-La schema evolution e' il motivo principale per adottare un registry. La domanda e': cosa succede quando il producer inizia a mandare messaggi con un campo in piu'? O in meno?
+La schema evolution è il motivo principale per adottare un registry. La domanda è: cosa succede quando il producer inizia a mandare messaggi con un campo in più? O in meno?
 
-La modalita' di compatibilita' piu' comune e' **BACKWARD**: un consumer con lo schema v(N) puo' leggere messaggi scritti con lo schema v(N-1). In pratica questo significa che e' possibile aggiungere campi opzionali (con default) e rimuovere campi, ma non aggiungere campi obbligatori o cambiare il tipo di un campo.
+La modalità di compatibilità più comune è **BACKWARD**: un consumer con lo schema v(N) può leggere messaggi scritti con lo schema v(N-1). In pratica questo significa che è possibile aggiungere campi opzionali (con default) e rimuovere campi opzionali, ma non aggiungere campi obbligatori o cambiare il tipo di un campo.
 
-**Nota**: Apicurio Registry di default non applica nessun controllo di compatibilita' (modalita' NONE). La regola BACKWARD va configurata esplicitamente per ogni subject, come mostrato negli script della demo.
+**Nota**: Apicurio Registry di default non applica nessun controllo di compatibilità (modalità NONE). La regola BACKWARD va configurata esplicitamente per ogni subject, come mostrato negli script della demo.
 
 La demo include due script che mostrano questo in azione.
 
@@ -306,21 +306,21 @@ HTTP Status: 409
 }
 ```
 
-Il registry rifiuta la registrazione. Questa e' la rete di sicurezza: un producer non puo' accidentalmente rompere i consumer rimuovendo un campo da cui dipendono.
+Il registry rifiuta la registrazione. Questa è la rete di sicurezza: un producer non può accidentalmente rompere i consumer rimuovendo un campo da cui dipendono.
 
 ## Lezioni apprese
 
 Dalla migrazione del sistema da JSON senza schema ad Avro con Apicurio emergono le seguenti lezioni pratiche.
 
-**1. Migrazione incrementale, topic per topic.** Non serve un big bang. Si sceglie un topic, si definisce lo schema, si aggiorna il producer per serializzare in Avro, poi si aggiornano i consumer. Gli altri topic continuano a funzionare in JSON. La migrazione e' partita dal topic `c40-standardized` perche' ha un singolo producer e due consumer: il percorso piu' semplice.
+**1. Migrazione incrementale, topic per topic.** Non serve un big bang. Si sceglie un topic, si definisce lo schema, si aggiorna il producer per serializzare in Avro, poi si aggiornano i consumer. Gli altri topic continuano a funzionare in JSON. La migrazione è partita dal topic `c40-standardized` perché ha un singolo producer e due consumer: il percorso più semplice.
 
-**2. Il dual-write non serve se puoi fermare i servizi.** Molti articoli consigliano un periodo di dual-write dove il producer scrive sia JSON che Avro su due topic separati. Se il sistema puo' essere fermato brevemente (i servizi di telemetria tollerano un restart di pochi secondi senza perdita dati grazie al buffering Kafka), il passaggio puo' essere diretto.
+**2. Il dual-write non serve se puoi fermare i servizi.** Molti articoli consigliano un periodo di dual-write dove il producer scrive sia JSON che Avro su due topic separati. Se il sistema può essere fermato brevemente (i servizi di telemetria tollerano un restart di pochi secondi senza perdita dati grazie al buffering Kafka), il passaggio può essere diretto.
 
-**3. GenericRecord vs SpecificRecord.** In Scala e Java, Avro offre due modalita': `GenericRecord` (dizionario chiave-valore, flessibile, nessuna generazione di codice) e `SpecificRecord` (classi generate dallo schema, type-safe, richiede un plugin build). Per servizi che consumano molti topic diversi, `GenericRecord` e' piu' pratico. Per servizi con pochi topic e logica complessa, `SpecificRecord` offre garanzie a compile-time.
+**3. GenericRecord vs SpecificRecord.** In Scala e Java, Avro offre due modalità: `GenericRecord` (dizionario chiave-valore, flessibile, nessuna generazione di codice) e `SpecificRecord` (classi generate dallo schema, type-safe, richiede un plugin build). Per servizi che consumano molti topic diversi, `GenericRecord` è più pratico. Per servizi con pochi topic e logica complessa, `SpecificRecord` offre garanzie a compile-time.
 
-**4. L'API Confluent-compatible di Apicurio e' il fattore abilitante.** Il path `/apis/ccompat/v7` permette di usare `@kafkajs/confluent-schema-registry` per Node.js e `confluent-kafka[avro]` per Python senza nessuna modifica. Non serve cercare librerie client specifiche per Apicurio. Questo riduce significativamente il costo della migrazione.
+**4. L'API Confluent-compatible di Apicurio è il fattore abilitante.** Il path `/apis/ccompat/v7` permette di usare `@kafkajs/confluent-schema-registry` per Node.js e `confluent-kafka[avro]` per Python senza nessuna modifica. Non serve cercare librerie client specifiche per Apicurio. Questo riduce significativamente il costo della migrazione.
 
-**5. Schema inline vs file .avsc.** Per servizi interpretati (Node.js, Python) caricare il file `.avsc` a runtime funziona bene. Per servizi compilati (Scala) puo' essere piu' pratico avere lo schema inline nel codice o generato a build-time, specialmente se si usa `SpecificRecord`. I file `.avsc` sono mantenuti in una directory condivisa nel repository (`schemas/avro/`) come source of truth, e ogni servizio li carica nel modo piu' naturale per il suo linguaggio.
+**5. Schema inline vs file .avsc.** Per servizi interpretati (Node.js, Python) caricare il file `.avsc` a runtime funziona bene. Per servizi compilati (Scala) può essere più pratico avere lo schema inline nel codice o generato a build-time, specialmente se si usa `SpecificRecord`. I file `.avsc` sono mantenuti in una directory condivisa nel repository (`schemas/avro/`) come source of truth, e ogni servizio li carica nel modo più naturale per il suo linguaggio.
 
 ## Demo
 
@@ -338,9 +338,9 @@ demo-producer  | [producer] #1 | sensor=sensor-A1 temp=24.57C humidity=48.32% lo
 demo-consumer  | [consumer] #1 | sensor=sensor-A1 temp=24.57C humidity=48.32% location=warehouse-north
 ```
 
-L'interfaccia web di Apicurio e' disponibile su `http://localhost:8081/ui`, dove e' possibile navigare gli schema registrati.
+L'interfaccia web di Apicurio è disponibile su `http://localhost:8081/ui`, dove è possibile navigare gli schema registrati.
 
-Con lo stack attivo, e' possibile testare i due script di evoluzione:
+Con lo stack attivo, è possibile testare i due script di evoluzione:
 
 ```bash
 # Aggiunta compatibile: nuovo campo opzionale battery_level
@@ -356,4 +356,4 @@ Per pulire tutto:
 docker compose down -v
 ```
 
-L'intero stack (Kafka KRaft, Apicurio Registry, producer Node.js, consumer Python) richiede meno di 1 GB di RAM e gira su qualsiasi macchina con Docker. Il codice sorgente completo e' disponibile nel repository.
+L'intero stack (Kafka KRaft, Apicurio Registry, producer Node.js, consumer Python) richiede meno di 1 GB di RAM e gira su qualsiasi macchina con Docker. Il codice sorgente completo è disponibile nel repository.

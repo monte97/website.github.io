@@ -14,9 +14,9 @@ draft: true
 ---
 ## Il pattern di partenza: while(true) dentro un attore
 
-In un sistema Akka (ora Apache Pekko), l'approccio piu' immediato e' mettere tutta la logica in un attore. L'attore consuma da Kafka, processa i messaggi, produce su un altro topic. Sembra pulito: un attore per responsabilita', supervisione automatica, tutto nel modello ad attori.
+In un sistema Akka (ora Apache Pekko), l'approccio più immediato è mettere tutta la logica in un attore. L'attore consuma da Kafka, processa i messaggi, produce su un altro topic. Sembra pulito: un attore per responsabilità, supervisione automatica, tutto nel modello ad attori.
 
-Il sistema in esame e' una piattaforma di telemetria per mezzi d'opera in cantiere. Il servizio di aggregazione (`c40-aggregation`) aveva tre attori `KafkaReaderActor`, uno per topic, che facevano cosi':
+Il sistema in esame è una piattaforma di telemetria per mezzi d'opera in cantiere. Il servizio di aggregazione (`c40-aggregation`) aveva tre attori `KafkaReaderActor`, uno per topic, che facevano così:
 
 ```scala
 // Prima: KafkaReaderActor (pseudocodice ricostruito dal pattern originale)
@@ -36,29 +36,29 @@ class KafkaReaderActor(consumer: KafkaConsumer[String, String],
 
 Questo pattern ha quattro problemi concreti.
 
-**1. Blocca un thread del dispatcher.** `consumer.poll()` e' una chiamata bloccante. In Akka/Pekko, gli attori condividono un pool di thread (il dispatcher). Un attore che chiama `poll(Duration.ofSeconds(5))` tiene occupato un thread per 5 secondi ad ogni ciclo. Con tre reader, tre thread sono permanentemente occupati. Il dispatcher default ha `number-of-cores * 2` thread: su una macchina a 2 core, 6 thread su 4 sono bloccati. Gli altri attori del sistema (compresi quelli di supervisione) faticano a ricevere CPU.
+**1. Blocca un thread del dispatcher.** `consumer.poll()` è una chiamata bloccante. In Akka/Pekko, gli attori condividono un pool di thread (il dispatcher). Un attore che chiama `poll(Duration.ofSeconds(5))` tiene occupato un thread per 5 secondi ad ogni ciclo. Con tre reader, tre thread sono permanentemente occupati. Il dispatcher default usa un fork-join pool con un minimo di 8 thread (`parallelism-min`): su una macchina a 2 core con tre reader bloccanti, una porzione significativa del pool è permanentemente occupata. Gli altri attori del sistema (compresi quelli di supervisione) faticano a ricevere CPU.
 
-**2. Nessuna backpressure.** Se `MachineryEnrichActor` e' lento a processare i messaggi (per esempio perche' deve fare una chiamata HTTP o un lookup costoso), i messaggi si accumulano nella mailbox dell'attore. Non c'e' nessun meccanismo per dire al consumer di rallentare. In un sistema di telemetria con burst di dati, questo puo' portare a OutOfMemoryError.
+**2. Nessuna backpressure.** Se `MachineryEnrichActor` è lento a processare i messaggi (per esempio perché deve fare una chiamata HTTP o un lookup costoso), i messaggi si accumulano nella mailbox dell'attore. Non c'è nessun meccanismo per dire al consumer di rallentare. In un sistema di telemetria con burst di dati, questo può portare a OutOfMemoryError.
 
-**3. Gestione errori fragile.** La `SupervisorStrategy.restart` riavvia l'attore da zero. Per un consumer Kafka, "da zero" significa ricreare il consumer, ri-sottoscriversi al topic, e ripartire dall'ultimo offset committato. Se l'errore e' transiente (un timeout di rete), il costo del restart e' sproporzionato.
+**3. Gestione errori fragile.** La `SupervisorStrategy.restart` riavvia l'attore da zero. Per un consumer Kafka, "da zero" significa ricreare il consumer, ri-sottoscriversi al topic, e ripartire dall'ultimo offset committato. Se l'errore è transiente (un timeout di rete), il costo del restart è sproporzionato.
 
-**4. Non testabile in isolamento.** La logica di business (arricchimento, trasformazione) e' intrecciata con la logica di I/O Kafka. Per testare l'arricchimento serve un broker Kafka, oppure un mock complesso dell'intero consumer.
+**4. Non testabile in isolamento.** La logica di business (arricchimento, trasformazione) è intrecciata con la logica di I/O Kafka. Per testare l'arricchimento serve un broker Kafka, oppure un mock complesso dell'intero consumer.
 
 Il servizio di standardizzazione (`c40-standardization`) aveva un problema simile ma speculare: gli attori `HttpC40Reader` facevano polling su API HTTP esterne e poi dovevano mandare i dati su Kafka tramite un `KafkaWriterActor`. La catena era attore HTTP -> messaggio -> attore Kafka -> `producer.send()`. Due attori, due mailbox, nessuna backpressure end-to-end.
 
-## La soluzione: separare le responsabilita'
+## La soluzione: separare le responsabilità
 
-L'idea chiave e' semplice: un attore non dovrebbe fare I/O bloccante. La responsabilita' di consumare da Kafka (o produrre su Kafka) va separata dalla logica di business. Ci sono tre componenti:
+L'idea chiave è semplice: un attore non dovrebbe fare I/O bloccante. La responsabilità di consumare da Kafka (o produrre su Kafka) va separata dalla logica di business. Ci sono tre componenti:
 
 - **Kafka consumer**: un thread dedicato o un Pekko Connectors source
 - **Logica di business**: una funzione pura o un oggetto stateful
 - **Kafka producer**: un stream sink o una chiamata diretta all'API producer
 
-La separazione puo' essere implementata in modi diversi a seconda del caso d'uso. Nei due servizi in esame sono stati adottati due pattern distinti.
+La separazione può essere implementata in modi diversi a seconda del caso d'uso. Nei due servizi in esame sono stati adottati due pattern distinti.
 
 ## Pattern 1: Source.queue per il producer
 
-Nel servizio `c40-standardization`, il problema principale e' il producer. Gli attori `HttpC40Reader` interrogano API HTTP esterne a intervalli regolari e devono mandare i dati standardizzati su Kafka. La soluzione e' un `Source.queue` di Pekko Streams che funge da ponte tra il mondo degli attori e uno stream reattivo.
+Nel servizio `c40-standardization`, il problema principale è il producer. Gli attori `HttpC40Reader` interrogano API HTTP esterne a intervalli regolari e devono mandare i dati standardizzati su Kafka. La soluzione è un `Source.queue` di Pekko Streams che funge da ponte tra il mondo degli attori e uno stream reattivo.
 
 Ecco il codice attuale del `Launcher.scala`:
 
@@ -85,9 +85,9 @@ val enqueueData: C40StandardModel => Unit = { data =>
 }
 ```
 
-Il flusso e' questo:
+Il flusso è questo:
 
-1. Si crea un `Source.queue` con buffer di 256 elementi e strategia `dropHead` (se il buffer e' pieno, scarta il messaggio piu' vecchio)
+1. Si crea un `Source.queue` con buffer di 256 elementi e strategia `dropHead` (se il buffer è pieno, scarta il messaggio più vecchio)
 2. Ogni elemento che entra nella queue viene convertito in un `GenericRecord` Avro e inviato a Kafka
 3. Gli attori `HttpC40Reader` ricevono la funzione `enqueueData` e la chiamano quando hanno nuovi dati
 
@@ -101,7 +101,7 @@ val targaReaderActor = context.spawn(
 targaReaderActor ! HttpC40Reader.Start
 ```
 
-Il vantaggio rispetto al pattern precedente: il `Source.queue` ha backpressure. Se il producer Kafka rallenta, il buffer si riempie e i messaggi piu' vecchi vengono scartati (`dropHead`). In un sistema di telemetria, scartare un dato vecchio e' accettabile: il dato piu' recente e' sempre piu' rilevante. Nessun rischio di OutOfMemoryError.
+Il vantaggio rispetto al pattern precedente: il `Source.queue` ha backpressure. Se il producer Kafka rallenta, il buffer si riempie e i messaggi più vecchi vengono scartati (`dropHead`). In un sistema di telemetria, scartare un dato vecchio è accettabile: il dato più recente è sempre più rilevante. Nessun rischio di OutOfMemoryError.
 
 Gli attori `HttpC40Reader` restano semplici: ricevono un messaggio `Act` dallo scheduler, chiamano l'API HTTP, diffano i dati con lo stato precedente, e per ogni dato cambiato chiamano `enqueueData`. Non sanno nulla di Kafka, di Avro, di serializzazione. Se l'API HTTP fallisce, la `SupervisorStrategy.restart` riavvia solo il reader, senza toccare lo stream Kafka.
 
@@ -122,9 +122,9 @@ def activeBehaviour: Behavior[Command] = Behaviors.supervise(
 
 ## Pattern 2: Consumer threads + stato condiviso per l'enrichment
 
-Nel servizio `c40-aggregation`, il problema e' diverso. Tre topic alimentano uno stato condiviso: i dati telemetrici (`data.c40.equipment.standardized`), il registry attrezzature (`data.registry.equipment`), e i punti di interesse (`POINT_OF_INTEREST_TABLE`). Ogni messaggio da qualsiasi topic puo' aggiornare lo stato e produrre un messaggio arricchito in output.
+Nel servizio `c40-aggregation`, il problema è diverso. Tre topic alimentano uno stato condiviso: i dati telemetrici (`data.c40.equipment.standardized`), il registry attrezzature (`data.registry.equipment`), e i punti di interesse (`POINT_OF_INTEREST_TABLE`). Ogni messaggio da qualsiasi topic può aggiornare lo stato e produrre un messaggio arricchito in output.
 
-Qui un full Pekko Connectors Kafka con `Consumer.plainSource` sarebbe possibile, ma complesso. Bisognerebbe fare un merge di tre source con tipi diversi (due Avro, uno String/JSON), convergere su uno stato condiviso, e gestire il fatto che l'ordine di arrivo tra topic diversi non e' garantito. I consumer threads sono una scelta pragmatica.
+Qui un full Pekko Connectors Kafka con `Consumer.plainSource` sarebbe possibile, ma complesso. Bisognerebbe fare un merge di tre source con tipi diversi (due Avro, uno String/JSON), convergere su uno stato condiviso, e gestire il fatto che l'ordine di arrivo tra topic diversi non è garantito. I consumer threads sono una scelta pragmatica.
 
 Ecco il codice attuale:
 
@@ -154,6 +154,8 @@ new Thread(() => {
   }
 }, "poi-consumer").start()
 
+// --------------------------------------------------
+
 // Registry topic (Avro, latest)
 val registryConsumer = new KafkaConsumer[String, GenericRecord](
   KafkaConfig.avroConsumerProperties("c40_agg_registry", "latest"))
@@ -167,6 +169,8 @@ new Thread(() => {
     }
   }
 }, "registry-consumer").start()
+
+// --------------------------------------------------
 
 // C40 Standardized topic (Avro, latest)
 val c40Consumer = new KafkaConsumer[String, GenericRecord](
@@ -185,7 +189,7 @@ new Thread(() => {
 
 La differenza rispetto al pattern precedente: i `while(true)` ci sono ancora, ma girano su **thread dedicati** (`new Thread(...)`), non su thread del dispatcher Pekko. Il dispatcher resta libero per gli attori del sistema. Ogni consumer ha il suo thread, fa la sua `poll()`, e chiama lo stato condiviso.
 
-Lo stato condiviso e' un `EnrichmentState` basato su `ConcurrentHashMap`:
+Lo stato condiviso è un `EnrichmentState` basato su `ConcurrentHashMap`:
 
 ```scala
 class EnrichmentState {
@@ -219,9 +223,9 @@ class EnrichmentState {
 }
 ```
 
-`ConcurrentHashMap` garantisce thread-safety per le operazioni `get` e `put`. Le operazioni composte (get-then-put) non sono atomiche, ma in questo caso la semantica e' "ultimo aggiornamento vince", accettabile per dati telemetrici dove il valore piu' recente e' sempre quello rilevante. Va notato che le operazioni composte get-then-put possono causare lost-update se due thread aggiornano lo stesso identificativo contemporaneamente; per casi d'uso piu' stringenti, `ConcurrentHashMap.compute()` offre atomicita' a livello di singola chiave.
+`ConcurrentHashMap` garantisce thread-safety per le operazioni `get` e `put`. Le operazioni composte (get-then-put) non sono atomiche, ma in questo caso la semantica è "ultimo aggiornamento vince", accettabile per dati telemetrici dove il valore più recente è sempre quello rilevante. Va notato che le operazioni composte get-then-put possono causare lost-update se due thread aggiornano lo stesso identificativo contemporaneamente; per casi d'uso più stringenti, `ConcurrentHashMap.compute()` offre atomicità a livello di singola chiave.
 
-L'arricchimento fa anche un calcolo geospaziale: per ogni dato C40 con coordinate GPS, cerca i punti di interesse entro 1000 metri usando la formula dell'haversine. Nella versione precedente questo calcolo era dentro un attore (`MachineryEnrichActor`); ora e' in una classe plain Scala, testabile senza attori ne' Kafka.
+L'arricchimento fa anche un calcolo geospaziale: per ogni dato C40 con coordinate GPS, cerca i punti di interesse entro 1000 metri usando la formula dell'haversine. Nella versione precedente questo calcolo era dentro un attore (`MachineryEnrichActor`); ora è in una classe plain Scala, testabile senza attori né Kafka.
 
 ## Avro e Schema Registry nel mix
 
@@ -238,9 +242,9 @@ props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, classOf[AvroKafkaDeser
 props.put(SchemaResolverConfig.REGISTRY_URL, schemaRegistryUrl)
 ```
 
-Il producer con `AUTO_REGISTER_ARTIFACT = true` registra lo schema nel registry alla prima `send()`. Il consumer legge lo schema ID dai primi 5 byte del messaggio e lo recupera dal registry (con cache locale). Il topic `POINT_OF_INTEREST_TABLE` resta in String/JSON perche' e' prodotto da un sistema esterno non controllato internamente: per quello si usano `stringConsumerProperties` con `StringDeserializer`.
+Il producer con `AUTO_REGISTER_ARTIFACT = true` registra lo schema nel registry alla prima `send()`. Il consumer legge lo schema ID dal header del messaggio (il formato dipende dalla configurazione del serializer: 5 byte nel formato Confluent, fino a 9 byte nel formato nativo Apicurio). Il topic `POINT_OF_INTEREST_TABLE` resta in String/JSON perché è prodotto da un sistema esterno non controllato internamente: per quello si usano `stringConsumerProperties` con `StringDeserializer`.
 
-Un gotcha importante: in Apicurio 3.x la classe `SchemaResolverConfig` e' stata spostata da `io.apicurio.registry.serde.config` a `io.apicurio.registry.resolver.config`. Se si aggiorna Apicurio da 2.x a 3.x, il codice compila ma l'import cambia. In piu', il concetto di "artifact" e' stato rinominato internamente, anche se l'API resta compatibile. L'import attuale:
+Un gotcha importante: in Apicurio 3.x la classe `SchemaResolverConfig` è stata spostata da `io.apicurio.registry.serde.config` a `io.apicurio.registry.resolver.config`. Se si aggiorna Apicurio da 2.x a 3.x, il codice compila ma l'import cambia. In più, il concetto di "artifact" è stato rinominato internamente, anche se l'API resta compatibile. L'import attuale:
 
 ```scala
 import io.apicurio.registry.resolver.config.SchemaResolverConfig
@@ -271,7 +275,7 @@ demo-pekko-patterns      | [pattern2] enriched: sensor-B2 26.8C > 26.0C -> WARNI
 
 Il pattern 1 (`Source.queue`) riceve le letture dagli attori e le pubblica su `sensor-data`. Il pattern 2 (consumer threads) legge i metadati da `sensor-metadata`, arricchisce le letture con lo stato condiviso (`ConcurrentHashMap`) e produce su `sensor-enriched`.
 
-L'interfaccia web di Apicurio e' disponibile su `http://localhost:8081/ui`, dove e' possibile verificare i 3 schema registrati (`SensorReading`, `SensorMetadata`, `EnrichedReading`).
+L'interfaccia web di Apicurio è disponibile su `http://localhost:8081/ui`, dove è possibile verificare i 3 schema registrati (`SensorReading`, `SensorMetadata`, `EnrichedReading`).
 
 Per pulire tutto:
 
@@ -281,10 +285,10 @@ docker compose down -v
 
 ## Conclusioni
 
-La migrazione da blocking poll ad architetture reattive puo' essere incrementale. In questo caso sono stati adottati due pattern diversi per due servizi diversi, in base alla complessita' del caso d'uso.
+La migrazione da blocking poll ad architetture reattive può essere incrementale. In questo caso sono stati adottati due pattern diversi per due servizi diversi, in base alla complessità del caso d'uso.
 
-**Per il producer**: `Source.queue` di Pekko Streams e' la soluzione piu' naturale. Gli attori continuano a fare il loro lavoro (polling HTTP, logica di business) e depositano i risultati nella queue. Lo stream si occupa di serializzare e inviare a Kafka con backpressure. Se il buffer si riempie, `OverflowStrategy.dropHead` scarta i dati piu' vecchi. Nessun thread bloccato nel dispatcher.
+**Per il producer**: `Source.queue` di Pekko Streams è la soluzione più naturale. Gli attori continuano a fare il loro lavoro (polling HTTP, logica di business) e depositano i risultati nella queue. Lo stream si occupa di serializzare e inviare a Kafka con backpressure. Se il buffer si riempie, `OverflowStrategy.dropHead` scarta i dati più vecchi. Nessun thread bloccato nel dispatcher.
 
-**Per il consumer con stato condiviso**: thread dedicati con `new Thread` sono la scelta pragmatica quando servono consumer multipli che convergono su uno stato mutabile. Richiede piu' codice rispetto a un grafo Pekko Streams con `GraphDSL.create`, ma risulta esplicito e leggibile. La complessita' di un merge multi-source con tipi eterogenei (Avro + String) e stato condiviso non giustifica l'adozione di `Consumer.plainSource` di Pekko Connectors Kafka in questo caso.
+**Per il consumer con stato condiviso**: thread dedicati con `new Thread` sono la scelta pragmatica quando servono consumer multipli che convergono su uno stato mutabile. Richiede più codice rispetto a un grafo Pekko Streams con `GraphDSL.create`, ma risulta esplicito e leggibile. La complessità di un merge multi-source con tipi eterogenei (Avro + String) e stato condiviso non giustifica l'adozione di `Consumer.plainSource` di Pekko Connectors Kafka in questo caso.
 
-**Per il futuro**: il passo successivo naturale e' sostituire i consumer threads con `Consumer.plainSource` di Pekko Connectors Kafka. Questo darebbe backpressure anche sul lato consumer, commit degli offset gestiti dallo stream, e shutdown graceful. Il sistema attuale funziona: i thread dedicati non bloccano il dispatcher e la logica di business e' gia' separata e testabile. La migrazione a `Consumer.plainSource` resta un'opzione per quando i requisiti lo richiederanno.
+**Per il futuro**: il passo successivo naturale è sostituire i consumer threads con `Consumer.plainSource` di Pekko Connectors Kafka. Questo darebbe backpressure anche sul lato consumer, commit degli offset gestiti dallo stream, e shutdown graceful. Il sistema attuale funziona: i thread dedicati non bloccano il dispatcher e la logica di business è già separata e testabile. La migrazione a `Consumer.plainSource` resta un'opzione per quando i requisiti lo richiederanno.
