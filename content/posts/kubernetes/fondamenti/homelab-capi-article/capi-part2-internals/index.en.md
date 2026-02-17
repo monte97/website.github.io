@@ -8,8 +8,9 @@ menu:
     identifier: CAPI-2
     weight: 20
     parent: CAPI
-tags: ["Kubernetes", "CAPI", "Cluster API", "Infrastructure as Code", "DevOps", "Automation"]
+tags: ["Kubernetes", "CAPI", "Cluster API", "Infrastructure as Code", "DevOps", "Automazione"]
 categories: ["Kubernetes", "Cloud Native", "Infrastructure"]
+reviewed: true
 ---
 
 ## CAPI Component Architecture

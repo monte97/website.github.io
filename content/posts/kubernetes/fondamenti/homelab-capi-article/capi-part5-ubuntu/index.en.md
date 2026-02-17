@@ -10,6 +10,7 @@ menu:
     parent: CAPI
 tags: ["Kubernetes", "CAPI", "Cluster API", "Ubuntu", "Proxmox", "Image Builder", "Homelab"]
 categories: ["Kubernetes", "Cloud Native", "Infrastructure"]
+reviewed: true
 ---
 
 After exploring Talos Linux in previous articles, it's time to change approach and use Ubuntu as the base operating system for our Kubernetes nodes. In this post we'll see how to create a Kubernetes cluster on Proxmox using Cluster API (CAPI) and the official images generated with image-builder.

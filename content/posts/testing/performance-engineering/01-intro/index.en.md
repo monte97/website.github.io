@@ -9,7 +9,8 @@ menu:
         weight: 10
         parent: PERFT
 tags: ["Performance Testing", "Monitoring", "SRE", "Metrics", "Observability"]
-categories: ["Performance Engineering", "Software Testing"]
+categories: ["Performance Engineering", "Testing"]
+reviewed: true
 ---
 
 ## Introduction

@@ -8,8 +8,9 @@ menu:
     identifier: OTEL-3
     weight: 30
     parent: OBS
-tags: ["OpenTelemetry", "Observability", "LGTM Stack", "Loki", "Grafana", "Tempo", "Mimir", "Prometheus", "Tracing", "Metrics", "Logging", "Instrumentation", "DevOps", "Telemetry", "Distributed Systems", "Docker"]
-categories: ["Monitoring", "DevOps", "Software Architecture", "Cloud Native"]
+tags: ["OpenTelemetry", "Observability", "LGTM Stack", "Loki", "Grafana", "Tempo", "Mimir", "Prometheus", "Tracing", "Metrics", "Logging", "Instrumentation", "DevOps", "Telemetry", "Sistemi Distribuiti", "Docker"]
+categories: ["Monitoring", "DevOps", "Architettura Software", "Cloud Native"]
+reviewed: true
 ---
 
 We have explored the principles of observability and the fundamental role of OpenTelemetry as a unifying standard for telemetry. OpenTelemetry provides us with the tools to **generate and collect** high-quality data (metrics, logs and traces) in an agnostic and consistent format. But once these valuable signals have been collected, where are they stored, queried and, most importantly, displayed in a meaningful way?

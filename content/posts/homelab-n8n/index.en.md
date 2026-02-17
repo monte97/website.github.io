@@ -7,8 +7,9 @@ menu:
     name:  Homelab n8n
     identifier:  Homelab n8n
     weight: 20
-tags: ["n8n", "Automation", "Homelab", "DevOps", "Self-Hosted"]
-categories: ["Technologies", "Automation"]
+tags: ["n8n", "Automazione", "Homelab", "DevOps", "Self-Hosted"]
+categories: ["Technologies", "Automazione"]
+reviewed: true
 ---
 
 ## Context and Motivations

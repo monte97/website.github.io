@@ -8,8 +8,9 @@ menu:
     identifier: OTEL-2
     weight: 10
     parent: OBS
-tags: ["OpenTelemetry", "Observability", "Tracing", "Metrics", "Logging", "Instrumentation", "DevOps", "Telemetry", "Distributed Systems"]
-categories: ["Monitoring", "DevOps", "Software Architecture"]
+tags: ["OpenTelemetry", "Observability", "Tracing", "Metrics", "Logging", "Instrumentation", "DevOps", "Telemetry", "Sistemi Distribuiti"]
+categories: ["Monitoring", "DevOps", "Architettura Software"]
+reviewed: true
 ---
 
 

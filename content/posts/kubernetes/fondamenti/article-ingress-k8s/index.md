@@ -10,6 +10,7 @@ menu:
     parent: "K8S-Core"
 tags: ["Kubernetes", "kind", "Ingress", "NGINX", "DevOps", "Sviluppo Locale"]
 categories: ["Kubernetes", "Cloud Native", "Infrastruttura"]
+reviewed: true
 ---
 
 ## Il Problema: Accedere ai Servizi in un Ambiente di Sviluppo Locale

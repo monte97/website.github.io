@@ -11,6 +11,7 @@ menu:
 tags: ["CI/CD", "OpenTofu", "Ansible", "Proxmox", "Semaphore", "Infrastructure as Code", "DevOps"]
 categories: ["DevOps", "Automazione", "Infrastruttura"]
 draft: true
+reviewed: false
 ---
 
 ## Il Contesto

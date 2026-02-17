@@ -17,6 +17,7 @@ team_size: "1 technical + cross-functional team"
 client_type: "Startup (early stage)"
 featured: false
 related_posts: ["/posts/otel-website-material/03-lgtm/"]
+reviewed: false
 ---
 
 ## Overview

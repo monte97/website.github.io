@@ -2,7 +2,7 @@
 title: "Playwright: Testing E2E Moderno e Affidabile"
 date: 2025-11-17T10:00:00+01:00
 description: Guida completa a Playwright per test end-to-end affidabili e veloci. Architettura, pattern avanzati e integrazione CI/CD
-tags: ["Playwright", "Testing", "E2E", "Automation", "DevOps", "CI/CD", "JavaScript", "TypeScript"]
+tags: ["Playwright", "Testing", "E2E", "Automazione", "DevOps", "CI/CD", "JavaScript", "TypeScript"]
 categories: ["Testing", "Web Development", "Automazione"]
 menu:
   sidebar:
@@ -11,6 +11,7 @@ menu:
     parent: PLAYWRIGHT
     weight: 2
 draft: true
+reviewed: true
 ---
 
 Test che passano al terzo tentativo, `sleep(5000)` disseminati nel codice, suite che girano per 20 minuti e falliscono in modo non deterministico. Il testing end-to-end resta un pilastro per la qualità delle applicazioni web moderne - simulare l'esperienza utente reale fornisce un livello di confidenza impossibile da ottenere con test unitari o di integrazione isolati - ma troppo spesso i costi superano i benefici.

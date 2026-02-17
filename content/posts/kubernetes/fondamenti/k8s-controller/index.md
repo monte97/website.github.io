@@ -10,6 +10,7 @@ menu:
     parent: K8S-Core
 tags: ["Kubernetes", "Controller", "Operator", "Go", "CRD", "DevOps"]
 categories: ["Kubernetes", "Cloud Native"]
+reviewed: true
 ---
 
 ## Il Meccanismo Dietro kubectl apply

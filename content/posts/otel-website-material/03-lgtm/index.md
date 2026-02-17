@@ -10,6 +10,7 @@ menu:
     parent: OBS
 tags: ["OpenTelemetry", "Observability", "LGTM Stack", "Loki", "Grafana", "Tempo", "Mimir", "Prometheus", "Tracing", "Metrics", "Logging", "Instrumentation", "DevOps", "Telemetry", "Sistemi Distribuiti", "Docker"]
 categories: ["Monitoring", "DevOps", "Architettura Software", "Cloud Native"]
+reviewed: true
 ---
 
 Abbiamo esplorato i principi dell'observability e il ruolo fondamentale di OpenTelemetry come standard unificante per la telemetria. OpenTelemetry ci fornisce gli strumenti per **generare e raccogliere** dati di altissima qualità (metriche, log e trace) in un formato agnostico e coerente. Ma una volta che questi preziosi segnali sono stati raccolti, dove vengono archiviati, interrogati e, soprattutto, visualizzati in modo significativo?

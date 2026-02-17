@@ -10,6 +10,7 @@ menu:
     parent: OBS
 tags: ["OpenTelemetry", "Observability", "LGTM Stack", "Loki", "Grafana", "Tempo", "Mimir", "Prometheus", "Tracing", "Metrics", "Logging", "Instrumentation", "DevOps", "Telemetry", "Sistemi Distribuiti", "Docker"]
 categories: ["Monitoring", "DevOps", "Architettura Software", "Cloud Native"]
+reviewed: true
 ---
 
 Nel [tutorial precedente](https://montelli.dev/posts/otel-website-material/04-correlation/) abbiamo strumentato un e-commerce con OpenTelemetry e risolto tre scenari di debug: silent failure, latency spike, fan-out. Tutto funzionava: trace complete, errori visibili, latenza misurabile.

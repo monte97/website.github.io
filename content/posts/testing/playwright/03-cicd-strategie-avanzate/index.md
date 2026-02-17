@@ -11,6 +11,7 @@ menu:
 tags: ["Playwright", "CI/CD", "GitHub Actions", "Sharding", "Agent-Driven Development"]
 categories: ["Testing", "DevOps", "Workshop"]
 draft: true
+reviewed: true
 ---
 
 Una suite di test E2E completa che passa in locale e fallisce in CI - timeout, browser che non si avviano, report frammentati - è uno scenario comune. Una suite di test ha valore solo se viene eseguita in modo sistematico e affidabile. Integrare Playwright in una pipeline CI/CD non si limita ad aggiungere un `npx playwright test` nel workflow: servono configurazioni specifiche per runner con risorse limitate, strategie di parallelizzazione su più macchine e reporter adatti all'ambiente.

@@ -8,8 +8,9 @@ menu:
     identifier: OBS-1
     weight: 10
     parent: OBS
-tags: ["Observability", "OpenTelemetry", "Distributed Systems", "Tracing", "Metrics", "Logging", "DevOps", "Architecture", "Monitoring"]
-categories: ["Architettura Software", "DevOps", "Sistemi Distribuiti"]
+tags: ["Observability", "OpenTelemetry", "Sistemi Distribuiti", "Tracing", "Metrics", "Logging", "DevOps", "Architettura", "Monitoring"]
+categories: ["Architettura Software", "DevOps"]
+reviewed: true
 ---
 
 -----

@@ -11,6 +11,7 @@ menu:
 tags: ["Playwright", "E2E", "Testing", "OpenTelemetry", "VisualTesting", "Observability"]
 categories: ["Testing", "DevOps"]
 draft: true
+reviewed: true
 ---
 
 Il test E2E fallisce con un timeout, lo screenshot mostra uno spinner infinito, e l'unica informazione utile è "qualcosa nel backend non ha risposto". I test Playwright verificano il percorso utente: login, aggiungi al carrello, checkout. Funziona, finché il problema è nel frontend. Ma il checkout di un e-commerce a microservizi attraversa 4 servizi diversi, e quando il test fallisce con timeout Playwright vede solo il frontend. Il backend resta una **black box**.

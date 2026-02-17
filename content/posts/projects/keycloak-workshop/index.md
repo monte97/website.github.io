@@ -10,7 +10,8 @@ menu:
     parent: projects
     weight: 10
 technologies: ["Keycloak", "OAuth2", "OpenID Connect", "LDAP", "Docker"]
-categories: ["Security", "Identity", "Workshop"]
+categories: ["Security", "Identity Management", "Workshop"]
+reviewed: false
 ---
 
 ## Overview

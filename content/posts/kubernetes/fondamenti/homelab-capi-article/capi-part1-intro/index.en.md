@@ -8,8 +8,9 @@ menu:
     identifier: CAPI-1
     weight: 15
     parent: CAPI
-tags: ["Kubernetes", "CAPI", "Cluster API", "Infrastructure as Code", "DevOps", "Automation"]
+tags: ["Kubernetes", "CAPI", "Cluster API", "Infrastructure as Code", "DevOps", "Automazione"]
 categories: ["Kubernetes", "Cloud Native", "Infrastructure"]
+reviewed: true
 ---
 ## The Problem of Manual Kubernetes Management
 

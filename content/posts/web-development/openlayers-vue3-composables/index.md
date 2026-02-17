@@ -8,9 +8,10 @@ menu:
     identifier: openlayers-vue3-composables
     weight: 20
     parent: WEBDEV
-tags: ["Vue3", "OpenLayers", "TypeScript", "Nuxt3", "Composables"]
+tags: ["Vue", "OpenLayers", "TypeScript", "Nuxt", "Composables"]
 categories: ["Frontend", "Web Development"]
 draft: true
+reviewed: true
 ---
 
 ## Reattività e oggetti imperativi: il conflitto
