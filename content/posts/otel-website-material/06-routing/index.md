@@ -1,7 +1,7 @@
 ---
-title: "OpenTelemetry in Produzione: Routing dei Dati"
+title: "OpenTelemetry in Produzione: Routing dei Dati per Compliance e Costi"
 date: 2026-02-12T10:00:00+01:00
-description: "Come separare log audit da log tecnici con il routing connector dell'OTel Collector. Scenario demo e use case compliance."
+description: "Separare log audit da log tecnici con il routing connector dell'OTel Collector. Demo, compliance GDPR/SOC 2 e retention differenziata."
 menu:
   sidebar:
     name: "Routing dei Dati"
@@ -11,20 +11,14 @@ menu:
 tags: ["OpenTelemetry", "Observability", "Routing", "Compliance", "Production"]
 categories: ["Observability", "DevOps"]
 draft: true
+reviewed: false
 ---
 
-L'[articolo precedente](https://montelli.dev/posts/otel-website-material/05-management/) affronta il primo problema della produzione: il **volume**. Con tail sampling e retention, il volume si riduce del 90% senza perdere visibilita' sugli errori. Ma resta una domanda: i dati che restano, **dove finiscono?**
+Immaginate di ricevere una richiesta dal team compliance: "Servono i log di audit degli ultimi tre anni per l'audit SOC 2." Aprite Grafana, cercate in Loki e scoprite che la retention massima è 30 giorni. I log di audit sono stati cancellati insieme ai debug log, perché vivevano tutti nello stesso backend. Nessuna separazione, nessuna policy dedicata.
+
+L'[articolo precedente](https://montelli.dev/posts/otel-website-material/05-management/) affronta il primo problema della produzione: il **volume**. Con tail sampling e retention, il volume si riduce del 90% senza perdere visibilità sugli errori. Ma resta una domanda: i dati che restano, **dove finiscono?**
 
 Oggi tutto finisce nello stesso backend. Log di debug, errori applicativi e audit trail vivono nella stessa istanza Loki. In sviluppo funziona. In produzione potrebbe essere un problema di compliance o di gestione.
-
-**Struttura dell'articolo:**
-1. Dati diversi, requisiti diversi
-2. Instradare in base al contenuto
-3. Il Collector decide la destinazione
-4. L'applicazione marca, il Collector instrada
-5. Un servizio dedicato per ogni destinazione
-6. Ogni rotta ha il suo lifecycle
-7. Demo, use case avanzati e checklist
 
 ---
 
@@ -88,7 +82,7 @@ Il concetto è semplice: **dati diversi hanno requisiti diversi**. Convogliare d
 
 ## Instradare in base al contenuto
 
-L'OTel Collector puo' fare di piu' che raccogliere e inoltrare. Con il **routing connector**, diventa un router che instrada ogni dato in base ai suoi attributi.
+L'OTel Collector può fare di più che raccogliere e inoltrare. Con il **routing connector**, diventa un router che instrada ogni dato in base ai suoi attributi.
 
 ### Architettura
 
@@ -338,7 +332,7 @@ Il punto chiave: separare fisicamente la destinazione permette di applicare **re
 
 ## Ogni rotta ha il suo lifecycle
 
-Separare le destinazioni non basta: ogni destinazione deve avere una **strategia di persistenza** coerente con il tipo di dato che riceve. L'[articolo precedente](../03_data_management/article.md) mostra come configurare una retention unica (Tempo, 7 giorni) per tutte le trace. Con il routing, si possono applicare policy diverse per ogni flusso.
+Separare le destinazioni non basta: ogni destinazione deve avere una **strategia di persistenza** coerente con il tipo di dato che riceve. L'[articolo precedente](/posts/otel-website-material/05-management/) mostra come configurare una retention unica (Tempo, 7 giorni) per tutte le trace. Con il routing, si possono applicare policy diverse per ogni flusso.
 
 ### Mappa completa: rotta, destinazione, persistenza
 
@@ -403,7 +397,7 @@ CREATE RULE no_update AS ON UPDATE TO audit_logs DO INSTEAD NOTHING;
 CREATE RULE no_delete AS ON DELETE TO audit_logs DO INSTEAD NOTHING;
 ```
 
-Le `RULE` PostgreSQL impediscono qualsiasi modifica o cancellazione dei record dopo l'inserimento. Il campo `checksum` permette di verificare l'integrita' del payload in qualsiasi momento.
+Le `RULE` PostgreSQL impediscono qualsiasi modifica o cancellazione dei record dopo l'inserimento. Il campo `checksum` permette di verificare l'integrità del payload in qualsiasi momento.
 
 ### Archiviazione a lungo termine: hot/warm/cold
 
@@ -415,7 +409,7 @@ Per retention di anni, mantenere tutti i record su PostgreSQL non è efficiente.
 | **Cold** | S3 Standard | 90 giorni - 7 anni | ~$0.023 | Athena/BigQuery, secondi-minuti |
 | **Archive** | S3 Glacier | 7+ anni | ~$0.004 | Ore per il restore |
 
-L'export da hot a cold puo' essere un cron job o un processo batch:
+L'export da hot a cold può essere un cron job o un processo batch:
 
 ```bash
 # Export giornaliero: audit log > 90 giorni → S3
@@ -432,7 +426,7 @@ Dopo l'export, i record cold possono essere rimossi da PostgreSQL (disabilitando
 
 ### Collegamento con il tail sampling
 
-Le strategie di persistenza si integrano con il [tail sampling dell'articolo precedente](../03_data_management/article.md) in una pipeline completa:
+Le strategie di persistenza si integrano con il [tail sampling dell'articolo precedente](/posts/otel-website-material/05-management/) in una pipeline completa:
 
 ```text
 Applicazione
@@ -636,7 +630,7 @@ Se tutti i check passano, il routing è pronto per il roll-out.
 - [OTel Collector Configuration](https://opentelemetry.io/docs/collector/configuration/)
 
 **Articoli correlati:**
-- [Tail Sampling e Retention](../03_data_management/article.md) - Ridurre il volume prima del routing
+- [Tail Sampling e Retention](/posts/otel-website-material/05-management/) - Ridurre il volume prima del routing
 
 ---
 
