@@ -11,6 +11,7 @@ menu:
 tags: ["Scala", "Pekko", "Akka", "JVM", "Migrazione"]
 categories: ["Backend", "Tecnologie"]
 draft: true
+reviewed: true
 ---
 ## Il cambio licenza di Akka
 
@@ -190,12 +191,13 @@ Se il progetto usa librerie che hanno Akka come dipendenza transitiva, queste co
 
 ## Demo
 
-Il [repository demo](https://github.com/monte97/kafka-pekko) include un consumer Scala/Pekko che mostra l'integrazione Pekko + Avro + Apicurio Registry. Il consumer usa Pekko Connectors Kafka per consumare messaggi Avro da un topic, deserializzarli tramite il registry, e stamparli a console.
+Il [repository demo](https://github.com/monte97/kafka-pekko) include un consumer Scala/Pekko che mostra l'integrazione Pekko + Avro + Apicurio Registry. Il consumer usa il serde nativo di Apicurio (`AvroKafkaDeserializer`) per consumare messaggi Avro da un topic, deserializzarli tramite il registry, e stamparli a console.
 
 Per avviare la demo:
 
 ```bash
-cd docs/demos/kafka-schema-registry
+git clone https://github.com/monte97/kafka-pekko
+cd kafka-pekko
 docker compose up
 ```
 

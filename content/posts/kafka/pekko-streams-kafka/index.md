@@ -11,6 +11,7 @@ menu:
 tags: ["Scala", "Pekko", "Kafka", "Streaming", "Avro"]
 categories: ["Backend", "Tecnologie"]
 draft: true
+reviewed: true
 ---
 ## Il pattern di partenza: while(true) dentro un attore
 
@@ -256,7 +257,8 @@ import io.apicurio.registry.serde.avro.{AvroKafkaDeserializer, AvroKafkaSerializ
 Il [repository demo](https://github.com/monte97/kafka-pekko) contiene un modulo `pekko-patterns/` che implementa entrambi i pattern in un progetto self-contained.
 
 ```bash
-cd docs/demos/kafka-schema-registry
+git clone https://github.com/monte97/kafka-pekko
+cd kafka-pekko
 docker compose up
 ```
 

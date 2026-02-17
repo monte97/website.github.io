@@ -11,6 +11,7 @@ menu:
 tags: ["Kafka", "Avro", "Schema Registry", "Apicurio", "Node.js", "Python"]
 categories: ["Backend", "Tecnologie"]
 draft: true
+reviewed: true
 ---
 ## Il problema: JSON senza contratto
 
@@ -327,7 +328,8 @@ Dalla migrazione del sistema da JSON senza schema ad Avro con Apicurio emergono 
 Il [repository demo](https://github.com/monte97/kafka-pekko) contiene un progetto self-contained avviabile con un solo comando.
 
 ```bash
-cd docs/demos/kafka-schema-registry
+git clone https://github.com/monte97/kafka-pekko
+cd kafka-pekko
 docker compose up
 ```
 
@@ -356,4 +358,4 @@ Per pulire tutto:
 docker compose down -v
 ```
 
-L'intero stack (Kafka KRaft, Apicurio Registry, producer Node.js, consumer Python) richiede meno di 1 GB di RAM e gira su qualsiasi macchina con Docker. Il codice sorgente completo è disponibile nel repository.
+Lo stack base (Kafka KRaft, Apicurio Registry, producer Node.js, consumer Python, consumer Scala) richiede meno di 1 GB di RAM e gira su qualsiasi macchina con Docker. Il codice sorgente completo è disponibile nel repository.
