@@ -77,6 +77,9 @@ open http://localhost/grafana  # Grafana
 
 # Esplora in Grafana
 # Explore → Tempo → Query TraceQL
+
+# Cleanup
+make down
 ```
 
 > **Nota:** La demo include già OpenTelemetry configurato. Per i dettagli di setup, vedi l'[Appendice](#appendice-setup-opentelemetry).
@@ -437,6 +440,15 @@ Questo scenario dimostra dove il distributed tracing offre il vantaggio maggiore
 4. **Clock skew mitigato**: Il waterfall usa timestamp assoluti e relazioni parent-child per ricostruire il flusso. NTP sui nodi e' raccomandato per minimizzare il clock skew tra servizi
 
 **Senza tracing distribuito**, con 4 servizi, ci sono 4! = 24 possibili combinazioni da investigare. **Con il tracing**, il bottleneck è visibile nel waterfall in pochi minuti.
+
+### Cleanup
+
+Al termine degli scenari, per fermare e rimuovere tutti i container:
+
+```bash
+# Cleanup
+make down
+```
 
 ---
 

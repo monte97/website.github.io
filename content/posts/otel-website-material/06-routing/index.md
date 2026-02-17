@@ -10,15 +10,14 @@ menu:
     parent: OBS
 tags: ["OpenTelemetry", "Observability", "Routing", "Compliance", "Production"]
 categories: ["Observability", "DevOps"]
-draft: true
 reviewed: true
 ---
 
-Immaginate di ricevere una richiesta dal team compliance: "Servono i log di audit degli ultimi tre anni per l'audit SOC 2." Aprite Grafana, cercate in Loki e scoprite che la retention massima è 30 giorni. I log di audit sono stati cancellati insieme ai debug log, perché vivevano tutti nello stesso backend. Nessuna separazione, nessuna policy dedicata.
+Immaginate di ricevere una richiesta dal team compliance: "Servono i log di audit degli ultimi tre anni." Aprite Grafana, cercate in Loki e scoprite che la retention massima è 30 giorni. I log di audit sono stati cancellati insieme ai debug log, perché vivevano tutti nello stesso backend. Nessuna separazione, nessuna policy dedicata.
 
 L'[articolo precedente](https://montelli.dev/posts/otel-website-material/05-management/) affronta il primo problema della produzione: il **volume**. Con tail sampling e retention, il volume si riduce del 90% senza perdere visibilità sugli errori. Ma resta una domanda: i dati che restano, **dove finiscono?**
 
-Oggi tutto finisce nello stesso backend. Log di debug, errori applicativi e audit trail vivono nella stessa istanza Loki. In sviluppo funziona. In produzione potrebbe essere un problema di compliance o di gestione.
+Oggi tutto finisce nello stesso backend: log di debug, errori applicativi e audit trail vivono nella stessa istanza Loki. In sviluppo funziona. In produzione potrebbe essere un problema di compliance o di gestione.
 
 ---
 
@@ -59,13 +58,13 @@ Mischiare i flussi crea anche problemi operativi:
 | Problema | Esempio |
 |----------|---------|
 | **Ricerca rumorosa** | Cercare un evento audit tra milioni di log di debug |
-| **Costi uniformi** | Pagare la stessa retention per debug log (utili 24h) e audit log (richiesti 7 anni) |
-| **Accesso indiscriminato** | Sviluppatori che vedono dati sensibili di checkout |
+| **Costi uniformi** | Pagare la stessa retention per debug log (utili 24h) e audit log (richiesti diversi anni) |
+| **Accesso indiscriminato** | Sviluppatori che vedono dati potenzialmente sensibili |
 | **Nessuna priorità** | Un picco di debug log rallenta l'ingest anche per gli audit |
 
 ### Scenario concreto
 
-Per un e-commerce con 100 req/s, il volume giornaliero è:
+Per un applicativo con 100 req/s, il volume giornaliero è:
 
 | Tipo di log | Volume stimato | Utilità | Retention ideale |
 |-------------|---------------|---------|-----------------|
@@ -326,7 +325,7 @@ Il servizio demo semplicemente stampa il payload. In un ambiente reale, l'audit 
 | **Retention** | Policy di retention separata (anni, non giorni) |
 | **Backup** | Replica geografica o export periodico su cold storage |
 
-Il punto chiave: separare fisicamente la destinazione permette di applicare **requisiti diversi** allo stesso flusso di dati. Un database Loki ottimizzato per query veloci non è il posto giusto per un audit trail che deve durare 7 anni.
+Il punto chiave: separare fisicamente la destinazione permette di applicare **requisiti diversi** allo stesso flusso di dati. Un database Loki ottimizzato per query veloci non è il posto giusto per un audit trail che deve durare anni.
 
 ---
 
@@ -451,12 +450,16 @@ Prima il **tail sampling** riduce il volume delle trace (~90%). Poi il **routing
 
 ## Demo: Routing in Azione
 
-Il Module 06 include tutto il necessario per vedere il routing in funzione.
+Il Module 06 include tutto il necessario per vedere il routing in funzione. Il codice completo è nel [repository otel-demo](https://github.com/monte97/otel-demo).
+
+```bash
+git clone https://github.com/monte97/otel-demo
+cd otel-demo
+```
 
 ### 1. Avviare l'infrastruttura
 
 ```bash
-# Dall'interno del repo otel-demo
 make infra-up-otel   # Avvia LGTM stack (Loki, Grafana, Tempo, Prometheus, OTel Collector)
 make infra-up-apps   # Avvia applicazioni di supporto
 make mod06-up        # Avvia shop-service, audit-service e Collector con routing
@@ -487,6 +490,25 @@ Risposta attesa:
 docker logs module-06-advanced-routing-audit-service-1
 ```
 
+Output atteso (estratto semplificato):
+
+```json
+Received Audit Log Batch: {
+  "resourceLogs": [{
+    "resource": { "attributes": [{ "key": "service.name", "value": { "stringValue": "shop-service" } }] },
+    "scopeLogs": [{
+      "logRecords": [{
+        "body": { "stringValue": "User checking out" },
+        "attributes": [
+          { "key": "audit.event", "value": { "boolValue": true } },
+          { "key": "audit.user", "value": { "stringValue": "alice@example.com" } }
+        ]
+      }]
+    }]
+  }]
+}
+```
+
 L'output mostra il batch OTLP ricevuto dall'audit service. Nell'output JSON si possono identificare:
 - I **resource attributes** del servizio (`service.name: shop-service`)
 - Gli **span attributes** aggiunti nel codice (`audit.event: true`, `audit.user: alice@example.com`)
@@ -504,10 +526,14 @@ Aprire Grafana (`http://localhost:3000`) e cercare in Loki:
 
 Il log è presente anche qui. Con la configurazione fan-out del demo, entrambe le destinazioni ricevono il log. Con il routing connector attivo, solo l'audit service riceverebbe i log marcati.
 
-### 5. Fermare il modulo
+### 5. Pulizia
 
 ```bash
+# Fermare il modulo
 make mod06-down
+
+# Pulizia completa dell'infrastruttura
+make infra-down
 ```
 
 ---

@@ -21,6 +21,10 @@ Un servizio Express con pochi endpoint e `console.log` funziona senza problemi i
 Questo articolo copre il passaggio da `console.log` a un sistema di logging strutturato e centralizzato in tre step incrementali, ognuno motivato dai limiti del precedente.
 
 > 👉 Codice completo: [github.com/monte97/otel-demo](https://github.com/monte97/otel-demo) (moduli 01 e 02)
+> ```bash
+> git clone https://github.com/monte97/otel-demo
+> cd otel-demo
+> ```
 
 ---
 
@@ -132,12 +136,15 @@ L'aggiunta di OpenTelemetry rende i log persistenti e centralizzati **senza modi
 
 ### Dipendenze
 
+Oltre a Pino (già installato nello step precedente), servono l'SDK OpenTelemetry e il transport per collegare Pino al Collector:
+
 ```bash
 npm install @opentelemetry/api \
   @opentelemetry/sdk-node \
   @opentelemetry/auto-instrumentations-node \
   @opentelemetry/exporter-logs-otlp-http \
-  @opentelemetry/sdk-logs
+  @opentelemetry/sdk-logs \
+  pino-opentelemetry-transport
 ```
 
 ### File di instrumentazione
@@ -252,6 +259,22 @@ service:
 
 Il Collector riceve i log via OTLP HTTP, li raggruppa in batch e li inoltra a Loki tramite l'endpoint OTLP nativo (disponibile da Loki 3.x). Il Collector funge da punto di controllo: è possibile aggiungere backend aggiuntivi, filtrare log sensibili o applicare sampling modificando solo questa configurazione.
 
+### Avviare lo stack
+
+```bash
+# Avvia Collector, Loki e Grafana in background
+docker compose up -d
+
+# Verifica che i container siano attivi
+docker ps
+```
+
+Una volta che i tre container risultano `healthy` o `running`, avviare il servizio Node.js con l'instrumentazione:
+
+```bash
+node --require ./instrumentation.js index.js
+```
+
 ---
 
 ## Filtrare per livello, utente e azione
@@ -290,6 +313,14 @@ Dopo un riavvio del container, i log restano disponibili in Grafana. La persiste
 | Centralizzare senza strutturare | Log persistenti ma non cercabili | Prima Pino (struttura), poi OTel (centralizzazione) |
 
 > ⚠️ **Security:** non loggare mai token, password o dati personali nei campi strutturati. Con i log centralizzati, un `logger.info({ password })` diventa visibile a chiunque abbia accesso a Grafana.
+
+### Cleanup
+
+Al termine della sessione, per fermare i container e rimuovere i volumi:
+
+```bash
+docker compose down -v
+```
 
 ---
 

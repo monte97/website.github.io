@@ -15,7 +15,7 @@ reviewed: true
 
 Nel [tutorial precedente](https://montelli.dev/posts/otel-website-material/04-correlation/) abbiamo strumentato un e-commerce con OpenTelemetry e risolto tre scenari di debug: silent failure, latency spike, fan-out. Tutto funzionava: trace complete, errori visibili, latenza misurabile.
 
-C'è un dettaglio che non abbiamo affrontato: ogni singola request generava una trace. In sviluppo è il comportamento desiderato. In produzione, è un problema. Per chi non ha familiarità con distributed tracing e OTel, si consiglia la lettura del [tutorial introduttivo](https://theredcode.it/devops/observability-monitoring-intro/).
+C'è un dettaglio che però non abbiamo affrontato: ogni singola request generava una trace che viene salvata in modo indefinito all'interno del sistema. In sviluppo è il comportamento accettabile ma in un contesto reale? E' un problema. 
 
 **Struttura dell'articolo:**
 1. Il problema: volume e crescita infinita
@@ -31,7 +31,7 @@ C'è un dettaglio che non abbiamo affrontato: ogni singola request generava una 
 
 ## Il Problema: Volume e Crescita Infinita
 
-Il setup del tutorial precedente tracciava il 100% del traffico. In un ambiente con poche request al minuto questo è trascurabile. Proviamo a proiettare lo stesso approccio su numeri realistici, usando come riferimento il [checkout flow di MockMart](https://github.com/monte97/MockMart): una singola operazione che coinvolge 5 servizi e produce ~8 span.
+Il setup del tutorial precedente tracciava, e memorizza, il 100% del traffico. Proviamo a proiettare lo stesso approccio su numeri realistici, usando come riferimento il [checkout flow di MockMart](https://github.com/monte97/MockMart): una singola operazione che coinvolge 5 servizi e produce ~8 span.
 
 ### Quanto pesano le trace
 
@@ -115,7 +115,9 @@ OTel mette a disposizione [diverse policy standard](https://github.com/open-tele
 | `latency` | KEEP 100% trace >1s | Performance issue visibili |
 | `probabilistic` | SAMPLE 10% del resto | Baseline per capire il "normale" |
 
-Oltre a queste, il processor supporta policy basate sul contenuto degli span: è possibile filtrare per attributi (`string_attribute`), nome del servizio, o combinazioni di condizioni (`and`, `composite`). Un esempio concreto viene mostrato più avanti con la [policy per audit events](#aggiungere-una-policy-custom-audit-events).
+Oltre a queste, il processor supporta policy basate sul contenuto degli span: è possibile filtrare per attributi (`string_attribute`), nome del servizio, o combinazioni di condizioni (`and`, `composite`). 
+
+> Un esempio concreto viene mostrato più avanti con la [policy per audit events](#aggiungere-una-policy-custom-audit-events).
 
 
 ### Configurazione OTel Collector
@@ -173,7 +175,7 @@ La config completa è in [`otel-config/data-management/otel-collector-config.yam
 
 ### Aggiungere una Policy Custom: Audit Events
 
-Le tre policy base coprono errori, latenza e traffico normale. Resta un caso: le operazioni critiche per il business o la sicurezza (checkout, login, payment) che vanno mantenute sempre, indipendentemente da errori o latenza.
+Le tre policy base coprono errori, latenza e traffico normale. Resta un caso: le operazioni critiche per il business o la sicurezza (checkout, login, payment) che in, questo esempio, decidiamo di mantere sempre, indipendentemente da errori o latenza.
 
 Il `tail_sampling` processor supporta policy basate su attributi. È sufficiente aggiungere una policy `string_attribute` che cerchi un attributo specifico sugli span:
 
@@ -258,6 +260,12 @@ MockMart offre due configurazioni:
 Gli scenari 1-2-3 del tutorial precedente usano lo stack base. Questo articolo usa lo stack data management.
 
 ### Setup
+
+> **Prerequisito**: il repo MockMart deve essere clonato e funzionante. Se non lo si ha già dal [tutorial precedente](/posts/otel-website-material/04-correlation/):
+> ```bash
+> git clone https://github.com/monte97/MockMart
+> cd MockMart
+> ```
 
 ```bash
 # Ferma eventuale stack base
@@ -351,6 +359,15 @@ Il compactor ha eliminato la trace.
 
 # Controlla metriche tail sampling
 ./scripts/scenario-4-data-management.sh --check
+```
+
+### Cleanup
+
+Al termine dello scenario, per fermare e rimuovere tutti i container:
+
+```bash
+# Cleanup
+make down
 ```
 
 ---
@@ -612,7 +629,7 @@ Con tail sampling e retention configurati, il sistema resta sostenibile senza pe
 
 ## Checklist Finale
 
-### Prima di Andare in Production
+### Configurazione Iniziale
 
 **Setup:**
 - [ ] Volume stimato per lo scenario (con il calculator)

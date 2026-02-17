@@ -67,6 +67,12 @@ Prima di parlare di filtering, è utile vedere quanto è semplice instrumentare 
 
 A partire dalla versione 26, Keycloak supporta OpenTelemetry nativamente, senza bisogno del Java Agent.
 
+> **Setup**: il codice completo è nel [repository MockMart](https://github.com/monte97/MockMart).
+> ```bash
+> git clone https://github.com/monte97/MockMart
+> cd MockMart
+> ```
+
 **Stack completo (estratto semplificato da `docker-compose.keycloak-pii.yml`):**
 
 > **Nota:** L'estratto seguente è semplificato per leggibilità. Il compose completo include Postgres, application services (shop-api, shop-ui), healthcheck, volumes e configurazioni aggiuntive. Vedi il [repository](https://github.com/monte97/MockMart) per il setup completo.
@@ -134,6 +140,12 @@ curl -X POST http://localhost/auth/realms/techstore/protocol/openid-connect/toke
   -d "client_id=shop-ui" \
   -d "username=mario" \
   -d "password=mario123"
+```
+
+**Output atteso:**
+
+```json
+{"access_token":"eyJhbG...","token_type":"bearer","expires_in":300}
 ```
 
 In Grafana (http://localhost/grafana) → Explore → Tempo, con la query:
@@ -327,6 +339,12 @@ curl -X POST http://localhost/auth/realms/techstore/protocol/openid-connect/toke
 - **No email in plaintext**
 - **Database queries sanitized**
 - **User IDs hashed**
+
+**Cleanup:**
+
+```bash
+docker compose -f docker-compose.keycloak-pii.yml down -v
+```
 
 ### Il debug resta intatto
 
@@ -560,15 +578,7 @@ Il filtering PII consente l'adozione di strumenti di observability senza conflit
 
 ## Prossimi Passi
 
-**Demo completa:** [github.com/monte97/MockMart](https://github.com/monte97/MockMart)
-
-```bash
-git clone https://github.com/monte97/MockMart
-cd MockMart
-make up-keycloak-pii          # Config safe (con filtering)
-# oppure
-make up-keycloak-pii-unsafe   # Config unsafe (mostra problema)
-```
+Il codice completo, comprese le configurazioni safe e unsafe, è disponibile nel [repository MockMart](https://github.com/monte97/MockMart). Per lanciare la demo con un solo comando: `make up-keycloak-pii` (safe) oppure `make up-keycloak-pii-unsafe` (unsafe).
 
 **Prossimi articoli:**
 
