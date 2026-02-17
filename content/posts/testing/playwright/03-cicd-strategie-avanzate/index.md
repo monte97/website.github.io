@@ -10,7 +10,6 @@ menu:
     parent: PLAYWRIGHT
 tags: ["Playwright", "CI/CD", "GitHub Actions", "Sharding", "Agent-Driven Development"]
 categories: ["Testing", "DevOps", "Workshop"]
-draft: true
 reviewed: true
 ---
 

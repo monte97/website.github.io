@@ -14,9 +14,7 @@ draft: true
 reviewed: true
 ---
 
-Quante volte hai aggiunto un `console.log` "temporaneo" per capire perché una richiesta falliva in produzione? L'output è una stringa piatta, senza timestamp, senza livello, senza contesto. Se il container si riavvia, quei log spariscono. Se ci sono più istanze, devi saltare da un `docker logs` all'altro sperando di trovare la riga giusta. È il modo più rapido per iniziare e il primo a crollare quando serve davvero.
-
-Un servizio Express con pochi endpoint e `console.log` funziona senza problemi in sviluppo: l'output è visibile nel terminale, gli errori saltano all'occhio, il ciclo di feedback è immediato. L'assunzione implicita è che questo sia sufficiente anche oltre il laptop. In produzione, con più istanze dietro un load balancer e container che vengono riavviati, non lo è.
+Quante volte hai aggiunto un `console.log` "temporaneo" per capire perché una richiesta falliva in produzione? L'output è una stringa piatta, senza timestamp, senza livello, senza contesto e se il container si riavvia, quei log spariscono. Se ci sono più istanze, devi saltare da un `docker logs` all'altro sperando di trovare la riga giusta. È il modo più rapido per iniziare ma anche il primo a crollare quando serve davvero.
 
 Questo articolo copre il passaggio da `console.log` a un sistema di logging strutturato e centralizzato in tre step incrementali, ognuno motivato dai limiti del precedente.
 
@@ -56,7 +54,7 @@ In sintesi: formato, persistenza e centralizzazione mancano tutti. Le sezioni su
 
 ## Da stringhe piatte a JSON filtrabili
 
-Il primo step non richiede infrastruttura, solo una dipendenza:
+Il primo step non richiede infrastruttura, solo solo aggiungere una libreria specificatamente pensata per gestire il logging. In questi esempi useremo [Pino](https://github.com/pinojs/pino).
 
 ```bash
 npm install pino
@@ -126,7 +124,7 @@ Ogni chiamata a `req.logger.info(...)` include automaticamente `requestId`, `met
 
 ### Limiti
 
-I log sono strutturati e performanti ([benchmark Pino](https://github.com/pinojs/pino/blob/main/docs/benchmarks.md): fino a 5x più veloce di Winston), ma restano locali al container. Un restart li cancella. Con più istanze, serve comunque accedere a ciascuna separatamente.
+I log sono strutturati e performanti ([benchmark Pino](https://github.com/pinojs/pino/blob/main/docs/benchmarks.md)), ma restano locali al container. Un restart li cancella e con più istanze, serve comunque accedere a ciascuna separatamente.
 
 ---
 
@@ -208,8 +206,6 @@ services:
 
   loki:
     image: grafana/loki:3.6.5
-    volumes:
-      - loki-data:/loki
     ports:
       - "3100:3100"
 
@@ -219,14 +215,11 @@ services:
       - "3000:3000"
     environment:
       - GF_AUTH_ANONYMOUS_ENABLED=true
-      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - GF_AUTH_DISABLE_LOGIN_FORM=true
-
-volumes:
-  loki-data:
 ```
 
-> **Nota:** `GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer` consente l'accesso a Grafana senza login e senza form di autenticazione. Il ruolo `Viewer` è sufficiente per esplorare i log. In produzione, abilitare l'autenticazione ([documentazione Grafana](https://grafana.com/docs/grafana/latest/setup-grafana/configure-access/configure-authentication/)).
+> **Nota:** `GF_AUTH_ANONYMOUS_ORG_ROLE=Admin` consente l'accesso a Grafana senza login con privilegi amministrativi. È comodo in sviluppo per configurare data source e dashboard. In produzione, abilitare l'autenticazione ([documentazione Grafana](https://grafana.com/docs/grafana/latest/setup-grafana/configure-access/configure-authentication/)).
 
 > **Nota:** Dopo il primo avvio, è necessario aggiungere manualmente Loki come data source in Grafana (URL: `http://loki:3100`). In alternativa, è possibile automatizzare questo passaggio con i [file di provisioning di Grafana](https://grafana.com/docs/grafana/latest/administration/provisioning/#data-sources).
 
@@ -309,7 +302,7 @@ Dopo un riavvio del container, i log restano disponibili in Grafana. La persiste
 | Concatenare stringhe nei log | `logger.info("User " + id)` non è filtrabile | Usare oggetti: `logger.info({ userId }, 'msg')` |
 | Tutto a livello `info` | Il livello perde utilità | `debug` per dettaglio, `warn` per anomalie, `error` per fallimenti |
 | `serviceName` mancante | Log indistinguibili in Grafana | Impostarlo nell'SDK o via `OTEL_SERVICE_NAME` |
-| Nessun volume per Loki | `docker compose down` cancella lo storage | Montare un volume persistente dedicato |
+| Nessun volume per Loki | `docker compose down` cancella i log ingeriti | In produzione, montare un volume persistente dedicato |
 | Centralizzare senza strutturare | Log persistenti ma non cercabili | Prima Pino (struttura), poi OTel (centralizzazione) |
 
 > ⚠️ **Security:** non loggare mai token, password o dati personali nei campi strutturati. Con i log centralizzati, un `logger.info({ password })` diventa visibile a chiunque abbia accesso a Grafana.

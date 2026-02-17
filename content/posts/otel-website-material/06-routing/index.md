@@ -533,7 +533,7 @@ Il log è presente anche qui. Con la configurazione fan-out del demo, entrambe l
 make mod06-down
 
 # Pulizia completa dell'infrastruttura
-make infra-down
+make infra-down-all
 ```
 
 ---

@@ -10,18 +10,18 @@ menu:
     parent: PLAYWRIGHT
 tags: ["Playwright", "E2E", "Testing", "OpenTelemetry", "VisualTesting", "Observability"]
 categories: ["Testing", "DevOps"]
-draft: true
 reviewed: true
 ---
 
-Il test E2E fallisce con un timeout, lo screenshot mostra uno spinner infinito, e l'unica informazione utile è "qualcosa nel backend non ha risposto". I test Playwright verificano il percorso utente: login, aggiungi al carrello, checkout. Funziona, finché il problema è nel frontend. Ma il checkout di un e-commerce a microservizi attraversa 4 servizi diversi, e quando il test fallisce con timeout Playwright vede solo il frontend. Il backend resta una **black box**.
+Il test E2E fallisce con un timeout, lo screenshot mostra uno spinner infinito, e l'unica informazione utile è "qualcosa nel backend non ha risposto". I test Playwright verificano il percorso utente: login, aggiungi al carrello, checkout. Ma il checkout di un e-commerce a microservizi attraversa 4 servizi diversi, e quando il test fallisce con timeout Playwright vede solo il frontend. Il backend resta una **black box**.
 
 Collegare i test Playwright alle trace OpenTelemetry ci permette di rompere quella black box: quando un test fallisce, apriamo la trace in Grafana e identifichiamo esattamente quale microservizio è il colpevole.
 
-Per chi non ha ancora familiarità con Playwright, è consigliabile partire dall'[articolo introduttivo](https://theredcode.it/testing/testing-e2e-perche-iniziare-con-playwright/).
+👉 [Articolo Introduttivo Playwright](https://theredcode.it/testing/testing-e2e-perche-iniziare-con-playwright/).
+👉 [Articolo Introduttivo OpenTelemetry](https://montelli.dev/posts/otel-website-material/04-correlation/)
 
 **Cosa copriamo:**
-1. Setup rapido MockMart (l'ambiente demo)
+1. Setup rapido MockMart (ambiente demo)
 2. Autenticazione Keycloak con `storageState`
 3. Trace correlation: dal test al backend
 4. Visual testing come complemento
@@ -64,13 +64,11 @@ make health
 
 L'app è disponibile su `http://localhost`. Il progetto Playwright è in `demo/mockmart-e2e/` nel [repository del workshop](https://github.com/monte97/workshop-playwright).
 
-> Le credenziali sopra sono per l'ambiente demo locale. In contesti reali, vanno gestite tramite variabili d'ambiente (`process.env`) e non hardcoded nel codice di test.
-
 ---
 
 ## Login una volta, riusa ovunque
 
-MockMart usa Keycloak (OAuth2/OIDC) per l'autenticazione. In un contesto E2E, ripetere il flusso OAuth per ogni test è lento e fragile. Playwright risolve con `storageState`: si esegue il login una volta, si salvano cookies e localStorage, e si riusano in tutti i test.
+Prima di iniziare sistemiamo una situazione scomoda. La nostra applicazione utilizza [Keycloak](https://www.keycloak.org/) per gestire l'autenticazione. Normalmente in un contesto E2E saremmo chiamati a ripetere il flusso OAuth per ogni test, introducendo una importante fonte di ritardo. Playwright risolve con `storageState`: si esegue il login una volta, si salvano cookies e localStorage, e si riusano in tutti i test.
 
 ![Keycloak login page di MockMart](imgs/keycloak-login.webp)
 

@@ -10,13 +10,14 @@ menu:
     identifier: playwright-e2e
     parent: PLAYWRIGHT
     weight: 2
-draft: true
 reviewed: true
 ---
 
 Test che passano al terzo tentativo, `sleep(5000)` disseminati nel codice, suite che girano per 20 minuti e falliscono in modo non deterministico. Il testing end-to-end resta un pilastro per la qualità delle applicazioni web moderne - simulare l'esperienza utente reale fornisce un livello di confidenza impossibile da ottenere con test unitari o di integrazione isolati - ma troppo spesso i costi superano i benefici.
 
-Playwright risolve sistematicamente queste problematiche attraverso un'architettura moderna e un'eccezionale developer experience. In questo articolo ne analizziamo architettura, tooling e pattern avanzati. Si tratta di un approfondimento dell'overview pubblicata su TheRedCode: [Testing E2E: perché iniziare con Playwright](https://theredcode.it/testing/testing-e2e-perche-iniziare-con-playwright/).
+Playwright risolve sistematicamente queste problematiche attraverso un'architettura moderna e un'eccezionale developer experience. In questo articolo ne analizziamo architettura, tooling e pattern avanzati. 
+
+👉 Questo è pprofondimento dell'overview pubblicata su TheRedCode: [Testing E2E: perché iniziare con Playwright](https://theredcode.it/testing/testing-e2e-perche-iniziare-con-playwright/).
 
 👉 Il codice completo degli esempi è nel repository: [monte97/workshop-playwright](https://github.com/monte97/workshop-playwright)
 
@@ -91,7 +92,6 @@ L'adozione di Playwright è cresciuta esponenzialmente dal suo rilascio nel 2020
 
 ![Playwright GitHub Stars Growth](imgs/star-history-20251111.png)
 
-Framework utilizzato da aziende come Microsoft, Airbnb, Uber, e molte altre per garantire la qualità delle loro applicazioni web mission-critical.
 
 ### Setup Immediato
 

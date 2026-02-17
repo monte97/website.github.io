@@ -12,6 +12,7 @@ tags: ["OpenTelemetry", "Keycloak", "GDPR", "Security", "Observability"]
 categories: ["Observability", "Security"]
 draft: true
 reviewed: true
+comment: "Mi convince veramente poco, come problematica da analizzare ci sta ma non in questo modo, mi sembra tutto finto"
 ---
 
 Cosa succede quando abiliti il tracing su un identity provider e ti ritrovi username, password e token JWT leggibili in chiaro su Grafana? I dati sensibili che Keycloak gestisce - credenziali, token, sessioni - finiscono nel backend di observability insieme ai trace, creando un rischio concreto di data breach e violazione GDPR.
