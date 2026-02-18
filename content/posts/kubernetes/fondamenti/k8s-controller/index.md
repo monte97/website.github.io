@@ -19,7 +19,9 @@ Quando si esegue `kubectl apply -f deployment.yaml`, i Pod appaiono nel cluster.
 
 Il controller pattern è il meccanismo fondamentale su cui poggia l'intera piattaforma. Ogni risorsa applicata - Deployment, Service, Ingress - è gestita da un controller dedicato che osserva, confronta e agisce in un ciclo continuo. Nonostante questo, viene spesso trattato come una black box.
 
-Questo articolo esplora la teoria dietro i controller Kubernetes, dalla loro architettura interna fino alla costruzione di un controller custom con `controller-runtime`. La [serie su Cluster API](/posts/kubernetes/fondamenti/homelab-capi-article/capi-part1-intro/) introduce concetti come *reconciliation loop* e *controller pattern* - qui vengono analizzati nel dettaglio.
+Questo articolo esplora la teoria dietro i controller Kubernetes, dalla loro architettura interna fino alla costruzione di un controller custom con `controller-runtime`. La [serie su Cluster API](/posts/kubernetes/homelab-capi-article/capi-part1-intro/) introduce concetti come *reconciliation loop* e *controller pattern* - qui vengono analizzati nel dettaglio.
+
+👉 Il codice completo dell'esempio è nel repository: [monte97/k8s-controller-demo](https://github.com/monte97/k8s-controller-demo)
 
 ---
 
@@ -64,7 +66,7 @@ spec:
 #   availableReplicas: 3
 ```
 
-Il Deployment Controller osserva che `spec.replicas` è 3. Se `status.readyReplicas` è 2, crea un nuovo Pod. Se è 4 (magari per un errore), ne elimina uno. Il controller non sa *perché* c'è divergenza - sa solo che deve convergere.
+Il Deployment Controller osserva che `spec.replicas` è 3. Se `status.readyReplicas` è 2, crea un nuovo Pod. Se è 4 (magari per un errore), ne elimina uno. Il controller non sa *perché* c'è divergenza, sa solo come deve intervenire per ristabilire l'ordine.
 
 ```text
 Reconciliation Loop
@@ -85,6 +87,29 @@ Reconciliation Loop
 ## Anatomia di un Controller
 
 Un controller Kubernetes non è un semplice script che gira in loop. È un componente architetturale composto da più parti, progettato per scalare e per essere resiliente. Di seguito i tre componenti principali.
+
+Ecco la struttura ad alto livello di un controller, prima di entrare nel dettaglio di ciascun componente:
+
+```go
+// Struttura semplificata di un controller Kubernetes
+func runController() {
+    // 1. Informer: osserva le risorse via LIST+WATCH
+    informer := cache.NewInformer(apiServer, resource, handler)
+
+    // 2. Work Queue: riceve le chiavi degli oggetti modificati
+    queue := workqueue.NewRateLimitingQueue()
+
+    informer.AddEventHandler(func(obj) {
+        key := obj.Namespace + "/" + obj.Name
+        queue.Add(key)  // Deduplicazione automatica
+    })
+
+    // 3. Worker: estrae chiavi dalla coda e riconcilia
+    for key := queue.Get() {
+        reconcile(key)  // Idempotente: può essere chiamata N volte
+    }
+}
+```
 
 ### Informer e Cache Locale
 
@@ -176,7 +201,7 @@ Il ReplicaSet Controller ha un compito più semplice ma altrettanto critico: gar
 
 ### Il Pattern si Ripete
 
-Questo schema - osserva, confronta, agisci - si ripete in ogni angolo di Kubernetes. L'[Ingress Controller](/posts/kubernetes/fondamenti/article-ingress-k8s/) osserva le risorse Ingress e riconfigura il reverse proxy. I [controller di Cluster API](/posts/kubernetes/fondamenti/homelab-capi-article/capi-part2-internals/) osservano le Custom Resource che descrivono cluster e macchine, e riconciliano l'infrastruttura sottostante. Il pattern è lo stesso, cambiano solo le risorse osservate e le azioni intraprese.
+Questo schema - osserva, confronta, agisci - si ripete in ogni angolo di Kubernetes. L'[Ingress Controller](/posts/kubernetes/fondamenti/article-ingress-k8s/) osserva le risorse Ingress e riconfigura il reverse proxy. I [controller di Cluster API](/posts/kubernetes/homelab-capi-article/capi-part2-internals/) osservano le Custom Resource che descrivono cluster e macchine, e riconciliano l'infrastruttura sottostante. Il pattern è lo stesso, cambiano solo le risorse osservate e le azioni intraprese.
 
 ---
 
@@ -197,7 +222,7 @@ Esempi noti di Operator:
 * **cert-manager** - gestisce il ciclo di vita dei certificati TLS
 * **Cluster API** - gestisce il ciclo di vita di interi cluster Kubernetes
 
-Nella prossima sezione costruiremo un Operator minimale per comprendere il meccanismo dall'interno.
+Nella prossima sezione costruiremo un Operator minimale per comprendere il meccanismo dall'interno. La CRD e il controller che seguono non derivano da un esempio ufficiale: sono costruiti da zero per isolare i concetti fondamentali senza la complessità di un progetto scaffoldato con [Kubebuilder](https://book.kubebuilder.io/). Per progetti reali, Kubebuilder o [Operator SDK](https://sdk.operatorframework.io/) forniscono struttura, testing e code generation.
 
 Ecco la CRD che useremo - un `EchoConfig` che descrive un semplice servizio echo:
 
@@ -487,6 +512,9 @@ L'articolo ha coperto il funzionamento interno dei controller Kubernetes:
 
 Ogni `kubectl apply` attiva esattamente questo meccanismo: un controller confronta l'intent dichiarato con la realtà del cluster e lavora per colmare la distanza.
 
+Il codice completo dell'EchoConfig Controller è disponibile nel repository:
+👉 [monte97/k8s-controller-demo](https://github.com/monte97/k8s-controller-demo)
+
 ---
 
 ## Risorse Utili
@@ -499,8 +527,8 @@ Ogni `kubectl apply` attiva esattamente questo meccanismo: un controller confron
 
 * **[Custom Resource Definitions - Documentazione Ufficiale](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)**: Guida completa alle CRD, dalla definizione dello schema alla validazione.
 
-* **[CAPI Parte 1: Dal Chaos all'Automazione](/posts/kubernetes/fondamenti/homelab-capi-article/capi-part1-intro/)**: Il primo articolo della serie su Cluster API, che utilizza estensivamente il controller pattern.
+* **[CAPI Parte 1: Dal Chaos all'Automazione](/posts/kubernetes/homelab-capi-article/capi-part1-intro/)**: Il primo articolo della serie su Cluster API, che utilizza estensivamente il controller pattern.
 
-* **[CAPI Parte 2: Anatomia di Cluster API](/posts/kubernetes/fondamenti/homelab-capi-article/capi-part2-internals/)**: Approfondimento sull'architettura interna di CAPI e i suoi controller.
+* **[CAPI Parte 2: Anatomia di Cluster API](/posts/kubernetes/homelab-capi-article/capi-part2-internals/)**: Approfondimento sull'architettura interna di CAPI e i suoi controller.
 
 * **[Da port-forward a Ingress](/posts/kubernetes/fondamenti/article-ingress-k8s/)**: Come funziona l'Ingress Controller, un altro esempio pratico del pattern descritto in questo articolo.

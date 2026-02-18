@@ -6,7 +6,7 @@ menu:
   sidebar:
     name: Talos OS
     identifier: CAPI-3
-    weight: 20
+    weight: 22
     parent: CAPI
 tags: ["Kubernetes", "CAPI", "Cluster API", "Infrastructure as Code", "DevOps", "Automazione"]
 categories: ["Kubernetes", "Cloud Native", "Infrastruttura"]
