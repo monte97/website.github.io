@@ -1,16 +1,16 @@
 ---
 title: "Kafka in Pratica 1: Architettura di un Flusso di Eventi"
 date: 2025-08-03T10:00:00+02:00
-description: "Le fondamenta di Apache Kafka, dalla struttura delle partizioni al ruolo della chiave, con esempi pratici in Go."
+description: "Le fondamenta di Apache Kafka, dalla struttura delle partizioni al ruolo della chiave, con esempi pratici in Node.js e Python."
 menu:
   sidebar:
     name: "1. Architettura del Flusso"
     identifier: kafka-series-1
     parent: KAFKA
     weight: 10
-tags: ["Kafka", "Go", "Architettura", "Event Streaming"]
+tags: ["Kafka", "Node.js", "Python", "Architettura", "Event Streaming"]
 categories: ["Backend", "Tecnologie"]
-reviewed: true
+reviewed: false
 ---
 Foto di <a href="https://unsplash.com/it/@jonflobrant?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Jon Flobrant</a> su <a href="https://unsplash.com/it/foto/specchio-dacqua-tra-gli-alberi-sotto-il-cielo-nuvoloso-rB7-LCa_diU?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>
       
@@ -23,33 +23,12 @@ La soluzione non è semplicemente "usare una coda di messaggi". Il cambio di par
 
 [**Apache Kafka**](https://kafka.apache.org/) è una piattaforma di *event streaming* - un log distribuito e replicato che agisce come unica fonte di verità per gli eventi, permettendo ai componenti di reagire in modo asincrono, disaccoppiato e resiliente.
 
-```mermaid
-graph TD
-    subgraph Producers
-        P1[Servizio Pagamenti]
-        P2[Servizio Utenti]
-        P3[Sensori IoT]
-    end
-
-    subgraph Consumers
-        C1[Servizio Notifiche]
-        C2[Dashboard Analytics]
-        C3[Sistema di Auditing]
-    end
-
-    subgraph "Apache Kafka Cluster"
-        K[Topic Eventi]
-    end
-
-    P1 -- Evento 'Pagamento Ricevuto' --> K
-    P2 -- Evento 'Profilo Aggiornato' --> K
-    P3 -- Evento 'Nuova Lettura' --> K
-
-    K -- Evento 'Pagamento Ricevuto' --> C1
-    K -- Tutti gli Eventi --> C2
-    K -- Tutti gli Eventi --> C3
-
-    style K fill:#f9f,stroke:#333,stroke-width:2px
+```text
+Producers                    Kafka Cluster              Consumers
+─────────                    ─────────────              ─────────
+Servizio Pagamenti  ──┐                          ┌──→  Servizio Notifiche
+Servizio Utenti     ──┼──→  [ Topic Eventi ]  ──┼──→  Dashboard Analytics
+Sensori IoT         ──┘                          └──→  Sistema di Auditing
 ```
 
 ---
@@ -67,49 +46,36 @@ La struttura interna è meno intuitiva di quanto sembri. Una partizione non è u
 - **Segmenti di Log (`.log`)**: File che contengono i record veri e propri. Un segmento è "attivo" finché non raggiunge una dimensione massima (es. `segment.bytes`, di default 1GB) o un tempo di vita (`segment.ms`). A quel punto viene chiuso e ne viene creato uno nuovo.
 - **Indici (`.index`, `.timeindex`)**: Per ogni file di segmento `.log`, esistono file di indice corrispondenti. L'indice di offset mappa un offset a una posizione fisica (un byte) nel file di log, permettendo letture rapide senza scansionare il file. L'indice temporale mappa un timestamp al corrispondente offset, che viene poi risolto in posizione fisica tramite l'indice di offset (un lookup a due livelli).
 
-Questa segmentazione ha due vantaggi enormi:
-1.  **Gestione della Retention**: Per eliminare i dati vecchi, Kafka non deve scandagliare il log per cancellare record. Semplicemente, **elimina i file di segmento più vecchi**. Un'operazione `rm` sul file system, incredibilmente veloce ed efficiente.
+Questa segmentazione ha due vantaggi diretti:
+1.  **Gestione della Retention**: Per eliminare i dati vecchi, Kafka non deve scandagliare il log per cancellare record. Semplicemente, **elimina i file di segmento più vecchi**. Un'operazione `rm` sul file system, con costo O(1) indipendente dalla dimensione dei dati.
 2.  **Ricerca Rapida**: Gli indici, che sono molto più piccoli dei file di log, sono memory-mapped (mmap): il sistema operativo ne gestisce il caching nella page cache, permettendo a Kafka di localizzare rapidamente il punto da cui iniziare a leggere i dati, sia per offset che per timestamp.
 
 Questo design è anche alla base della famosa ottimizzazione **zero-copy**. Quando un consumer richiede dei dati, Kafka può inviarli direttamente dal buffer del file system al buffer della scheda di rete, senza che i dati debbano mai essere copiati nello spazio di memoria dell'applicazione Kafka (user-space). Questo è possibile solo perché il formato dei dati su disco è lo stesso di quello inviato sulla rete.
 
-```mermaid
-graph LR
-    subgraph "Directory della Partizione 0"
-        direction LR
-        subgraph "Segmento 0"
-            Log0["00...0.log"]
-            Index0["00...0.index"]
-            TimeIndex0["00...0.timeindex"]
-        end
-        subgraph "Segmento 1 (Attivo)"
-            Log1["00...1.log"]
-            Index1["00...1.index"]
-            TimeIndex1["00...1.timeindex"]
-        end
-    end
-    
-    Index0 -- "Offset -> Byte" --> Log0
-    TimeIndex0 -- "Timestamp -> Offset" --> Index0
-    Index1 -- "Offset -> Byte" --> Log1
-    TimeIndex1 -- "Timestamp -> Offset" --> Index1
-
-    style Log0 fill:#bbf,stroke:#333,stroke-width:2px
-    style Log1 fill:#bbf,stroke:#333,stroke-width:2px
+```text
+Partizione 0/
+├── Segmento 0
+│   ├── 00000000000000000000.log         ← record
+│   ├── 00000000000000000000.index       ← offset → byte position
+│   └── 00000000000000000000.timeindex   ← timestamp → offset
+└── Segmento 1 (attivo)
+    ├── 00000000000000000042.log         ← record
+    ├── 00000000000000000042.index       ← offset → byte position
+    └── 00000000000000000042.timeindex   ← timestamp → offset
 ```
 
-### La Chiave del Messaggio: Il Patto con l'Ordinamento
+### La Chiave del Messaggio e l'Ordinamento
 
-La **chiave** di un messaggio è forse la sua proprietà più importante e fraintesa. Non è un semplice metadato. È un **contratto sull'ordinamento**.
+La **chiave** di un messaggio non è un semplice metadato. È un **contratto sull'ordinamento**.
 
-Quando un producer invia un messaggio, il **Partitioner** di default applica una logica ferrea:
+Quando un producer invia un messaggio, il **Partitioner** di default applica una formula deterministica:
 `hash(chiave) % numero_partizioni`
 
 Questo significa che **tutti i messaggi con la stessa chiave finiscono nella stessa partizione**. Poiché una partizione è un log ordinato, questo fornisce una garanzia fondamentale: **l'ordine di invio per una data chiave è preservato**.
 
 > **Nota**: questa garanzia vale a patto che il numero di partizioni del topic resti costante. Se si aggiungono partizioni, la formula `hash(key) % N` produce risultati diversi e messaggi con la stessa chiave possono finire in partizioni diverse.
 
-Nel progetto di tracciamento GPS, usare `VehicleID` come chiave è la scelta più naturale in questo contesto. Garantisce che la sequenza di posizioni per il veicolo `vehicle-01` venga processata nell'ordine esatto in cui è stata emessa, permettendo di calcolare velocità o tracciare percorsi senza ambiguità. Inviare dati di posizione senza una chiave comporterebbe la perdita dell'ordinamento per veicolo.
+Nel progetto di monitoraggio sensori, usare `sensor_id` come chiave è la scelta più naturale. Garantisce che la sequenza di letture per il sensore `sensor-A1` venga processata nell'ordine esatto in cui è stata emessa, permettendo di rilevare trend di temperatura o anomalie senza ambiguità. Inviare letture senza una chiave comporterebbe la perdita dell'ordinamento per sensore.
 
 E se la chiave è nulla? Le versioni più vecchie di Kafka usavano un semplice round-robin, ma questo era inefficiente (creava tanti piccoli batch). Il **Sticky Partitioner** (default da Kafka 2.4) è più intelligente: invia tutti i messaggi senza chiave a una singola partizione finché il batch non è pieno, per poi passare alla partizione successiva. Questo migliora la compressione e riduce la latenza.
 
@@ -122,7 +88,7 @@ La durabilità in Kafka è una configurazione esplicita. Si basa su un modello d
 Ogni partizione ha un **leader** (l'unica replica che accetta scritture) e zero o più **follower**. L'insieme delle ISR è la lista dei follower che sono "sufficientemente al passo" con il leader (configurabile tramite `replica.lag.time.max.ms`).
 
 Quando un producer scrive, la sua garanzia di durabilità è determinata dall'impostazione `acks`:
--   `acks=0`: "Spara e dimentica". Massima performance, ma alto rischio di perdita dati.
+-   `acks=0`: Fire-and-forget. Massima performance, ma il producer non ha conferma di ricezione.
 -   `acks=1`: Attende la conferma solo dal leader. Un buon compromesso, ma se il leader fallisce un istante dopo aver confermato ma prima che i follower abbiano replicato, il dato è perso. Era il default fino a Kafka 2.x.
 -   `acks=all` (o `-1`): Attende la conferma dal leader *dopo* che tutte le repliche nell'insieme ISR hanno ricevuto il messaggio. Questa è la massima garanzia di durabilità. **Da Kafka 3.0 in poi è il default**, insieme a `enable.idempotence=true`.
 
@@ -132,148 +98,139 @@ Per evitare che un fallimento a catena delle repliche porti a scrivere con `acks
 
 ---
 
-## Esempi Pratici con Go e la Nostra Demo
+## Esempi Pratici: Producer Node.js e Consumer Python
 
-Per rendere concreti questi concetti, analizziamo il codice della nostra applicazione di monitoraggio GPS. Usiamo **Go** con la libreria [**`confluent-kafka-go`**](https://github.com/confluentinc/confluent-kafka-go) e un ambiente di sviluppo riproducibile basato su [**devcontainer**](https://containers.dev/).
+Per rendere concreti questi concetti, analizziamo il codice della nostra applicazione di monitoraggio sensori. Il producer è in **Node.js** con [**kafkajs**](https://kafka.js.org/), il consumer in **Python** con [**confluent-kafka**](https://docs.confluent.io/platform/current/clients/confluent-kafka-python/html/index.html). La serializzazione Avro è gestita da [**Apicurio Registry**](https://www.apicur.io/registry/) come Schema Registry. Il tutto orchestrato con Docker Compose.
 
-### Il Producer: Inviare Dati GPS con una Chiave
+👉 Il codice completo è disponibile nel repository: [github.com/monte97/kafka-pekko](https://github.com/monte97/kafka-pekko)
 
-Il nostro producer (`cmd/producer/main.go`) simula l'invio di dati da più veicoli. La parte cruciale è l'uso di `VehicleID` come **chiave** del messaggio per garantire l'ordinamento per ogni veicolo.
+### Il Producer Node.js: Inviare Letture Sensoriali con una Chiave
 
-`cmd/producer/main.go`
-```go
-package main
+Il producer (`producer/index.js`) simula l'invio di dati da più sensori. La parte cruciale è l'uso di `sensor_id` come **chiave** del messaggio per garantire l'ordinamento per ogni sensore.
 
-import (
-	"encoding/json"
-	"fmt"
-	"log"
-	"math/rand"
-	"time"
+```javascript
+// producer/index.js
+const { Kafka } = require("kafkajs");
+const {
+  SchemaRegistry,
+  SchemaType,
+} = require("@kafkajs/confluent-schema-registry");
 
-	"kafka-demo/internal/model" // Using our shared data model
-	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
-)
+const BROKER = process.env.KAFKA_BROKER || "localhost:29092";
+const REGISTRY_URL = process.env.SCHEMA_REGISTRY_URL || "http://localhost:8081";
+const TOPIC = "sensor-data";
 
-func main() {
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": "localhost:9092"})
-	if err != nil {
-		log.Fatalf("Failed to create producer: %s", err)
-	}
-	defer p.Close() // Crucial for sending buffered messages
+const kafka = new Kafka({ clientId: "demo-producer", brokers: [BROKER] });
+const registry = new SchemaRegistry({ host: REGISTRY_URL });
+const producer = kafka.producer();
 
-	// Asynchronously handle delivery reports
-	go func() {
-		for e := range p.Events() {
-			switch ev := e.(type) {
-			case *kafka.Message:
-				if ev.TopicPartition.Error != nil {
-					fmt.Printf("[FAIL] Delivery failed: %v\n", ev.TopicPartition)
-				} else {
-					fmt.Printf("[OK] Message delivered to %v (Key: %s)\n", ev.TopicPartition, string(ev.Key))
-				}
-			}
-		}
-	}()
+const SENSOR_IDS = ["sensor-A1", "sensor-B2", "sensor-C3"];
+const LOCATIONS = [null, "warehouse-north", "warehouse-south", "outdoor"];
 
-	topic := "gps_positions"
-	for {
-		vehicleId := fmt.Sprintf("vehicle-%d", rand.Intn(10))
-		position := model.GpsPosition{
-			VehicleID:   vehicleId,
-			Latitude:    rand.Float64()*180 - 90,
-			Longitude:   rand.Float64()*360 - 180,
-			Speed:       rand.Float64() * 120, // Speed up to 120 km/h
-			Timestamp:   time.Now(),
-		}
-		jsonData, _ := json.Marshal(position)
+function randomReading() {
+  return {
+    sensor_id: SENSOR_IDS[Math.floor(Math.random() * SENSOR_IDS.length)],
+    timestamp: Date.now(),
+    temperature: Math.round((18 + Math.random() * 15) * 100) / 100,
+    humidity: Math.round((30 + Math.random() * 50) * 100) / 100,
+    location: LOCATIONS[Math.floor(Math.random() * LOCATIONS.length)],
+  };
+}
 
-		p.Produce(&kafka.Message{
-			TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
-			Key:            []byte(vehicleId),
-			Value:          jsonData,
-		}, nil)
+async function main() {
+  await producer.connect();
+  const schemaId = await registerSchema(); // Registra lo schema Avro nel registry
 
-		time.Sleep(500 * time.Millisecond)
-	}
+  while (true) {
+    const reading = randomReading();
+    const value = await registry.encode(schemaId, reading);
+
+    // La chiave è sensor_id: tutti i messaggi dello stesso sensore
+    // finiscono nella stessa partizione, preservando l'ordinamento
+    await producer.send({
+      topic: TOPIC,
+      messages: [{ key: reading.sensor_id, value }],
+    });
+
+    await sleep(5000);
+  }
 }
 ```
 
-#### Go Deep Dive: `defer` e Goroutine
+### Deep Dive: `async/await` e il Loop di Produzione
 
-Per un neofita di Go, due costrutti in questo codice potrebbero non essere immediatamente chiari:
+Due aspetti di questo codice meritano attenzione:
 
-1.  **`defer p.Close()`**: La parola chiave `defer` è un meccanismo potente e semplice per la gestione delle risorse. Registra una chiamata di funzione per essere eseguita *appena prima che la funzione circostante (in questo caso `main`) termini*. È il modo idiomatico in Go per garantire che le risorse (connessioni di rete, file, etc.) vengano sempre rilasciate, indipendentemente da come la funzione termina (sia normalmente che a causa di un `panic`). Qui, ci assicura che il producer venga chiuso correttamente, inviando tutti i messaggi ancora presenti nel suo buffer interno.
+1.  **`await producer.send(...)`**: A differenza di librerie che usano callback o fire-and-forget, kafkajs espone un'API basata su **Promise**. L'`await` sospende l'esecuzione della funzione `async` fino a quando il broker non conferma la ricezione del messaggio. Questo rende il codice sequenziale e leggibile, ma significa anche che ogni messaggio viene inviato uno alla volta. Per scenari ad alto throughput, kafkajs supporta il batching automatico tramite configurazione del producer (`createPartitioner`, `batch.size`).
 
-2.  **`go func() { ... }()`**: Questa è una **goroutine**. Le goroutine sono il cuore della concorrenza in Go. Sono thread "leggeri" gestiti dal runtime di Go. Con la semplice parola chiave `go`, stiamo lanciando una funzione anonima che viene eseguita in concorrenza con il resto della funzione `main`. In questo caso, è fondamentale: il producer invia i messaggi in modo asincrono per massimizzare le performance. Questa goroutine si mette in ascolto sul canale `p.Events()` per ricevere i report di consegna (successo o fallimento) senza bloccare il ciclo principale che produce i messaggi.
+2.  **`registry.encode(schemaId, reading)`**: La serializzazione Avro avviene *prima* dell'invio. Il valore inviato a Kafka non è JSON ma un payload binario Avro preceduto dal magic byte e dallo schema ID. Questo è il protocollo wire standard di Confluent Schema Registry, supportato anche da Apicurio tramite l'endpoint di compatibilità `/apis/ccompat/v7`.
 
-### Il Consumer di Base: Verificare il Flusso
+### Il Consumer Python: Verificare il Flusso
 
-Questo consumer (`cmd/consumer/main.go`) si iscrive al topic `gps_positions` e stampa i messaggi che riceve. È uno strumento diagnostico fondamentale.
+Il consumer (`consumer/consumer.py`) si iscrive al topic `sensor-data` e stampa le letture che riceve. Usa `confluent-kafka` con deserializzazione Avro automatica.
 
-`cmd/consumer/main.go`
-```go
-package main
+```python
+# consumer/consumer.py
+import os
+import sys
 
-import (
-	"fmt"
-	"log"
-	"os"
-	"os/signal"
-	"syscall"
+from confluent_kafka import Consumer, KafkaError
+from confluent_kafka.schema_registry import SchemaRegistryClient
+from confluent_kafka.schema_registry.avro import AvroDeserializer
+from confluent_kafka.serialization import MessageField, SerializationContext
 
-	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
-)
+BROKER = os.environ.get("KAFKA_BROKER", "localhost:29092")
+REGISTRY_URL = os.environ.get("SCHEMA_REGISTRY_URL", "http://localhost:8081")
+TOPIC = "sensor-data"
 
-func main() {
-	c, err := kafka.NewConsumer(&kafka.ConfigMap{
-		"bootstrap.servers": "localhost:9092",
-		"group.id":          "basic-checker-group",
-		"auto.offset.reset": "earliest",
-	})
-	if err != nil { log.Fatalf("Failed to create consumer: %s", err) }
-	defer c.Close()
+# Il client del registry recupera automaticamente lo schema
+# usando lo schema ID incorporato in ogni messaggio Avro
+sr_client = SchemaRegistryClient({"url": REGISTRY_URL})
+avro_deserializer = AvroDeserializer(sr_client)
 
-	c.SubscribeTopics([]string{"gps_positions"}, nil)
-	fmt.Println("Listening on topic 'gps_positions'... Press Ctrl+C to exit.")
-	
-	sigchan := make(chan os.Signal, 1)
-	signal.Notify(sigchan, syscall.SIGINT, syscall.SIGTERM)
+consumer = Consumer({
+    "bootstrap.servers": BROKER,
+    "group.id": "demo-consumer-group",
+    "auto.offset.reset": "earliest",
+})
+consumer.subscribe([TOPIC])
 
-	run := true
-	for run {
-		select {
-		case sig := <-sigchan:
-			fmt.Printf("Caught signal %v: terminating...\n", sig)
-			run = false
-		default:
-			ev := c.Poll(100)
-			if ev == nil { continue }
+try:
+    while True:
+        msg = consumer.poll(timeout=1.0)
+        if msg is None:
+            continue
 
-			switch e := ev.(type) {
-			case *kafka.Message:
-				fmt.Printf("Received: Key=%s, Value=%s\n", string(e.Key), string(e.Value))
-			case kafka.Error:
-				fmt.Fprintf(os.Stderr, "%% Error: %v\n", e)
-			}
-		}
-	}
-}
+        err = msg.error()
+        if err:
+            if err.code() == KafkaError._PARTITION_EOF:
+                continue
+            print(f"Error: {err}", file=sys.stderr)
+            continue
+
+        # Deserializza il payload Avro binario in un dizionario Python
+        reading = avro_deserializer(
+            msg.value(),
+            SerializationContext(msg.topic(), MessageField.VALUE),
+        )
+        print(f"sensor={reading['sensor_id']} temp={reading['temperature']}C "
+              f"humidity={reading['humidity']}%")
+
+except KeyboardInterrupt:
+    print("Shutting down...")
+finally:
+    consumer.close()  # Rilascia le partizioni e committa gli offset
 ```
 
-#### Go Deep Dive: Canali e `select` per una Chiusura Pulita
+### Deep Dive: il Ciclo di Polling e la Chiusura Pulita
 
-Questo codice mostra un pattern comune in Go per gestire servizi che devono rimanere in esecuzione:
+Il pattern del consumer merita un'analisi più attenta:
 
-1.  **`sigchan := make(chan os.Signal, 1)`**: Creiamo un **canale**. I canali sono il modo principale in cui le goroutine comunicano tra loro. Puoi pensarli come delle "pipe" tipizzate attraverso cui puoi inviare e ricevere valori. Questo canale è specifico per i segnali del sistema operativo.
+1.  **`consumer.poll(timeout=1.0)`**: Il consumer non riceve messaggi in push. È un ciclo di **polling** esplicito: ogni secondo chiede al broker se ci sono nuovi messaggi. Se non ce ne sono, `poll` restituisce `None` e il ciclo riprende. Questo modello dà al consumer pieno controllo sulla velocità di consumo (backpressure naturale).
 
-2.  **`signal.Notify(...)`**: Diciamo al runtime di Go di intercettare i segnali di interruzione (`SIGINT`, es. Ctrl+C) o di terminazione (`SIGTERM`) e, invece di terminare bruscamente il programma, di inviare un messaggio su `sigchan`.
+2.  **`KafkaError._PARTITION_EOF`**: Non è un errore reale. Indica semplicemente che il consumer ha raggiunto la fine della partizione (non ci sono più messaggi da leggere per ora). È normale in un consumer che rimane in attesa di nuovi dati.
 
-3.  **`select`**: L'istruzione `select` è come uno `switch`, ma per i canali. Mette in pausa la goroutine e attende che uno dei suoi `case` diventi "pronto" (cioè che si possa leggere o scrivere sul canale corrispondente). Nel nostro ciclo `for`, il `select` fa due cose:
-    *   `case sig := <-sigchan`: Prova a leggere dal canale dei segnali. Se un segnale arriva, questo `case` viene eseguito, e noi usciamo dal ciclo in modo pulito.
-    *   `default`: Se nessun altro `case` è pronto (cioè non c'è nessun segnale), il `default` viene eseguito immediatamente. Questo ci permette di chiamare `c.Poll(100)` senza bloccare l'attesa del segnale di chiusura, realizzando un ciclo di polling non bloccante.
-
-Questo pattern garantisce che, anche se premiamo Ctrl+C, il programma avrà la possibilità di eseguire le istruzioni `defer` (come `c.Close()`) per una chiusura pulita.
+3.  **`try/except KeyboardInterrupt` + `finally`**: Questo è il pattern Python per una chiusura pulita. Quando l'utente preme Ctrl+C, Python solleva `KeyboardInterrupt`. Il blocco `finally` garantisce che `consumer.close()` venga sempre eseguito, rilasciando le partizioni assegnate e committando gli offset. Senza questa chiusura ordinata, il consumer group impiegherebbe più tempo per il ribilanciamento delle partizioni.
 
 ---
 
@@ -285,7 +242,7 @@ In questo articolo abbiamo analizzato le fondamenta di Apache Kafka:
 2. **Partizioni e segmenti**: la struttura interna che abilita retention efficiente, ricerca rapida tramite indici memory-mapped e ottimizzazione zero-copy
 3. **Il ruolo della chiave**: come il partitioner garantisce ordinamento per chiave (a patto che il numero di partizioni resti costante)
 4. **Replicazione e ISR**: il modello leader-follower, la semantica di `acks` (con `acks=all` come default da Kafka 3.0) e il ruolo di `min.insync.replicas`
-5. **Implementazione in Go**: producer con chiave e consumer di base usando `confluent-kafka-go` v2
+5. **Implementazione pratica**: producer Node.js con kafkajs e consumer Python con confluent-kafka, entrambi con serializzazione Avro via Schema Registry
 
 Nel prossimo articolo della serie esploreremo i **Consumer Group**, le strategie di commit degli offset e i pattern per gestire il ribilanciamento delle partizioni.
 
@@ -303,7 +260,8 @@ Una selezione di risorse per approfondire.
 
 ### Articoli e Documentazione
 
-*   [**Documentazione `confluent-kafka-go`**](https://pkg.go.dev/github.com/confluentinc/confluent-kafka-go/v2/kafka): Riferimento API con esempi e configurazioni dettagliate.
+*   [**Documentazione kafkajs**](https://kafka.js.org/docs/getting-started): Client Kafka per Node.js con API basata su Promise.
+*   [**Documentazione confluent-kafka-python**](https://docs.confluent.io/platform/current/clients/confluent-kafka-python/html/index.html): Wrapper Python per librdkafka, con supporto Avro nativo.
 *   [**Blog di Confluent**](https://www.confluent.io/blog/): Articoli tecnici su casi d'uso avanzati, ottimizzazioni e nuove feature di Kafka.
 *   [**Blog di Jay Kreps**](https://medium.com/@jaykreps): Riflessioni sull'evoluzione delle architetture software e il ruolo dello streaming di eventi.
 *   [**Documentazione ufficiale Kafka**](https://kafka.apache.org/documentation/): Riferimento completo su configurazione, design e API.

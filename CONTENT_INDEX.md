@@ -1,13 +1,14 @@
 # Content Index - montelli.dev
 
-**Ultimo aggiornamento**: 16 febbraio 2026
-**Totale**: 22 pubblicati, 21 draft
+**Ultimo aggiornamento**: 19 febbraio 2026
+**Totale**: 23 pubblicati, 25 draft
 
 ## Pubblicati
 
 | Data | Titolo | Categoria | Tags | Parole |
 |------|--------|-----------|------|--------|
 | 2026-02-12 | Controller Kubernetes: Come Funziona il Cuore di K8s | kubernetes | Kubernetes, Controller, Operator, Go, CRD, DevOps | 2812 |
+| 2026-02-10 | Keycloak: Cos'è e Perché Usarlo per la Tua Web App | keycloak | Keycloak, OAuth2, OpenID Connect, Security, Autenticazione | 1298 |
 | 2026-02-05 | OpenTelemetry in Produzione: Tail Sampling e Retention | otel-website-material | OpenTelemetry, Observability, LGTM Stack, Loki, Grafana, Tempo, Mimir, Prometheus, Tracing, Metrics, Logging, Instrumentation, DevOps, Telemetry, Sistemi Distribuiti, Docker | 3359 |
 | 2026-01-29 | Tutorial: Distributed Tracing con OpenTelemetry e LGTM Stack | otel-website-material | OpenTelemetry, Observability, LGTM Stack, Loki, Grafana, Tempo, Mimir, Prometheus, Tracing, Metrics, Logging, Instrumentation, DevOps, Telemetry, Sistemi Distribuiti, Docker | 3570 |
 | 2025-10-23 | CAPI Parte 5: Ubuntu su Proxmox - Image Builder e Deploy | kubernetes | Kubernetes, CAPI, Cluster API, Ubuntu, Proxmox, Image Builder, Homelab | 926 |
@@ -34,6 +35,7 @@
 
 | Data | Titolo | Categoria | Tags | Parole |
 |------|--------|-----------|------|--------|
+| 2026-02-15 | Login con Keycloak: Authorization Code + PKCE in MockMart | keycloak | Keycloak, OAuth2, PKCE, OpenID Connect, Security | 2498 |
 | 2026-02-14 | Schema Registry con Apache Kafka: da JSON selvaggio ad Avro con Apicurio | kafka | Kafka, Avro, Schema Registry, Apicurio, Node.js, Python | 2449 |
 | 2026-02-14 | Pipeline CI/CD su Proxmox: Provisioning con OpenTofu e Deploy con Ansible via Semaphore | devops-practices | CI/CD, OpenTofu, Ansible, Proxmox, Semaphore, Infrastructure as Code, DevOps | 2169 |
 | 2026-02-14 | Pinia: Gestione dello Stato in Vue.js | web-development | Vue, Pinia, JavaScript, Frontend, State Management | 0 |
@@ -44,6 +46,9 @@
 | 2026-02-12 | OpenTelemetry in Produzione: Routing dei Dati | otel-website-material | OpenTelemetry, Observability, Routing, Compliance, Production | 3447 |
 | 2026-02-10 | Da console.log a Grafana: logging strutturato e centralizzato con Node.js | otel-website-material | NodeJs, OpenTelemetry, Logging, Grafana, Pino | 1293 |
 | 2026-02-07 | Dal test E2E al debug del backend: Playwright + OpenTelemetry | testing | Playwright, E2E, Testing, OpenTelemetry, VisualTesting, Observability | 2491 |
+| 2026-02-06 | Keycloak in Pratica: 6 Problemi Reali nell'Integrazione di un E-Commerce | keycloak | Keycloak, OAuth2, OIDC, Microservizi, Security, PKCE, M2M | 2476 |
+| 2026-02-06 | Autorizzazione Granulare con OPA e Keycloak: Separare Autenticazione e Autorizzazione | keycloak | OPA, Keycloak, Authorization, Rego, OpenPolicyAgent | 2146 |
+| 2026-02-05 | Keycloak M2M: Autenticare Servizi Senza Utente | keycloak | Keycloak, OAuth2, Microservizi, M2M, Security | 1523 |
 | 2026-02-05 | PII Filtering in OpenTelemetry con Keycloak | otel-website-material | OpenTelemetry, Keycloak, GDPR, Security, Observability | 2540 |
 | 2025-11-17 | Playwright: Testing E2E Moderno e Affidabile | testing | Playwright, Testing, E2E, Automation, DevOps, CI/CD, JavaScript, TypeScript | 3296 |
 | 2025-01-24 | Playwright in CI/CD: Sharding, Mobile Testing e Automazione Agent-Driven | testing | Playwright, CI/CD, GitHub Actions, Sharding, Agent-Driven Development | 2071 |
