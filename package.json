@@ -63,9 +63,9 @@
   "name": "hugo-toha.github.io",
   "version": "0.1.0",
   "scripts": {
-    "cover:gen": "node scripts/cover-gen.js",
+    "cover:gen": "node scripts/cover-generator/index.js",
     "cover:install": "playwright install chromium",
-    "cover:all": "node scripts/cover-all.js",
+    "cover:all": "node scripts/cover-generator/generate-all.js",
     "cover:export": "node scripts/cover-generator/export-templates.js"
   }
 }
