@@ -17,39 +17,18 @@ Foto di <a href="https://unsplash.com/it/@jonflobrant?utm_content=creditCopyText
 
 ## Da Chiamate Sincrone a Flussi di Eventi
 
-Hai mai visto un singolo microservizio in timeout trascinare con sé l'intero sistema? Nei sistemi distribuiti, la comunicazione sincrona tra componenti introduce un accoppiamento che scala male. Quando ogni servizio deve chiamare e attendere un altro, una latenza di rete o un servizio in sovraccarico si propagano a catena. Il costo cresce in modo non lineare con il numero di componenti.
+Nei sistemi distribuiti, la comunicazione sincrona tra componenti introduce un accoppiamento che scala male. Quando ogni servizio deve chiamare e attendere un altro, una latenza di rete o un servizio in sovraccarico si propagano a catena. Il costo cresce in modo non lineare con il numero di componenti.
 
 La soluzione non è semplicemente "usare una coda di messaggi". Il cambio di paradigma consiste nel passare da comandi diretti a **eventi di business**. Un evento non è una richiesta: è un fatto immutabile. "Un utente ha aggiornato il suo profilo". "Un sensore ha registrato una nuova temperatura". "Un veicolo ha trasmesso la sua posizione GPS".
 
 [**Apache Kafka**](https://kafka.apache.org/) è una piattaforma di *event streaming* - un log distribuito e replicato che agisce come unica fonte di verità per gli eventi, permettendo ai componenti di reagire in modo asincrono, disaccoppiato e resiliente.
 
-```mermaid
-graph TD
-    subgraph Producers
-        P1[Servizio Pagamenti]
-        P2[Servizio Utenti]
-        P3[Sensori IoT]
-    end
-
-    subgraph Consumers
-        C1[Servizio Notifiche]
-        C2[Dashboard Analytics]
-        C3[Sistema di Auditing]
-    end
-
-    subgraph "Apache Kafka Cluster"
-        K[Topic Eventi]
-    end
-
-    P1 -- Evento 'Pagamento Ricevuto' --> K
-    P2 -- Evento 'Profilo Aggiornato' --> K
-    P3 -- Evento 'Nuova Lettura' --> K
-
-    K -- Evento 'Pagamento Ricevuto' --> C1
-    K -- Tutti gli Eventi --> C2
-    K -- Tutti gli Eventi --> C3
-
-    style K fill:#f9f,stroke:#333,stroke-width:2px
+```text
+Producers                    Kafka Cluster              Consumers
+─────────                    ─────────────              ─────────
+Servizio Pagamenti  ──┐                          ┌──→  Servizio Notifiche
+Servizio Utenti     ──┼──→  [ Topic Eventi ]  ──┼──→  Dashboard Analytics
+Sensori IoT         ──┘                          └──→  Sistema di Auditing
 ```
 
 ---
@@ -67,42 +46,29 @@ La struttura interna è meno intuitiva di quanto sembri. Una partizione non è u
 - **Segmenti di Log (`.log`)**: File che contengono i record veri e propri. Un segmento è "attivo" finché non raggiunge una dimensione massima (es. `segment.bytes`, di default 1GB) o un tempo di vita (`segment.ms`). A quel punto viene chiuso e ne viene creato uno nuovo.
 - **Indici (`.index`, `.timeindex`)**: Per ogni file di segmento `.log`, esistono file di indice corrispondenti. L'indice di offset mappa un offset a una posizione fisica (un byte) nel file di log, permettendo letture rapide senza scansionare il file. L'indice temporale mappa un timestamp al corrispondente offset, che viene poi risolto in posizione fisica tramite l'indice di offset (un lookup a due livelli).
 
-Questa segmentazione ha due vantaggi enormi:
-1.  **Gestione della Retention**: Per eliminare i dati vecchi, Kafka non deve scandagliare il log per cancellare record. Semplicemente, **elimina i file di segmento più vecchi**. Un'operazione `rm` sul file system, incredibilmente veloce ed efficiente.
+Questa segmentazione ha due vantaggi diretti:
+1.  **Gestione della Retention**: Per eliminare i dati vecchi, Kafka non deve scandagliare il log per cancellare record. Semplicemente, **elimina i file di segmento più vecchi**. Un'operazione `rm` sul file system, con costo O(1) indipendente dalla dimensione dei dati.
 2.  **Ricerca Rapida**: Gli indici, che sono molto più piccoli dei file di log, sono memory-mapped (mmap): il sistema operativo ne gestisce il caching nella page cache, permettendo a Kafka di localizzare rapidamente il punto da cui iniziare a leggere i dati, sia per offset che per timestamp.
 
 Questo design è anche alla base della famosa ottimizzazione **zero-copy**. Quando un consumer richiede dei dati, Kafka può inviarli direttamente dal buffer del file system al buffer della scheda di rete, senza che i dati debbano mai essere copiati nello spazio di memoria dell'applicazione Kafka (user-space). Questo è possibile solo perché il formato dei dati su disco è lo stesso di quello inviato sulla rete.
 
-```mermaid
-graph LR
-    subgraph "Directory della Partizione 0"
-        direction LR
-        subgraph "Segmento 0"
-            Log0["00...0.log"]
-            Index0["00...0.index"]
-            TimeIndex0["00...0.timeindex"]
-        end
-        subgraph "Segmento 1 (Attivo)"
-            Log1["00...1.log"]
-            Index1["00...1.index"]
-            TimeIndex1["00...1.timeindex"]
-        end
-    end
-    
-    Index0 -- "Offset -> Byte" --> Log0
-    TimeIndex0 -- "Timestamp -> Offset" --> Index0
-    Index1 -- "Offset -> Byte" --> Log1
-    TimeIndex1 -- "Timestamp -> Offset" --> Index1
-
-    style Log0 fill:#bbf,stroke:#333,stroke-width:2px
-    style Log1 fill:#bbf,stroke:#333,stroke-width:2px
+```text
+Partizione 0/
+├── Segmento 0
+│   ├── 00000000000000000000.log         ← record
+│   ├── 00000000000000000000.index       ← offset → byte position
+│   └── 00000000000000000000.timeindex   ← timestamp → offset
+└── Segmento 1 (attivo)
+    ├── 00000000000000000042.log         ← record
+    ├── 00000000000000000042.index       ← offset → byte position
+    └── 00000000000000000042.timeindex   ← timestamp → offset
 ```
 
-### La Chiave del Messaggio: Il Patto con l'Ordinamento
+### La Chiave del Messaggio e l'Ordinamento
 
-La **chiave** di un messaggio è forse la sua proprietà più importante e fraintesa. Non è un semplice metadato. È un **contratto sull'ordinamento**.
+La **chiave** di un messaggio non è un semplice metadato. È un **contratto sull'ordinamento**.
 
-Quando un producer invia un messaggio, il **Partitioner** di default applica una logica ferrea:
+Quando un producer invia un messaggio, il **Partitioner** di default applica una formula deterministica:
 `hash(chiave) % numero_partizioni`
 
 Questo significa che **tutti i messaggi con la stessa chiave finiscono nella stessa partizione**. Poiché una partizione è un log ordinato, questo fornisce una garanzia fondamentale: **l'ordine di invio per una data chiave è preservato**.
@@ -122,7 +88,7 @@ La durabilità in Kafka è una configurazione esplicita. Si basa su un modello d
 Ogni partizione ha un **leader** (l'unica replica che accetta scritture) e zero o più **follower**. L'insieme delle ISR è la lista dei follower che sono "sufficientemente al passo" con il leader (configurabile tramite `replica.lag.time.max.ms`).
 
 Quando un producer scrive, la sua garanzia di durabilità è determinata dall'impostazione `acks`:
--   `acks=0`: "Spara e dimentica". Massima performance, ma alto rischio di perdita dati.
+-   `acks=0`: Fire-and-forget. Massima performance, ma il producer non ha conferma di ricezione.
 -   `acks=1`: Attende la conferma solo dal leader. Un buon compromesso, ma se il leader fallisce un istante dopo aver confermato ma prima che i follower abbiano replicato, il dato è perso. Era il default fino a Kafka 2.x.
 -   `acks=all` (o `-1`): Attende la conferma dal leader *dopo* che tutte le repliche nell'insieme ISR hanno ricevuto il messaggio. Questa è la massima garanzia di durabilità. **Da Kafka 3.0 in poi è il default**, insieme a `enable.idempotence=true`.
 
