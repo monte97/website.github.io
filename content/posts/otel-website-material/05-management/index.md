@@ -4,7 +4,7 @@ date: 2026-02-05T10:00:00+01:00
 description: "Come ridurre il volume dati del 90% senza perdere visibilità sugli errori. Guida pratica con config template e scenario demo."
 menu:
   sidebar:
-    name: Correlation Demo
+    name: Sampling & Retention
     identifier: OTEL-5
     weight: 50
     parent: OBS
