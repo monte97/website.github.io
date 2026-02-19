@@ -1,0 +1,21 @@
+// Hide H1 title visually on single post pages.
+// The title is already rendered inside the hero cover image.
+// We keep the H1 in the DOM for SEO and screen readers.
+.page-content .title h1 {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Center reading time below tags
+.read-area .page-content .reading-time,
+.read-area .page-content .reading-time p {
+  text-align: center !important;
+  width: 100%;
+}
