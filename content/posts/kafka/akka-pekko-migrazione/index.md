@@ -11,8 +11,11 @@ menu:
 tags: ["Scala", "Pekko", "Akka", "JVM", "Migrazione"]
 categories: ["Backend", "Tecnologie"]
 draft: true
-reviewed: true
+reviewed: false
 ---
+
+Come gestire un ecosistema in produzione quando il framework su cui si basa cambia licenza? In questo articolo vediamo la migrazione pratica da Akka ad Apache Pekko, con checklist, gotcha e lezioni dal campo.
+
 ## Il cambio licenza di Akka
 
 A settembre 2022, Lightbend ha annunciato che Akka 2.7 e tutte le versioni successive sarebbero state rilasciate sotto Business Source License (BSL 1.1). In pratica: l'uso commerciale di Akka richiede una licenza a pagamento. Akka 2.6.19 è l'ultima versione sotto Apache 2.0; dalla 2.6.20 anche la serie 2.6.x è sotto BSL 1.1. Le versioni Apache 2.0 non ricevono più patch di sicurezza né bugfix.
@@ -24,6 +27,8 @@ La decisione ha colpito un ecosistema ampio. Akka è la base di framework come P
 2. **Pagare la licenza commerciale.** Opzione legittima per aziende che possono permetterselo. Non sempre compatibile con vincoli di budget o con la preferenza per dipendenze a licenza aperta.
 
 3. **Migrare a un fork open-source.** Cioè Apache Pekko.
+
+---
 
 ## Apache Pekko: il fork della community
 
@@ -42,6 +47,8 @@ L'ecosistema è completo:
 - **Pekko Cluster** (ex Akka Cluster) - clustering e distribuzione
 
 Tutti i moduli disponibili in Akka hanno un corrispettivo diretto in Pekko.
+
+---
 
 ## Checklist di migrazione
 
@@ -139,6 +146,8 @@ Il cambio di organizzazione (`ch.megard` -> `org.apache.pekko`) è facile da dim
 
 Se il progetto usa `sbt-native-packager` o altri plugin legati all'ecosistema Akka, verificare che non tirino dentro dipendenze transitive di Akka. In particolare, `sbt-native-packager` è agnostico rispetto ad Akka/Pekko, quindi non richiede modifiche.
 
+---
+
 ## La migrazione nel progetto
 
 Il sistema usa Scala/Akka in tre servizi:
@@ -189,9 +198,14 @@ Alcune librerie di terze parti (non Pekko) possono avere `reference.conf` che de
 
 Se il progetto usa librerie che hanno Akka come dipendenza transitiva, queste continueranno a tirare dentro i jar di Akka. Il risultato è un classpath con sia `akka` che `pekko`, che può causare conflitti. La soluzione è verificare l'albero delle dipendenze (`sbt dependencyTree`) e cercare versioni aggiornate delle librerie che supportano Pekko, oppure escludere esplicitamente le dipendenze Akka.
 
+---
+
 ## Demo
 
-Il [repository demo](https://github.com/monte97/kafka-pekko) include un consumer Scala/Pekko che mostra l'integrazione Pekko + Avro + Apicurio Registry. Il consumer usa il serde nativo di Apicurio (`AvroKafkaDeserializer`) per consumare messaggi Avro da un topic, deserializzarli tramite il registry, e stamparli a console.
+L'intero codice del progetto è disponibile nel repository pubblico:
+👉 [https://github.com/monte97/kafka-pekko](https://github.com/monte97/kafka-pekko)
+
+Il repository include un consumer Scala/Pekko che mostra l'integrazione Pekko + Avro + Apicurio Registry. Il consumer usa il serde nativo di Apicurio (`AvroKafkaDeserializer`) per consumare messaggi Avro da un topic, deserializzarli tramite il registry, e stamparli a console.
 
 Per avviare la demo:
 
@@ -203,12 +217,24 @@ docker compose up
 
 Il consumer Scala si avvia insieme al producer Node.js e al consumer Python, tutti connessi allo stesso topic con schema Avro.
 
+---
+
 ## Conclusioni
 
-La migrazione da Akka a Apache Pekko è un'operazione prevalentemente meccanica. Per progetti che usano già Akka Typed, il rischio è basso: l'API di Pekko 1.0.x è identica a quella di Akka 2.6.x, il comportamento a runtime è lo stesso, i pattern di codice non cambiano.
+In questo articolo abbiamo visto come migrare da Akka ad Apache Pekko:
 
-Il costo reale non è nella migrazione in sé, ma nella **verifica**: compilare, testare, avviare, controllare i log, verificare che ogni servizio risponda correttamente. Per un sistema con tre servizi Scala e circa 50 file coinvolti, il totale è stato circa mezza giornata di lavoro. Per sistemi più grandi il tempo scala linearmente.
+1. **Il contesto**: il cambio licenza di Akka a BSL 1.1 rende la migrazione a Pekko la scelta principale per progetti open-source
+2. **La checklist**: coordinate Maven, import, `application.conf`, librerie CORS e plugin SBT — la maggior parte è un rename meccanico
+3. **I gotcha**: Apicurio 3.x, Materializer implicito, `reference.conf` di terze parti e dipendenze transitive sono i punti dove servono verifiche manuali
+4. **Il costo reale**: non è nel rename, ma nella verifica — per tre servizi e ~50 file, circa mezza giornata
 
-Pekko è mantenuto dalla Apache Software Foundation con release regolari. Per progetti che non possono o non vogliono adottare la licenza BSL di Lightbend, rappresenta l'alternativa principale nell'ecosistema Akka open-source.
+Una volta su Pekko 1.0.x, si torna su un binario di rilascio attivo con bugfix, patch di sicurezza e nuove feature. Il cambio di licenza è un problema risolto.
 
-Una volta completata la migrazione a Pekko 1.0.x, il passaggio a 1.1.x è un upgrade standard con changelog da verificare, non un'altra migrazione. Si torna su un binario di rilascio attivo con bugfix, patch di sicurezza e nuove feature.
+---
+
+## Risorse Utili
+
+*   [**Apache Pekko**](https://pekko.apache.org/): Sito ufficiale con documentazione, download e guide di migrazione.
+*   [**Pekko Migration Guide**](https://pekko.apache.org/docs/pekko/current/project/migration-guides.html): Guida ufficiale alla migrazione da Akka.
+*   [**Annuncio cambio licenza Lightbend**](https://akka.io/blog/why-we-are-changing-the-license-for-akka): L'annuncio originale del cambio licenza BSL 1.1.
+*   [**Pekko Connectors Kafka**](https://pekko.apache.org/docs/pekko-connectors-kafka/current/home.html): Documentazione del connettore Kafka per Pekko.

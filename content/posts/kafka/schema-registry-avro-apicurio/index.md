@@ -11,11 +11,11 @@ menu:
 tags: ["Kafka", "Avro", "Schema Registry", "Apicurio", "Node.js", "Python"]
 categories: ["Backend", "Tecnologie"]
 draft: true
-reviewed: true
+reviewed: false
 ---
 ## Il problema: JSON senza contratto
 
-In un sistema a microservizi con Kafka al centro, il JSON è il formato naturale per i messaggi. È leggibile, tutti i linguaggi lo supportano, non richiede setup. Ma quando il sistema cresce, il JSON senza schema diventa un problema silenzioso.
+Ti è mai capitato di scoprire che un campo aggiunto tre mesi fa da un altro team non è mai arrivato a destinazione? In un sistema a microservizi con Kafka al centro, il JSON è il formato naturale per i messaggi. È leggibile, tutti i linguaggi lo supportano, non richiede setup. Ma quando il sistema cresce, il JSON senza schema diventa un problema silenzioso.
 
 Il sistema in esame è una piattaforma di telemetria per mezzi d'opera in cantiere. L'architettura coinvolge tre linguaggi: Node.js per il servizio anagrafica (producer), Scala/Pekko per la standardizzazione e l'aggregazione dei dati telemetrici (consumer e producer), Python/Flask per i servizi di storico, utilizzo e reportistica (consumer). Tutti comunicano attraverso topic Kafka, tutti producono e consumano JSON.
 
@@ -29,6 +29,8 @@ Il problema non si manifesta con un errore visibile. Si manifesta così:
 
 Il problema di fondo è che non esiste un **contratto** sul formato dei messaggi. Ogni servizio ha la propria versione implicita dello schema, definita dal codice che serializza o deserializza. Quando queste versioni divergono, il sistema non si rompe: si degrada silenziosamente.
 
+---
+
 ## La scelta: perché Schema Registry
 
 Per risolvere il problema servono due cose: uno schema formale per ogni topic, e un meccanismo che impedisca di pubblicare messaggi non conformi. Ci sono tre approcci.
@@ -40,6 +42,8 @@ Per risolvere il problema servono due cose: uno schema formale per ogni topic, e
 **3. Apicurio Registry.** Progetto open-source, licenza Apache 2.0. Supporta Avro, JSON Schema, Protobuf. Può usare Kafka stesso come storage (KafkaSQL), quindi non richiede un database esterno. E soprattutto: espone un'API compatibile con Confluent (`/apis/ccompat/v7`), il che significa che le librerie client standard di Confluent funzionano senza modifiche.
 
 La scelta per questo progetto è ricaduta su Apicurio. Il motivo principale è pragmatico: zero dipendenze aggiuntive (gli schema vengono salvati in un topic Kafka interno) e compatibilità con tutto l'ecosistema di librerie client già esistente.
+
+---
 
 ## Perché Avro e non JSON Schema
 
@@ -58,6 +62,8 @@ Una volta scelto il registry, serve scegliere il formato di serializzazione. La 
 La regola pratica adottata è semplice: **Avro per il core interno** (tutti i topic tra microservizi), **JSON Schema per i bordi** (API REST, webhook, integrazioni esterne).
 
 Il vantaggio decisivo di Avro in questo contesto è la schema evolution formalizzata. In Avro, quando un consumer legge un messaggio scritto con una versione diversa dello schema, il runtime sa esattamente come gestire la differenza: campi nuovi con default vengono aggiunti automaticamente, campi rimossi vengono ignorati. Non c'è codice applicativo da scrivere per gestire le differenze di versione. Questo è critico in un sistema dove tre linguaggi diversi consumano gli stessi topic.
+
+---
 
 ## Infrastruttura: Apicurio + KafkaSQL
 
@@ -95,6 +101,8 @@ services:
 Il punto chiave è `APICURIO_STORAGE_KIND: kafkasql`. Con questa configurazione, Apicurio salva tutti gli schema in un topic Kafka interno. Nessun PostgreSQL, nessun volume da gestire, nessun backup aggiuntivo. Gli schema vengono replicati e persistiti con le stesse garanzie del broker Kafka.
 
 Una volta avviato, l'interfaccia web di Apicurio è disponibile su `http://localhost:8081/ui`. Da lì si possono navigare tutti gli schema registrati, vedere le versioni, testare la compatibilità. È uno strumento utile soprattutto nella fase di migrazione, per verificare che gli schema siano stati registrati correttamente.
+
+---
 
 ## Definire gli schema Avro
 
@@ -158,6 +166,8 @@ In produzione, gli schema sono più complessi. Ecco un estratto dello schema `C4
 ```
 
 I **record annidati** sono uno dei punti di forza di Avro: `C40Location` contiene `C40GPS`, e ogni sotto-record ha il suo nome e può essere referenziato altrove. In JSON avresti lo stesso nesting, ma senza la possibilità di riusare i tipi.
+
+---
 
 ## Producer Node.js con schema registry
 
@@ -224,6 +234,8 @@ La chiamata `encode` fa due cose: serializza il record in formato binario Avro, 
 
 In ambiente Docker, la variabile `SCHEMA_REGISTRY_URL` viene configurata a `http://schema-registry:8080/apis/ccompat/v7`. Quel path `/apis/ccompat/v7` è l'endpoint di compatibilità Confluent di Apicurio. La libreria `@kafkajs/confluent-schema-registry` non sa di parlare con Apicurio: vede un'API Confluent standard.
 
+---
+
 ## Consumer Python con Avro
 
 Il consumer è scritto in Python usando `confluent-kafka` con il modulo `schema_registry`. Il punto chiave è che il consumer **non ha bisogno dello schema**: lo recupera automaticamente dal registry usando lo schema ID incorporato in ogni messaggio.
@@ -274,6 +286,8 @@ Il flusso del consumer:
 
 Il risultato è che producer e consumer sono completamente disaccoppiati: il producer può evolvere lo schema, e il consumer continuerà a funzionare finché l'evoluzione è compatibile.
 
+---
+
 ## Schema evolution: aggiungere un campo senza rompere
 
 La schema evolution è il motivo principale per adottare un registry. La domanda è: cosa succede quando il producer inizia a mandare messaggi con un campo in più? O in meno?
@@ -309,6 +323,8 @@ HTTP Status: 409
 
 Il registry rifiuta la registrazione. Questa è la rete di sicurezza: un producer non può accidentalmente rompere i consumer rimuovendo un campo da cui dipendono.
 
+---
+
 ## Lezioni apprese
 
 Dalla migrazione del sistema da JSON senza schema ad Avro con Apicurio emergono le seguenti lezioni pratiche.
@@ -323,9 +339,14 @@ Dalla migrazione del sistema da JSON senza schema ad Avro con Apicurio emergono 
 
 **5. Schema inline vs file .avsc.** Per servizi interpretati (Node.js, Python) caricare il file `.avsc` a runtime funziona bene. Per servizi compilati (Scala) può essere più pratico avere lo schema inline nel codice o generato a build-time, specialmente se si usa `SpecificRecord`. I file `.avsc` sono mantenuti in una directory condivisa nel repository (`schemas/avro/`) come source of truth, e ogni servizio li carica nel modo più naturale per il suo linguaggio.
 
+---
+
 ## Demo
 
-Il [repository demo](https://github.com/monte97/kafka-pekko) contiene un progetto self-contained avviabile con un solo comando.
+L'intero codice del progetto è disponibile nel repository pubblico:
+👉 [https://github.com/monte97/kafka-pekko](https://github.com/monte97/kafka-pekko)
+
+Il progetto è self-contained e avviabile con un solo comando.
 
 ```bash
 git clone https://github.com/monte97/kafka-pekko
@@ -358,4 +379,28 @@ Per pulire tutto:
 docker compose down -v
 ```
 
-Lo stack base (Kafka KRaft, Apicurio Registry, producer Node.js, consumer Python, consumer Scala) richiede meno di 1 GB di RAM e gira su qualsiasi macchina con Docker. Il codice sorgente completo è disponibile nel repository.
+Lo stack base (Kafka KRaft, Apicurio Registry, producer Node.js, consumer Python, consumer Scala) richiede meno di 1 GB di RAM e gira su qualsiasi macchina con Docker.
+
+---
+
+## Conclusioni
+
+In questo articolo abbiamo visto come passare da JSON senza contratto ad Avro con schema registry:
+
+1. **Il problema**: senza uno schema formale, le divergenze tra producer e consumer si manifestano come dati sbagliati, non come errori
+2. **La scelta di Apicurio**: licenza Apache 2.0, storage su Kafka (KafkaSQL), API compatibile con Confluent
+3. **Avro per il core**: formato binario compatto, schema evolution formalizzata con reader/writer schema, tipi logici nativi
+4. **Infrastruttura minimale**: un singolo container in più rispetto a un cluster Kafka standard
+5. **Migrazione incrementale**: un topic alla volta, senza big bang, sfruttando la compatibilità BACKWARD
+
+Il prossimo articolo della serie esplorerà la migrazione da Akka ad Apache Pekko e i pattern per gestire la transizione in un sistema in produzione.
+
+---
+
+## Risorse Utili
+
+*   [**Documentazione Apache Avro**](https://avro.apache.org/docs/): Specifica del formato, schema evolution, tipi logici.
+*   [**Apicurio Registry**](https://www.apicur.io/registry/docs/): Documentazione ufficiale con guide di configurazione e API.
+*   [**Confluent Schema Registry**](https://docs.confluent.io/platform/current/schema-registry/): Riferimento per l'API di compatibilità usata anche da Apicurio.
+*   [**`@kafkajs/confluent-schema-registry`**](https://github.com/kafkajs/confluent-schema-registry): Client Node.js per schema registry compatibile Confluent.
+*   [**`confluent-kafka-python`**](https://docs.confluent.io/platform/current/clients/confluent-kafka-python/html/index.html): Client Python con supporto Avro integrato.

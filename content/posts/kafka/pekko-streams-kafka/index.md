@@ -11,11 +11,11 @@ menu:
 tags: ["Scala", "Pekko", "Kafka", "Streaming", "Avro"]
 categories: ["Backend", "Tecnologie"]
 draft: true
-reviewed: true
+reviewed: false
 ---
 ## Il pattern di partenza: while(true) dentro un attore
 
-In un sistema Akka (ora Apache Pekko), l'approccio più immediato è mettere tutta la logica in un attore. L'attore consuma da Kafka, processa i messaggi, produce su un altro topic. Sembra pulito: un attore per responsabilità, supervisione automatica, tutto nel modello ad attori.
+Hai mai avuto un attore Pekko che blocca il dispatcher con una `poll()` bloccante, e poi ti chiedi perché il sistema non risponde? In un sistema Akka (ora [Apache Pekko](https://pekko.apache.org/)), l'approccio più immediato è mettere tutta la logica in un attore. L'attore consuma da Kafka, processa i messaggi, produce su un altro topic. Sembra pulito: un attore per responsabilità, supervisione automatica, tutto nel modello ad attori.
 
 Il sistema in esame è una piattaforma di telemetria per mezzi d'opera in cantiere. Il servizio di aggregazione (`c40-aggregation`) aveva tre attori `KafkaReaderActor`, uno per topic, che facevano così:
 
@@ -47,6 +47,8 @@ Questo pattern ha quattro problemi concreti.
 
 Il servizio di standardizzazione (`c40-standardization`) aveva un problema simile ma speculare: gli attori `HttpC40Reader` facevano polling su API HTTP esterne e poi dovevano mandare i dati su Kafka tramite un `KafkaWriterActor`. La catena era attore HTTP -> messaggio -> attore Kafka -> `producer.send()`. Due attori, due mailbox, nessuna backpressure end-to-end.
 
+---
+
 ## La soluzione: separare le responsabilità
 
 L'idea chiave è semplice: un attore non dovrebbe fare I/O bloccante. La responsabilità di consumare da Kafka (o produrre su Kafka) va separata dalla logica di business. Ci sono tre componenti:
@@ -56,6 +58,8 @@ L'idea chiave è semplice: un attore non dovrebbe fare I/O bloccante. La respons
 - **Kafka producer**: un stream sink o una chiamata diretta all'API producer
 
 La separazione può essere implementata in modi diversi a seconda del caso d'uso. Nei due servizi in esame sono stati adottati due pattern distinti.
+
+---
 
 ## Pattern 1: Source.queue per il producer
 
@@ -120,6 +124,8 @@ def activeBehaviour: Behavior[Command] = Behaviors.supervise(
   }
 ).onFailure[Exception](SupervisorStrategy.restart)
 ```
+
+---
 
 ## Pattern 2: Consumer threads + stato condiviso per l'enrichment
 
@@ -228,6 +234,8 @@ class EnrichmentState {
 
 L'arricchimento fa anche un calcolo geospaziale: per ogni dato C40 con coordinate GPS, cerca i punti di interesse entro 1000 metri usando la formula dell'haversine. Nella versione precedente questo calcolo era dentro un attore (`MachineryEnrichActor`); ora è in una classe plain Scala, testabile senza attori né Kafka.
 
+---
+
 ## Avro e Schema Registry nel mix
 
 Entrambi i servizi usano Avro con Apicurio Registry. La configurazione lato Scala si basa sulle librerie Apicurio native: `AvroKafkaSerializer` per il producer e `AvroKafkaDeserializer` per il consumer.
@@ -252,9 +260,14 @@ import io.apicurio.registry.resolver.config.SchemaResolverConfig
 import io.apicurio.registry.serde.avro.{AvroKafkaDeserializer, AvroKafkaSerializer}
 ```
 
+---
+
 ## Demo
 
-Il [repository demo](https://github.com/monte97/kafka-pekko) contiene un modulo `pekko-patterns/` che implementa entrambi i pattern in un progetto self-contained.
+L'intero codice del progetto è disponibile nel repository pubblico:
+👉 [https://github.com/monte97/kafka-pekko](https://github.com/monte97/kafka-pekko)
+
+Il modulo `pekko-patterns/` implementa entrambi i pattern in un progetto self-contained.
 
 ```bash
 git clone https://github.com/monte97/kafka-pekko
@@ -285,12 +298,24 @@ Per pulire tutto:
 docker compose down -v
 ```
 
+---
+
 ## Conclusioni
 
-La migrazione da blocking poll ad architetture reattive può essere incrementale. In questo caso sono stati adottati due pattern diversi per due servizi diversi, in base alla complessità del caso d'uso.
+La migrazione da blocking poll ad architetture reattive può essere incrementale. In questo caso abbiamo visto come:
 
-**Per il producer**: `Source.queue` di Pekko Streams è la soluzione più naturale. Gli attori continuano a fare il loro lavoro (polling HTTP, logica di business) e depositano i risultati nella queue. Lo stream si occupa di serializzare e inviare a Kafka con backpressure. Se il buffer si riempie, `OverflowStrategy.dropHead` scarta i dati più vecchi. Nessun thread bloccato nel dispatcher.
+1. **Il pattern bloccante** (polling in un attore) occupa thread del dispatcher, non offre backpressure e rende la logica di business non testabile in isolamento
+2. **`Source.queue` per il producer** permette agli attori di depositare i risultati in una queue con buffer e strategia di overflow, senza bloccare il dispatcher
+3. **Consumer threads dedicati** sono la scelta pragmatica quando più consumer convergono su uno stato condiviso mutabile con tipi eterogenei (Avro + JSON)
+4. **La separazione delle responsabilità** (I/O Kafka vs logica di business) è il principio guida, indipendentemente dal pattern scelto
 
-**Per il consumer con stato condiviso**: thread dedicati con `new Thread` sono la scelta pragmatica quando servono consumer multipli che convergono su uno stato mutabile. Richiede più codice rispetto a un grafo Pekko Streams con `GraphDSL.create`, ma risulta esplicito e leggibile. La complessità di un merge multi-source con tipi eterogenei (Avro + String) e stato condiviso non giustifica l'adozione di `Consumer.plainSource` di Pekko Connectors Kafka in questo caso.
+Il passo successivo naturale è sostituire i consumer threads con `Consumer.plainSource` di [Pekko Connectors Kafka](https://pekko.apache.org/docs/pekko-connectors-kafka/current/consumer.html), per ottenere backpressure anche sul lato consumer, commit degli offset gestiti dallo stream, e shutdown graceful.
 
-**Per il futuro**: il passo successivo naturale è sostituire i consumer threads con `Consumer.plainSource` di Pekko Connectors Kafka. Questo darebbe backpressure anche sul lato consumer, commit degli offset gestiti dallo stream, e shutdown graceful. Il sistema attuale funziona: i thread dedicati non bloccano il dispatcher e la logica di business è già separata e testabile. La migrazione a `Consumer.plainSource` resta un'opzione per quando i requisiti lo richiederanno.
+---
+
+## Risorse Utili
+
+*   [**Documentazione Pekko Streams**](https://pekko.apache.org/docs/pekko/current/stream/index.html): Riferimento completo su Source, Flow, Sink e operatori.
+*   [**Pekko Connectors Kafka**](https://pekko.apache.org/docs/pekko-connectors-kafka/current/home.html): Consumer, Producer e Transactional sources/sinks per Kafka.
+*   [**Apicurio Registry**](https://www.apicur.io/registry/): Schema Registry compatibile con Confluent, supporta Avro, Protobuf e JSON Schema.
+*   [**Documentazione ufficiale Kafka**](https://kafka.apache.org/documentation/): Riferimento completo su configurazione, design e API.
