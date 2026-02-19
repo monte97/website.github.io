@@ -65,6 +65,33 @@
           {{ .Page.Content }}
         </div>
 
+        <!-- CTA: Contact the author -->
+        {{ $author := (index site.Data site.Language.Lang).author }}
+        {{ if $author }}
+        <div class="post-cta">
+          <hr />
+          {{ if eq site.Language.Lang "it" }}
+          <p>Ti è piaciuto l'articolo? Hai domande o vuoi discuterne?</p>
+          {{ else }}
+          <p>Did you enjoy this article? Have questions or want to discuss it?</p>
+          {{ end }}
+          <div class="cta-buttons">
+            {{ with $author.contactInfo.linkedin }}
+            <a href="https://www.linkedin.com/in/{{ . }}" target="_blank" rel="noopener" class="btn btn-cta btn-linkedin">
+              <i class="fab fa-linkedin"></i>
+              {{ if eq site.Language.Lang "it" }}Scrivimi su LinkedIn{{ else }}Reach out on LinkedIn{{ end }}
+            </a>
+            {{ end }}
+            {{ with $author.contactInfo.email }}
+            <a href="mailto:{{ . }}" class="btn btn-cta btn-email">
+              <i class="fas fa-envelope"></i>
+              {{ if eq site.Language.Lang "it" }}Mandami un'email{{ else }}Send me an email{{ end }}
+            </a>
+            {{ end }}
+          </div>
+        </div>
+        {{ end }}
+
         <!-- Share or Contribute -->
         <div class="row ps-3 pe-3">
         <!--Social Media Share Buttons-->

@@ -19,3 +19,56 @@
   text-align: center !important;
   width: 100%;
 }
+
+// CTA section after post content
+.post-cta {
+  text-align: center;
+  margin: 2rem 0 1.5rem;
+
+  p {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: var(--text-color, #333);
+  }
+
+  .cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.25rem;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 0.85;
+      text-decoration: none;
+    }
+  }
+
+  .btn-linkedin {
+    background-color: #0077b5;
+    color: #fff;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+
+  .btn-email {
+    background-color: #6c757d;
+    color: #fff;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}
