@@ -134,7 +134,7 @@ Per evitare che un fallimento a catena delle repliche porti a scrivere con `acks
 
 ## Esempi Pratici: Producer Node.js e Consumer Python
 
-Per rendere concreti questi concetti, analizziamo il codice della nostra applicazione di monitoraggio sensori. Il producer è in **Node.js** con [**kafkajs**](https://kafka.js.org/), il consumer in **Python** con [**confluent-kafka**](https://docs.confluent.io/platform/current/clients/confluent-kafka-python/html/index.html). Il tutto orchestrato con Docker Compose.
+Per rendere concreti questi concetti, analizziamo il codice della nostra applicazione di monitoraggio sensori. Il producer è in **Node.js** con [**kafkajs**](https://kafka.js.org/), il consumer in **Python** con [**confluent-kafka**](https://docs.confluent.io/platform/current/clients/confluent-kafka-python/html/index.html). La serializzazione Avro è gestita da [**Apicurio Registry**](https://www.apicur.io/registry/) come Schema Registry. Il tutto orchestrato con Docker Compose.
 
 👉 Il codice completo è disponibile nel repository: [github.com/monte97/kafka-pekko](https://github.com/monte97/kafka-pekko)
 
@@ -159,6 +159,7 @@ const registry = new SchemaRegistry({ host: REGISTRY_URL });
 const producer = kafka.producer();
 
 const SENSOR_IDS = ["sensor-A1", "sensor-B2", "sensor-C3"];
+const LOCATIONS = [null, "warehouse-north", "warehouse-south", "outdoor"];
 
 function randomReading() {
   return {
@@ -166,9 +167,7 @@ function randomReading() {
     timestamp: Date.now(),
     temperature: Math.round((18 + Math.random() * 15) * 100) / 100,
     humidity: Math.round((30 + Math.random() * 50) * 100) / 100,
-    location: [null, "warehouse-north", "warehouse-south"][
-      Math.floor(Math.random() * 3)
-    ],
+    location: LOCATIONS[Math.floor(Math.random() * LOCATIONS.length)],
   };
 }
 
@@ -206,6 +205,9 @@ Il consumer (`consumer/consumer.py`) si iscrive al topic `sensor-data` e stampa 
 
 ```python
 # consumer/consumer.py
+import os
+import sys
+
 from confluent_kafka import Consumer, KafkaError
 from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.schema_registry.avro import AvroDeserializer
