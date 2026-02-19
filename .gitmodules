@@ -19,3 +19,6 @@
 [submodule "content/posts/performance-engineering"]
 	path = content/posts/performance-engineering
 	url = git@github.com:monte97/performance-monitoring-article.git
+[submodule "scripts/cover-generator"]
+	path = scripts/cover-generator
+	url = git@github.com:monte97/cover-generator.git
