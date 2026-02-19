@@ -10,14 +10,14 @@ menu:
     weight: 10
 tags: ["Kafka", "Go", "Architettura", "Event Streaming"]
 categories: ["Backend", "Tecnologie"]
-reviewed: true
+reviewed: false
 ---
 Foto di <a href="https://unsplash.com/it/@jonflobrant?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Jon Flobrant</a> su <a href="https://unsplash.com/it/foto/specchio-dacqua-tra-gli-alberi-sotto-il-cielo-nuvoloso-rB7-LCa_diU?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>
       
 
 ## Da Chiamate Sincrone a Flussi di Eventi
 
-Nei sistemi distribuiti, la comunicazione sincrona tra componenti introduce un accoppiamento che scala male. Quando ogni servizio deve chiamare e attendere un altro, una latenza di rete o un servizio in sovraccarico si propagano a catena. Il costo cresce in modo non lineare con il numero di componenti.
+Hai mai visto un singolo microservizio in timeout trascinare con sé l'intero sistema? Nei sistemi distribuiti, la comunicazione sincrona tra componenti introduce un accoppiamento che scala male. Quando ogni servizio deve chiamare e attendere un altro, una latenza di rete o un servizio in sovraccarico si propagano a catena. Il costo cresce in modo non lineare con il numero di componenti.
 
 La soluzione non è semplicemente "usare una coda di messaggi". Il cambio di paradigma consiste nel passare da comandi diretti a **eventi di business**. Un evento non è una richiesta: è un fatto immutabile. "Un utente ha aggiornato il suo profilo". "Un sensore ha registrato una nuova temperatura". "Un veicolo ha trasmesso la sua posizione GPS".
 
@@ -199,7 +199,7 @@ func main() {
 }
 ```
 
-#### Go Deep Dive: `defer` e Goroutine
+### Go Deep Dive: `defer` e Goroutine
 
 Per un neofita di Go, due costrutti in questo codice potrebbero non essere immediatamente chiari:
 
@@ -236,17 +236,20 @@ func main() {
 
 	c.SubscribeTopics([]string{"gps_positions"}, nil)
 	fmt.Println("Listening on topic 'gps_positions'... Press Ctrl+C to exit.")
-	
+
+	// Canale per intercettare segnali di terminazione dal sistema operativo
 	sigchan := make(chan os.Signal, 1)
 	signal.Notify(sigchan, syscall.SIGINT, syscall.SIGTERM)
 
 	run := true
 	for run {
+		// select attende su più canali: segnali OS o messaggi Kafka
 		select {
 		case sig := <-sigchan:
 			fmt.Printf("Caught signal %v: terminating...\n", sig)
 			run = false
 		default:
+			// Poll con timeout 100ms: non bloccante grazie al default del select
 			ev := c.Poll(100)
 			if ev == nil { continue }
 
@@ -261,7 +264,7 @@ func main() {
 }
 ```
 
-#### Go Deep Dive: Canali e `select` per una Chiusura Pulita
+### Go Deep Dive: Canali e `select` per una Chiusura Pulita
 
 Questo codice mostra un pattern comune in Go per gestire servizi che devono rimanere in esecuzione:
 
