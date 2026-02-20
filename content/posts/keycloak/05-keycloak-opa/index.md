@@ -1,7 +1,7 @@
 ---
 title: "Autorizzazione Granulare con OPA e Keycloak: Separare Autenticazione e Autorizzazione"
 date: 2026-02-06T10:00:00+01:00
-description: "Come integrare Open Policy Agent in un'app Express con Keycloak. Tre pattern concreti: RBAC, deny list e ownership."
+description: "Come integrare Open Policy Agent con Keycloak in un'app Express per separare autenticazione e autorizzazione. Tre pattern concreti: RBAC, deny list e ownership."
 menu:
   sidebar:
     name: Keycloak + OPA
@@ -14,6 +14,8 @@ draft: true
 reviewed: false
 ---
 
+Hai mai dovuto bloccare un utente dal checkout e scoprire che il claim JWT era ancora valido fino alla scadenza del token? Oppure aggiungere una regola di accesso e ritrovarti a modificare Keycloak, il codice Express, e magari anche un mapper custom?
+
 In un sistema che usa Keycloak per autenticazione e autorizzazione, è comune che le regole di accesso finiscano sparse tra claim JWT, mapper custom e logica applicativa. Funziona, ma crea un accoppiamento: modificare chi può fare cosa richiede toccare Keycloak, il codice, o entrambi.
 
 Questo articolo mostra come separare le due responsabilità: **Keycloak autentica** (chi sei), **OPA autorizza** (cosa puoi fare). L'integrazione avviene in MockMart, lo stesso e-commerce demo usato negli articoli precedenti, con tre pattern concreti:
@@ -21,14 +23,6 @@ Questo articolo mostra come separare le due responsabilità: **Keycloak autentic
 1. **RBAC su prodotti**: solo admin può creare, modificare ed eliminare
 2. **Deny list su checkout**: blocco immediato senza re-login
 3. **Ownership su ordini**: ogni utente vede solo i propri
-
-**Struttura dell'articolo:**
-1. Il modello: OPA come sidecar HTTP
-2. Policy Rego: tre pattern implementati
-3. Il middleware Express
-4. Integrazione nelle route
-5. Test e verifica
-6. Confronto claims vs OPA
 
 ---
 
@@ -40,7 +34,7 @@ Nel contesto MockMart, OPA gira come container separato nella rete Docker. Shop 
 
 ### Architettura Aggiornata
 
-```
+```text
 Gateway (nginx:80)
 +-- /        -> shop-ui (React SPA, :3000)
 +-- /api/    -> shop-api (Node.js/Express, :3001)
@@ -55,7 +49,7 @@ shop-api --> postgres, payment, inventory, notification
 1. Il browser chiama `shop-api` con un Bearer JWT
 2. `auth.js` valida il JWT via JWKS e popola `req.user` (id, ruoli, username)
 3. `opa.js` costruisce un oggetto input e chiama OPA
-4. OPA valuta la policy Rego e risponde `{ "result": true }` o `{ "result": false }`
+4. OPA valuta la policy Rego e risponde `{ "result": true }` o `{ "result": false }`. Se nessuna regola matcha (package errato, policy non caricata), OPA restituisce `{}` senza chiave `result`
 5. Se `allow = true`, il route handler esegue. Se `false`, il middleware risponde `403 Forbidden`
 
 ### Separazione delle Responsabilità
@@ -100,17 +94,7 @@ allow if {
 
 # Solo admin può creare/modificare/eliminare
 allow if {
-    input.action == "create"
-    "admin" in input.user.roles
-}
-
-allow if {
-    input.action == "update"
-    "admin" in input.user.roles
-}
-
-allow if {
-    input.action == "delete"
+    input.action in {"create", "update", "delete"}
     "admin" in input.user.roles
 }
 ```
@@ -163,23 +147,13 @@ default allow = false
 
 # Admin può listare e leggere tutti gli ordini
 allow if {
-    input.action == "list"
-    "admin" in input.user.roles
-}
-
-allow if {
-    input.action == "read"
+    input.action in {"list", "read"}
     "admin" in input.user.roles
 }
 
 # Utenti: solo i propri ordini
 allow if {
-    input.action == "list"
-    input.resource_owner == input.user.id
-}
-
-allow if {
-    input.action == "read"
+    input.action in {"list", "read"}
     input.resource_owner == input.user.id
 }
 ```
@@ -214,7 +188,7 @@ async function checkPolicy(packageName, input) {
 }
 ```
 
-`checkPolicy` chiama l'endpoint OPA Data API: `POST /v1/data/mockmart/{package}/allow`. Il body contiene `{ input: {...} }`, la risposta è `{ result: true|false }`.
+`checkPolicy` chiama l'endpoint OPA Data API: `POST /v1/data/mockmart/{package}/allow`. Il body contiene `{ input: {...} }`, la risposta è `{ result: true|false }`. Il check `data.result === true` gestisce anche il caso in cui OPA restituisca `{}` (nessuna chiave `result`): in quel caso l'accesso viene negato, coerente con il principio deny-by-default.
 
 ```javascript
 function requirePolicy(packageName, action) {
@@ -454,6 +428,8 @@ services:
       - AUTHORIZATION_MODE=opa
 ```
 
+> **Nota:** l'esempio usa `latest-debug` per semplicità (include una shell utile per il debug). In produzione, fissa una versione specifica (es. `openpolicyagent/opa:1.4.2`) per garantire riproducibilità e sicurezza.
+
 Due comandi per gestire lo stack:
 
 ```bash
@@ -478,6 +454,8 @@ I tre pattern implementati coprono scenari comuni:
 - **Ownership**: accesso condizionato al proprietario della risorsa (ordini)
 
 Il trade-off principale è la complessità infrastrutturale: un container in più, una chiamata HTTP per ogni decisione, e la necessità di popolare il contesto (come `resource_owner`) nel middleware. In cambio, le regole diventano centralizzate, testabili offline, e modificabili senza toccare il codice applicativo.
+
+La prossima volta che dovrai bloccare un utente al volo o aggiungere una regola di accesso senza deploy, saprai dove mettere mano: non nel codice, ma in un file `.rego`.
 
 ### Risorse
 
