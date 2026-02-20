@@ -14,7 +14,7 @@ draft: true
 reviewed: false
 ---
 
-L'[articolo introduttivo]({{< ref "/posts/keycloak/01-keycloak-intro" >}}) ha coperto cos'è Keycloak e perché delegare l'autenticazione a un Identity Provider. Il concetto è chiaro, ma manca un pezzo: come si collega concretamente un frontend React e un backend Express a Keycloak?
+Hai configurato Keycloak, creato un realm e un client... e adesso? Come si collega concretamente un frontend React e un backend Express all'Identity Provider? Se hai seguito l'[articolo introduttivo]({{< ref "/posts/keycloak/01-keycloak-intro" >}}), il concetto di delegare l'autenticazione è chiaro. Ma manca il pezzo pratico.
 
 Questo articolo implementa **Authorization Code Flow con PKCE** in MockMart, un e-commerce demo. Il risultato: l'utente clicca "Login", viene reindirizzato a Keycloak, inserisce le credenziali, e torna nell'app con un token JWT che il backend valida ad ogni richiesta. L'applicazione non tocca mai le password.
 
@@ -56,7 +56,7 @@ Il `code_verifier` è la parte PKCE: garantisce che solo chi ha iniziato il flus
 
 ---
 
-## 1. Configurazione Keycloak
+## Configurazione Keycloak
 
 MockMart usa un realm export che configura tutto automaticamente. Ma per capire cosa succede sotto, vediamo i passi manuali.
 
@@ -146,7 +146,7 @@ Output atteso:
 
 ---
 
-## 2. Integrazione Frontend (React + keycloak-js)
+## Integrazione Frontend (React + keycloak-js)
 
 Il frontend usa `keycloak-js`, l'adapter JavaScript ufficiale. Gestisce automaticamente il redirect, lo scambio dei token e il refresh.
 
@@ -240,7 +240,7 @@ async function apiFetch(url, options = {}) {
 
 ---
 
-## 3. Integrazione Backend (Express + jose)
+## Integrazione Backend (Express + jose)
 
 Il backend non partecipa al login. Riceve l'access token dal frontend e lo valida ad ogni richiesta.
 
@@ -288,9 +288,8 @@ async function requireAuth(req, res, next) {
   try {
     const { payload } = await jwtVerify(token, getJWKS(), {
       issuer: ISSUER,
-      // In produzione, aggiungi: audience: 'shop-api'
-      // (richiede un audience mapper configurato in Keycloak)
-      clockTolerance: 30,  // Tollera 30s di differenza tra orologi
+      audience: 'shop-api',  // Richiede un audience mapper in Keycloak (vedi nota sotto)
+      clockTolerance: 30,  // Dev: 30s per comodità. In produzione usare 5-10s
     });
 
     req.user = {
@@ -318,6 +317,8 @@ async function requireAuth(req, res, next) {
 
 Se una qualsiasi di queste verifiche fallisce, il token viene rifiutato.
 
+> **Audience validation**: La validazione del claim `audience` non è opzionale. Senza di essa, un token emesso per un altro servizio potrebbe essere accettato dal backend (token confusion attack). Keycloak di default imposta `aud` a `"account"`: per aggiungere l'audience della propria API, configurare un **Audience mapper** nel client (Client → Mappers → Add mapper → Audience, con valore `shop-api`).
+
 ### Proteggere le route
 
 ```javascript
@@ -332,7 +333,7 @@ app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
 ---
 
-## 4. Test End-to-End
+## Test End-to-End
 
 Con MockMart avviato (`make up`), il flusso completo:
 
@@ -394,7 +395,7 @@ Per vedere il flusso PKCE passo per passo, possiamo simularlo da terminale.
 
 ```bash
 # Genera un code_verifier random (43-128 caratteri)
-CODE_VERIFIER=$(openssl rand -base64 32 | tr -d '=/+' | head -c 43)
+CODE_VERIFIER=$(openssl rand -base64 48 | tr -d '=/+' | head -c 128)
 
 # Calcola il code_challenge (SHA-256 del verifier, codificato base64url)
 CODE_CHALLENGE=$(echo -n "$CODE_VERIFIER" | openssl dgst -sha256 -binary | base64 | tr '+/' '-_' | tr -d '=')
@@ -439,7 +440,7 @@ Se il `code_verifier` corrisponde al `code_challenge` inviato nella authorizatio
 
 ---
 
-## 5. Dove si rompe
+## Dove si rompe
 
 ### Redirect URI mismatch
 
@@ -476,7 +477,7 @@ Il browser blocca richieste cross-origin se Keycloak non include l'header `Acces
 
 L'utente naviga normalmente, poi improvvisamente riceve 401 su tutte le chiamate. Il token è scaduto (default: 5 minuti) e il frontend non ha rinnovato.
 
-**Fix:** Chiamare `kc.updateToken(30)` prima di ogni richiesta API. Con un wrapper come `apiFetch` (visto sopra), il refresh è automatico. Se il refresh token è scaduto (default: 30 minuti di inattività), l'utente deve ri-loggarsi.
+**Fix:** Chiamare `kc.updateToken(30)` prima di ogni richiesta API. Con un wrapper come `apiFetch` (visto sopra), il refresh è automatico. Se il refresh token è scaduto (default: 30 minuti di inattività tramite SSO Session Idle, o 10 ore in totale tramite SSO Session Max), l'utente deve ri-loggarsi. Entrambi i valori sono configurabili nel realm.
 
 ### PKCE challenge fallito
 
@@ -538,7 +539,7 @@ Nei prossimi articoli vedremo come autenticare servizi tra loro senza utente ([C
 
 ---
 
-**Risorse utili:**
+## Risorse Utili
 
 - 👉 [MockMart - Repository Demo](https://github.com/monte97/MockMart)
 - [Keycloak Documentation - OIDC Clients](https://www.keycloak.org/docs/latest/server_admin/#_oidc_clients)
