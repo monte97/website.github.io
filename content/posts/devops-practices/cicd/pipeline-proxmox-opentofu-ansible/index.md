@@ -16,11 +16,13 @@ reviewed: false
 
 ## Il Contesto
 
+Quante volte ti è capitato di deployare manualmente un'applicazione su una VM, ripetendo gli stessi passi a memoria? Crei la macchina dalla UI, configuri SSH, copi i file, lanci i container... e poi lo rifai per staging. E poi per produzione. E la volta dopo cambi un parametro e te ne accorgi solo quando qualcosa si rompe.
+
 Un'applicazione composta da più servizi containerizzati: backend API, frontend, database PostgreSQL e identity provider (Keycloak). Ogni ambiente (staging, produzione) gira su una VM dedicata, provisionata su un hypervisor Proxmox. Il deploy avviene via Docker Compose.
 
 Il flusso manuale prevede: creare la VM dalla UI Proxmox, configurare SSH, copiare i file di configurazione, lanciare i container. Per un singolo ambiente il processo è gestibile. Per due ambienti con aggiornamenti frequenti, il costo di ogni deploy manuale si accumula - e con esso il rischio di errori e drift tra gli ambienti.
 
-L'obiettivo è una pipeline che, dato un nuovo set di immagini, provisioni l'infrastruttura se necessario e deploji l'applicazione senza intervento manuale.
+Vogliamo una pipeline che, dato un nuovo set di immagini, provisioni l'infrastruttura se necessario e deploji l'applicazione senza intervento manuale.
 
 L'intero codice del progetto è disponibile nella cartella `demo/` accanto a questo articolo.
 
@@ -28,7 +30,19 @@ L'intero codice del progetto è disponibile nella cartella `demo/` accanto a que
 
 ## L'Architettura: Tre Strumenti, Tre Responsabilità
 
-La pipeline separa orchestrazione, provisioning e deploy in tre componenti indipendenti. Ogni componente ha una singola responsabilità e interfacce definite verso gli altri.
+Separiamo orchestrazione, provisioning e deploy in tre componenti indipendenti. Ogni componente ha una singola responsabilità e interfacce definite verso gli altri.
+
+```text
+┌──────────────┐     ┌──────────────┐     ┌──────────────────────┐     ┌──────────┐
+│   Jenkins    │────▶│  OpenTofu    │────▶│  Semaphore + Ansible │────▶│ App VM   │
+│  (orchestr.) │     │  (infra)     │     │  (deploy)            │     │ (Docker) │
+└──────────────┘     └──────┬───────┘     └──────────┬───────────┘     └──────────┘
+       │                    │                        │
+       │              Proxmox API              Playbook su VM
+       │              VM + IP statico          Docker Compose up
+       │
+       └──── Health check HTTP ──────────────────────────────────────▶ Verifica
+```
 
 | Fase | Strumento | Input | Output |
 |------|-----------|-------|--------|
@@ -87,6 +101,10 @@ environment {
     // Configurazione ambiente
     ENVIRONMENT = 'staging'
     TFVARS_FILE = "environments/${ENVIRONMENT}.tfvars"
+
+    // Health check
+    HEALTH_CHECK_RETRIES = 10
+    HEALTH_CHECK_DELAY   = 15
 }
 ```
 
@@ -157,6 +175,8 @@ stage('Verify') {
 ```
 
 L'health check è l'ultimo gate della pipeline. Se l'applicazione non risponde con HTTP 200 entro il timeout configurato, la pipeline fallisce. Il retry con backoff gestisce il tempo di avvio dei container.
+
+> **Perché due health check?** Il check nel playbook Ansible (vedi più avanti) verifica che lo stack sia healthy dalla VM stessa, via localhost. Il check di Jenkins verifica la raggiungibilità dall'esterno, via IP di rete. Il primo valida il deploy locale, il secondo valida l'accessibilità per gli utenti finali.
 
 -----
 
@@ -293,6 +313,11 @@ Il playbook Ansible trasforma una VM vuota (ma con Docker pre-installato) in uno
           POSTGRES_USER={{ postgres_user }}
           POSTGRES_PASSWORD={{ postgres_password }}
           POSTGRES_DB={{ postgres_db }}
+
+    # Per registry privati, aggiungere un task docker login prima del pull:
+    # - name: Login al container registry
+    #   ansible.builtin.command:
+    #     cmd: docker login {{ registry_url }} -u {{ registry_user }} -p {{ registry_password }}
 
     - name: Pull immagini Docker
       ansible.builtin.command:
@@ -446,6 +471,8 @@ L'architettura descritta copre:
 6. **Sviluppo locale** tramite Makefile e Docker Compose standalone
 
 Ogni componente ha una singola responsabilità e interfacce definite. La sostituzione di uno strumento (ad esempio Jenkins con GitLab CI) richiede modifiche solo al livello di orchestrazione, senza impattare provisioning o deploy.
+
+Niente più deploy manuali, niente più drift tra ambienti, niente più "ma su staging funzionava". Un `git push` e il resto succede da solo.
 
 -----
 
