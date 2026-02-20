@@ -11,10 +11,12 @@ menu:
 tags: ["Vue", "Pinia", "Nuxt", "TypeScript", "Frontend"]
 categories: ["Frontend"]
 draft: true
-reviewed: true
+reviewed: false
 ---
 
 ## Il punto di partenza
+
+Ti è mai capitato di cercare un bug per ore, solo per scoprire che il problema era un listener rimasto attivo su un EventBus dopo la distruzione del componente? Oppure un evento emesso troppo presto, quando il destinatario non era ancora montato?
 
 Quasi tre anni di manutenzione su un'applicazione enterprise costruita con Nuxt 2 e Vuetify 2, senza Vuex. Lo stato condiviso tra componenti passava attraverso un EventBus, il classico `new Vue()` usato come emettitore di eventi, e ogni componente che aveva bisogno di dati li recuperava in modo autonomo con chiamate API proprie. Nessuna cache, nessuno stato centralizzato.
 
@@ -28,16 +30,16 @@ Questo articolo descrive i pattern adottati durante la migrazione, con esempi co
 
 ## Perché Pinia e non Vuex
 
-La scelta èstata semplice. Vuex èin maintenance mode: riceve fix di sicurezza, ma nessuna nuova funzionalità. Pinia èil suo successore ufficiale, raccomandato dalla documentazione di Vue.
+La scelta è stata semplice. Vuex è in maintenance mode: riceve fix di sicurezza, ma nessuna nuova funzionalità. Pinia è il suo successore ufficiale, raccomandato dalla documentazione di Vue.
 
 I vantaggi concreti che mi hanno convinto:
 
 - **Meno boilerplate.** Niente mutations, niente distinzione tra `commit` e `dispatch`. Lo stato si modifica direttamente nelle actions.
 - **TypeScript di prima classe.** L'inferenza dei tipi funziona senza configurazione aggiuntiva, sia con Options API che con Composition API.
-- **Doppio paradigma.** Èpossibile definire store in Options API (state/getters/actions) o in Composition API (ref/computed/function), in base alla complessità dello store.
+- **Doppio paradigma.** È possibile definire store in Options API (state/getters/actions) o in Composition API (ref/computed/function), in base alla complessità dello store.
 - **Ecosistema plugin.** `pinia-plugin-persistedstate` da solo giustifica la migrazione per come semplifica la persistenza selettiva.
 
-In una migrazione a Vue 3, non ha senso passare per Vuex. Pinia èla scelta diretta.
+In una migrazione a Vue 3, non ha senso passare per Vuex. Pinia è la scelta diretta.
 
 ## Pattern 1: UI State, da EventBus a Store
 
@@ -87,7 +89,7 @@ export const useAppStore = defineStore('app', {
 })
 ```
 
-Lo stato èvisibile nei DevTools, modificabile da qualsiasi componente, e sempre coerente. Nessun listener da pulire, nessun rischio di leak.
+Lo stato è visibile nei DevTools, modificabile da qualsiasi componente, e sempre coerente. Nessun listener da pulire, nessun rischio di leak.
 
 Per evitare di ripetere `appStore.setTitle(...)` in ogni pagina, è utile estrarre un composable:
 
@@ -106,7 +108,7 @@ export function useTitle(title: string) {
 useTitle('Prodotti')
 ```
 
-Una nota sulla scelta stilistica: per store semplici e piatti come questo, Options API èsufficiente. La Composition API non aggiunge valore quando lo stato èun insieme di campi con qualche action diretta.
+Una nota sulla scelta stilistica: per store semplici e piatti come questo, Options API è sufficiente. La Composition API non aggiunge valore quando lo stato è un insieme di campi con qualche action diretta.
 
 ## Pattern 2: Cache Store con Request Deduplication
 
@@ -121,7 +123,7 @@ Il risultato era prevedibile. Tre pagine che mostrano prodotti generano tre `GET
 Uno store centralizzato con tre caratteristiche:
 
 1. **Cache-once**: i dati vengono recuperati una volta, poi serviti dalla memoria.
-2. **Request deduplication**: se una fetch ègià in corso, i nuovi chiamanti si agganciano alla stessa promise.
+2. **Request deduplication**: se una fetch è già in corso, i nuovi chiamanti si agganciano alla stessa promise.
 3. **Invalidazione manuale**: dopo operazioni CRUD, il consumatore chiama `invalidate()` per invalidare la cache.
 
 Ecco lo store completo:
@@ -136,10 +138,13 @@ import * as api from '~/api/inventory'
 type InventoryEntityType = 'products' | 'categories' | 'suppliers'
 
 export const useInventoryStore = defineStore('inventory', () => {
+
+  // ── Stato reattivo (esposto ai componenti) ──────────────────────
   const products = ref<Product[]>([])
   const categories = ref<Category[]>([])
   const suppliers = ref<Supplier[]>([])
 
+  // ── Mapping entità → ref e API ──────────────────────────────────
   const entityRefs: Record<InventoryEntityType, typeof products> = {
     products, categories, suppliers
   }
@@ -150,19 +155,21 @@ export const useInventoryStore = defineStore('inventory', () => {
     suppliers: api.fetchSuppliers
   }
 
-  // Non reattivo di proposito: èbookkeeping interno
+  // ── Stato interno non reattivo (bookkeeping) ────────────────────
+  // Non reattivo di proposito: non deve triggerare re-render
   const loaded: Record<InventoryEntityType, boolean> = {
     products: false, categories: false, suppliers: false
   }
 
-  // Questo Èreattivo: i componenti devono mostrare lo stato di caricamento
+  // Questo È reattivo: i componenti devono mostrare lo stato di caricamento
   const loading = ref<Record<InventoryEntityType, boolean>>({
     products: false, categories: false, suppliers: false
   })
 
-  // Il trucco della deduplicazione: cache di promise pendenti
+  // Cache di promise pendenti per la deduplicazione
   const pendingRequests: Partial<Record<InventoryEntityType, Promise<any[]>>> = {}
 
+  // ── Fetch con cache e deduplicazione ────────────────────────────
   async function fetchEntities(
     type: InventoryEntityType,
     force = false
@@ -190,6 +197,7 @@ export const useInventoryStore = defineStore('inventory', () => {
     return promise
   }
 
+  // ── Invalidazione e refresh ──────────────────────────────────────
   function invalidate(type: InventoryEntityType) {
     loaded[type] = false
   }
@@ -198,7 +206,7 @@ export const useInventoryStore = defineStore('inventory', () => {
     return fetchEntities(type, true)
   }
 
-  // Aggregati derivati: calcolati dai dati in cache
+  // ── Getter derivati ──────────────────────────────────────────────
   const availableCategories = computed(() => {
     return [...new Set(products.value.map(p => p.category).filter(Boolean))]
   })
@@ -212,25 +220,37 @@ export const useInventoryStore = defineStore('inventory', () => {
 })
 ```
 
+> **Nota**: `fetchEntities` non include error handling per brevità. In produzione, è opportuno gestire gli errori con un ref dedicato per entità (ad esempio `errors: Record<InventoryEntityType, string | null>`) e un `.catch()` nella promise che popoli il messaggio di errore, così i componenti possono mostrare feedback all'utente.
+
 ### Perché Composition API qui
 
-La scelta non èestetica. `loaded` e `pendingRequests` sono intenzionalmente **non reattivi**. Sono stato interno dello store, bookkeeping che non deve triggerare re-render nei componenti. Le closure della Composition API permettono di tenerli incapsulati: esistono nello scope della funzione, sono accessibili dalle actions, ma non sono esposti né reattivi.
+La scelta non è estetica. `loaded` e `pendingRequests` sono intenzionalmente **non reattivi**. Sono stato interno dello store, bookkeeping che non deve triggerare re-render nei componenti. Le closure della Composition API permettono di tenerli incapsulati: esistono nello scope della funzione, sono accessibili dalle actions, ma non sono esposti né reattivi.
 
 Con Options API, tutto finisce in `state`, `getters` o `actions`. Non c'è un posto naturale per stato interno non reattivo. Si potrebbe usare una variabile esterna al `defineStore`, ma è meno pulito e perde l'incapsulamento.
 
 ### Invalidazione dopo CRUD
 
 ```typescript
+// Caso 1: refresh immediato dopo una modifica (scenario più comune)
 async function deleteProduct(id: string) {
   await api.deleteProduct(id)
-  inventoryStore.invalidate('products')
   await inventoryStore.refresh('products')
+}
+
+// Caso 2: invalidazione lazy, senza refresh immediato
+function onBulkImportComplete() {
+  inventoryStore.invalidate('products')
+  inventoryStore.invalidate('categories')
+  // Nessun refresh: i dati verranno ricaricati quando
+  // il prossimo componente chiamerà fetchEntities()
 }
 ```
 
-Il flusso è esplicito: il momento dell'invalidazione è noto, perché coincide con ogni operazione che modifica i dati. Non c'è magia, non ci sono TTL che scadono nel momento sbagliato. Dopo una delete, si invalida. Dopo una create, si invalida. Il prossimo componente che accede allo store ottiene dati freschi.
+Il flusso è esplicito: il momento dell'invalidazione è noto, perché coincide con ogni operazione che modifica i dati. Non c'è magia, non ci sono TTL che scadono nel momento sbagliato.
 
-Un dettaglio importante: `invalidate()` non lancia una nuova fetch. Si limita a resettare il flag `loaded`. È`refresh()` (o la prossima chiamata a `fetchEntities`) che effettua la richiesta. Questa separazione èintenzionale: in alcuni casi ha senso invalidare la cache senza forzare un refresh immediato, ad esempio quando l'utente non si trova sulla pagina che mostra quei dati.
+Un dettaglio importante: `invalidate()` e `refresh()` servono a scenari diversi. `refresh()` chiama `fetchEntities(type, true)` con `force = true`, quindi bypassa il flag `loaded` e forza una nuova fetch. Non è necessario chiamare `invalidate()` prima di `refresh()`, perché il parametro `force` rende il controllo su `loaded` irrilevante.
+
+`invalidate()` ha senso da solo quando si vuole marcare i dati come stale senza forzare un refresh immediato, ad esempio dopo un'operazione batch quando l'utente non si trova sulla pagina che mostra quei dati. La prossima chiamata a `fetchEntities()` (senza `force`) vedrà `loaded = false` e ricaricherà i dati automaticamente.
 
 ## Pattern 3: Persistenza Selettiva
 
@@ -311,7 +331,7 @@ export const usePreferencesStore = defineStore('preferences', () => {
 })
 ```
 
-Il punto chiave è`pick`. Controlla esattamente quali campi vengono persistiti. Non tutto in uno store deve finire nello storage: `hasActiveFilters` èun computed, non ha senso persistirlo. Senza `pick`, il plugin serializzerebbe l'intero stato, inclusi campi che dovrebbero essere effimeri o derivati.
+Il punto chiave è `pick`. Controlla esattamente quali campi vengono persistiti. Non tutto in uno store deve finire nello storage: `hasActiveFilters` è un computed, non ha senso persistirlo. Senza `pick`, il plugin serializzerebbe l'intero stato, inclusi campi che dovrebbero essere effimeri o derivati.
 
 ## Pattern 4: migrazione per strati, non per big bang
 
@@ -340,7 +360,7 @@ export default {
 
 Si tratta di un compromesso pragmatico. Non serve riscrivere ogni componente in `<script setup>` il primo giorno. Gli store nuovi usano Composition API perché ne beneficiano concretamente (closure per stato privato, maggiore flessibilità nella composizione). I componenti esistenti restano in Options API finché non c'è un motivo specifico per toccarli.
 
-Il vantaggio di questo approccio èla possibilità di migrare per strati. Prima si creano gli store Pinia e si collegano ai componenti esistenti tramite `setup()`. Poi, quando si torna su un componente per altre ragioni (un bug, una nuova feature) si approfitta per convertirlo a `<script setup>`. Nel frattempo, il codice funziona. Lo sviluppo non si blocca per una riscrittura completa.
+Il vantaggio di questo approccio è la possibilità di migrare per strati. Prima si creano gli store Pinia e si collegano ai componenti esistenti tramite `setup()`. Poi, quando si torna su un componente per altre ragioni (un bug, una nuova feature) si approfitta per convertirlo a `<script setup>`. Nel frattempo, il codice funziona. Lo sviluppo non si blocca per una riscrittura completa.
 
 ## Lezioni apprese
 
@@ -348,13 +368,15 @@ Le conclusioni principali dopo la migrazione:
 
 - **Saltare Vuex ha funzionato.** Pinia è più semplice, più allineato con Vue 3, e non c'è motivo per passare da un'architettura senza state management a Vuex nel 2026. La scelta diretta è Pinia.
 
-- **Invalidazione esplicita batte scadenza temporale.** Per dati CRUD, il momento del cambiamento ènoto: dopo create, update, delete. L'invalidazione avviene in quel momento preciso. I TTL con scadenza temporale hanno senso per dati che cambiano in modo imprevedibile, non per quelli che l'applicazione stessa modifica.
+- **Invalidazione esplicita batte scadenza temporale.** Per dati CRUD, il momento del cambiamento è noto: dopo create, update, delete. L'invalidazione avviene in quel momento preciso. I TTL con scadenza temporale hanno senso per dati che cambiano in modo imprevedibile, non per quelli che l'applicazione stessa modifica.
 
-- **`pendingRequests` èun pattern sottovalutato.** La deduplicazione delle richieste previene race condition e spreco di banda. Quando tre componenti chiedono gli stessi dati nello stesso secondo, una sola richiesta parte. Semplice da implementare, impatto significativo.
+- **`pendingRequests` è un pattern sottovalutato.** La deduplicazione delle richieste previene race condition e spreco di banda. Quando tre componenti chiedono gli stessi dati nello stesso secondo, una sola richiesta parte. Semplice da implementare, impatto significativo.
 
 - **La persistenza dichiarativa elimina bug di sincronizzazione.** Niente più `getItem` dimenticati, niente serializzazione manuale, niente chiavi di storage duplicate. La configurazione avviene una volta nello store.
 
 - **Migrazione incrementale.** Prima gli store, poi i composable, poi la sintassi dei componenti. Non tutto insieme. L'approccio ibrido Options API (componenti) + Composition API (store) permette di procedere senza riscrivere l'intera applicazione.
+
+La migrazione da EventBus a Pinia non è solo un cambio di libreria: è il passaggio da un'architettura implicita, dove lo stato vive negli eventi, a una esplicita, dove lo stato ha un posto preciso, ispezionabile e testabile. Una volta fatto, non si torna indietro.
 
 ## Risorse Utili
 
