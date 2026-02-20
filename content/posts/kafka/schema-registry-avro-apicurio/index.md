@@ -12,6 +12,7 @@ tags: ["Kafka", "Avro", "Schema Registry", "Apicurio", "Node.js", "Python"]
 categories: ["Backend", "Tecnologie"]
 draft: true
 reviewed: false
+reproducibility: true
 ---
 ## Il problema: JSON senza contratto
 
@@ -173,6 +174,8 @@ I **record annidati** sono uno dei punti di forza di Avro: `C40Location` contien
 
 Il producer è il servizio che registra lo schema nel registry e serializza i messaggi in formato Avro. In Node.js si utilizzano `kafkajs` per la connessione Kafka e `@kafkajs/confluent-schema-registry` per l'integrazione con il registry.
 
+> **Nota**: KafkaJS non riceve aggiornamenti significativi dal 2023 e presenta problemi di compatibilità con Kafka 4.x. Per nuovi progetti, valutare [`@confluentinc/kafka-javascript`](https://github.com/confluentinc/confluent-kafka-javascript) (wrapper su librdkafka) insieme a `@confluentinc/schemaregistry`. La demo usa KafkaJS perché il codice di produzione originale lo adottava prima del cambio di manutenzione.
+
 ```javascript
 const { Kafka } = require("kafkajs");
 const { SchemaRegistry, SchemaType } = require("@kafkajs/confluent-schema-registry");
@@ -184,6 +187,8 @@ const REGISTRY_URL = process.env.SCHEMA_REGISTRY_URL || "http://localhost:8081";
 const TOPIC = "sensor-data";
 
 const kafka = new Kafka({ clientId: "demo-producer", brokers: [BROKER] });
+// NOTA: con Apicurio il REGISTRY_URL deve includere /apis/ccompat/v7
+// Es. in Docker: http://schema-registry:8080/apis/ccompat/v7
 const registry = new SchemaRegistry({ host: REGISTRY_URL });
 const producer = kafka.producer();
 
@@ -220,6 +225,9 @@ async function main() {
       topic: TOPIC,
       messages: [{ key: reading.sensor_id, value }],
     });
+
+    // Delay per evitare di saturare il broker — in produzione usare un meccanismo di rate limiting
+    await new Promise((r) => setTimeout(r, 1000));
   }
 }
 ```
@@ -292,7 +300,7 @@ Il risultato è che producer e consumer sono completamente disaccoppiati: il pro
 
 La schema evolution è il motivo principale per adottare un registry. La domanda è: cosa succede quando il producer inizia a mandare messaggi con un campo in più? O in meno?
 
-La modalità di compatibilità più comune è **BACKWARD**: un consumer con lo schema v(N) può leggere messaggi scritti con lo schema v(N-1). In pratica questo significa che è possibile aggiungere campi opzionali (con default) e rimuovere campi opzionali, ma non aggiungere campi obbligatori o cambiare il tipo di un campo.
+La modalità di compatibilità più comune è **BACKWARD**: un consumer con lo schema v(N) può leggere messaggi scritti con lo schema v(N-1). In pratica questo significa che è possibile aggiungere campi con default (il reader usa il default quando il writer non include il campo) e rimuovere campi (il reader semplicemente li ignora), ma non aggiungere campi obbligatori senza default o cambiare il tipo di un campo esistente.
 
 **Nota**: Apicurio Registry di default non applica nessun controllo di compatibilità (modalità NONE). La regola BACKWARD va configurata esplicitamente per ogni subject, come mostrato negli script della demo.
 
@@ -356,7 +364,7 @@ docker compose up
 
 In circa 30 secondi il producer Node.js registra lo schema e inizia a mandare messaggi, mentre il consumer Python li riceve e li decodifica:
 
-```
+```text
 demo-producer  | [producer] #1 | sensor=sensor-A1 temp=24.57C humidity=48.32% location=warehouse-north
 demo-consumer  | [consumer] #1 | sensor=sensor-A1 temp=24.57C humidity=48.32% location=warehouse-north
 ```
