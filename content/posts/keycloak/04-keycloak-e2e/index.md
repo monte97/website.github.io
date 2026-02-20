@@ -1,7 +1,7 @@
 ---
 title: "Keycloak in Pratica: 6 Problemi Reali nell'Integrazione di un E-Commerce"
 date: 2026-02-06T10:00:00+01:00
-description: "Problemi concreti nell'integrazione Keycloak con microservizi: issuer mismatch, audience mancante, M2M fragile."
+description: "6 problemi concreti nell'integrazione Keycloak con microservizi Node.js: issuer mismatch, audience mancante, service account fragili e race condition M2M."
 menu:
   sidebar:
     name: Keycloak E2E
@@ -14,7 +14,7 @@ draft: true
 reviewed: false
 ---
 
-# Keycloak in Pratica: 6 Problemi Reali nell'Integrazione di un E-Commerce
+Quante volte hai visto un'integrazione Keycloak funzionare perfettamente su localhost, per poi esplodere al primo deploy in staging?
 
 Keycloak configurato, login funzionante, checkout che gira. L'integrazione sembra completa. I problemi iniziano dopo: un 401 inspiegabile in staging, un token che passa la validazione di servizi a cui non era destinato, un service account che qualsiasi utente può impersonare.
 
@@ -31,7 +31,7 @@ Questo articolo documenta 6 problemi concreti emersi nell'integrazione di Keyclo
 
 ## Architettura MockMart
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                    Gateway (nginx:80)                        │
 └────┬──────────────┬──────────────┬──────────────────────────┘
@@ -208,13 +208,12 @@ Il primo controllo (`isServiceAccount`) passa. Il secondo (`callingService !== '
 Non basare l'identificazione sull'assenza di un campo. Verificare un claim esplicito:
 
 ```javascript
-// Approccio più robusto: controllare il tipo di token
-const isServiceAccount = payload.clientId !== undefined
-  && payload.realm_access?.roles?.includes('service-account');
+// Approccio più robusto: clientId è presente solo nei token client credentials (Keycloak 17+)
+// e i token ottenuti via client credentials non hanno session_state
+const isServiceAccount = payload.clientId !== undefined && !payload.session_state;
 
-// Oppure: verificare che il subject corrisponda al pattern dei service account
-// I service account Keycloak hanno sub nel formato "service-account-<clientId>"
-const isServiceAccount = payload.sub?.startsWith('service-account-');
+// In alternativa, preferred_username segue il pattern "service-account-<clientId>"
+// const isServiceAccount = payload.preferred_username?.startsWith('service-account-');
 ```
 
 La soluzione ideale è combinare audience validation (Problema 2) con un check esplicito sul tipo di token. Un token destinato a `shop-api` con `azp: shop-api` è un service account confermato.
@@ -282,7 +281,7 @@ canCheckout: parseBoolean(payload.canCheckout)
 In alternativa, evitare il problema alla radice: usare un ruolo Keycloak (`can-checkout`) invece di un attributo utente. I ruoli sono sempre array di stringhe nel token e il check diventa:
 
 ```javascript
-canCheckout: payload.roles?.includes('can-checkout') || false
+canCheckout: payload.realm_access?.roles?.includes('can-checkout') || false
 ```
 
 ---
@@ -457,8 +456,9 @@ Riepilogo delle verifiche da effettuare prima di portare un'integrazione Keycloa
 
 ## Prossimi Passi
 
-<!-- TODO: aggiornare link quando theory viene importata nel blog -->
-Con `make up-otel-keycloak` è possibile tracciare i flussi di autenticazione end-to-end in Grafana, utile per diagnosticare i problemi descritti in questo articolo.
+Questi 6 problemi coprono le trappole più comuni nell'integrazione applicativa. Ma la sicurezza non finisce nel codice: la configurazione del realm, i flussi di autenticazione custom e il monitoring in produzione aprono un altro insieme di sfide.
+
+Con `make up-otel-keycloak` è possibile tracciare i flussi di autenticazione end-to-end in Grafana, utile per diagnosticare i problemi descritti in questo articolo. Se un 401 non si spiega dai log applicativi, le trace distribuite mostrano esattamente dove il flusso si interrompe.
 
 ## Risorse Utili
 
