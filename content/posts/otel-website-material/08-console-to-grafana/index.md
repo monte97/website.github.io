@@ -11,7 +11,7 @@ menu:
 tags: ["Node.js", "OpenTelemetry", "Logging", "Grafana", "Pino"]
 categories: ["DevOps", "Observability"]
 draft: true
-reviewed: true
+reviewed: false
 ---
 
 Quante volte hai aggiunto un `console.log` "temporaneo" per capire perché una richiesta falliva in produzione? L'output è una stringa piatta, senza timestamp, senza livello, senza contesto e se il container si riavvia, quei log spariscono. Se ci sono più istanze, devi saltare da un `docker logs` all'altro sperando di trovare la riga giusta. È il modo più rapido per iniziare ma anche il primo a crollare quando serve davvero.
@@ -54,7 +54,7 @@ In sintesi: formato, persistenza e centralizzazione mancano tutti. Le sezioni su
 
 ## Da stringhe piatte a JSON filtrabili
 
-Il primo step non richiede infrastruttura, solo solo aggiungere una libreria specificatamente pensata per gestire il logging. In questi esempi useremo [Pino](https://github.com/pinojs/pino).
+Il primo step non richiede infrastruttura, solo aggiungere una libreria specificatamente pensata per gestire il logging. In questi esempi useremo [Pino](https://github.com/pinojs/pino).
 
 ```bash
 npm install pino
@@ -154,14 +154,17 @@ const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumenta
 const { OTLPLogExporter } = require('@opentelemetry/exporter-logs-otlp-http');
 const { BatchLogRecordProcessor } = require('@opentelemetry/sdk-logs');
 
+const { Resource } = require('@opentelemetry/resources');
+const { ATTR_SERVICE_NAME } = require('@opentelemetry/semantic-conventions');
+
 const sdk = new NodeSDK({
+    resource: new Resource({ [ATTR_SERVICE_NAME]: 'shop-service' }),
     logRecordProcessors: [
         new BatchLogRecordProcessor(
             new OTLPLogExporter()
         )
     ],
-    instrumentations: [getNodeAutoInstrumentations()],
-    serviceName: 'shop-service'
+    instrumentations: [getNodeAutoInstrumentations()]
 });
 
 sdk.start();
@@ -177,9 +180,33 @@ node index.js
 node --require ./instrumentation.js index.js
 ```
 
-Il flag `--require` carica l'SDK prima del codice applicativo. Il pacchetto `@opentelemetry/instrumentation-pino` (incluso in `auto-instrumentations-node`) intercetta automaticamente i log Pino e li inoltra al Collector via protocollo OTLP. I `logger.info()` esistenti restano invariati.
+Il flag `--require` carica l'SDK prima del codice applicativo. L'SDK abilita due meccanismi complementari:
+
+- **`@opentelemetry/instrumentation-pino`** (incluso in `auto-instrumentations-node`) inietta automaticamente `trace_id` e `span_id` nei log Pino, collegando log e trace.
+- **`pino-opentelemetry-transport`** invia i log al `LoggerProvider` dell'SDK, che li esporta al Collector via OTLP.
+
+Per collegare Pino al transport, aggiornare `logger.js`:
+
+```javascript
+// logger.js (con OpenTelemetry)
+const pino = require('pino');
+const logger = pino({
+    level: 'info',
+    timestamp: pino.stdTimeFunctions.isoTime,
+    formatters: {
+        level(label) { return { level: label }; }
+    },
+    transport: {
+        target: 'pino-opentelemetry-transport'
+    }
+});
+```
+
+La proprietà `transport` redirige l'output di Pino verso l'SDK OpenTelemetry invece che verso stdout. I `logger.info()` esistenti restano invariati.
 
 L'instrumentazione è reversibile: rimuovendo il `--require`, il servizio torna al comportamento originale.
+
+> **Nota:** `OTLPLogExporter()` senza argomenti usa `http://localhost:4318` come endpoint. Questo funziona quando il servizio Node.js gira sull'host. Se il servizio è containerizzato nello stesso Docker Compose, l'endpoint deve puntare al nome del servizio: `http://otel-collector:4318`. In quel caso, impostare la variabile d'ambiente `OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318`.
 
 ---
 
@@ -208,6 +235,8 @@ services:
     image: grafana/loki:3.6.5
     ports:
       - "3100:3100"
+    volumes:
+      - loki-data:/loki  # persistenza log tra restart
 
   grafana:
     image: grafana/grafana:12.3.2
@@ -217,9 +246,12 @@ services:
       - GF_AUTH_ANONYMOUS_ENABLED=true
       - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
       - GF_AUTH_DISABLE_LOGIN_FORM=true
+
+volumes:
+  loki-data:
 ```
 
-> **Nota:** `GF_AUTH_ANONYMOUS_ORG_ROLE=Admin` consente l'accesso a Grafana senza login con privilegi amministrativi. È comodo in sviluppo per configurare data source e dashboard. In produzione, abilitare l'autenticazione ([documentazione Grafana](https://grafana.com/docs/grafana/latest/setup-grafana/configure-access/configure-authentication/)).
+> **Nota:** Questa configurazione Grafana è **esclusivamente per sviluppo locale**. `GF_AUTH_ANONYMOUS_ORG_ROLE=Admin` consente l'accesso senza login con privilegi amministrativi e `GF_AUTH_DISABLE_LOGIN_FORM=true` disabilita completamente il form di login. Non usare queste impostazioni in ambienti accessibili dall'esterno. Per la produzione, consultare la [documentazione sull'autenticazione di Grafana](https://grafana.com/docs/grafana/latest/setup-grafana/configure-access/configure-authentication/).
 
 > **Nota:** Dopo il primo avvio, è necessario aggiungere manualmente Loki come data source in Grafana (URL: `http://loki:3100`). In alternativa, è possibile automatizzare questo passaggio con i [file di provisioning di Grafana](https://grafana.com/docs/grafana/latest/administration/provisioning/#data-sources).
 
@@ -305,7 +337,7 @@ Dopo un riavvio del container, i log restano disponibili in Grafana. La persiste
 | Nessun volume per Loki | `docker compose down` cancella i log ingeriti | In produzione, montare un volume persistente dedicato |
 | Centralizzare senza strutturare | Log persistenti ma non cercabili | Prima Pino (struttura), poi OTel (centralizzazione) |
 
-> ⚠️ **Security:** non loggare mai token, password o dati personali nei campi strutturati. Con i log centralizzati, un `logger.info({ password })` diventa visibile a chiunque abbia accesso a Grafana.
+> **Security:** non loggare mai token, password o dati personali nei campi strutturati. Con i log centralizzati, un `logger.info({ password })` diventa visibile a chiunque abbia accesso a Grafana.
 
 ### Cleanup
 
@@ -324,8 +356,10 @@ L'articolo ha coperto:
 1. **Limiti di `console.log`** - assenza di struttura, persistenza e centralizzazione
 2. **Logging strutturato con Pino** - JSON, livelli, child logger per contesto HTTP
 3. **Centralizzazione con OpenTelemetry** - 20 righe di `instrumentation.js`, zero modifiche al codice applicativo
-4. **Infrastruttura LGTM** - Collector, Loki e Grafana con tre servizi Docker
+4. **Infrastruttura di osservabilita** - Collector, Loki e Grafana con tre servizi Docker
 5. **Query LogQL** - filtraggio per livello, utente, azione su dati centralizzati
+
+Ora quei `console.log` temporanei possono finalmente sparire per davvero.
 
 Il logging è il primo pilastro dell'osservabilità. Nel prossimo articolo: **distributed tracing** per seguire una request attraverso più servizi.
 
