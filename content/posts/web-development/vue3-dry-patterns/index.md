@@ -1,7 +1,7 @@
 ---
 title: "3 pattern (+1 anti-pattern) per eliminare la duplicazione in Vue 3"
 date: 2026-02-18T10:00:00+01:00
-description: "Composable, wrapper con slot e utility function: tre pattern Vue 3 per eliminare la duplicazione nelle SPA enterprise, piu' un anti-pattern su quando fermarsi"
+description: "Composable, wrapper con slot e utility function: tre pattern Vue 3 per eliminare la duplicazione nelle SPA enterprise, più un anti-pattern su quando fermarsi"
 menu:
   sidebar:
     name: Vue 3 DRY Patterns
@@ -14,9 +14,11 @@ draft: true
 reviewed: false
 ---
 
+Quante volte ti sei ritrovato a correggere lo stesso bug in dodici file diversi, perché quella funzione di salvataggio era stata copiata ovunque?
+
 Nelle SPA di grandi dimensioni con Vue 3 è comune trovarsi con decine di pagine che sono variazioni dello stesso tema: stessa struttura, stesso boilerplate, stesse cinque righe di setup. Si parte con copia-incolla, poi un bug nel flusso di salvataggio va corretto in dodici posti.
 
-Questo articolo presenta tre pattern Vue 3 per eliminare la duplicazione, ciascuno con un caso d'uso specifico, piu' un anti-pattern su quando fermarsi. Gli esempi usano Nuxt 3 e Vuetify 3. Nel repository demo `nuxt3-pinia-patterns` si trova tutto il codice eseguibile.
+Questo articolo presenta tre pattern Vue 3 per eliminare la duplicazione, ciascuno con un caso d'uso specifico, più un anti-pattern su quando fermarsi. Gli esempi usano Nuxt 3 e Vuetify 3. Nel repository demo [pinia-vue-demo](https://github.com/monte97/pinia-vue-demo) si trova tutto il codice eseguibile.
 
 ---
 
@@ -24,14 +26,14 @@ Questo articolo presenta tre pattern Vue 3 per eliminare la duplicazione, ciascu
 
 ### Sette righe che non aggiungono nulla
 
-Una tipica pagina di dettaglio - prodotti, per esempio - inizia cosi':
+Una tipica pagina di dettaglio - prodotti, per esempio - inizia così:
 
 ```javascript
 const route = useRoute()
 const router = useRouter()
 const appStore = useAppStore()
 const inventoryStore = useInventoryStore()
-const { mockApi } = useMockApi()
+import { mockApi } from '~/helpers/mockApi'
 
 const code = computed(() => route.params.id)
 
@@ -79,7 +81,7 @@ const { appStore, mockApi, code, goBack } = useEntityDetail('products')
 
 Router, store, id dalla route, funzione per tornare indietro: tutto disponibile. Se domani si aggiunge un nuovo store o un nuovo servizio condiviso, la modifica avviene in un punto solo.
 
-Dallo stesso modulo è possibile esportare utilita' correlate. Per esempio, `loadFieldOptions` carica le opzioni di una select da un endpoint:
+Dallo stesso modulo è possibile esportare utilità correlate. Per esempio, `loadFieldOptions` carica le opzioni di una select da un endpoint:
 
 ```typescript
 export async function loadFieldOptions(
@@ -103,7 +105,7 @@ categories.value = await loadFieldOptions(mockApi.categories.getAll, 'name')
 
 ### Quando usarlo
 
-Quando 3 o piu' componenti condividono le stesse dipendenze di setup. Con solo due componenti, il copia-incolla è ancora accettabile: l'overhead cognitivo del composable non si ripaga.
+Quando 3 o più componenti condividono le stesse dipendenze di setup. Con solo due componenti, il copia-incolla è ancora accettabile: l'overhead cognitivo del composable non si ripaga.
 
 ---
 
@@ -227,7 +229,7 @@ Un wrapper component con tre slot strategici risolve il problema:
 </template>
 ```
 
-`#info-fields` per i campi del form, `#extra-tabs` per tab aggiuntive, `#extra-tab-items` per il contenuto di quelle tab. Il wrapper gestisce internamente lo stato dei tab e dello snackbar, ed espone `showSuccess` e `showError` via `defineExpose`.
+`#info-fields` per i campi del form, `#extra-tabs` per tab aggiuntive, `#extra-tab-items` per il contenuto di quelle tab. Il blocco `<script setup lang="ts">` (omesso per brevità) definisce le props `title`, `icon`, `saving`, gli emit `back`, `save`, `export`, i ref interni `tab`, `snackbar`, `snackbarColor`, `snackbarText`, e espone `showSuccess`/`showError` via `defineExpose` per permettere alle pagine figlie di attivare le notifiche.
 
 Il risultato: una pagina semplice come i magazzini diventa:
 
@@ -254,9 +256,9 @@ Il risultato: una pagina semplice come i magazzini diventa:
 </template>
 ```
 
-Venticinque righe totali, template e script. La pagina esprime solo cio' che la rende unica: i tre campi del form. Navigazione, tab, salvataggio, notifiche sono gestiti dal wrapper.
+Venticinque righe totali, template e script. La pagina esprime solo ciò che la rende unica: i tre campi del form. Navigazione, tab, salvataggio, notifiche sono gestiti dal wrapper.
 
-Una pagina piu' complessa come i prodotti, con una tab aggiuntiva "Storico Giacenza", resta comunque sotto le cinquanta righe:
+Una pagina più complessa come i prodotti, con una tab aggiuntiva "Storico Giacenza", resta comunque sotto le cinquanta righe:
 
 ```vue
 <template>
@@ -299,7 +301,7 @@ Il pattern scala bene. Se domani cambia il layout di tutte le pagine di dettagli
 
 ### Quando usarlo
 
-Quando la struttura HTML è identica e il contenuto varia. Se servono piu' di 3-4 slot, il wrapper sta facendo troppo: probabilmente le pagine non sono cosi' simili come sembrano.
+Quando la struttura HTML è identica e il contenuto varia. Se servono più di 3-4 slot, il wrapper sta facendo troppo: probabilmente le pagine non sono così simili come sembrano.
 
 ---
 
@@ -399,11 +401,11 @@ Tre pagine di lista: prodotti, magazzini, fornitori. Tutte hanno una tabella, un
 </GenericCrudPage>
 ```
 
-Il problema emerge con le eccezioni. I prodotti hanno filtri per categoria e fornitore. I magazzini no. I fornitori hanno una struttura dati annidata (indirizzo come sotto-oggetto). I prodotti hanno un prezzo che va formattato con il simbolo dell'euro. I magazzini hanno una colonna "capacita'" con una progress bar personalizzata. I fornitori hanno un dialog di conferma cancellazione con campi aggiuntivi.
+Il problema emerge con le eccezioni. I prodotti hanno filtri per categoria e fornitore. I magazzini no. I fornitori hanno una struttura dati annidata (indirizzo come sotto-oggetto). I prodotti hanno un prezzo che va formattato con il simbolo dell'euro. I magazzini hanno una colonna "capacità" con una progress bar personalizzata. I fornitori hanno un dialog di conferma cancellazione con campi aggiuntivi.
 
-Ogni eccezione diventa una prop. Ogni prop diventa un `if` dentro il componente generico. Dopo tre mesi il risultato è un componente da 120 righe con 15 prop, 4 slot, e una logica condizionale che nessuno riesce a seguire. Modificare il comportamento di una singola entita' richiede di capire come la modifica interagisce con tutte le altre.
+Ogni eccezione diventa una prop. Ogni prop diventa un `if` dentro il componente generico. Dopo tre mesi il risultato è un componente da 120 righe con 15 prop, 4 slot, e una logica condizionale che nessuno riesce a seguire. Modificare il comportamento di una singola entità richiede di capire come la modifica interagisce con tutte le altre.
 
-Il componente generico non semplifica: sposta la complessita' dalla duplicazione alla configurazione. E la configurazione è piu' difficile da debuggare del codice duplicato, perchè il flusso non è lineare.
+Il componente generico non semplifica: sposta la complessità dalla duplicazione alla configurazione. E la configurazione è più difficile da debuggare del codice duplicato, perché il flusso non è lineare.
 
 ### L'alternativa: duplicazione consapevole
 
@@ -411,28 +413,28 @@ Tre pagine di lista da 40-50 righe ciascuna, dove il flusso è leggibile dall'in
 
 Come dice Sandi Metz: *"Duplication is far cheaper than the wrong abstraction."*
 
-Il segnale è semplice: se la configurazione del componente generico richiede piu' righe del codice che sostituisce, la direzione è sbagliata.
+Il segnale è semplice: se la configurazione del componente generico richiede più righe del codice che sostituisce, la direzione è sbagliata.
 
 ---
 
 ## Albero decisionale
 
-```
-La logica duplicata ha bisogno di reattivita' Vue?
+```text
+La logica duplicata ha bisogno di reattività Vue?
 |
 +-- No --> Utility function (helpers/)
 |
-+-- Si' --> è solo setup / dipendenze condivise?
++-- Sì --> è solo setup / dipendenze condivise?
     |
-    +-- Si' --> Composable (composables/)
+    +-- Sì --> Composable (composables/)
     |
     +-- No --> è struttura HTML ripetuta?
         |
-        +-- Si' --> Wrapper component con slot
+        +-- Sì --> Wrapper component con slot
         |
         +-- No --> La duplicazione è accettabile?
             |
-            +-- Si' --> Tieni i file separati
+            +-- Sì --> Tieni i file separati
             |
             +-- No --> Ripensa il design
 ```
@@ -441,9 +443,16 @@ La directory `helpers/` contiene funzioni pure, testabili in isolamento. La dire
 
 ---
 
-Questi tre pattern coprono la maggior parte della duplicazione nelle applicazioni Vue 3 enterprise. Non sono concetti nuovi: sono le stesse idee di sempre (estrai una funzione, estrai un componente) applicate in modo sistematico con la Composition API.
+## Conclusione
 
-La sezione sull'anti-pattern è importante quanto le altre tre. Prima di creare un'astrazione, la domanda è: il codice che la usa sara' piu' leggibile di quello che sostituisce? Se la risposta non è immediata, la duplicazione resta. Si puo' sempre estrarre dopo - disfare un'astrazione sbagliata è molto piu' costoso.
+Abbiamo visto come affrontare la duplicazione in Vue 3 con tre strumenti complementari:
+
+1. **Composable** per il setup condiviso: estrae dipendenze e logica reattiva comune in una funzione riutilizzabile (`composables/`)
+2. **Wrapper component con slot** per la struttura HTML ripetuta: incapsula il layout condiviso e lascia alle pagine figlie solo i contenuti specifici
+3. **Utility function** per la logica pura: isola funzioni senza stato in moduli testabili (`helpers/`)
+4. **Anti-pattern da evitare**: il componente generico iper-configurabile che sposta la complessità dalla duplicazione alla configurazione
+
+La regola pratica resta una sola: se la configurazione dell'astrazione richiede più righe del codice che sostituisce, la direzione è sbagliata. Si può sempre estrarre dopo - disfare un'astrazione sbagliata è molto più costoso.
 
 ## Risorse Utili
 
