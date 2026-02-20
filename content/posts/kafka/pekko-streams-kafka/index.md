@@ -1,7 +1,7 @@
 ---
 title: "Da blocking poll a stream reattivi con Pekko Connectors Kafka"
 date: 2026-02-14T10:00:00+01:00
-description: "Refactoring da attori bloccanti a Source.queue e consumer threads: pattern pratici con Pekko Streams e Kafka"
+description: "Refactoring da attori bloccanti a Source.queue e consumer threads dedicati: pattern pratici con Pekko Streams e Kafka per sistemi di telemetria"
 menu:
   sidebar:
     name: "4. Pekko Streams Kafka"
@@ -12,6 +12,7 @@ tags: ["Scala", "Pekko", "Kafka", "Streaming", "Avro"]
 categories: ["Backend", "Tecnologie"]
 draft: true
 reviewed: false
+reproducibility: true
 ---
 ## Il pattern di partenza: while(true) dentro un attore
 
@@ -73,28 +74,34 @@ val producer = new KafkaProducer[String, GenericRecord](KafkaProducerConfig.prod
 implicit val materializer: Materializer = Materializer(context.system)
 
 val (queue, _) = Source.queue[C40StandardModel](bufferSize = 256, OverflowStrategy.dropHead)
-  .map { data =>
+  .mapAsync(parallelism = 4) { data =>
     val record = new ProducerRecord[String, GenericRecord](
       KafkaProducerConfig.topic,
       data.identifier,
       AvroConverter.toAvroRecord(data)
     )
-    producer.send(record)
-    record
+    val promise = Promise[RecordMetadata]()
+    producer.send(record, (metadata: RecordMetadata, exception: Exception) =>
+      if (exception != null) promise.failure(exception)
+      else promise.success(metadata)
+    )
+    promise.future
   }
   .toMat(Sink.ignore)(Keep.both)
   .run()
 
 val enqueueData: C40StandardModel => Unit = { data =>
-  queue.offer(data)
+  queue.offer(data) // restituisce Future[QueueOfferResult]: gestire Dropped/Failure in produzione
 }
 ```
 
 Il flusso è questo:
 
 1. Si crea un `Source.queue` con buffer di 256 elementi e strategia `dropHead` (se il buffer è pieno, scarta il messaggio più vecchio)
-2. Ogni elemento che entra nella queue viene convertito in un `GenericRecord` Avro e inviato a Kafka
+2. Ogni elemento che entra nella queue viene convertito in un `GenericRecord` Avro e inviato a Kafka in modo asincrono tramite `mapAsync`, che evita di bloccare il thread del materializer e propaga correttamente gli errori del producer
 3. Gli attori `HttpC40Reader` ricevono la funzione `enqueueData` e la chiamano quando hanno nuovi dati
+
+> **Nota**: l'uso di `mapAsync` con il callback del producer è sufficiente per questo caso d'uso. Per scenari più complessi (gestione dei commit, backpressure nativa verso il broker, retry), la soluzione production-grade è `Producer.flexiFlow` di [Pekko Connectors Kafka](https://pekko.apache.org/docs/pekko-connectors-kafka/current/producer.html), che gestisce asincronismo e backpressure verso il broker nativamente.
 
 ```scala
 val recordReaderActor = context.spawn(
@@ -106,7 +113,7 @@ val targaReaderActor = context.spawn(
 targaReaderActor ! HttpC40Reader.Start
 ```
 
-Il vantaggio rispetto al pattern precedente: il `Source.queue` ha backpressure. Se il producer Kafka rallenta, il buffer si riempie e i messaggi più vecchi vengono scartati (`dropHead`). In un sistema di telemetria, scartare un dato vecchio è accettabile: il dato più recente è sempre più rilevante. Nessun rischio di OutOfMemoryError.
+Il vantaggio rispetto al pattern precedente: il `Source.queue` fornisce un buffer limitato con **load shedding**. Se il producer Kafka rallenta, il buffer si riempie e i messaggi più vecchi vengono scartati (`dropHead`). Va precisato che questo non è backpressure in senso stretto: con `dropHead` l'attore che chiama `queue.offer()` non viene mai rallentato, semplicemente i dati più vecchi vengono persi. La backpressure vera esiste solo *dentro* lo stream (tra la queue e il sink). Per propagare pressione fino agli attori si potrebbe usare `OverflowStrategy.backpressure`, dove la `Future` restituita da `offer()` non completa finché non c'è spazio nel buffer. In un sistema di telemetria, il load shedding con `dropHead` è la scelta pragmatica: il dato più recente è sempre più rilevante. Nessun rischio di OutOfMemoryError.
 
 Gli attori `HttpC40Reader` restano semplici: ricevono un messaggio `Act` dallo scheduler, chiamano l'API HTTP, diffano i dati con lo stato precedente, e per ogni dato cambiato chiamano `enqueueData`. Non sanno nulla di Kafka, di Avro, di serializzazione. Se l'API HTTP fallisce, la `SupervisorStrategy.restart` riavvia solo il reader, senza toccare lo stream Kafka.
 
@@ -196,6 +203,8 @@ new Thread(() => {
 
 La differenza rispetto al pattern precedente: i `while(true)` ci sono ancora, ma girano su **thread dedicati** (`new Thread(...)`), non su thread del dispatcher Pekko. Il dispatcher resta libero per gli attori del sistema. Ogni consumer ha il suo thread, fa la sua `poll()`, e chiama lo stato condiviso.
 
+Va notato che i consumer threads così scritti non hanno un meccanismo di shutdown graceful. Allo spegnimento della JVM, i consumer non committano gli offset pendenti e le connessioni al broker restano aperte fino al session timeout. In produzione, il pattern corretto prevede un flag `volatile` per uscire dal loop, una chiamata a `consumer.wakeup()` per interrompere la `poll()`, e un blocco `try/finally` con `consumer.close()`. La migrazione a `Consumer.plainSource` di Pekko Connectors Kafka risolve questo problema nativamente.
+
 Lo stato condiviso è un `EnrichmentState` basato su `ConcurrentHashMap`:
 
 ```scala
@@ -230,7 +239,7 @@ class EnrichmentState {
 }
 ```
 
-`ConcurrentHashMap` garantisce thread-safety per le operazioni `get` e `put`. Le operazioni composte (get-then-put) non sono atomiche, ma in questo caso la semantica è "ultimo aggiornamento vince", accettabile per dati telemetrici dove il valore più recente è sempre quello rilevante. Va notato che le operazioni composte get-then-put possono causare lost-update se due thread aggiornano lo stesso identificativo contemporaneamente; per casi d'uso più stringenti, `ConcurrentHashMap.compute()` offre atomicità a livello di singola chiave.
+`ConcurrentHashMap` garantisce thread-safety per le operazioni `get` e `put` individuali. Le operazioni composte (get-then-put) non sono atomiche: se `enrichC40` e `updateRegistry` vengono chiamati contemporaneamente per lo stesso identificativo (possibile, dato che girano su thread diversi), si verifica un classico **lost update**. Non è semplicemente "l'ultimo timestamp vince": il secondo `put` potrebbe sovrascrivere lo stato con una versione che non include l'aggiornamento del primo thread. Per esempio, un `updateRegistry` potrebbe sovrascrivere un arricchimento C40 appena inserito, perdendolo. Per dati telemetrici dove il valore viene ricalcolato frequentemente, questo è accettabile in pratica. Per casi d'uso più stringenti, `ConcurrentHashMap.compute()` offre atomicità a livello di singola chiave, garantendo che la lettura e la scrittura avvengano in un'unica operazione atomica.
 
 L'arricchimento fa anche un calcolo geospaziale: per ogni dato C40 con coordinate GPS, cerca i punti di interesse entro 1000 metri usando la formula dell'haversine. Nella versione precedente questo calcolo era dentro un attore (`MachineryEnrichActor`); ora è in una classe plain Scala, testabile senza attori né Kafka.
 
@@ -277,7 +286,7 @@ docker compose up
 
 Il metadata-seeder registra 3 sensori con soglie diverse, poi il servizio `pekko-patterns` avvia entrambi i pattern:
 
-```
+```text
 demo-metadata-seeder     | [seed] sensor-A1: North Warehouse (threshold 25.0C)
 demo-metadata-seeder     | [seed] sensor-B2: South Warehouse (threshold 26.0C)
 demo-metadata-seeder     | [seed] sensor-C3: Outdoor (threshold 28.0C)
