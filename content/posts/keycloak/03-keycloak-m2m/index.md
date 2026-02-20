@@ -14,7 +14,7 @@ draft: true
 reviewed: false
 ---
 
-In un sistema a microservizi, non tutte le chiamate partono da un utente. Job schedulati, webhook, eventi asincroni: in questi casi non c'è nessuno loggato, ma i servizi devono comunque autenticarsi tra loro.
+Ti sei mai chiesto come fanno due microservizi a fidarsi l'uno dell'altro quando non c'è nessun utente loggato? Job schedulati, webhook, eventi asincroni: in questi casi non c'è nessuno davanti allo schermo, ma i servizi devono comunque autenticarsi tra loro.
 
 Questo articolo mostra come implementare autenticazione machine-to-machine (M2M) con Keycloak, usando il flusso **Client Credentials**. Vedremo setup, codice e gli errori che tutti fanno.
 
@@ -26,7 +26,7 @@ Questo articolo mostra come implementare autenticazione machine-to-machine (M2M)
 
 In [MockMart](https://github.com/monte97/MockMart), quando un utente completa un ordine, `shop-api` deve notificare `notification-service`:
 
-```
+```text
 ┌──────────────┐         ┌───────────────────┐
 │   shop-api   │ ──────► │notification-service│
 │  (checkout)  │         │   (send email)     │
@@ -37,21 +37,21 @@ Il problema: questa chiamata avviene **dopo** che il checkout è completato. Non
 
 ### Soluzioni Sbagliate
 
-**❌ Hardcodare API key nei servizi:**
+**Hardcodare API key nei servizi:**
 ```javascript
 // NON FARE QUESTO
 headers: { 'X-API-Key': 'super-secret-key-123' }
 ```
 Problemi: se una chiave viene compromessa, va cambiata ovunque. Nessuna scadenza, nessun audit.
 
-**❌ Passare il token dell'utente:**
+**Passare il token dell'utente:**
 ```javascript
 // NON FARE QUESTO
 headers: { 'Authorization': `Bearer ${userToken}` }
 ```
 Problemi: il token scade (tipicamente 5 minuti), ha permessi dell'utente (non del servizio), e non funziona per job schedulati.
 
-**❌ Nessuna autenticazione ("tanto è rete interna"):**
+**Nessuna autenticazione ("tanto è rete interna"):**
 ```javascript
 // NON FARE QUESTO
 await fetch('http://notification-service/send', { body: data });
@@ -70,7 +70,7 @@ Il flusso **Client Credentials** permette a un servizio di autenticarsi come "se
 
 ### Come Funziona
 
-```
+```text
 ┌──────────────┐                         ┌──────────────┐
 │   shop-api   │ ─── (1) credentials ───►│   Keycloak   │
 │              │ ◄── (2) access_token ───│              │
@@ -132,6 +132,8 @@ curl -X POST "http://localhost:8080/auth/realms/techstore/protocol/openid-connec
   -d "client_id=shop-api" \
   -d "client_secret=shop-api-secret"
 ```
+
+> **Nota:** A partire da Keycloak 17+ (distribuzione Quarkus, ora l'unica supportata), il prefisso `/auth` è stato rimosso dal context path di default. Se usi una versione recente, l'URL diventa `http://localhost:8080/realms/techstore/protocol/openid-connect/token`. Nel codice di MockMart, la variabile `KEYCLOAK_AUTH_PATH` permette di gestire entrambi i casi.
 
 **Risposta:**
 ```json
@@ -286,9 +288,10 @@ async function requireServiceAuth(req, res, next) {
     });
 
     // Verifica che sia un service account
-    // I service account Keycloak hanno il claim clientId e il ruolo service-account
+    // Il claim clientId è l'indicatore primario: è presente solo nei token di service account
+    // Il check sul ruolo è supplementare (Keycloak assegna "service-account-<clientId>" di default)
     const isServiceAccount = payload.clientId !== undefined
-      && payload.realm_access?.roles?.some(r => r.startsWith('service-account'));
+      && payload.clientId === payload.azp;
     if (!isServiceAccount) {
       return res.status(403).json({
         error: 'This endpoint only accepts service account tokens'
@@ -315,7 +318,9 @@ async function requireServiceAuth(req, res, next) {
 module.exports = { requireServiceAuth };
 ```
 
-**Punto critico:** Due check distinti proteggono l'endpoint. Il primo (`isServiceAccount`) verifica che il token provenga da un service account tramite il claim `clientId` e il ruolo assegnato da Keycloak. Il secondo (`payload.azp !== 'shop-api'`) restringe l'accesso al solo servizio autorizzato. Senza entrambi, un token utente o di un altro servizio passerebbe la validazione.
+**Punto critico:** Due check distinti proteggono l'endpoint. Il primo (`isServiceAccount`) verifica che il token provenga da un service account tramite il claim `clientId`. Il secondo (`payload.azp !== 'shop-api'`) restringe l'accesso al solo servizio autorizzato. Senza entrambi, un token utente o di un altro servizio passerebbe la validazione.
+
+> **Verso la produzione:** In questo esempio l'`azp` è hardcodato, ma in un sistema con molti servizi questo approccio diventa fragile. L'alternativa scalabile è assegnare **client roles o scopes** (es. `notifications:send`) al service account in Keycloak e verificarli nel middleware, invece di controllare il singolo client ID. In questo modo si disaccoppia l'autorizzazione dall'identità specifica del chiamante.
 
 ---
 
@@ -334,7 +339,7 @@ Il token Client Credentials ha vita breve (default 5 minuti). Senza cache con ri
 ### Errore 2: Validare Solo la Firma
 
 ```javascript
-// ⚠️ INSICURO
+// INSICURO
 const { payload } = await jwtVerify(token, getJWKS());
 // Accetta QUALSIASI token valido!
 ```
@@ -351,7 +356,7 @@ if (payload.azp !== 'shop-api') {
 ### Errore 3: Secret nel Codice
 
 ```javascript
-// ⚠️ MAI FARE QUESTO
+// MAI FARE QUESTO
 const CLIENT_SECRET = 'shop-api-secret';
 ```
 
@@ -375,7 +380,7 @@ make up-otel-keycloak
 
 In Grafana → Explore → Tempo vedrai:
 
-```
+```text
 shop-api                     keycloak                  notification
     │                            │                           │
     ├── POST /token ────────────►│                           │
@@ -412,8 +417,21 @@ La trace mostra chi ha chiamato chi, con quale token, e quanto tempo ha impiegat
 
 ---
 
+## Conclusione
+
+Abbiamo visto come:
+
+1. Il flusso **Client Credentials** permette ai servizi di autenticarsi tra loro senza coinvolgere un utente
+2. La **cache con rinnovo anticipato** e deduplicazione delle richieste evita chiamate inutili a Keycloak
+3. Il servizio ricevente deve validare non solo la firma del token, ma anche verificare che il chiamante sia un service account autorizzato
+4. In produzione, preferire **roles e scopes** rispetto a check hardcodati su `azp` per un'architettura disaccoppiata
+
+L'autenticazione M2M è uno di quei pezzi che, una volta implementato correttamente, diventa invisibile. Ma se fatto male, diventa il punto debole che espone tutto il sistema.
+
+---
+
 ## Risorse
 
-- [MockMart - Demo E-commerce con OTEL](https://github.com/monte97/MockMart)
-- [RFC 6749 - OAuth 2.0 Client Credentials Grant](https://datatracker.ietf.org/doc/html/rfc6749#section-4.4)
-- [Keycloak Documentation - Service Accounts](https://www.keycloak.org/docs/latest/server_admin/#_service_accounts)
+- **MockMart**: [Demo E-commerce con OTEL](https://github.com/monte97/MockMart)
+- **RFC 6749**: [OAuth 2.0 Client Credentials Grant](https://datatracker.ietf.org/doc/html/rfc6749#section-4.4)
+- **Keycloak Documentation**: [Service Accounts](https://www.keycloak.org/docs/latest/server_admin/#_service_accounts)
