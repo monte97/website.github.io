@@ -1,7 +1,7 @@
 ---
 title: "Akka è morto, lunga vita a Pekko"
 date: 2026-02-14T10:00:00+01:00
-description: "Guida pratica alla migrazione da Akka a Apache Pekko: checklist, gotcha, e lezioni dal campo"
+description: "Guida pratica alla migrazione da Akka a Apache Pekko in produzione: checklist completa, gotcha reali e lezioni apprese dal campo"
 menu:
   sidebar:
     name: "3. Akka to Pekko"
@@ -12,13 +12,14 @@ tags: ["Scala", "Pekko", "Akka", "JVM", "Migrazione"]
 categories: ["Backend", "Tecnologie"]
 draft: true
 reviewed: false
+reproducibility: true
 ---
 
-Come gestire un ecosistema in produzione quando il framework su cui si basa cambia licenza? In questo articolo vediamo la migrazione pratica da Akka ad Apache Pekko, con checklist, gotcha e lezioni dal campo.
+Il tuo servizio Scala gira su Akka 2.6 da tre anni. Un giorno scopri che la licenza è cambiata e le patch di sicurezza non arrivano più. Che fai? In questo articolo vediamo la migrazione pratica da Akka ad Apache Pekko, con checklist, gotcha e lezioni dal campo.
 
 ## Il cambio licenza di Akka
 
-A settembre 2022, Lightbend ha annunciato che Akka 2.7 e tutte le versioni successive sarebbero state rilasciate sotto Business Source License (BSL 1.1). In pratica: l'uso commerciale di Akka richiede una licenza a pagamento. Akka 2.6.19 è l'ultima versione sotto Apache 2.0; dalla 2.6.20 anche la serie 2.6.x è sotto BSL 1.1. Le versioni Apache 2.0 non ricevono più patch di sicurezza né bugfix.
+A settembre 2022, Lightbend ha annunciato che Akka 2.7 e tutte le versioni successive sarebbero state rilasciate sotto Business Source License (BSL 1.1). In pratica: l'uso commerciale di Akka richiede una licenza a pagamento. Akka 2.6.20 è l'ultima versione sotto Apache 2.0; dalla 2.6.21 anche la serie 2.6.x è sotto BSL 1.1. Le versioni BSL revertono automaticamente ad Apache 2.0 dopo 3 anni dalla data di rilascio, ma per chi necessita di patch tempestive questa clausola non risolve il problema. Le versioni Apache 2.0 non ricevono più patch di sicurezza né bugfix.
 
 La decisione ha colpito un ecosistema ampio. Akka è la base di framework come Play e di migliaia di sistemi in produzione nel mondo JVM. Per chi gestisce sistemi in produzione basati su Akka, le opzioni sono tre:
 
@@ -32,7 +33,7 @@ La decisione ha colpito un ecosistema ampio. Akka è la base di framework come P
 
 ## Apache Pekko: il fork della community
 
-Apache Pekko è nato come fork di Akka 2.6.19 (l'ultima versione Apache 2.0) sotto la Apache Software Foundation. Il progetto è stato incubato e promosso a progetto top-level ASF nel marzo 2024. La licenza è Apache 2.0, senza ambiguità.
+Apache Pekko è nato come fork di Akka 2.6.20 (l'ultima versione Apache 2.0) sotto la Apache Software Foundation. Il progetto è stato incubato e promosso a progetto top-level ASF nel maggio 2024. La licenza è Apache 2.0, senza ambiguità.
 
 La versione **Pekko 1.0.x** è un fork diretto di Akka 2.6.x. L'API è identica: stesse classi, stessi pattern, stessi comportamenti. L'unica differenza è il namespace: `org.apache.pekko` invece di `akka`. Questo rende la migrazione meccanica: cerca e sostituisci.
 
@@ -63,7 +64,7 @@ Tutte le dipendenze cambiano group ID e nome artefatto.
 "com.typesafe.akka" %% "akka-actor-typed"   % "2.6.20"
 "com.typesafe.akka" %% "akka-stream"        % "2.6.20"
 "com.typesafe.akka" %% "akka-http"          % "10.2.10"
-"com.typesafe.akka" %% "akka-stream-kafka" % "4.0.2"
+"com.typesafe.akka" %% "akka-stream-kafka" % "3.0.1"
 
 // Dopo (Pekko)
 "org.apache.pekko" %% "pekko-actor-typed"   % "1.0.3"
@@ -228,7 +229,7 @@ In questo articolo abbiamo visto come migrare da Akka ad Apache Pekko:
 3. **I gotcha**: Apicurio 3.x, Materializer implicito, `reference.conf` di terze parti e dipendenze transitive sono i punti dove servono verifiche manuali
 4. **Il costo reale**: non è nel rename, ma nella verifica — per tre servizi e ~50 file, circa mezza giornata
 
-Una volta su Pekko 1.0.x, si torna su un binario di rilascio attivo con bugfix, patch di sicurezza e nuove feature. Il cambio di licenza è un problema risolto.
+Una volta su Pekko 1.0.x, si torna su un binario di rilascio attivo con bugfix, patch di sicurezza e nuove feature. La migrazione più spaventosa è quella che non fai.
 
 ---
 
