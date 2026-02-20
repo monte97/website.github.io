@@ -11,29 +11,30 @@ menu:
 tags: ["OpenTelemetry", "Keycloak", "GDPR", "Security", "Observability"]
 categories: ["Observability", "Security"]
 draft: true
-reviewed: true
-comment: "Mi convince veramente poco, come problematica da analizzare ci sta ma non in questo modo, mi sembra tutto finto"
+reviewed: false
 ---
 
-Cosa succede quando abiliti il tracing su un identity provider e ti ritrovi username, password e token JWT leggibili in chiaro su Grafana? I dati sensibili che Keycloak gestisce - credenziali, token, sessioni - finiscono nel backend di observability insieme ai trace, creando un rischio concreto di data breach e violazione GDPR.
+Hai appena abilitato il tracing su Keycloak e nei tuoi span compare l'email dell'utente in chiaro. Apri Grafana, cerchi un trace e ti ritrovi username, password e token JWT perfettamente leggibili. Se ti e' successo, non sei il solo.
 
-Instrumentare servizi third-party come identity provider o payment gateway aggiunge un problema spesso sottovalutato: senza filtering, ogni span diventa un potenziale vettore di esposizione PII.
+Il punto e' che Keycloak gestisce credenziali, token e sessioni - e quando abiliti il tracing, tutto questo finisce nel backend di observability senza alcun filtro. Il rischio? Data breach e violazione GDPR con un click su Explore.
+
+In questo articolo vediamo come filtrare i dati sensibili direttamente nell'OTel Collector, prima che raggiungano Tempo. La nostra strategia si basa su quattro tecniche - DELETE, REDACT, HASH e SANITIZE - che ti permettono di mantenere piena visibilita' senza esporre PII.
 
 ---
 
 ## I trace registrano tutto, anche i dati sensibili
 
-Aggiungere observability a un servizio di autenticazione come Keycloak presenta un problema: unified logs, distributed tracing e metriche finiscono tutti nel backend di observability. Il primo trace rivela subito il rischio.
+Quando aggiungi observability a un servizio di autenticazione come Keycloak, il primo trace rivela subito il rischio: tutto finisce nel backend - log, span, metriche - senza distinzione tra dati operativi e dati sensibili.
 
 **Scenario tipico:**
 
-```
+```text
 User → Frontend → Backend API → Keycloak (authentication)
                                     ↓
                                  Postgres (users, sessions)
 ```
 
-Abilitando il tracing nativo di Keycloak (dalla versione 26.0 come feature stabile), l'instrumentazione funziona immediatamente. Ma in Grafana appare questo:
+Abilitando il tracing nativo di Keycloak (dalla versione 26.0, inizialmente come preview, stabilizzata nelle release successive), l'instrumentazione funziona immediatamente. Ma in Grafana appare questo:
 
 ```json
 {
@@ -46,46 +47,42 @@ Abilitando il tracing nativo di Keycloak (dalla versione 26.0 come feature stabi
 }
 ```
 
-> **Nota:** Il tracing nativo non cattura il body delle request HTTP. I dati sensibili finiscono comunque nei trace tramite URL query parameters, database statements e span attributes.
+Il tracing nativo non cattura il body delle request HTTP, ma i dati sensibili finiscono comunque nei trace tramite URL query parameters, database statements e span attributes.
 
-**Problemi:**
+**Cosa c'e' di sbagliato qui?**
 - **Username esposto** in URL query parameters e database queries
 - **Session ID e token** tracciabili
 - **Potenziale violazione GDPR** (Art. 5: data minimization, Art. 32: security measures)
-- **Rischio data breach** se il backend Grafana/Tempo è compromesso
+- **Rischio data breach** se il backend Grafana/Tempo e' compromesso
 
-> **Nota:** L'esposizione di PII non gestita può configurare una violazione degli articoli 5 e 32 del GDPR, con obbligo di notifica in caso di data breach (Art. 33).
+Il tracing instrumenta le operazioni interne, ma non distingue cosa e' sensibile da cosa non lo e'. E non tracciare Keycloak non e' un'opzione - perdi visibilita' su un componente critico.
 
-Il tracing nativo instrumenta le operazioni interne, ma non distingue cosa è sensibile. Il problema non è l'instrumentazione - è cosa passa nel backend di observability.
-
-Semplicemente non tracciare Keycloak non è un'opzione: si perde visibilità su un componente critico. L'alternativa è filtrare i dati sensibili nell'OTel Collector, prima che raggiungano il backend. Le prossime sezioni coprono il setup, quattro tecniche di filtering e i requisiti di compliance.
+La soluzione? Filtrare i dati sensibili nell'OTel Collector, prima che raggiungano il backend. Vediamo come farlo.
 
 ---
 
 ## Keycloak si instrumenta in 5 righe di config
 
-Prima di parlare di filtering, è utile vedere quanto è semplice instrumentare Keycloak e quali rischi comporta senza filtering.
+Prima di entrare nel filtering, vediamo quanto e' semplice instrumentare Keycloak - e perche' senza filtri la situazione diventa subito problematica.
 
 A partire dalla versione 26, Keycloak supporta OpenTelemetry nativamente, senza bisogno del Java Agent.
 
-> **Setup**: il codice completo è nel [repository MockMart](https://github.com/monte97/MockMart).
-> ```bash
-> git clone https://github.com/monte97/MockMart
-> cd MockMart
-> ```
+Il codice completo e' nel [repository MockMart](https://github.com/monte97/MockMart):
+
+```bash
+git clone https://github.com/monte97/MockMart
+cd MockMart
+```
 
 **Stack completo (estratto semplificato da `docker-compose.keycloak-pii.yml`):**
 
-> **Nota:** L'estratto seguente è semplificato per leggibilità. Il compose completo include Postgres, application services (shop-api, shop-ui), healthcheck, volumes e configurazioni aggiuntive. Vedi il [repository](https://github.com/monte97/MockMart) per il setup completo.
+L'estratto seguente e' semplificato per leggibilita'. Il compose completo include Postgres, application services (shop-api, shop-ui), healthcheck, volumes e configurazioni aggiuntive. Vedi il [repository](https://github.com/monte97/MockMart) per il setup completo.
 
 ```yaml
 services:
   keycloak:
     image: quay.io/keycloak/keycloak:26.0
-    command: >
-      start-dev
-      --tracing-enabled=true
-      --metrics-enabled=true
+    command: start-dev
     ports:
       - "8080:8080"
     environment:
@@ -116,9 +113,11 @@ services:
 
 **Configurazione:**
 
-1. **Abilita il tracing nativo** nel command: `--tracing-enabled=true`
-2. **Configura l'endpoint OTel** via environment: `KC_TRACING_ENDPOINT`
-3. **Abilita le metriche**: `--metrics-enabled=true`
+1. **Abilita il tracing nativo** via environment: `KC_TRACING_ENABLED`
+2. **Configura l'endpoint OTel**: `KC_TRACING_ENDPOINT`
+3. **Abilita le metriche**: `KC_METRICS_ENABLED`
+
+Le variabili d'ambiente sono il metodo consigliato - evita di duplicare la configurazione con i flag CLI nel `command`, perche' la precedenza tra i due metodi varia tra versioni di Keycloak.
 
 > **Nota sulle variabili Keycloak:** Keycloak 26.0 usa le variabili `KC_TRACING_*` per il tracing. Le variabili unificate `KC_TELEMETRY_*` (che coprono tracing, logs e metrics) sono disponibili con i feature flag `opentelemetry-logs,opentelemetry-metrics` in 26.0, o nativamente in versioni successive (26.1+). Il compose completo nel repository usa `KC_TRACING_*` per compatibilità con la 26.0.
 
@@ -153,21 +152,21 @@ In Grafana (http://localhost/grafana) → Explore → Tempo, con la query:
 
 `{service.name="keycloak"}`
 
-<img src="imgs/keycloak-traces-list.webp" alt="Grafana Explore - Keycloak traces list" width="80%">
+![Grafana Explore - Keycloak traces list](imgs/keycloak-traces-list.webp)
 
 **Risultato:** il trace rivela l'intera struttura del database di autenticazione: query su `USER_ENTITY`, `CREDENTIAL`, `USER_ATTRIBUTE`, tutte visibili nel waterfall:
 
-<img src="imgs/keycloak-trace-db-queries.webp" alt="Trace waterfall con query DB su tabelle utente" width="80%">
+![Trace waterfall con query DB su tabelle utente](imgs/keycloak-trace-db-queries.webp)
 
-Questo è il problema da risolvere.
+Ecco il problema che dobbiamo risolvere.
 
-<img src="imgs/keycloak-span-attributes-unsafe.webp" alt="Span attributes con dati sensibili esposti" width="80%">
+![Span attributes con dati sensibili esposti](imgs/keycloak-span-attributes-unsafe.webp)
 
 ---
 
-## Filtrare senza perdere visibilità
+## Filtrare senza perdere visibilita'
 
-L'OTel Collector supporta quattro tecniche di filtering, ciascuna adatta a un tipo diverso di dato sensibile.
+Ora che abbiamo visto il problema, costruiamo la soluzione. L'OTel Collector ci mette a disposizione quattro tecniche di filtering, ciascuna adatta a un tipo diverso di dato sensibile.
 
 ### Ogni dato sensibile richiede una tecnica diversa
 
@@ -176,11 +175,11 @@ L'OTel Collector supporta quattro tecniche di filtering, ciascuna adatta a un ti
 3. **HASH**: Anonimizza ma mantieni correlazione (es. `sha256:8f14e45f...`)
 4. **SANITIZE**: Elimina query/logs con valori PII embedded
 
-### La configurazione che rimuove PII prima dello storage
+### La nostra configurazione: rimuovere PII prima dello storage
 
 File: `otel-config/keycloak-pii/otel-collector-config.yaml`
 
-La configurazione è strutturata in processor separati, ciascuno con una responsabilità specifica.
+Organizziamo la configurazione in processor separati, ciascuno con una responsabilita' specifica. Vediamoli uno per uno.
 
 **Receivers e memory protection:**
 
@@ -231,7 +230,7 @@ Il `transform` processor con OTTL permette di eliminare un attributo **in base a
           - delete_key(attributes, "url.query") where IsMatch(attributes["url.query"], ".*(username|email|password|client_secret).*")
 ```
 
-> **Nota:** L'`attributes` processor supporta `pattern` solo per matchare **nomi di chiavi** (attribute key names), non valori. Per filtrare in base al valore, serve il `transform` processor con clausole `where`.
+L'`attributes` processor supporta `pattern` solo per matchare **nomi di chiavi** (attribute key names), non valori. Per filtrare in base al valore, serve il `transform` processor con clausole `where`. Nota: `error_mode: ignore` e' la scelta giusta in produzione, ma durante lo sviluppo usa `error_mode: propagate` per far emergere errori nelle regex.
 
 **3. HASH - User identifiers (SHA-256, mantieni correlazione):**
 
@@ -249,6 +248,8 @@ Il `transform` processor con OTTL permette di eliminare un attributo **in base a
         action: hash
 ```
 
+> **Attenzione:** L'azione `hash` del Collector usa SHA-256 senza salt. Su input a bassa entropia (username, email comuni), l'hash e' reversibile con rainbow tables. Questo fornisce correlazione tra span, non anonimizzazione. Per pseudonymizzazione GDPR-compliant, considera HMAC-SHA256 con chiave segreta gestita separatamente.
+
 **4. SANITIZE - Elimina database queries con valori PII:**
 
 ```yaml
@@ -258,6 +259,8 @@ Il `transform` processor con OTTL permette di eliminare un attributo **in base a
       - context: span
         statements:
           - delete_key(attributes, "db.statement") where IsMatch(attributes["db.statement"], ".*(email|username|password|user_id)\\s*=.*")
+          # db.query.text è il nuovo nome (semantic conventions v1.28+)
+          - delete_key(attributes, "db.query.text") where IsMatch(attributes["db.query.text"], ".*(email|username|password|user_id)\\s*=.*")
 ```
 
 **Batch, exporters e pipeline:**
@@ -298,9 +301,9 @@ service:
       exporters: [prometheusremotewrite]
 ```
 
-> **Nota sulle semantic conventions:** La configurazione copre sia i nomi vecchi (`http.url`, `http.target`) che i nuovi (`url.full`, `url.query`), introdotti con la stabilizzazione delle HTTP semantic conventions. A seconda della versione del SDK, Keycloak potrebbe emettere gli uni o gli altri.
+La configurazione copre sia i nomi vecchi (`http.url`, `http.target`) che i nuovi (`url.full`, `url.query`) per le HTTP semantic conventions, e analogamente `db.statement` (vecchio) e `db.query.text` (nuovo, da semantic conventions v1.28+) per i database. A seconda della versione del SDK bundled con Keycloak, potresti trovare gli uni o gli altri.
 
-### Cosa cambia nei trace dopo il filtering
+### Cosa cambia concretamente nei trace
 
 | Span Attribute | Before (UNSAFE) | After (SAFE) |
 |----------------|-----------------|--------------|
@@ -310,7 +313,7 @@ service:
 | `db.statement` | `SELECT ... WHERE username = 'mario'` | **DELETED** (contiene PII) |
 | `auth.token` | `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...` | **DELETED** |
 
-<img src="imgs/keycloak-trace-waterfall.webp" alt="Trace waterfall - confronto unsafe vs safe" width="80%">
+![Trace waterfall - confronto unsafe vs safe](imgs/keycloak-trace-waterfall.webp)
 
 ### Confrontare il prima e il dopo in un comando
 
@@ -349,7 +352,7 @@ docker compose -f docker-compose.keycloak-pii.yml down -v
 
 ### Il debug resta intatto
 
-PII filtering non riduce la capacità di debug. I dati disponibili dopo il filtering includono:
+Se ti stai chiedendo se perdi capacita' diagnostica, la risposta e' no. Dopo il filtering hai ancora tutto quello che ti serve:
 
 - **Trace ID** — Correlazione end-to-end
 - **Span timing** — Performance analysis (quanto tempo login?)
@@ -380,13 +383,11 @@ echo -n "mario" | sha256sum
 
 Trade-off accettabile per GDPR compliance.
 
-### Metriche: Osservabilità Oltre i Trace
+### Metriche: non dimenticarti delle label
 
-Oltre ai trace, Keycloak 26 esporta metriche via OTLP (con `--metrics-enabled=true` e `KC_METRICS_ENABLED`). Le metriche native sono basate su Micrometer/Quarkus: JVM, HTTP server, database connection pool.
+Oltre ai trace, Keycloak 26 esporta metriche via OTLP (`KC_METRICS_ENABLED`). Le metriche native sono basate su Micrometer/Quarkus: JVM, HTTP server, database connection pool.
 
-**Problema:** Alcune metriche custom o label possono contenere **user identifiers**. Se configurate estensioni o SPI aggiuntive, il rischio di PII nelle label aumenta.
-
-**Soluzione:** Il Collector può filtrare le metriche con un transform processor:
+Il rischio qui e' piu' sottile: se usi estensioni o SPI aggiuntive, alcune label delle metriche possono contenere **user identifiers**. Il Collector puo' filtrare anche queste:
 
 ```yaml
 processors:
@@ -410,7 +411,7 @@ processors:
 
 ## Lo stesso approccio per qualsiasi servizio con PII
 
-Keycloak è solo un esempio. Questo pattern funziona per **qualsiasi servizio che gestisce PII**.
+Keycloak e' solo l'esempio concreto che abbiamo usato, ma il pattern funziona per **qualsiasi servizio che gestisce PII**. Se devi instrumentare un payment gateway o un CRM, il ragionamento e' identico.
 
 ### Cosa verificare prima di instrumentare
 
@@ -470,7 +471,7 @@ processors:
 ```
 
 **Esempi rapidi:**
-- **Payment (Stripe)**: DELETE card numbers, REDACT CVV
+- **Payment (Stripe)**: DELETE card numbers, DELETE CVV
 - **CRM (Salesforce)**: HASH contact IDs, REDACT emails in queries
 - **Analytics (Mixpanel)**: HASH user traits, DELETE event properties con PII
 
@@ -478,93 +479,42 @@ Il pattern si adatta alle specificità di ogni servizio.
 
 ---
 
-## Il filtering non basta: retention, accesso e cancellazione
+## Il filtering non basta: considerazioni GDPR
 
-PII filtering risolve il problema principale, ma GDPR richiede altro.
+Il PII filtering risolve il problema principale, ma se operi in ambito GDPR ci sono altri aspetti da coprire. Vediamoli in sintesi.
 
-### Data Retention (GDPR Art. 5)
+### Retention e cancellazione
 
-**Principio:** Dati personali tenuti solo per il tempo necessario.
-
-**Tempo retention configuration:**
+Configura una retention breve su Tempo - 7 giorni e' un buon punto di partenza:
 
 ```yaml
+# tempo.yaml (configurazione Tempo, non OTel Collector)
 compactor:
   compaction:
     block_retention: 168h  # 7 giorni - unica retention globale
 ```
 
-Tempo supporta una sola retention globale (`block_retention`). Non è possibile configurare retention differenziata per-attributo (es. errori vs normali) nella stessa istanza.
+Tempo supporta una sola retention globale (`block_retention`). Se ti servono retention diversificate (audit vs debug), le opzioni sono istanze Tempo separate, Grafana Cloud con retention per-tenant, o tail sampling a monte.
 
-**Se servono retention diversificate:**
-- **Istanze Tempo separate** per flussi diversi (es. audit vs debug)
-- **Grafana Cloud** supporta retention per-tenant
-- **Tail sampling** a monte per separare i flussi verso backend diversi
+Per il diritto alla cancellazione (Art. 17): Tempo non supporta la cancellazione selettiva di singole trace. In pratica, la combinazione di PII filtering + retention breve soddisfa il requisito nella maggior parte dei casi. Se un utente richiede cancellazione, distruggi la lookup table associata e attendi la scadenza della retention.
 
-Trace oltre la retention vengono **automaticamente eliminate** dal compactor.
+### Access control e data sovereignty
 
-### Access Control
+Limita chi puo' vedere i trace tramite i permessi Grafana sulle datasource (`datasources:read`, `datasources:query`, `datasources:explore`). Developers con ruolo Viewer, Security team con Admin.
 
-**Chi può vedere i trace?**
-
-Grafana gestisce l'accesso ai trace tramite permessi sulle datasource e sull'accesso a Explore. I permessi rilevanti sono:
-
-- `datasources:read` e `datasources:query` - accesso in lettura ai dati
-- `datasources:explore` - accesso alla sezione Explore
-
-La configurazione avviene tramite l'API RBAC o il provisioning YAML, non in `grafana.ini`.
-
-**Best practice:**
-- **Developers**: Ruolo Viewer con accesso Explore per debug
-- **Security team**: Ruolo Admin sulla datasource Tempo per gestione completa
-- **Audit log** degli accessi (chi ha visto cosa?)
-
-### Right to be Forgotten (GDPR Art. 17)
-
-Se un utente richiede la cancellazione dei propri dati, anche con hashing è necessario poter dimostrare che i dati verranno rimossi.
-
-**Limitazione importante:** Tempo **non supporta** la cancellazione selettiva di singole trace. Le trace vengono rimosse solo tramite compaction alla scadenza della retention.
-
-**Strategia pratica:**
-
-1. **PII filtering a monte** (questo articolo) - minimizza i dati personali che arrivano nel backend
-2. **Retention breve** (7 giorni) - le trace vengono automaticamente eliminate
-3. **Hash senza salt** - con hash deterministico, la correlazione è possibile senza esporre l'identità in chiaro. Caveat: su input a bassa entropia (email comuni) l'hash SHA-256 è reversibile con rainbow tables. Non è anonimizzazione completa.
-4. **Distruggi la lookup table** per l'utente che richiede la cancellazione
-
-```bash
-# Verifica: dopo retention, le trace non esistono più
-# Con block_retention: 168h, tutte le trace > 7 giorni vengono eliminate
-curl -s http://tempo:3200/api/traces/<trace-id> | jq .
-# "trace not found"
-```
-
-**In pratica:** La combinazione di PII filtering + retention breve soddisfa il requisito nella maggior parte dei casi. Per cancellazione immediata, valuta Grafana Cloud che offre API di delete per-tenant.
-
-### Data Sovereignty e Audit Trail
-
-Se il backend Tempo risiede fuori EU, il filtering da solo non soddisfa il requisito di data residency. Le opzioni sono: Tempo self-hosted in datacenter EU, Grafana Cloud EU (Frankfurt/Amsterdam), o S3 con bucket in `eu-central-1`.
-
-Resta inoltre necessario tracciare chi accede ai trace. Grafana Enterprise offre audit logging nativo. Con Grafana OSS, le alternative sono un reverse proxy con access log o i log applicativi di Grafana (`GF_LOG_LEVEL=info`).
+Se il backend Tempo risiede fuori EU, il filtering da solo non basta per la data residency. Le opzioni: Tempo self-hosted in datacenter EU, Grafana Cloud EU (Frankfurt/Amsterdam), o S3 con bucket in `eu-central-1`. Per l'audit trail, Grafana Enterprise offre audit logging nativo; con OSS, usa un reverse proxy con access log.
 
 ---
 
 ## Conclusioni
 
-La configurazione descritta nell'articolo copre:
+Abbiamo visto come:
 
-- **Instrumentato Keycloak** con tracing nativo (zero code changes)
-- **PII filtering** con tecniche di delete, redact, hash e sanitize
-- **Metriche filtrate** (OTLP export con label sanitization)
-- **Mantenuto debug capability** senza esporre dati sensibili
-- **Pattern riutilizzabile** per payment, CRM, analytics
-- **Supporto ai requisiti GDPR** (data minimization, retention, access control)
-
-**In sintesi:**
-
-> Con PII filtering nell'OTel Collector, è possibile mantenere observability senza esporre dati sensibili nel backend.
-
-**Confronto:**
+1. **Keycloak si instrumenta in poche righe** di configurazione container - zero code changes
+2. **Senza filtering, i trace espongono tutto** - username, query, token finiscono in chiaro su Grafana
+3. **Quattro tecniche nell'OTel Collector** (DELETE, REDACT, HASH, SANITIZE) risolvono il problema prima che i dati raggiungano il backend
+4. **Il debug resta intatto** - trace ID, timing, topology e hashed user ID sono tutto cio' che serve per diagnosticare problemi
+5. **Il pattern e' riutilizzabile** - lo stesso approccio funziona per payment gateway, CRM, analytics
 
 | Aspetto | Senza Filtering | Con Filtering |
 |---------|----------------|---------------|
@@ -573,13 +523,17 @@ La configurazione descritta nell'articolo copre:
 | Debug capability | Completo | Completo (via hashed IDs) |
 | Audit readiness | Carente | Baseline soddisfatta |
 
-Il filtering PII consente l'adozione di strumenti di observability senza conflitto con le policy di sicurezza.
+Il takeaway e' semplice: se tracci servizi che gestiscono dati sensibili, il Collector e' il punto giusto dove intervenire. Un paio di processor e i tuoi trace diventano sicuri senza perdere un byte di informazione operativa.
 
 ---
 
 ## Prossimi Passi
 
-Il codice completo, comprese le configurazioni safe e unsafe, è disponibile nel [repository MockMart](https://github.com/monte97/MockMart). Per lanciare la demo con un solo comando: `make up-keycloak-pii` (safe) oppure `make up-keycloak-pii-unsafe` (unsafe).
+Il codice completo, comprese le configurazioni safe e unsafe, e' disponibile nel repository:
+
+👉 [github.com/monte97/MockMart](https://github.com/monte97/MockMart)
+
+Per lanciare la demo con un solo comando: `make up-keycloak-pii` (safe) oppure `make up-keycloak-pii-unsafe` (unsafe).
 
 **Prossimi articoli:**
 
