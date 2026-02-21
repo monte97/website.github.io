@@ -11,6 +11,7 @@ menu:
 tags: ["Kafka", "Node.js", "Python", "Architettura", "Event Streaming"]
 categories: ["Backend", "Tecnologie"]
 reviewed: false
+reproducibility: true
 ---
 Foto di <a href="https://unsplash.com/it/@jonflobrant?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Jon Flobrant</a> su <a href="https://unsplash.com/it/foto/specchio-dacqua-tra-gli-alberi-sotto-il-cielo-nuvoloso-rB7-LCa_diU?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>
       
@@ -24,11 +25,10 @@ La soluzione non è semplicemente "usare una coda di messaggi". Il cambio di par
 [**Apache Kafka**](https://kafka.apache.org/) è una piattaforma di *event streaming* - un log distribuito e replicato che agisce come unica fonte di verità per gli eventi, permettendo ai componenti di reagire in modo asincrono, disaccoppiato e resiliente.
 
 ```text
-Producers                    Kafka Cluster              Consumers
-─────────                    ─────────────              ─────────
-Servizio Pagamenti  ──┐                          ┌──→  Servizio Notifiche
-Servizio Utenti     ──┼──→  [ Topic Eventi ]  ──┼──→  Dashboard Analytics
-Sensori IoT         ──┘                          └──→  Sistema di Auditing
+Servizio Pagamenti  ─→
+Servizio Utenti     ─→  [ Topic Eventi ]  ─→  Servizio Notifiche
+Sensori IoT         ─→                    ─→  Dashboard Analytics
+                                          ─→  Sistema di Auditing
 ```
 
 ---
@@ -77,19 +77,19 @@ Questo significa che **tutti i messaggi con la stessa chiave finiscono nella ste
 
 Nel progetto di monitoraggio sensori, usare `sensor_id` come chiave è la scelta più naturale. Garantisce che la sequenza di letture per il sensore `sensor-A1` venga processata nell'ordine esatto in cui è stata emessa, permettendo di rilevare trend di temperatura o anomalie senza ambiguità. Inviare letture senza una chiave comporterebbe la perdita dell'ordinamento per sensore.
 
-E se la chiave è nulla? Le versioni più vecchie di Kafka usavano un semplice round-robin, ma questo era inefficiente (creava tanti piccoli batch). Il **Sticky Partitioner** (default da Kafka 2.4) è più intelligente: invia tutti i messaggi senza chiave a una singola partizione finché il batch non è pieno, per poi passare alla partizione successiva. Questo migliora la compressione e riduce la latenza.
+E se la chiave è nulla? Le versioni più vecchie di Kafka usavano un semplice round-robin, ma questo era inefficiente (creava tanti piccoli batch). Il **Sticky Partitioner**, introdotto in Kafka 2.4 (KIP-480), invia tutti i messaggi senza chiave a una singola partizione finché il batch non è pieno, per poi passare alla partizione successiva. Da Kafka 3.3 (KIP-794) il `DefaultPartitioner` è stato deprecato e il comportamento sticky è diventato l'unico built-in. Questo migliora la compressione e riduce la latenza.
 
 ---
 
 ## Meccaniche di Replicazione e Tolleranza ai Guasti
 
-La durabilità in Kafka è una configurazione esplicita. Si basa su un modello di replica leader-follower e sul concetto di **In-Sync Replicas (ISR)**.
+La durabilità in Kafka è una configurazione esplicita. Si basa su un modello di replica leader-follower e sul concetto di **In-Sync Replicas (ISR)**. La [documentazione ufficiale sulla replicazione](https://kafka.apache.org/documentation/#replication) descrive il design in dettaglio.
 
 Ogni partizione ha un **leader** (l'unica replica che accetta scritture) e zero o più **follower**. L'insieme delle ISR è la lista dei follower che sono "sufficientemente al passo" con il leader (configurabile tramite `replica.lag.time.max.ms`).
 
 Quando un producer scrive, la sua garanzia di durabilità è determinata dall'impostazione `acks`:
 -   `acks=0`: Fire-and-forget. Massima performance, ma il producer non ha conferma di ricezione.
--   `acks=1`: Attende la conferma solo dal leader. Un buon compromesso, ma se il leader fallisce un istante dopo aver confermato ma prima che i follower abbiano replicato, il dato è perso. Era il default fino a Kafka 2.x.
+-   `acks=1`: Attende la conferma solo dal leader. Un buon compromesso, ma se il leader fallisce un istante dopo aver confermato ma prima che i follower abbiano replicato, il dato è perso. Era il default fino a Kafka 2.8 incluso.
 -   `acks=all` (o `-1`): Attende la conferma dal leader *dopo* che tutte le repliche nell'insieme ISR hanno ricevuto il messaggio. Questa è la massima garanzia di durabilità. **Da Kafka 3.0 in poi è il default**, insieme a `enable.idempotence=true`.
 
 Per evitare che un fallimento a catena delle repliche porti a scrivere con `acks=all` su una sola replica (il leader), si usa l'impostazione del broker `min.insync.replicas`. Se, ad esempio, è impostata a `2` e un producer usa `acks=all`, una scrittura fallirà se non ci sono almeno 2 repliche nell'insieme ISR pronte a ricevere il dato. Questo previene la perdita di dati in caso di fallimento del leader.
@@ -108,6 +108,8 @@ Per rendere concreti questi concetti, analizziamo il codice della nostra applica
 
 Il producer (`producer/index.js`) simula l'invio di dati da più sensori. La parte cruciale è l'uso di `sensor_id` come **chiave** del messaggio per garantire l'ordinamento per ogni sensore.
 
+Inizializzazione del client Kafka, dello Schema Registry e delle costanti per la simulazione:
+
 ```javascript
 // producer/index.js
 const { Kafka } = require("kafkajs");
@@ -123,7 +125,11 @@ const TOPIC = "sensor-data";
 const kafka = new Kafka({ clientId: "demo-producer", brokers: [BROKER] });
 const registry = new SchemaRegistry({ host: REGISTRY_URL });
 const producer = kafka.producer();
+```
 
+La funzione `randomReading()` genera dati di simulazione per i sensori:
+
+```javascript
 const SENSOR_IDS = ["sensor-A1", "sensor-B2", "sensor-C3"];
 const LOCATIONS = [null, "warehouse-north", "warehouse-south", "outdoor"];
 
@@ -136,7 +142,11 @@ function randomReading() {
     location: LOCATIONS[Math.floor(Math.random() * LOCATIONS.length)],
   };
 }
+```
 
+Il loop principale serializza ogni lettura in Avro e la invia usando `sensor_id` come chiave:
+
+```javascript
 async function main() {
   await producer.connect();
   const schemaId = await registerSchema(); // Registra lo schema Avro nel registry
@@ -161,13 +171,17 @@ async function main() {
 
 Due aspetti di questo codice meritano attenzione:
 
-1.  **`await producer.send(...)`**: A differenza di librerie che usano callback o fire-and-forget, kafkajs espone un'API basata su **Promise**. L'`await` sospende l'esecuzione della funzione `async` fino a quando il broker non conferma la ricezione del messaggio. Questo rende il codice sequenziale e leggibile, ma significa anche che ogni messaggio viene inviato uno alla volta. Per scenari ad alto throughput, kafkajs supporta il batching automatico tramite configurazione del producer (`createPartitioner`, `batch.size`).
+1.  **`await producer.send(...)`**: A differenza di librerie che usano callback o fire-and-forget, kafkajs espone un'API basata su **Promise**. L'`await` sospende l'esecuzione della funzione `async` fino a quando il broker non conferma la ricezione del messaggio. Questo rende il codice sequenziale e leggibile, ma significa anche che ogni messaggio viene inviato uno alla volta. Per scenari ad alto throughput, kafkajs supporta il batching tramite `producer.sendBatch()`.
+
+> **Nota**: kafkajs non riceve aggiornamenti significativi dal 2023 ed è considerato non mantenuto. Confluent ha rilasciato un client ufficiale JavaScript ([`@confluentinc/kafka-javascript`](https://github.com/confluentinc/confluent-kafka-javascript)) basato su librdkafka. Per nuovi progetti è consigliabile valutare questa alternativa.
 
 2.  **`registry.encode(schemaId, reading)`**: La serializzazione Avro avviene *prima* dell'invio. Il valore inviato a Kafka non è JSON ma un payload binario Avro preceduto dal magic byte e dallo schema ID. Questo è il protocollo wire standard di Confluent Schema Registry, supportato anche da Apicurio tramite l'endpoint di compatibilità `/apis/ccompat/v7`.
 
 ### Il Consumer Python: Verificare il Flusso
 
 Il consumer (`consumer/consumer.py`) si iscrive al topic `sensor-data` e stampa le letture che riceve. Usa `confluent-kafka` con deserializzazione Avro automatica.
+
+Configurazione del client, del deserializzatore Avro e del consumer group:
 
 ```python
 # consumer/consumer.py
@@ -194,7 +208,11 @@ consumer = Consumer({
     "auto.offset.reset": "earliest",
 })
 consumer.subscribe([TOPIC])
+```
 
+Il loop di polling deserializza ogni messaggio e stampa la lettura. La chiusura nel blocco `finally` garantisce il rilascio delle partizioni e il commit degli offset:
+
+```python
 try:
     while True:
         msg = consumer.poll(timeout=1.0)
