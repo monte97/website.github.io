@@ -10,7 +10,8 @@ menu:
     parent: CAPI
 tags: ["Kubernetes", "CAPI", "Cluster API", "Infrastructure as Code", "DevOps", "Automazione"]
 categories: ["Kubernetes", "Cloud Native", "Infrastruttura"]
-reviewed: true
+reviewed: human
+reproducibility: true
 ---
 
 ## Architettura dei Componenti CAPI

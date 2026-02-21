@@ -10,7 +10,8 @@ menu:
         parent: PERFT
 tags: ["Performance Testing", "Monitoring", "SRE", "Metrics", "Observability"]
 categories: ["Performance Engineering", "Testing"]
-reviewed: true
+reviewed: human
+reproducibility: true
 ---
 
 ## Introduzione

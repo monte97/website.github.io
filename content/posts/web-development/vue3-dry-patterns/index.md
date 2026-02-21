@@ -11,7 +11,7 @@ menu:
 tags: ["Vue", "Nuxt", "Vuetify", "Composables", "Frontend"]
 categories: ["Frontend"]
 draft: true
-reviewed: false
+reviewed: machine
 ---
 
 Quante volte ti sei ritrovato a correggere lo stesso bug in dodici file diversi, perché quella funzione di salvataggio era stata copiata ovunque?

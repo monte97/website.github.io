@@ -10,7 +10,7 @@ menu:
     parent: CAPI
 tags: ["Kubernetes", "CAPI", "Cluster API", "Infrastructure as Code", "DevOps", "Automazione"]
 categories: ["Kubernetes", "Cloud Native", "Infrastructure"]
-reviewed: true
+reviewed: human
 ---
 ## The Problem of Manual Kubernetes Management
 

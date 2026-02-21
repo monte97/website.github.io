@@ -10,7 +10,8 @@ menu:
     parent: CAPI
 tags: ["Kubernetes", "CAPI", "Cluster API", "Infrastructure as Code", "DevOps", "Day 1 Operations"]
 categories: ["Kubernetes", "Cloud Native", "Infrastruttura"]
-reviewed: true
+reviewed: human
+reproducibility: true
 ---
 
 # Parte 4: Setup Pratico - Day 1 Operations

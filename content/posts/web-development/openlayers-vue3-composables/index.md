@@ -11,7 +11,7 @@ menu:
 tags: ["Vue", "OpenLayers", "TypeScript", "Nuxt", "Composables"]
 categories: ["Frontend", "Web Development"]
 draft: true
-reviewed: false
+reviewed: machine
 ---
 
 ## Reattività e oggetti imperativi: il conflitto

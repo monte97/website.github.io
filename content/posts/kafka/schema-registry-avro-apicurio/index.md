@@ -11,7 +11,7 @@ menu:
 tags: ["Kafka", "Avro", "Schema Registry", "Apicurio", "Node.js", "Python"]
 categories: ["Backend", "Tecnologie"]
 draft: true
-reviewed: false
+reviewed: machine
 reproducibility: true
 ---
 ## Il problema: JSON senza contratto

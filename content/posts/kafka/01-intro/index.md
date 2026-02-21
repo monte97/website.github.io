@@ -10,7 +10,7 @@ menu:
     weight: 10
 tags: ["Kafka", "Node.js", "Python", "Architettura", "Event Streaming"]
 categories: ["Backend", "Tecnologie"]
-reviewed: false
+reviewed: machine
 reproducibility: true
 ---
 Foto di <a href="https://unsplash.com/it/@jonflobrant?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Jon Flobrant</a> su <a href="https://unsplash.com/it/foto/specchio-dacqua-tra-gli-alberi-sotto-il-cielo-nuvoloso-rB7-LCa_diU?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>

@@ -11,7 +11,7 @@ menu:
 tags: ["Keycloak", "OAuth2", "Microservizi", "M2M", "Security"]
 categories: ["Security", "Backend"]
 draft: true
-reviewed: false
+reviewed: machine
 ---
 
 Ti sei mai chiesto come fanno due microservizi a fidarsi l'uno dell'altro quando non c'è nessun utente loggato? Job schedulati, webhook, eventi asincroni: in questi casi non c'è nessuno davanti allo schermo, ma i servizi devono comunque autenticarsi tra loro.

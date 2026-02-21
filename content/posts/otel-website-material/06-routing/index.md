@@ -10,7 +10,8 @@ menu:
     parent: OBS
 tags: ["OpenTelemetry", "Observability", "Routing", "Compliance", "Production"]
 categories: ["Observability", "DevOps"]
-reviewed: true
+reviewed: human
+reproducibility: true
 ---
 
 Immaginate di ricevere una richiesta dal team compliance: "Servono i log di audit degli ultimi tre anni." Aprite Grafana, cercate in Loki e scoprite che la retention massima è 30 giorni. I log di audit sono stati cancellati insieme ai debug log, perché vivevano tutti nello stesso backend. Nessuna separazione, nessuna policy dedicata.

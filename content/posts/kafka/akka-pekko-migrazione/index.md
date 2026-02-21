@@ -11,7 +11,7 @@ menu:
 tags: ["Scala", "Pekko", "Akka", "JVM", "Migrazione"]
 categories: ["Backend", "Tecnologie"]
 draft: true
-reviewed: false
+reviewed: machine
 reproducibility: true
 ---
 

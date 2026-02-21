@@ -11,7 +11,7 @@ menu:
 tags: ["OpenTelemetry", "Keycloak", "GDPR", "Security", "Observability"]
 categories: ["Observability", "Security"]
 draft: true
-reviewed: false
+reviewed: machine
 ---
 
 Hai appena abilitato il tracing su Keycloak e nei tuoi span compare l'email dell'utente in chiaro. Apri Grafana, cerchi un trace e ti ritrovi username, password e token JWT perfettamente leggibili. Se ti e' successo, non sei il solo.

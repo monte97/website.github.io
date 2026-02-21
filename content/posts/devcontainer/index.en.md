@@ -9,7 +9,7 @@ menu:
     weight: 10
 tags: ["Docker", "Linux", "Containerization", "DevOps"]
 categories: ["Technologies", "System"]
-reviewed: true
+reviewed: human
 ---
 
 

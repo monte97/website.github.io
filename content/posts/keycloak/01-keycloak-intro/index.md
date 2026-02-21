@@ -10,7 +10,8 @@ menu:
     parent: KEYCLOAK
 tags: ["Keycloak", "OAuth2", "OpenID Connect", "Security", "Autenticazione"]
 categories: ["Security"]
-reviewed: true
+reviewed: human
+reproducibility: true
 ---
 
 Se hai mai scritto un sistema di login da zero — registrazione, reset password, gestione sessioni, hash delle credenziali — sai quanto tempo porta via. E sai anche che, per quanto lo testi, resta quella sensazione fastidiosa: *stai davvero gestendo le password in modo sicuro?*

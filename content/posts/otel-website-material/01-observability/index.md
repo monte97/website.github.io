@@ -10,7 +10,8 @@ menu:
     parent: OBS
 tags: ["Observability", "OpenTelemetry", "Sistemi Distribuiti", "Tracing", "Metrics", "Logging", "DevOps", "Architettura", "Monitoring"]
 categories: ["Architettura Software", "DevOps"]
-reviewed: true
+reviewed: human
+reproducibility: true
 ---
 
 -----

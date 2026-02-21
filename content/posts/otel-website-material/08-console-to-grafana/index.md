@@ -11,7 +11,7 @@ menu:
 tags: ["Node.js", "OpenTelemetry", "Logging", "Grafana", "Pino"]
 categories: ["DevOps", "Observability"]
 draft: true
-reviewed: false
+reviewed: machine
 ---
 
 Quante volte hai aggiunto un `console.log` "temporaneo" per capire perché una richiesta falliva in produzione? L'output è una stringa piatta, senza timestamp, senza livello, senza contesto e se il container si riavvia, quei log spariscono. Se ci sono più istanze, devi saltare da un `docker logs` all'altro sperando di trovare la riga giusta. È il modo più rapido per iniziare ma anche il primo a crollare quando serve davvero.

@@ -11,7 +11,7 @@ menu:
 tags: ["Keycloak", "OAuth2", "PKCE", "OpenID Connect", "Security"]
 categories: ["Security", "Frontend"]
 draft: true
-reviewed: false
+reviewed: machine
 ---
 
 Hai configurato Keycloak, creato un realm e un client... e adesso? Come si collega concretamente un frontend React e un backend Express all'Identity Provider? Se hai seguito l'[articolo introduttivo]({{< ref "/posts/keycloak/01-keycloak-intro" >}}), il concetto di delegare l'autenticazione è chiaro. Ma manca il pezzo pratico.

@@ -11,7 +11,7 @@ menu:
 tags: ["Vue", "Pinia", "Nuxt", "TypeScript", "Frontend"]
 categories: ["Frontend"]
 draft: true
-reviewed: false
+reviewed: machine
 ---
 
 ## Il punto di partenza

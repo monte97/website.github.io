@@ -9,7 +9,8 @@ menu:
     weight: 20
 tags: ["n8n", "Automazione", "Homelab", "DevOps", "Self-Hosted"]
 categories: ["Tecnologie", "Automazione"]
-reviewed: true
+reviewed: human
+reproducibility: true
 ---
 
 ## Contesto e Motivazioni

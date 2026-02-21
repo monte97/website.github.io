@@ -11,7 +11,7 @@ menu:
 tags: ["OPA", "Keycloak", "Authorization", "Rego", "OpenPolicyAgent"]
 categories: ["Security", "Architecture"]
 draft: true
-reviewed: false
+reviewed: machine
 ---
 
 Hai mai dovuto bloccare un utente dal checkout e scoprire che il claim JWT era ancora valido fino alla scadenza del token? Oppure aggiungere una regola di accesso e ritrovarti a modificare Keycloak, il codice Express, e magari anche un mapper custom?

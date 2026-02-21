@@ -10,7 +10,8 @@ menu:
     identifier: playwright-e2e
     parent: PLAYWRIGHT
     weight: 2
-reviewed: true
+reviewed: human
+reproducibility: true
 ---
 
 Test che passano al terzo tentativo, `sleep(5000)` disseminati nel codice, suite che girano per 20 minuti e falliscono in modo non deterministico. Il testing end-to-end resta un pilastro per la qualità delle applicazioni web moderne - simulare l'esperienza utente reale fornisce un livello di confidenza impossibile da ottenere con test unitari o di integrazione isolati - ma troppo spesso i costi superano i benefici.

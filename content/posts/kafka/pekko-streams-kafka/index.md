@@ -11,7 +11,7 @@ menu:
 tags: ["Scala", "Pekko", "Kafka", "Streaming", "Avro"]
 categories: ["Backend", "Tecnologie"]
 draft: true
-reviewed: false
+reviewed: machine
 reproducibility: true
 ---
 ## Il pattern di partenza: while(true) dentro un attore

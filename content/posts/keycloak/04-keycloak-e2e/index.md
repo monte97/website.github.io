@@ -11,7 +11,7 @@ menu:
 tags: ["Keycloak", "OAuth2", "OIDC", "Microservizi", "Security", "PKCE", "M2M"]
 categories: ["Security", "Backend"]
 draft: true
-reviewed: false
+reviewed: machine
 ---
 
 Quante volte hai visto un'integrazione Keycloak funzionare perfettamente su localhost, per poi esplodere al primo deploy in staging?

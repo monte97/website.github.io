@@ -10,7 +10,9 @@ menu:
     parent: OBS
 tags: ["OpenTelemetry", "Observability", "LGTM Stack", "Loki", "Grafana", "Tempo", "Mimir", "Prometheus", "Tracing", "Metrics", "Logging", "Instrumentation", "DevOps", "Telemetry", "Sistemi Distribuiti", "Docker"]
 categories: ["Monitoring", "DevOps", "Architettura Software", "Cloud Native"]
-reviewed: true
+reviewed: human
+linkedin: 2026-02-20
+reproducibility: true
 ---
 
 Chi ha strumentato un'applicazione con OpenTelemetry ha trace e log centralizzati. Resta una domanda pratica: come si usa concretamente questa telemetria per risolvere problemi? Questo tutorial risponde con tre scenari di debug reali. Per chi non ha familiarita con i concetti base di OTel (spans, traces, context propagation), si consiglia prima la lettura di [Introduzione a OpenTelemetry](https://theredcode.it/devops/observability-monitoring-intro/).
