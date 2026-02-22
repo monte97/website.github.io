@@ -1,8 +1,8 @@
 resources/*
 node_modules/*
 public/*
-.claude/*
-.pipeline/
+/.*
+.*/
 DOCS.md
 CLAUDE.md
 DOCS.md
@@ -10,5 +10,3 @@ GETTING-STARTED.md
 USE-CASES.md
 _vendor/
 **/demo/
-**/.reproducibility/
-**/.linkedin/
