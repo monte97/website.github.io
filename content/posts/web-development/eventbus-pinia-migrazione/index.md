@@ -10,36 +10,32 @@ menu:
     parent: WEBDEV
 tags: ["Vue", "Pinia", "Nuxt", "TypeScript", "Frontend"]
 categories: ["Frontend"]
-draft: true
-reviewed: machine
+reviewed: human
 ---
 
-## Il punto di partenza
+## EventBus: stato implicito distribuito tra componenti
 
-Ti è mai capitato di cercare un bug per ore, solo per scoprire che il problema era un listener rimasto attivo su un EventBus dopo la distruzione del componente? Oppure un evento emesso troppo presto, quando il destinatario non era ancora montato?
+In [Vue 2](https://v2.vuejs.org/), [Vuex](https://vuex.vuejs.org/) era la soluzione ufficiale per lo stato condiviso, ma molti progetti lo evitavano per la sua verbosità e ricorrevano all'EventBus: un'istanza `new Vue()` usata come emettitore di eventi tramite `$on`/`$emit`/`$off`. Ogni componente che aveva bisogno di dati li recuperava con chiamate API proprie. Nessuna cache, nessuno stato centralizzato.
 
-Quasi tre anni di manutenzione su un'applicazione enterprise costruita con Nuxt 2 e Vuetify 2, senza Vuex. Lo stato condiviso tra componenti passava attraverso un EventBus, il classico `new Vue()` usato come emettitore di eventi, e ogni componente che aveva bisogno di dati li recuperava in modo autonomo con chiamate API proprie. Nessuna cache, nessuno stato centralizzato.
+I limiti di questo approccio sono noti:
 
-Il sistema funzionava, nei limiti del termine. Debugging difficile, chiamate duplicate ovunque, memory leak silenziosi quando qualcuno dimenticava un `$off`. Ma funzionava.
+- **Nessuna single source of truth** - lo stato vive negli eventi, non c'è modo di ispezionare il valore corrente
+- **Timing fragile** - un evento emesso prima che il listener sia montato va perso
+- **Memory leak** - ogni `$on` senza il corrispondente `$off` nel `beforeDestroy` accumula listener orfani
+- **Debugging opaco** - i DevTools non mostrano nulla, gli eventi sono fire-and-forget
 
-Col tempo, i limiti si sono fatti sentire. Il caso più frequente: un componente emetteva un evento, ma il listener non era ancora montato. L'evento andava perso. Oppure il contrario: un listener restava attivo dopo la distruzione del componente, e reagiva a eventi destinati ad altri. Non c'era modo di ispezionare lo stato corrente dell'applicazione in un dato momento, solo un flusso di eventi senza storia.
+In [Vue 3](https://vuejs.org/), `new Vue()` è sostituito da [`createApp()`](https://vuejs.org/api/application.html#createapp) e soprattutto `$on`/`$off`/`$once` sono [rimossi dalle istanze componente](https://v3-migration.vuejs.org/breaking-changes/events-api.html). L'EventBus non è più possibile. Le alternative sono due: una libreria di eventi esterna ([mitt](https://github.com/developit/mitt), tiny-emitter) che mantiene lo stesso pattern con gli stessi limiti, oppure uno state management esplicito con [Pinia](https://pinia.vuejs.org/).
 
-Con la migrazione a Vue 3, il problema si è posto in modo netto: `new Vue()` non esiste più, e con esso l'EventBus. Le alternative erano due: introdurre una libreria di eventi esterna (mitt, tiny-emitter) e mantenere lo stesso pattern, oppure ripensare la gestione dello stato. La seconda strada porta direttamente a Pinia, saltando Vuex del tutto.
-
-Questo articolo descrive i pattern adottati durante la migrazione, con esempi concreti. Il [repository demo](https://github.com/monte97/pinia-vue-demo) contiene un'applicazione minimale con tutti i pattern descritti, applicati a un dominio inventario/prodotti.
+Questo articolo raccoglie i pattern emersi durante una migrazione concreta da EventBus a Pinia. Il codice completo è nel [repository demo](https://github.com/monte97/pinia-vue-demo).
 
 ## Perché Pinia e non Vuex
 
-La scelta è stata semplice. Vuex è in maintenance mode: riceve fix di sicurezza, ma nessuna nuova funzionalità. Pinia è il suo successore ufficiale, raccomandato dalla documentazione di Vue.
-
-I vantaggi concreti che mi hanno convinto:
+Vuex è in [maintenance mode](https://vuex.vuejs.org/): riceve fix di sicurezza, ma nessuna nuova funzionalità. Pinia è il suo successore ufficiale, raccomandato dalla documentazione di Vue. I vantaggi concreti:
 
 - **Meno boilerplate.** Niente mutations, niente distinzione tra `commit` e `dispatch`. Lo stato si modifica direttamente nelle actions.
 - **TypeScript di prima classe.** L'inferenza dei tipi funziona senza configurazione aggiuntiva, sia con Options API che con Composition API.
-- **Doppio paradigma.** È possibile definire store in Options API (state/getters/actions) o in Composition API (ref/computed/function), in base alla complessità dello store.
+- **Doppio paradigma.** Pinia supporta due stili per definire uno store: l'[Options API](https://pinia.vuejs.org/core-concepts/#option-stores), più dichiarativo e strutturato (state/getters/actions), e la [Composition API](https://pinia.vuejs.org/core-concepts/#setup-stores), basata su funzioni e closure (ref/computed/function). La scelta dipende dalla complessità dello store.
 - **Ecosistema plugin.** `pinia-plugin-persistedstate` da solo giustifica la migrazione per come semplifica la persistenza selettiva.
-
-In una migrazione a Vue 3, non ha senso passare per Vuex. Pinia è la scelta diretta.
 
 ## Pattern 1: UI State, da EventBus a Store
 
@@ -61,7 +57,11 @@ EventBus.$on('update-title', (title) => {
 })
 ```
 
-I problemi erano tre. Primo: nessuna single source of truth. Il titolo viveva nel layout, ma qualsiasi componente poteva emetterlo, e non c'era modo di sapere qual era il valore corrente senza andare a leggere l'ultimo evento emesso. Secondo: debugging opaco. I DevTools non mostravano nulla di utile, perché gli eventi erano fire-and-forget. Terzo: memory leak. Ogni `$on` senza un corrispondente `$off` nel `beforeDestroy` era una sottoscrizione che restava attiva, accumulando listener orfani.
+I problemi di questo pattern:
+
+- **Nessuna single source of truth.** Il titolo viveva nel layout, ma qualsiasi componente poteva emetterlo, e non c'era modo di sapere qual era il valore corrente senza leggere l'ultimo evento emesso.
+- **Debugging opaco.** I DevTools non mostravano nulla di utile, perché gli eventi erano fire-and-forget.
+- **Memory leak.** Ogni `$on` senza un corrispondente `$off` nel `beforeDestroy` era una sottoscrizione che restava attiva, accumulando listener orfani.
 
 ### Dopo (Pinia)
 
@@ -108,7 +108,7 @@ export function useTitle(title: string) {
 useTitle('Prodotti')
 ```
 
-Una nota sulla scelta stilistica: per store semplici e piatti come questo, Options API è sufficiente. La Composition API non aggiunge valore quando lo stato è un insieme di campi con qualche action diretta.
+Una nota sulla scelta stilistica: per store semplici e piatti come questo, l'Options API è sufficiente. La Composition API non aggiunge valore quando lo stato è un insieme di campi con qualche action diretta.
 
 ## Pattern 2: Cache Store con Request Deduplication
 
@@ -120,7 +120,7 @@ Il risultato era prevedibile. Tre pagine che mostrano prodotti generano tre `GET
 
 ### Cache centralizzata con deduplicazione
 
-Uno store centralizzato con tre caratteristiche:
+La soluzione è uno store Pinia che centralizza i dati e gestisce tre aspetti:
 
 1. **Cache-once**: i dati vengono recuperati una volta, poi serviti dalla memoria.
 2. **Request deduplication**: se una fetch è già in corso, i nuovi chiamanti si agganciano alla stessa promise.
@@ -161,26 +161,30 @@ export const useInventoryStore = defineStore('inventory', () => {
     products: false, categories: false, suppliers: false
   }
 
-  // Questo È reattivo: i componenti devono mostrare lo stato di caricamento
   const loading = ref<Record<InventoryEntityType, boolean>>({
     products: false, categories: false, suppliers: false
   })
 
-  // Cache di promise pendenti per la deduplicazione
   const pendingRequests: Partial<Record<InventoryEntityType, Promise<any[]>>> = {}
+```
 
+Lo stato è organizzato su tre livelli:
+
+- **Ref reattivi** (`products`, `categories`, `suppliers`) - esposti ai componenti, aggiornati dalle fetch.
+- **Mapping interni** (`entityRefs`, `apiFns`) - permettono di generalizzare le operazioni per entità con una sola funzione.
+- **Bookkeeping** (`loaded`, `pendingRequests`, `loading`) - stato interno non reattivo di proposito, tranne `loading` che i componenti devono poter osservare.
+
+La logica di fetch usa questi mapping per operare su qualsiasi entità:
+
+```typescript
   // ── Fetch con cache e deduplicazione ────────────────────────────
   async function fetchEntities(
     type: InventoryEntityType,
     force = false
   ): Promise<any[]> {
-    // 1. Restituisci i dati in cache se disponibili
     if (loaded[type] && !force) return entityRefs[type].value
-
-    // 2. Deduplicazione: restituisci la promise esistente se ce n'è una in volo
     if (pendingRequests[type]) return pendingRequests[type]!
 
-    // 3. Nuova fetch
     loading.value[type] = true
     const promise = apiFns[type]()
       .then((response) => {
@@ -197,7 +201,6 @@ export const useInventoryStore = defineStore('inventory', () => {
     return promise
   }
 
-  // ── Invalidazione e refresh ──────────────────────────────────────
   function invalidate(type: InventoryEntityType) {
     loaded[type] = false
   }
@@ -206,7 +209,6 @@ export const useInventoryStore = defineStore('inventory', () => {
     return fetchEntities(type, true)
   }
 
-  // ── Getter derivati ──────────────────────────────────────────────
   const availableCategories = computed(() => {
     return [...new Set(products.value.map(p => p.category).filter(Boolean))]
   })
@@ -220,7 +222,7 @@ export const useInventoryStore = defineStore('inventory', () => {
 })
 ```
 
-> **Nota**: `fetchEntities` non include error handling per brevità. In produzione, è opportuno gestire gli errori con un ref dedicato per entità (ad esempio `errors: Record<InventoryEntityType, string | null>`) e un `.catch()` nella promise che popoli il messaggio di errore, così i componenti possono mostrare feedback all'utente.
+> **Nota**: `fetchEntities` non include error handling per brevità. Sarebbe opportuno gestire gli errori con un ref dedicato per entità (ad esempio `errors: Record<InventoryEntityType, string | null>`) e un `.catch()` nella promise che popoli il messaggio di errore, così i componenti possono mostrare feedback all'utente.
 
 ### Perché Composition API qui
 
@@ -246,7 +248,7 @@ function onBulkImportComplete() {
 }
 ```
 
-Il flusso è esplicito: il momento dell'invalidazione è noto, perché coincide con ogni operazione che modifica i dati. Non c'è magia, non ci sono TTL che scadono nel momento sbagliato.
+Il flusso è esplicito: il momento dell'invalidazione è noto, perché coincide con ogni operazione che modifica i dati. Nessun TTL che scade nel momento sbagliato.
 
 Un dettaglio importante: `invalidate()` e `refresh()` servono a scenari diversi. `refresh()` chiama `fetchEntities(type, true)` con `force = true`, quindi bypassa il flag `loaded` e forza una nuova fetch. Non è necessario chiamare `invalidate()` prima di `refresh()`, perché il parametro `force` rende il controllo su `loaded` irrilevante.
 
@@ -362,21 +364,15 @@ Si tratta di un compromesso pragmatico. Non serve riscrivere ogni componente in 
 
 Il vantaggio di questo approccio è la possibilità di migrare per strati. Prima si creano gli store Pinia e si collegano ai componenti esistenti tramite `setup()`. Poi, quando si torna su un componente per altre ragioni (un bug, una nuova feature) si approfitta per convertirlo a `<script setup>`. Nel frattempo, il codice funziona. Lo sviluppo non si blocca per una riscrittura completa.
 
-## Lezioni apprese
+## Conclusioni
 
-Le conclusioni principali dopo la migrazione:
+- **Pinia direttamente, senza passare per Vuex.** Vuex è in maintenance mode, Pinia è il successore ufficiale.
+- **Invalidazione esplicita per dati CRUD.** Il momento del cambiamento è noto (create, update, delete), i TTL servono solo per dati che cambiano in modo imprevedibile.
+- **Deduplicazione con promise caching.** Tre componenti che chiedono gli stessi dati generano una sola richiesta.
+- **Persistenza dichiarativa con `pinia-plugin-persistedstate`.** Una configurazione nello store sostituisce `getItem`/`setItem` sparsi nei componenti.
+- **Migrazione incrementale.** Prima gli store, poi i composable, poi la sintassi dei componenti.
 
-- **Saltare Vuex ha funzionato.** Pinia è più semplice, più allineato con Vue 3, e non c'è motivo per passare da un'architettura senza state management a Vuex nel 2026. La scelta diretta è Pinia.
-
-- **Invalidazione esplicita batte scadenza temporale.** Per dati CRUD, il momento del cambiamento è noto: dopo create, update, delete. L'invalidazione avviene in quel momento preciso. I TTL con scadenza temporale hanno senso per dati che cambiano in modo imprevedibile, non per quelli che l'applicazione stessa modifica.
-
-- **`pendingRequests` è un pattern sottovalutato.** La deduplicazione delle richieste previene race condition e spreco di banda. Quando tre componenti chiedono gli stessi dati nello stesso secondo, una sola richiesta parte. Semplice da implementare, impatto significativo.
-
-- **La persistenza dichiarativa elimina bug di sincronizzazione.** Niente più `getItem` dimenticati, niente serializzazione manuale, niente chiavi di storage duplicate. La configurazione avviene una volta nello store.
-
-- **Migrazione incrementale.** Prima gli store, poi i composable, poi la sintassi dei componenti. Non tutto insieme. L'approccio ibrido Options API (componenti) + Composition API (store) permette di procedere senza riscrivere l'intera applicazione.
-
-La migrazione da EventBus a Pinia non è solo un cambio di libreria: è il passaggio da un'architettura implicita, dove lo stato vive negli eventi, a una esplicita, dove lo stato ha un posto preciso, ispezionabile e testabile. Una volta fatto, non si torna indietro.
+La migrazione da EventBus a Pinia non è solo un cambio di libreria: è il passaggio da un'architettura implicita, dove lo stato vive negli eventi, a una esplicita, dove lo stato ha un posto preciso, ispezionabile e testabile.
 
 ## Risorse Utili
 
