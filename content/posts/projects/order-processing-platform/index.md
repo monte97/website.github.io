@@ -8,7 +8,7 @@ menu:
     name: Order Processing Platform
     identifier: order-processing-platform
     parent: projects
-    weight: 10
+    weight: 20
 technologies: ["Go", "Kafka", "PostgreSQL", "Kubernetes", "OpenTelemetry", "Grafana", "Prometheus"]
 categories: ["Event-Driven", "Platform Engineering", "Demo"]
 role: "Author"

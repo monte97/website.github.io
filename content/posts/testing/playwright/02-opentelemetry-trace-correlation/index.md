@@ -6,7 +6,7 @@ menu:
   sidebar:
     name: "Playwright + OTel"
     identifier: playwright-otel
-    weight: 10
+    weight: 20
     parent: PLAYWRIGHT
 tags: ["Playwright", "E2E", "Testing", "OpenTelemetry", "VisualTesting", "Observability"]
 categories: ["Testing", "DevOps"]

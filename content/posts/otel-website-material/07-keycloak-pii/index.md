@@ -6,7 +6,7 @@ menu:
   sidebar:
     name: "PII Filtering + Keycloak"
     identifier: OTEL-7
-    weight: 60
+    weight: 70
     parent: OBS
 tags: ["OpenTelemetry", "Keycloak", "GDPR", "Security", "Observability"]
 categories: ["Observability", "Security"]

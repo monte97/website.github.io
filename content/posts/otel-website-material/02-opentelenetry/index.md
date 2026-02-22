@@ -6,7 +6,7 @@ menu:
   sidebar:
     name: OpenTelemetry
     identifier: OTEL-2
-    weight: 10
+    weight: 20
     parent: OBS
 tags: ["OpenTelemetry", "Observability", "Tracing", "Metrics", "Logging", "Instrumentation", "DevOps", "Telemetry", "Sistemi Distribuiti"]
 categories: ["Monitoring", "DevOps", "Architettura Software"]

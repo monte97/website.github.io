@@ -6,7 +6,7 @@ menu:
   sidebar:
     name: "Da console.log a Grafana"
     identifier: OTEL-8
-    weight: 70
+    weight: 80
     parent: OBS
 tags: ["Node.js", "OpenTelemetry", "Logging", "Grafana", "Pino"]
 categories: ["DevOps", "Observability"]

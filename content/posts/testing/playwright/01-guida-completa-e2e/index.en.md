@@ -5,9 +5,9 @@ description: In this article we'll see a brief introdution to playwright and how
 menu:
   sidebar:
     name: Playwright Demo
-    identifier: playwright_demo
+    identifier: playwright-e2e
     parent: PLAYWRIGHT
-    weight: 2
+    weight: 10
 tags: [software,quality,testing]
 categories: [Tecnologie,DevOps]
 reviewed: human

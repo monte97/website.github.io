@@ -6,7 +6,7 @@ menu:
   sidebar:
     name: "CI/CD & Strategie"
     identifier: playwright-cicd
-    weight: 20
+    weight: 30
     parent: PLAYWRIGHT
 tags: ["Playwright", "CI/CD", "GitHub Actions", "Sharding", "Agent-Driven Development"]
 categories: ["Testing", "DevOps", "Workshop"]

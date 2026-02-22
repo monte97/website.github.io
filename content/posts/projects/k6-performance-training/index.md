@@ -8,7 +8,7 @@ menu:
     name: K6 Performance Training
     identifier: k6-performance-training
     parent: projects
-    weight: 70
+    weight: 75
 technologies: ["k6", "JavaScript", "Grafana", "Docker", "Jenkins"]
 categories: ["Testing", "Performance Engineering", "Training"]
 role: "Trainer & Technical Lead"

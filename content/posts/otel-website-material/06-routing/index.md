@@ -6,7 +6,7 @@ menu:
   sidebar:
     name: "Routing dei Dati"
     identifier: OTEL-6
-    weight: 50
+    weight: 60
     parent: OBS
 tags: ["OpenTelemetry", "Observability", "Routing", "Compliance", "Production"]
 categories: ["Observability", "DevOps"]

@@ -9,7 +9,7 @@ menu:
     name: Playwright E2E
     identifier: playwright-e2e
     parent: PLAYWRIGHT
-    weight: 2
+    weight: 10
 reviewed: human
 reproducibility: true
 ---
