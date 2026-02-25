@@ -10,7 +10,8 @@ menu:
     parent: LINQ
 tags: ["LINQ", "CSharp", "DotNet", "Performance", "HashSet", "ToLookup"]
 categories: ["DotNet", "Performance"]
-reviewed: false
+reviewed: true
+pillar: "System Design"
 ---
 
 Qualche mese fa ho fatto un audit di performance su un servizio di dispatch per una flotta di veicoli commerciali. Il sistema gestisce centinaia di consegne al giorno e decide in tempo reale quale veicolo assegnare a ogni nuovo ordine, rispettando vincoli di zona, capacità, orario e tipo merce.
@@ -199,7 +200,7 @@ var pendingPerZone = zones.Select(z => new
 
 La scansione delle consegne avviene **una sola volta**. Il `GroupBy` crea i raggruppamenti in un singolo passaggio, e il `ToDictionary` finale li trasforma in una struttura con lookup O(1). Il costo totale passa da O(zone * consegne) a **O(consegne + zone)**.
 
-### L'Arma Segreta: `ILookup<TKey, TElement>`
+### `ToLookup` vs `GroupBy` + `ToDictionary`
 
 Per scenari con relazioni più complesse, `ToLookup` è spesso preferibile a `GroupBy` + `ToDictionary`. Un [`ILookup<TKey, TElement>`](https://learn.microsoft.com/dotnet/api/system.linq.ilookup-2) è essenzialmente un dizionario immutabile dove ogni chiave mappa a una collezione di valori -- e, a differenza di un `Dictionary`, restituisce una **sequenza vuota** per chiavi inesistenti invece di lanciare un'eccezione.
 
@@ -386,10 +387,11 @@ In alcuni casi, la scelta più performante è abbandonare LINQ a favore di un `f
 
 ```csharp
 // Versione LINQ: 3 allocazioni per una risposta booleana
-public bool IsAssignmentValid(Vehicle vehicle, List<Restriction> restrictions)
+public bool IsAssignmentValid(Vehicle vehicle, Delivery currentDelivery, List<Restriction> restrictions)
 {
     var vehicleRestrictions = restrictions
-        .FindAll(r => r.VehicleType == vehicle.Type);       // allocazione 1
+        .Where(r => r.VehicleType == vehicle.Type)
+        .ToList();                                           // allocazione 1
     var zoneRestrictions = vehicleRestrictions
         .Where(r => r.ZoneId == vehicle.CurrentZoneId)
         .Select(r => r.BlockedSlot)
@@ -404,7 +406,7 @@ La versione con `foreach` elimina tutte le allocazioni e introduce l'**early exi
 
 ```csharp
 // Versione foreach: zero allocazioni, early exit
-public bool IsAssignmentValid(Vehicle vehicle, List<Restriction> restrictions)
+public bool IsAssignmentValid(Vehicle vehicle, Delivery currentDelivery, List<Restriction> restrictions)
 {
     foreach (var restriction in restrictions)
     {
@@ -459,7 +461,7 @@ Ricapitoliamo i quattro errori e le rispettive soluzioni in una tabella sinottic
 |---|---------|-------------------|-----|------------------|
 | 1 | `List.Contains()` in `.Where()` | O(n * m) | `ToHashSet()` | O(n) |
 | 2 | `.Where()` dentro `ToDictionary` | O(n * m) | `GroupBy` / `ToLookup` | O(n + m) |
-| 3 | Triple nesting `foreach` + `Where` | O(n * m * k) | Pre-indicizzazione con `ToLookup` composito | O(n + m + k) |
+| 3 | Triple nesting `foreach` + `Where` | O(n * m * k) | Pre-indicizzazione con `ToLookup` composito | O(n + m + V * avg_D * avg_R) |
 | 4 | Allocazioni intermedie, no early exit | O(n) con k allocazioni | `foreach` + `break`, `Any()`, `MaxBy()` | O(n) con 0 allocazioni |
 
 Il filo conduttore è uno solo: **LINQ è dichiarativo, ma l'esecuzione è imperativa**. La stessa sintassi -- `.Contains()`, `.Where()`, `.Select()` -- nasconde costi radicalmente diversi a seconda della struttura dati sottostante. `.Contains()` su una `List` è O(n). `.Contains()` su un `HashSet` è O(1). Il codice è identico. Il profiler racconta una storia diversa.
@@ -472,7 +474,7 @@ La buona notizia è che le fix sono quasi sempre semplici: `ToHashSet()`, `ToLoo
 
 L'intero codice degli esempi è disponibile nel repository pubblico:
 
-👉 [https://github.com/monte97/dotnet-linq-demo](https://github.com/monte97/dotnet-linq-demo)
+[https://github.com/monte97/dotnet-linq-demo](https://github.com/monte97/dotnet-linq-demo)
 
 Il repository contiene il modello di dominio completo (`Vehicle`, `Driver`, `Delivery`, `Zone`, `Restriction`, `TimeSlot`, `DeliveryRequirement`), i quattro errori con le rispettive versioni before/after, e un generatore di dati realistici con [Bogus](https://github.com/bchavez/Bogus) per riprodurre le stesse cardinalità.
 
@@ -484,4 +486,3 @@ Ora sai *cosa* fixare. Ma *quanto* costano davvero questi pattern? Nel prossimo 
 * **ILookup<TKey, TElement>**: [Microsoft Learn -- ILookup](https://learn.microsoft.com/dotnet/api/system.linq.ilookup-2)
 * **MaxBy / MinBy (.NET 6+)**: [Microsoft Learn -- Enumerable.MaxBy](https://learn.microsoft.com/dotnet/api/system.linq.enumerable.maxby)
 * **BenchmarkDotNet**: [benchmarkdotnet.org](https://benchmarkdotnet.org/)
-* **Repository demo**: [github.com/monte97/dotnet-linq-demo](https://github.com/monte97/dotnet-linq-demo)
