@@ -11,7 +11,8 @@ menu:
 tags: ["Kafka", "Avro", "Schema Registry", "Apicurio", "Node.js", "Python"]
 categories: ["Backend", "Tecnologie"]
 draft: true
-reviewed: machine
+reviewed: true
+pillar: "Event Streaming"
 reproducibility: true
 ---
 ## Il problema: JSON senza contratto
@@ -38,7 +39,7 @@ Per risolvere il problema servono due cose: uno schema formale per ogni topic, e
 
 **1. Validazione JSON Schema a livello applicativo.** Ogni servizio valida i messaggi contro un JSON Schema prima di produrli o dopo averli consumati. Il problema è che la validazione è decentralizzata: ogni servizio deve implementarla, mantenerla aggiornata, e non c'è nessun meccanismo che impedisca a un producer di pubblicare un messaggio invalido. Se un servizio salta la validazione, i messaggi passano comunque.
 
-**2. Confluent Schema Registry.** Il registry di riferimento nell'ecosistema Kafka. Maturo, ben documentato, con librerie client per tutti i linguaggi. Ma dalla versione 7.x la licenza è Confluent Community License, non Apache 2.0. Per un progetto open-source-first, o per un'installazione on-premise dove le licenze contano, questo è un limite.
+**2. Confluent Schema Registry.** Il registry di riferimento nell'ecosistema Kafka. Maturo, ben documentato, con librerie client per tutti i linguaggi. Ma dalla versione 5.1 (dicembre 2018) la licenza è Confluent Community License, non Apache 2.0. Per un progetto open-source-first, o per un'installazione on-premise dove le licenze contano, questo è un limite.
 
 **3. Apicurio Registry.** Progetto open-source, licenza Apache 2.0. Supporta Avro, JSON Schema, Protobuf. Può usare Kafka stesso come storage (KafkaSQL), quindi non richiede un database esterno. E soprattutto: espone un'API compatibile con Confluent (`/apis/ccompat/v7`), il che significa che le librerie client standard di Confluent funzionano senza modifiche.
 
@@ -86,6 +87,11 @@ services:
       CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
     ports:
       - "9092:9092"
+    healthcheck:
+      test: kafka-broker-api-versions --bootstrap-server localhost:9092
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   schema-registry:
     image: apicurio/apicurio-registry:3.0.4
@@ -300,7 +306,7 @@ Il risultato è che producer e consumer sono completamente disaccoppiati: il pro
 
 La schema evolution è il motivo principale per adottare un registry. La domanda è: cosa succede quando il producer inizia a mandare messaggi con un campo in più? O in meno?
 
-La modalità di compatibilità più comune è **BACKWARD**: un consumer con lo schema v(N) può leggere messaggi scritti con lo schema v(N-1). In pratica questo significa che è possibile aggiungere campi con default (il reader usa il default quando il writer non include il campo) e rimuovere campi (il reader semplicemente li ignora), ma non aggiungere campi obbligatori senza default o cambiare il tipo di un campo esistente.
+La modalità di compatibilità più comune è **BACKWARD**: un consumer con lo schema v(N) può leggere messaggi scritti con lo schema v(N-1). In pratica questo significa che è possibile aggiungere campi con default (il reader usa il default quando il writer non include il campo) e rimuovere campi che avevano un default (il reader usa il default definito nel proprio schema), ma non rimuovere campi senza default, aggiungere campi obbligatori senza default, o cambiare il tipo di un campo esistente.
 
 **Nota**: Apicurio Registry di default non applica nessun controllo di compatibilità (modalità NONE). La regola BACKWARD va configurata esplicitamente per ogni subject, come mostrato negli script della demo.
 
@@ -352,7 +358,7 @@ Dalla migrazione del sistema da JSON senza schema ad Avro con Apicurio emergono 
 ## Demo
 
 L'intero codice del progetto è disponibile nel repository pubblico:
-👉 [https://github.com/monte97/kafka-pekko](https://github.com/monte97/kafka-pekko)
+[https://github.com/monte97/kafka-pekko](https://github.com/monte97/kafka-pekko)
 
 Il progetto è self-contained e avviabile con un solo comando.
 
