@@ -10,7 +10,8 @@ menu:
     parent: LINQ
 tags: ["LINQ", "CSharp", "DotNet", "Compilatore", "StateMachine", "ILSpy", "SharpLab"]
 categories: ["DotNet", "Deep Dive"]
-reviewed: false
+reviewed: true
+pillar: "System Design"
 ---
 
 Nei primi due articoli abbiamo visto *cosa* costa e *quanto* costa. Abbiamo misurato la differenza tra `List.Contains` e `HashSet.Contains`, quantificato il peso delle allocazioni intermedie, osservato `GroupBy` e `ToLookup` trasformare operazioni quadratiche in lineari. I numeri erano chiari, le fix immediate.
@@ -166,25 +167,23 @@ var result = restrictions
 L'esecuzione non è "prima filtra tutto, poi proietta tutto, poi colleziona tutto". È un ping-pong elemento per elemento:
 
 ```text
-ToList()               Where(r => r.IsActive)    Select(r => r.VehicleId)
-  |                          |                          |
-  |-- MoveNext() ---------->|                          |
-  |                          |-- MoveNext() ---------->|
-  |                          |                          |-- restrictions[0]
-  |                          |<-- VehicleId = 42 ------|
-  |                          |-- IsActive? si          |
-  |<-- 42 ------------------|                          |
-  |                                                    |
-  |-- MoveNext() ---------->|                          |
-  |                          |-- MoveNext() ---------->|
-  |                          |                          |-- restrictions[1]
-  |                          |<-- VehicleId = 17 ------|
-  |                          |-- IsActive? no, skip    |
-  |                          |-- MoveNext() ---------->|
-  |                          |                          |-- restrictions[2]
-  |                          |<-- VehicleId = 91 ------|
-  |                          |-- IsActive? si          |
-  |<-- 91 ------------------|                          |
+ToList()               Select(r => r.VehicleId)    Where(r => r.IsActive)
+  |                          |                            |
+  |-- MoveNext() ---------->|                            |
+  |                          |-- MoveNext() ------------>|
+  |                          |                            |-- restrictions[0]
+  |                          |                            |-- IsActive? si
+  |                          |<-- restrictions[0] --------|
+  |<-- VehicleId = 42 ------|                            |
+  |                                                      |
+  |-- MoveNext() ---------->|                            |
+  |                          |-- MoveNext() ------------>|
+  |                          |                            |-- restrictions[1]
+  |                          |                            |-- IsActive? no, skip
+  |                          |                            |-- restrictions[2]
+  |                          |                            |-- IsActive? si
+  |                          |<-- restrictions[2] --------|
+  |<-- VehicleId = 91 ------|                            |
 ```
 
 Un elemento alla volta attraversa l'intera pipeline prima che il successivo inizi il suo percorso. Questo è lo **streaming** (lazy evaluation). Il `ToList()` alla fine è il trigger che avvia il processo chiamando `MoveNext()` sul primo iteratore della catena, che a sua volta chiama `MoveNext()` sul successivo, e così via.
@@ -195,8 +194,8 @@ Non tutti gli operatori LINQ possono lavorare in modalità streaming. Alcuni dev
 
 | **Tipo** | **Operatori** | **Comportamento** |
 | :------- | :------------ | :---------------- |
-| **Streaming (lazy)** | `Where`, `Select`, `Take`, `Skip`, `SelectMany` | Un elemento alla volta attraversa la pipeline |
-| **Non-streaming (eager)** | `OrderBy`, `GroupBy`, `Reverse`, `Distinct` | Bufferizzano tutto prima di emettere il primo elemento |
+| **Streaming (lazy)** | `Where`, `Select`, `Take`, `Skip`, `SelectMany`, `Distinct` | Un elemento alla volta attraversa la pipeline |
+| **Non-streaming (eager)** | `OrderBy`, `GroupBy`, `Reverse` | Bufferizzano tutto prima di emettere il primo elemento |
 | **Trigger** | `ToList`, `ToArray`, `Count`, `First`, `foreach` | Forzano l'esecuzione della pipeline |
 
 Questo spiega un comportamento osservato nell'articolo 2: `OrderBy` ha un costo fisso indipendente da quanti elementi servono *dopo* di lui. Anche se la pipeline prosegue con `.Take(5)`, l'`OrderBy` deve prima leggere e ordinare *tutti* gli elementi nella sorgente. La state machine dell'`OrderBy` bufferizza l'intera sequenza nel suo `MoveNext()` iniziale, e solo dopo inizia a emettere gli elementi ordinati uno alla volta.
@@ -334,7 +333,7 @@ Tre classi distinte:
 
 * **`WhereArrayIterator<T>`** -- ottimizzato per array. Accede agli elementi tramite indice (`array[i]`), evitando l'overhead dell'interfaccia `IEnumerator<T>`. Nessuna chiamata virtuale per `MoveNext()` e `Current`.
 
-* **`WhereListIterator<T>`** -- ottimizzato per `List<T>`. Usa direttamente il campo interno `_items` (tramite `CollectionsMarshal.AsSpan` nelle versioni più recenti) o l'indexer, evitando l'allocazione dell'enumerator e le chiamate di interfaccia.
+* **`WhereListIterator<T>`** -- ottimizzato per `List<T>`. Usa lo struct enumerator `List<T>.Enumerator` che, essendo un value type, evita il boxing e il dispatch virtuale tipici dell'interfaccia `IEnumerator<T>`.
 
 * **`WhereEnumerableIterator<T>`** -- il fallback generico. Usa `GetEnumerator()` e il protocollo standard `MoveNext()`/`Current`. È il più lento dei tre perché passa attraverso l'interfaccia `IEnumerator<T>`, con dispatch virtuale a ogni iterazione.
 
@@ -365,7 +364,7 @@ Questa architettura è visibile in dettaglio su [source.dot.net](https://source.
 
 ---
 
-## Riepilogo
+## Conclusioni
 
 Abbiamo aperto il cofano di LINQ e guardato i meccanismi che lo fanno funzionare:
 
