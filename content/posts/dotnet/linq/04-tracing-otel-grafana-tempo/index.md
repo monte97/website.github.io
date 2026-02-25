@@ -10,7 +10,8 @@ menu:
     parent: LINQ
 tags: ["LINQ", "CSharp", "DotNet", "OpenTelemetry", "GrafanaTempo", "Observability", "Tracing"]
 categories: ["DotNet", "Observability"]
-reviewed: false
+reviewed: true
+pillar: "System Design"
 ---
 
 Nei tre articoli precedenti abbiamo visto [cosa sbagliare](/posts/dotnet/linq/01-errori-produzione), [quanto costa](/posts/dotnet/linq/02-benchmark-net8) e [cosa succede sotto il cofano](/posts/dotnet/linq/03-compilatore-state-machine). Abbiamo parlato di complessità computazionale, state machine, allocazioni e streaming. Ma finora era tutto teoria e numeri. Tabelle di benchmark, diagrammi ASCII, ragionamenti sulla deferred execution.
@@ -27,7 +28,7 @@ Prima di scrivere codice, serve un ambiente funzionante. La buona notizia è che
 
 ### Grafana LGTM in Docker
 
-L'immagine `grafana/otel-lgtm` racchiude in un singolo container Docker l'intero stack Grafana LGTM: **Grafana** (dashboard e visualizzazione), **Tempo** (trace), **Loki** (log), **Mimir** (metriche) e un **OpenTelemetry Collector** integrato. Tutto quello che serve per lo sviluppo locale, senza dover orchestrare più servizi.
+L'immagine `grafana/otel-lgtm` racchiude in un singolo container Docker l'intero stack Grafana LGTM: **Grafana** (dashboard e visualizzazione), **Tempo** (trace), **Loki** (log), **Prometheus** (metriche) e un **OpenTelemetry Collector** integrato. Tutto quello che serve per lo sviluppo locale, senza dover orchestrare più servizi.
 
 ```yaml
 # docker-compose.yml
@@ -403,7 +404,7 @@ La regola è chiara: **`.Monitor()` è uno strumento diagnostico, non un decorat
 
 ---
 
-## Chiusura della serie
+## Conclusioni
 
 Questo quarto articolo chiude il percorso che abbiamo iniziato con gli errori LINQ trovati in produzione. Riassumiamo il viaggio:
 
@@ -425,7 +426,7 @@ La prossima volta che un collega dirà "LINQ è lento, usiamo un `for`", avrai g
 
 L'intero codice della serie -- errori, benchmark, tracing, demo Grafana Tempo -- è disponibile nel repository pubblico:
 
-👉 [https://github.com/monte97/dotnet-linq-demo](https://github.com/monte97/dotnet-linq-demo)
+[https://github.com/monte97/dotnet-linq-demo](https://github.com/monte97/dotnet-linq-demo)
 
 Il progetto `src/LinqDeepDive.Tracing/` contiene tutti gli extension method e le demo descritte in questo articolo, pronti da eseguire con `docker compose up -d && dotnet run`.
 
