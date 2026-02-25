@@ -10,10 +10,9 @@ menu:
     parent: LINQ
 tags: ["LINQ", "CSharp", "DotNet", "Performance", "BenchmarkDotNet", "Allocazioni"]
 categories: ["DotNet", "Performance"]
-reviewed: false
+reviewed: true
+pillar: "System Design"
 ---
-
-## Introduzione
 
 In ogni code review C# prima o poi qualcuno dice "qui LINQ è troppo lento, usa un for". Ma nessuno tira fuori un benchmark. Oggi lo facciamo -- su .NET 8, con BenchmarkDotNet, e con i pattern reali dell'articolo precedente.
 
@@ -297,7 +296,7 @@ public Delivery MaxByLinear()
         .MaxBy(d => d.WeightKg)!;
 ```
 
-`OrderByDescending` ordina l'intera sequenza con complessità O(n log n) e alloca un buffer interno. `MaxBy` (introdotto in .NET 6) attraversa la sequenza una sola volta in O(n) senza allocazioni aggiuntive. Per trovare un singolo estremo, ordinare è uno spreco.
+`OrderByDescending` ordina l'intera sequenza con complessità O(n log n) e alloca un buffer interno. `MaxBy` (introdotto in .NET 6) attraversa la sequenza una sola volta in O(n) senza il buffer di ordinamento intermedio. Per trovare un singolo estremo, ordinare è uno spreco.
 
 ---
 
@@ -406,7 +405,7 @@ In altre parole: la prossima volta che qualcuno dice "LINQ è troppo lento" in c
 
 ---
 
-## Chiusura
+## Conclusioni
 
 I benchmark di questo articolo raccontano una storia coerente:
 
@@ -432,5 +431,5 @@ Ora sai *quanto* costa. Ma *perché* costa esattamente quello che costa? Nel pro
 
 * **BenchmarkDotNet Documentation**: [BenchmarkDotNet Docs](https://benchmarkdotnet.org/articles/overview.html)
 * **Repository demo della serie**: [dotnet-linq-demo](https://github.com/monte97/dotnet-linq-demo)
-* **Performance best practices .NET**: [Microsoft Docs - Performance](https://learn.microsoft.com/en-us/dotnet/framework/performance/)
+* **Performance best practices .NET**: [Microsoft Docs - Performance](https://learn.microsoft.com/en-us/dotnet/core/performance/)
 * **MemoryDiagnoser deep dive**: [BenchmarkDotNet Memory Diagnoser](https://benchmarkdotnet.org/articles/configs/diagnosers.html)
