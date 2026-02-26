@@ -28,6 +28,25 @@ read -p "Inserisci una breve descrizione (italiano): " DESC_IT
 read -p "Inserisci una breve descrizione (inglese): " DESC_EN
 read -p "Inserisci i tag separati da virgola (es: Docker,Linux,Kubernetes): " TAGS
 read -p "Inserisci le categorie separate da virgola (es: Tecnologie,DevOps): " CATEGORIES
+
+echo ""
+echo "Pillar disponibili:"
+echo "  1) DevOps & Quality"
+echo "  2) Observability"
+echo "  3) Event Streaming"
+echo "  4) Security"
+echo "  5) System Design"
+read -p "Scegli il pillar (1-5): " PILLAR_NUM
+
+case $PILLAR_NUM in
+    1) PILLAR="DevOps & Quality" ;;
+    2) PILLAR="Observability" ;;
+    3) PILLAR="Event Streaming" ;;
+    4) PILLAR="Security" ;;
+    5) PILLAR="System Design" ;;
+    *) echo "Pillar non valido, uso 'System Design' come default"; PILLAR="System Design" ;;
+esac
+
 read -p "Inserisci il peso/priorità nel menu (es: 10) [default: 1]: " WEIGHT
 
 WEIGHT=${WEIGHT:-1}
@@ -54,6 +73,8 @@ menu:
     weight: WEIGHT_PLACEHOLDER
 tags: [TAGS_PLACEHOLDER]
 categories: [CATEGORIES_PLACEHOLDER]
+pillar: "PILLAR_PLACEHOLDER"
+reviewed: false
 ---
 
 ## Introduzione
@@ -75,6 +96,7 @@ sed -i "s|MENU_SLUG_PLACEHOLDER|$MENU_SLUG|g" "$POST_DIR/index.md"
 sed -i "s|WEIGHT_PLACEHOLDER|$WEIGHT|g" "$POST_DIR/index.md"
 sed -i "s|TAGS_PLACEHOLDER|$TAGS|g" "$POST_DIR/index.md"
 sed -i "s|CATEGORIES_PLACEHOLDER|$CATEGORIES|g" "$POST_DIR/index.md"
+sed -i "s|PILLAR_PLACEHOLDER|$PILLAR|g" "$POST_DIR/index.md"
 
 # Crea il file inglese
 cat > "$POST_DIR/index.en.md" << 'CONTENT_EOF'
@@ -89,6 +111,8 @@ menu:
     weight: WEIGHT_PLACEHOLDER
 tags: [TAGS_PLACEHOLDER]
 categories: [CATEGORIES_PLACEHOLDER]
+pillar: "PILLAR_PLACEHOLDER"
+reviewed: false
 ---
 
 ## Introduction
@@ -110,6 +134,7 @@ sed -i "s|MENU_SLUG_PLACEHOLDER|$MENU_SLUG|g" "$POST_DIR/index.en.md"
 sed -i "s|WEIGHT_PLACEHOLDER|$WEIGHT|g" "$POST_DIR/index.en.md"
 sed -i "s|TAGS_PLACEHOLDER|$TAGS|g" "$POST_DIR/index.en.md"
 sed -i "s|CATEGORIES_PLACEHOLDER|$CATEGORIES|g" "$POST_DIR/index.en.md"
+sed -i "s|PILLAR_PLACEHOLDER|$PILLAR|g" "$POST_DIR/index.en.md"
 
 echo ""
 echo "✓ Blog post creato con successo!"
