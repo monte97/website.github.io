@@ -11,10 +11,11 @@ menu:
 tags: ["Keycloak", "OAuth2", "PKCE", "OpenID Connect", "Security"]
 categories: ["Security", "Frontend"]
 draft: true
-reviewed: machine
+reviewed: true
+pillar: "Security"
 ---
 
-Hai configurato Keycloak, creato un realm e un client... e adesso? Come si collega concretamente un frontend React e un backend Express all'Identity Provider? Se hai seguito l'[articolo introduttivo]({{< ref "/posts/keycloak/01-keycloak-intro" >}}), il concetto di delegare l'autenticazione è chiaro. Ma manca il pezzo pratico.
+Keycloak configurato, realm creato, client registrato. E adesso? Come si collega concretamente un frontend React e un backend Express all'Identity Provider? L'[articolo introduttivo]({{< ref "/posts/keycloak/01-keycloak-intro" >}}) copre il concetto di delegare l'autenticazione. Qui si implementa il pezzo pratico.
 
 Questo articolo implementa **Authorization Code Flow con PKCE** in MockMart, un e-commerce demo. Il risultato: l'utente clicca "Login", viene reindirizzato a Keycloak, inserisce le credenziali, e torna nell'app con un token JWT che il backend valida ad ogni richiesta. L'applicazione non tocca mai le password.
 
@@ -541,7 +542,7 @@ Nei prossimi articoli vedremo come autenticare servizi tra loro senza utente ([C
 
 ## Risorse Utili
 
-- 👉 [MockMart - Repository Demo](https://github.com/monte97/MockMart)
+- [MockMart - Repository Demo](https://github.com/monte97/MockMart)
 - [Keycloak Documentation - OIDC Clients](https://www.keycloak.org/docs/latest/server_admin/#_oidc_clients)
 - [Keycloak JavaScript Adapter](https://www.keycloak.org/securing-apps/javascript-adapter)
 - [jose - JWT Validation Library](https://github.com/panva/jose)
