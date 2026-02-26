@@ -72,3 +72,169 @@
     }
   }
 }
+
+// QR contact page
+.qr-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 56px - 200px); // navbar - footer approx
+  padding: 1.5rem 1rem;
+  margin: 0 auto;
+}
+
+.qr-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 460px;
+  width: 100%;
+  background: #fff;
+  color: #212529;
+  border-radius: 16px;
+  padding: 2rem 2rem 2.25rem;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+
+  [data-theme="dark"] & {
+    background: #1e293b;
+    color: #f1f5f9;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.qr-photo-ring {
+  padding: 3px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0077b5, #00a0dc);
+  margin-bottom: 0.6rem;
+}
+
+.qr-photo {
+  display: block;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--bg-color, #fff);
+}
+
+.qr-name {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  text-align: center;
+}
+
+.qr-role {
+  font-size: 1.15rem;
+  color: #6c757d;
+  margin: 0.15rem 0 1rem;
+  text-align: center;
+
+  [data-theme="dark"] & {
+    color: #94a3b8;
+  }
+}
+
+.qr-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 100%;
+}
+
+.qr-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  transition: transform 0.15s, box-shadow 0.2s, border-color 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+  }
+
+  i {
+    font-size: 1.3rem;
+    width: 1.4rem;
+    text-align: center;
+  }
+}
+
+.qr-link--email {
+  background: rgba(234, 67, 53, 0.08);
+  color: #c5221f;
+  border-color: rgba(234, 67, 53, 0.2);
+
+  &:hover {
+    background: rgba(234, 67, 53, 0.14);
+    color: #c5221f;
+    border-color: rgba(234, 67, 53, 0.35);
+  }
+}
+
+.qr-link--linkedin {
+  background: rgba(0, 119, 181, 0.08);
+  color: #0077b5;
+  border-color: rgba(0, 119, 181, 0.2);
+
+  &:hover {
+    background: rgba(0, 119, 181, 0.14);
+    color: #0077b5;
+    border-color: rgba(0, 119, 181, 0.35);
+  }
+}
+
+.qr-link--github {
+  background: rgba(51, 51, 51, 0.06);
+  color: #333;
+  border-color: rgba(51, 51, 51, 0.15);
+
+  &:hover {
+    background: rgba(51, 51, 51, 0.12);
+    color: #333;
+    border-color: rgba(51, 51, 51, 0.3);
+  }
+
+  [data-theme="dark"] & {
+    background: rgba(200, 200, 200, 0.08);
+    color: #ccc;
+    border-color: rgba(200, 200, 200, 0.15);
+
+    &:hover {
+      background: rgba(200, 200, 200, 0.14);
+      color: #ccc;
+      border-color: rgba(200, 200, 200, 0.3);
+    }
+  }
+}
+
+.qr-link--web {
+  background: rgba(46, 204, 113, 0.08);
+  color: #1e8449;
+  border-color: rgba(46, 204, 113, 0.2);
+
+  &:hover {
+    background: rgba(46, 204, 113, 0.14);
+    color: #1e8449;
+    border-color: rgba(46, 204, 113, 0.35);
+  }
+
+  [data-theme="dark"] & {
+    color: #2ecc71;
+
+    &:hover {
+      color: #2ecc71;
+    }
+  }
+}
