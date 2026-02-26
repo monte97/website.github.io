@@ -1,218 +1,247 @@
 # Tech Review — Da blocking poll a stream reattivi con Pekko Connectors Kafka
 
 **Reviewer**: Claude Opus 4.6 (automated tech review)
-**Date**: 2026-02-20
-**Article**: `content/posts/kafka/pekko-streams-kafka/index.md`
+**Date**: 2026-02-25
+**Article**: `content/posts/kafka/04-pekko-streams-kafka/index.md`
+**Scope**: Correttezza codice Scala, API Pekko/Kafka, analisi concorrenza ConcurrentHashMap, link e versioni
 
 ---
 
-## Summary
+## Score: 8/10
 
-The article presents two refactoring patterns for moving from blocking Kafka poll loops inside Pekko actors to cleaner architectures: (1) `Source.queue` as a bridge between actors and a Kafka producer stream, and (2) dedicated consumer threads with shared `ConcurrentHashMap` state. The domain is a telemetry platform for construction equipment. The technical content is solid and well-reasoned, with several issues worth addressing.
+L'articolo e' ben strutturato, tecnicamente solido nei suoi argomenti principali, e presenta codice di produzione reale anziche' esempi giocattolo. L'approccio a due pattern e' ben motivato dai rispettivi casi d'uso. Il codice con `mapAsync` e `Promise`/`Future` per il producer e' corretto. La spiegazione della distinzione tra load shedding (`dropHead`) e backpressure vera e' precisa e ben articolata. L'analisi del lost update su `ConcurrentHashMap` e' corretta e pertinente. Le deduzioni principali sono per: (1) un'affermazione errata sulla configurazione del dispatcher Pekko, (2) alcune lacune production-readiness nei consumer threads che, pur menzionate, andrebbero espanse, e (3) imprecisioni minori su Apicurio e link.
 
 ---
 
-## Issues
+## Riepilogo quantitativo
 
-### P0 — Critical
+| Priorita' | Count | Dettagli |
+|-----------|-------|---------|
+| P0 | 1 | parallelism-min errato (8 vs 2 in Pekko) |
+| P1 | 4 | offer() result, error handling consumer threads, offset commit, repository GitHub |
+| P2 | 6 | Materializer esplicito, daemon threads, Apicurio wire format, pseudocode self, forEach, AUTO_REGISTER |
 
-**P0-1: `producer.send()` inside `.map()` is potentially blocking and fire-and-forget**
+---
 
-Location: lines 77-85, Pattern 1 `Source.queue` map stage.
+## P0 — Errori critici/fattuali
 
-Two problems:
+### P0-1: `parallelism-min` del default dispatcher — valore errato per Pekko
 
-1. **`producer.send()` can block**: Although `KafkaProducer.send()` is nominally asynchronous (adds to internal buffer and returns a `Future`), it can block in real scenarios: waiting for metadata update (up to `max.block.ms`, default 60s), buffer full (`buffer.memory` exhausted), or connectivity issues. Calling it inside `.map()` (a synchronous stage) blocks the materializer thread, contradicting the article's own premise ("don't block the dispatcher").
+**Riga**: 42
 
-2. **The returned `Future` is ignored**: If the send fails (unreachable broker, serialization failure), the error is silently lost. The stream maps to `record` regardless. Combined with `Sink.ignore`, there is zero visibility into producer failures.
+**Testo attuale**: "Il dispatcher default usa un fork-join pool con un minimo di 8 thread (`parallelism-min`): su una macchina a 2 core con tre reader bloccanti, una porzione significativa del pool e' permanentemente occupata."
 
-**Fix suggestion**: Use `mapAsync` with the `Future` from `producer.send()`, or (better) use `Producer.plainSink` or `Producer.flexiFlow` from Pekko Connectors Kafka, which handle asynchrony and backpressure toward the broker natively.
+**Problema**: `parallelism-min = 8` e' il default di **Akka** (2.6.x). **Apache Pekko 1.x** ha cambiato il default a `parallelism-min = 2` con `parallelism-factor = 1.0`. Su una macchina a 2 core, il pool avrebbe `max(2, ceil(2 * 1.0))` = 2 thread attivi (hot threads). Con 3 reader bloccanti il problema e' ancora **peggiore** di quanto descritto nell'articolo: 3 thread bloccanti su un pool con 2 hot thread significano che il dispatcher e' completamente saturo.
+
+Nota: il ForkJoinPool puo' creare thread addizionali oltre `parallelism` per compensare thread bloccati (compensation), ma questo meccanismo ha limiti e non e' garantito. L'argomento dell'articolo resta valido e anzi si rafforza con il valore corretto.
+
+**Fix suggerito**: Sostituire "un minimo di 8 thread (`parallelism-min`)" con "un numero di thread calcolato come `max(parallelism-min, ceil(cores * parallelism-factor))` — con i default Pekko 1.x (`parallelism-min = 2`, `parallelism-factor = 1.0`), su una macchina a 2 core il pool ha solo 2 hot thread". In alternativa, indicare semplicemente che il pool e' proporzionale al numero di core senza citare un numero specifico.
+
+Riferimento: [Pekko Dispatchers Documentation](https://pekko.apache.org/docs/pekko/1.0/typed/dispatchers.html), [Akka issue #28859](https://github.com/akka/akka/issues/28859)
+
+---
+
+## P1 — Errori importanti
+
+### P1-1: `queue.offer()` result ignorato — il commento non basta
+
+**Riga**: 95
+
+**Testo attuale**: `queue.offer(data) // restituisce Future[QueueOfferResult]: gestire Dropped/Failure in produzione`
+
+**Problema**: Il commento riconosce il problema, ma per un articolo che si posiziona come guida a pattern di produzione, il codice dovrebbe mostrare almeno il pattern minimo di gestione. `offer()` con `dropHead` restituisce `Future[QueueOfferResult]` che puo' essere `Enqueued`, `Dropped`, `Failure(e)`, o `QueueClosed`. Ignorare il risultato significa zero visibilita' sui messaggi persi.
+
+**Fix suggerito**: Aggiungere un esempio inline o un blocco di codice separato:
 
 ```scala
-// Option 1: mapAsync
-.mapAsync(parallelism = 4) { data =>
-  val record = new ProducerRecord[String, GenericRecord](...)
-  val promise = Promise[RecordMetadata]()
-  producer.send(record, (metadata, exception) =>
-    if (exception != null) promise.failure(exception)
-    else promise.success(metadata)
-  )
-  promise.future
+queue.offer(data).foreach {
+  case QueueOfferResult.Dropped    => log.warn(s"Message dropped for ${data.identifier}")
+  case QueueOfferResult.Failure(e) => log.error("Queue failure", e)
+  case QueueOfferResult.QueueClosed => log.error("Queue closed unexpectedly")
+  case QueueOfferResult.Enqueued   => // ok
 }
-
-// Option 2: Pekko Connectors Kafka (recommended)
-.map(data => ProducerMessage.single(new ProducerRecord(...)))
-.via(Producer.flexiFlow(producerSettings))
 ```
 
 ---
 
-**P0-2: `Source.queue` with `dropHead` is not backpressure — claim is imprecise**
+### P1-2: Nessun error handling nei consumer threads
 
-Location: line 110.
+**Righe**: 163-202
 
-The article states: "Il `Source.queue` ha backpressure. Se il producer Kafka rallenta, il buffer si riempie e i messaggi piu' vecchi vengono scartati (`dropHead`)."
+**Problema**: I tre blocchi `while (true) { consumer.poll(...).forEach { ... } }` non hanno alcun `try/catch`. Se `poll()` lancia un'eccezione (`WakeupException`, `SerializationException`, `AuthenticationException`), il thread muore silenziosamente senza logging. L'articolo menziona (riga 207) il problema dello shutdown graceful ma non quello dell'error handling.
 
-This is inaccurate. `OverflowStrategy.dropHead` is **load shedding**, not backpressure. Backpressure implies the producer is slowed down (signal upstream). With `dropHead`, the producer (the actor calling `queue.offer()`) is never slowed: it continues offering elements and old ones are silently discarded. Backpressure exists **within** the stream (between the queue and the sink), but not between actors and the queue, which is the critical boundary.
+**Fix suggerito**: Aggiungere almeno un commento nel codice o una nota nel testo:
 
-**Fix suggestion**: Rephrase to clarify that `dropHead` is bounded buffering with load shedding, not end-to-end backpressure. Mention that for true backpressure toward actors, `OverflowStrategy.backpressure` could be used (the `Future` returned by `offer()` doesn't complete until there's space).
-
----
-
-### P1 — Important
-
-**P1-1: `EnrichmentState` get-then-put race condition understated**
-
-Location: lines 203-231.
-
-The article correctly notes that `ConcurrentHashMap` get-then-put is not atomic and mentions `compute()` as an alternative (line 234). However, the severity is understated. If `enrichC40` and `updateRegistry` are called simultaneously for the same identifier (possible since they run on different threads), one update is lost. The article says "last update wins" is "acceptable for telemetry", but what actually happens is not "latest timestamp wins" — it's "last `put` wins", which could overwrite a C40 enrichment with a version that only has the base registry update (classic lost update). For a didactic article, showing the `compute()` version as the primary code would be more correct.
-
----
-
-**P1-2: `queue.offer()` result ignored**
-
-Location: lines 89-91.
-
-`queue.offer()` returns a `Future[QueueOfferResult]` that can be `Enqueued`, `Dropped`, `Failure`, or `QueueClosed`. Ignoring it means no visibility into whether messages are accepted. For a production telemetry system, at minimum a log on `Dropped` and an alert on `Failure`/`QueueClosed` are appropriate.
+```scala
+while (running.get()) {
+  try {
+    consumer.poll(Duration.ofSeconds(5)).forEach { record => ... }
+  } catch {
+    case _: WakeupException => // shutdown signal
+    case e: Exception => logger.error("Consumer error, retrying", e)
+  }
+}
+```
 
 ---
 
-**P1-3: No graceful shutdown for consumer threads**
+### P1-3: Nessuna menzione della strategia di commit degli offset
 
-Location: lines 156-195.
+**Righe**: 163-202
 
-The three `new Thread(() => { while(true) { ... } })` have no shutdown mechanism:
-- No `volatile` flag to exit the loop
-- No `consumer.wakeup()` to interrupt `poll()`
-- No `try/finally` with `consumer.close()`
+**Problema**: I consumer threads non chiamano `consumer.commitSync()` ne' `consumer.commitAsync()`. L'articolo non discute se `enable.auto.commit` e' `true` (default Kafka, commit ogni 5 secondi) o `false`. In un articolo su Kafka che parla di pattern di consumo, la strategia di commit e' un aspetto fondamentale. Con auto-commit, se il consumer muore tra un commit e l'altro, i messaggi vengono riprocessati (at-least-once). Senza auto-commit e senza commit esplicito, al restart si ricomincia dall'ultimo offset committato dal consumer group (che potrebbe essere nulla se il consumer group e' nuovo, e in quel caso `auto.offset.reset` decide).
 
-On JVM shutdown, consumers won't commit pending offsets and broker connections stay open until session timeout. The article mentions that migrating to `Consumer.plainSource` would provide "graceful shutdown", but the code presented as solution doesn't handle it. At minimum a comment with the correct pattern would be useful.
+**Fix suggerito**: Aggiungere una nota che spieghi la scelta (presumibilmente `enable.auto.commit = true` con at-least-once, accettabile per telemetria dove l'idempotenza e' data dall'overwrite dello stato).
 
 ---
 
-**P1-4: No error handling in consumer threads**
+### P1-4: Repository GitHub probabilmente non esistente
 
-Location: lines 156-195.
+**Riga**: 278
 
-The `while(true)` blocks have no `try/catch`. If `poll()` throws an exception (e.g., `WakeupException`, `SerializationException`, `AuthenticationException`), the thread dies silently. A `try/catch` with logging and retry (or at minimum a `Thread.setUncaughtExceptionHandler`) is the minimum for production code.
+**Testo attuale**: `https://github.com/monte97/kafka-pekko`
 
----
+**Problema**: Il repository `monte97/kafka-pekko` non risulta indicizzato da nessun motore di ricerca. Se il repository non e' ancora stato creato o e' privato, il link restituira' 404 ai lettori. Poiche' l'articolo ha `draft: true` e `reproducibility: true`, il repository deve esistere ed essere pubblico prima della pubblicazione.
 
-**P1-5: Dispatcher default — exact number potentially misleading**
-
-Location: line 41.
-
-The article states: "Il dispatcher default usa un fork-join pool con un minimo di 8 thread (`parallelism-min`)."
-
-In **Pekko 1.1.x**: `parallelism-min = 8`, `parallelism-factor = 1.0` -> on 2 cores = `max(8, ceil(2 * 1.0))` = 8 threads. The claim is correct for current Pekko. However, the original code was likely Akka (pre-fork), where `parallelism-min` could be 2 in some versions with `parallelism-factor = 2.0` -> 4 threads on 2 cores, making the blocking problem even worse. Specifying the Pekko version or removing the exact number would improve accuracy.
+**Fix suggerito**: Creare il repository pubblico con il codice della demo, oppure rimuovere la sezione Demo fino a quando il repository non e' disponibile.
 
 ---
 
-### P2 — Minor
+## P2 — Errori minori
 
-**P2-1: Explicit `Materializer` unnecessary in modern Pekko**
+### P2-1: `Materializer` esplicito non necessario in Pekko
 
-Location: line 74.
+**Riga**: 75
 
-Since Akka 2.6+ (and Pekko from inception), an implicit `ActorSystem` in scope is sufficient — no need to create an explicit `Materializer`. This is legacy Akka 2.5 boilerplate.
+**Testo**: `implicit val materializer: Materializer = Materializer(context.system)`
 
----
+**Problema**: Da Akka 2.6+ (e Pekko dalla prima release), un `ActorSystem` implicito in scope e' sufficiente — lo stream si materializza automaticamente. L'`implicit val materializer` e' boilerplate legacy Akka 2.5. Non e' un errore (funziona), ma in un articolo che presenta "la soluzione moderna" lascia un'impressione di codice datato.
 
-**P2-2: Bare `new Thread(...)` without daemon flag or exception handler**
-
-Location: lines 156-195.
-
-Consumer threads are created as non-daemon threads with no `UncaughtExceptionHandler`. If the application shuts down, non-daemon threads prevent JVM exit. Setting `setDaemon(true)` or using an `ExecutorService` would be more robust.
+**Fix suggerito**: Rimuovere la riga e aggiungere, se non gia' presente, `implicit val system: ActorSystem[_] = context.system` (che in un Behavior e' gia' disponibile).
 
 ---
 
-**P2-3: No mention of offset commit strategy**
+### P2-2: Consumer threads senza flag daemon ne' exception handler
 
-The consumer threads don't call `consumer.commitSync()` or `consumer.commitAsync()`. If `enable.auto.commit` is `true` (Kafka default), offsets are committed every 5 seconds. If `false`, offsets are never committed. The article doesn't discuss this choice, which is relevant for delivery semantics in a Kafka article.
+**Righe**: 163, 177, 191
 
----
+**Problema**: I thread sono creati come non-daemon (`new Thread(...)` default = `daemon = false`). Se il processo cerca di spegnersi, i thread non-daemon impediscono la terminazione della JVM. Inoltre non hanno `UncaughtExceptionHandler`, quindi un'eccezione non catturata non produce alcun log.
 
-**P2-4: Missing `auto.offset.reset` configuration details**
-
-The article mentions `"earliest"` and `"latest"` as parameters but doesn't show how `stringConsumerProperties` and `avroConsumerProperties` configure `auto.offset.reset`. For didactic completeness, at least one example would be useful, since `latest` for the registry topic implies possible missed updates on first start.
+**Fix suggerito**: Aggiungere `.setDaemon(true)` ai thread, oppure usare un `ExecutorService` con thread factory configurato. Almeno menzionare il punto nel testo.
 
 ---
 
-**P2-5: Apicurio 3.x migration claim — add reference and clarify target version**
+### P2-3: Wire format Apicurio — formulazione imprecisa
 
-Location: lines 257-262.
+**Riga**: 264
 
-The article correctly notes `SchemaResolverConfig` moved packages in Apicurio 3.x, but the serde import is shown as `io.apicurio.registry.serde.avro`, which is the 2.x path. The article should clarify which Apicurio version the code targets and link to the migration guide. Also verify whether `AUTO_REGISTER_ARTIFACT` as property name is still valid in 3.x (docs reference "schema resolver strategy" with potentially renamed properties).
+**Testo attuale**: "5 byte nel formato Confluent, fino a 9 byte nel formato nativo Apicurio"
 
----
+**Problema**: Il formato Confluent e' 1 magic byte + 4 byte schema ID = 5 byte (corretto). Il formato nativo Apicurio con `DefaultIdHandler` usa 1 magic byte + 8 byte (long) schema ID = **esattamente 9 byte**, non "fino a 9". La formulazione "fino a" suggerisce variabilita', ma con il default handler sono sempre 9. La variabilita' esiste solo se si configura `Legacy4ByteIdHandler`, che produce 5 byte (compatibile Confluent). Inoltre, Apicurio supporta anche l'invio dello schema ID via Kafka header (non nel payload), che e' un'opzione diversa e non menzionata.
 
-**P2-6: Pseudocode mixes Typed and Classic API**
-
-Location: lines 25-36.
-
-The "before" pseudocode uses `Behavior[Command]`, `Behaviors.receiveMessage` (Typed API) but also `self ! Poll` (Classic API pattern — Typed API uses `context.self`). Since it's labeled "pseudocodice ricostruito", this is acceptable, but a note like `// Typed API — context.self omitted for brevity` would prevent confusion.
+**Fix suggerito**: "5 byte nel formato Confluent (1 magic byte + 4 byte schema ID), 9 byte nel formato nativo Apicurio (1 magic byte + 8 byte global ID)".
 
 ---
 
-**P2-7: `forEach` is Java API on `ConsumerRecords`**
+### P2-4: Pseudocodice mescola Typed e Classic API
 
-Location: line 30.
+**Riga**: 35
 
-`consumer.poll(...).forEach { record => ... }` works in Scala via implicit Java-to-Scala conversions, but idiomatic Scala would use `.asScala.foreach`. Style nit, no correctness impact.
+**Testo**: `self ! Poll // loop infinito`
 
----
+**Problema**: Il pseudocodice usa `Behavior[Command]` e `Behaviors.receiveMessage` (Typed API) ma anche `self ! Poll` (pattern Classic — in Typed API si usa `context.self`). E' etichettato come "pseudocodice ricostruito" quindi e' accettabile, ma potrebbe confondere lettori che conoscono l'API Typed.
 
-**P2-8: `AUTO_REGISTER_ARTIFACT = true` in production is a security risk**
-
-Any producer can register arbitrary schemas. The article uses this in an internal telemetry system, which is acceptable, but a note about disabling auto-registration in production or using authorization rules would be valuable.
+**Fix suggerito**: Usare `context.self ! Poll` oppure aggiungere un commento: `// context.self omesso per brevita'`.
 
 ---
 
-## Factual Accuracy
+### P2-5: `forEach` e' l'API Java su `ConsumerRecords`
 
-| Claim | Verdict |
-|-------|---------|
-| `poll()` blocks a dispatcher thread | Correct. Pekko/Akka actors share a fork-join pool dispatcher; blocking calls starve other actors. |
-| Default dispatcher uses fork-join pool with `parallelism-min` | Correct for Pekko 1.x. Default is `parallelism-min = 8`, `parallelism-factor = 1.0`. |
-| `Source.queue` provides backpressure | **Imprecise**. With `dropHead`, provides bounded buffering with load shedding, not true backpressure toward the producer side. |
-| `ConcurrentHashMap` is thread-safe for individual get/put | Correct. |
-| Apicurio 3.x moved `SchemaResolverConfig` package | Correct. Consistent with Apicurio 3.0 modular reorganization. |
-| Confluent wire format uses 5 bytes for schema ID | Correct (1 magic byte + 4 byte schema ID). |
-| Haversine formula for geo distance | Correct application for the described use case. |
+**Righe**: 31, 166, 180, 196
+
+**Problema**: `consumer.poll(...).forEach { record => ... }` funziona in Scala grazie alle conversioni implicite Java-Scala, ma lo Scala idiomatico usa `.asScala.foreach`. Nessun impatto sulla correttezza; puro stile.
+
+**Fix suggerito**: Nessuna azione necessaria, ma menzionabile se si vuole codice idiomatico.
 
 ---
 
-## Code Correctness
+### P2-6: `AUTO_REGISTER_ARTIFACT = true` in produzione e' un rischio di sicurezza
 
-- All Scala snippets are syntactically valid (with the `self` caveat in pseudocode, noted above).
-- The `Source.queue` + `Sink.ignore` + `Keep.both` materialization is correct and returns `(SourceQueueWithComplete, Future[Done])`.
-- The `Behaviors.supervise(...).onFailure` pattern is correct Pekko Typed API.
-- `OverflowStrategy.dropHead` is a valid strategy for `Source.queue`.
+**Riga**: 257
 
----
+**Problema**: Con `AUTO_REGISTER_ARTIFACT = true`, qualsiasi producer puo' registrare schema arbitrari nel registry. L'articolo lo usa in un sistema di telemetria interno, il che e' accettabile, ma una nota che suggerisca di disabilitarlo in produzione o di usare regole di autorizzazione aggiungerebbe valore.
 
-## Completeness
-
-- The article covers the "before" anti-pattern clearly with concrete problems.
-- Two distinct refactoring patterns are well-motivated by their respective use cases.
-- The Avro/Schema Registry section adds practical value.
-- The demo section with docker compose adds reproducibility value.
-- **Missing**: Offset commit strategy is never discussed.
-- **Missing**: No mention of graceful shutdown for either pattern.
-- **Missing**: No error handling discussion for consumer threads.
+**Fix suggerito**: Aggiungere una frase: "In produzione, `AUTO_REGISTER_ARTIFACT` andrebbe disabilitato e gli schema registrati tramite pipeline CI/CD con regole di compatibilita'."
 
 ---
 
-## Score: 7/10
+## Analisi di correttezza dettagliata
 
-The article is well-structured, technically sound in its core arguments, and provides real production code rather than toy examples. The two-pattern approach is well-motivated by distinct use cases. The main deductions are for: (1) `producer.send()` inside `.map()` reintroducing potential blocking in the stream — contradicting the article's premise (P0-1), (2) imprecise backpressure claim with `dropHead` (P0-2), and (3) several production-readiness gaps (no shutdown, no error handling in consumer threads, no offset commit discussion, ignored `offer()` result) that should at least be acknowledged since the article positions itself as showing production patterns.
+### 1. Codice Scala: Source.queue API
 
-**After fixing P0 and P1 issues, the article would be a solid 8.5/10.** The main recommendation: in Pattern 1, show the correct code (with `mapAsync` or `Producer.flexiFlow`) as primary, and the current code as "simplified version with known caveats".
+**Verdetto**: Corretto.
 
-### Quantitative Summary
+- `Source.queue[T](bufferSize, OverflowStrategy)` e' la firma corretta per la variante con `OverflowStrategy` (la variante senza overflow e' `Source.queue[T](bufferSize)` che restituisce `BoundedSourceQueue`).
+- `OverflowStrategy.dropHead` e' una strategia valida e non deprecata (a differenza di `dropNew` che e' stato rimosso in Pekko 2.0).
+- `.toMat(Sink.ignore)(Keep.both)` materializza correttamente come `(SourceQueueWithComplete[T], Future[Done])`.
+- Il destructuring `val (queue, _) = ...run()` e' corretto.
 
-| Priority | Count | Details |
-|----------|-------|---------|
-| P0 | 2 | producer.send() in .map(), backpressure claim imprecise |
-| P1 | 5 | race condition EnrichmentState, offer() ignored, no shutdown, no error handling, dispatcher sizing |
-| P2 | 8 | materializer legacy, daemon threads, offset commit, auto.offset.reset, Apicurio ref, typed/classic mix, forEach style, auto-register security |
+### 2. Codice Scala: KafkaProducer callback con mapAsync
+
+**Verdetto**: Corretto.
+
+- `mapAsync(parallelism = 4)` e' l'operatore giusto per operazioni asincrone nello stream.
+- Il pattern `Promise[RecordMetadata]` + `producer.send(record, callback)` + `promise.future` e' il modo idiomatico di convertire un callback Java in un `Future` Scala.
+- La lambda `(metadata: RecordMetadata, exception: Exception) =>` e' corretta grazie alla SAM conversion di Scala 2.12+ sull'interfaccia `Callback` di Kafka (che ha un unico metodo astratto `onCompletion(RecordMetadata, Exception)`).
+- Il `parallelism = 4` permette fino a 4 send in-flight, il che e' ragionevole.
+
+### 3. ConcurrentHashMap e lost update
+
+**Verdetto**: Analisi corretta e ben spiegata.
+
+- L'articolo identifica correttamente che `get` + `put` su `ConcurrentHashMap` non e' atomico come operazione composta (riga 243).
+- La descrizione del lost update e' precisa: "il secondo `put` potrebbe sovrascrivere lo stato con una versione che non include l'aggiornamento del primo thread" — questo e' esattamente il classico lost update.
+- La menzione di `ConcurrentHashMap.compute()` come soluzione atomica a livello di singola chiave e' corretta. `compute()` garantisce che la funzione di remapping venga eseguita atomicamente per la chiave specificata.
+- La valutazione pragmatica ("accettabile per dati telemetrici dove il valore viene ricalcolato frequentemente") e' ragionevole.
+
+### 4. Pekko Connectors Kafka API
+
+**Verdetto**: Corretto.
+
+- `Consumer.plainSource` esiste ed e' documentato in [Pekko Connectors Kafka Consumer](https://pekko.apache.org/docs/pekko-connectors-kafka/current/consumer.html). Emette `ConsumerRecord` senza supporto per commit degli offset.
+- `Producer.flexiFlow` esiste ed e' documentato in [Pekko Connectors Kafka Producer](https://pekko.apache.org/docs/pekko-connectors-kafka/current/producer.html). Accetta `ProducerMessage.Envelope` e produce `ProducerMessage.Results`.
+- L'affermazione che `Consumer.plainSource` fornirebbe shutdown graceful e' corretta: essendo integrato nello stream Pekko, il shutdown dello stream chiude il consumer Kafka in modo ordinato.
+
+### 5. Backpressure vs Load Shedding
+
+**Verdetto**: Spiegazione eccellente.
+
+La distinzione a riga 117 e' precisa e ben articolata:
+- `dropHead` = load shedding (l'attore che chiama `offer()` non viene mai rallentato)
+- Backpressure vera solo dentro lo stream (tra queue e sink)
+- `OverflowStrategy.backpressure` come alternativa per propagare pressione verso gli attori
+- La scelta pragmatica di `dropHead` per telemetria e' ben motivata
+
+### 6. Link e versioni
+
+| Link | Status |
+|------|--------|
+| `https://pekko.apache.org/` | Valido |
+| `https://pekko.apache.org/docs/pekko/current/stream/index.html` | Valido |
+| `https://pekko.apache.org/docs/pekko-connectors-kafka/current/home.html` | Valido |
+| `https://pekko.apache.org/docs/pekko-connectors-kafka/current/producer.html` | Valido |
+| `https://pekko.apache.org/docs/pekko-connectors-kafka/current/consumer.html` | Valido |
+| `https://www.apicur.io/registry/` | Valido |
+| `https://kafka.apache.org/documentation/` | Valido |
+| `https://github.com/monte97/kafka-pekko` | **Non verificabile** — non indicizzato dai motori di ricerca |
+
+---
+
+## Elementi positivi (non richiedono azione)
+
+1. **Pattern mapAsync + Promise**: soluzione idiomatica e corretta per wrappare callback Java in stream Pekko
+2. **Distinzione load shedding vs backpressure**: rara da trovare cosi' ben spiegata in articoli italiani
+3. **Analisi lost update**: corretta, con menzione di `compute()` come fix e valutazione pragmatica
+4. **Nota su shutdown graceful** (riga 206-207): riconosce esplicitamente il gap nei consumer threads
+5. **Nota su Apicurio 3.x migration** (righe 266-270): informazione pratica utile per chi aggiorna
+6. **Sezione Demo con docker compose**: aggiunge riproducibilita'

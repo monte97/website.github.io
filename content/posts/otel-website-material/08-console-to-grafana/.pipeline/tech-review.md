@@ -1,123 +1,257 @@
 # Tech Review — Da console.log a Grafana
 
 **Reviewer:** Claude Opus 4.6 (tech-review)
-**Date:** 2026-02-20
+**Date:** 2026-02-25
 **Article:** `08-console-to-grafana/index.md`
 
 ---
 
-## Overall Score: 8/10
+## Overall Score: 6.5/10
 
-Solid, well-structured article with correct core concepts and working code. A few factual inaccuracies and omissions prevent a higher score.
+L'articolo e' ben strutturato e i concetti fondamentali sono corretti. Tuttavia contiene un errore architetturale P0 nel modo in cui combina `pino-opentelemetry-transport` con `logRecordProcessors` nell'SDK, e le versioni di alcune immagini Docker non sono aggiornate. Il percorso "seguilo e funziona" e' compromesso da questo problema e dalla mancanza di un file di configurazione Loki.
 
 ---
 
-## P0 — Critical
+## P0 — Critici
 
-### 1. `pino-opentelemetry-transport` installed but never used
+### 1. Conflitto architetturale: `logRecordProcessors` nell'SDK sono inutilizzati
 
-The article installs `pino-opentelemetry-transport` (line 145) but never configures it in the Pino logger. The `@opentelemetry/instrumentation-pino` package (from `auto-instrumentations-node`) injects trace context into Pino log records but does **not** export logs to the Collector by itself. There are two distinct mechanisms:
+**Righe:** 151-172 (`instrumentation.js`) + 191-204 (`logger.js` con transport)
 
-- **Option A (instrumentation-pino):** Injects `trace_id`/`span_id` into Pino output. Logs still go to stdout; a separate log collector (e.g., Promtail, Fluent Bit) ships them to Loki.
-- **Option B (pino-opentelemetry-transport):** A Pino transport that sends logs directly to the OTel SDK's `LoggerProvider`, which then exports via OTLP.
+**Problema:** L'articolo configura `logRecordProcessors` con `BatchLogRecordProcessor` + `OTLPLogExporter` dentro `NodeSDK` (riga 163-166) e contemporaneamente usa `pino-opentelemetry-transport` come transport Pino (riga 200-202). Questi sono due meccanismi **alternativi**, non complementari:
 
-The article implies Option A alone sends logs to the Collector via OTLP (line 180), which is incorrect. Either:
-- Configure `pino-opentelemetry-transport` as a Pino transport in `logger.js`, **or**
-- Remove `pino-opentelemetry-transport` from deps and clarify that a log shipper (Promtail/Alloy) is needed alongside the instrumentation.
+- **`pino-opentelemetry-transport`** crea il proprio `LoggerProvider` in un **worker thread** separato. Non usa il `LoggerProvider` configurato dall'SDK nel main thread. Il transport gestisce autonomamente l'invio dei log al Collector via OTLP.
+- **`logRecordProcessors` nell'SDK** configura il `LoggerProvider` del main thread, che verrebbe usato da `@opentelemetry/instrumentation-pino` (log sending) per inviare i log al Collector. Ma quando Pino ha un `transport` configurato, i log vanno al worker thread, non al LoggerProvider del main thread.
 
-**Impact:** Readers following the steps will not see logs in Grafana/Loki.
+Il risultato: i `logRecordProcessors` nel `NodeSDK` non elaborano i log di Pino. I log arrivano comunque al Collector (tramite il worker thread del transport), ma il codice in `instrumentation.js` e' fuorviante -- il lettore crede che `OTLPLogExporter` nell'SDK sia responsabile dell'invio, quando in realta' e' `pino-opentelemetry-transport` a gestirlo indipendentemente.
 
-### 2. `serviceName` in wrong location
+Inoltre, la riga 187 afferma: *"`pino-opentelemetry-transport` invia i log al `LoggerProvider` dell'SDK"* -- questo e' **fattualmente errato**. Il transport ha il proprio LoggerProvider nel worker thread.
 
-```javascript
-const sdk = new NodeSDK({
-    // ...
-    serviceName: 'shop-service'  // line 165
-});
-```
-
-`serviceName` is not a top-level `NodeSDK` constructor option as of `@opentelemetry/sdk-node` v0.57+. The correct approach is to set `OTEL_SERVICE_NAME=shop-service` as an environment variable, or configure a `Resource`:
+**Fix (Opzione A -- transport-only, piu' semplice):**
+Rimuovere `@opentelemetry/exporter-logs-otlp-http`, `@opentelemetry/sdk-logs` e `logRecordProcessors` dall'SDK. Il transport gestisce tutto autonomamente. Configurare l'endpoint OTLP tramite variabile d'ambiente `OTEL_EXPORTER_OTLP_LOGS_ENDPOINT` o nelle opzioni del transport:
 
 ```javascript
+// instrumentation.js (semplificato)
+const { NodeSDK } = require('@opentelemetry/sdk-node');
+const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
 const { Resource } = require('@opentelemetry/resources');
 const { ATTR_SERVICE_NAME } = require('@opentelemetry/semantic-conventions');
 
 const sdk = new NodeSDK({
     resource: new Resource({ [ATTR_SERVICE_NAME]: 'shop-service' }),
+    instrumentations: [getNodeAutoInstrumentations()]
+});
+sdk.start();
+```
+
+```javascript
+// logger.js
+const pino = require('pino');
+const logger = pino({
+    level: 'info',
+    timestamp: pino.stdTimeFunctions.isoTime,
+    formatters: { level(label) { return { level: label }; } },
+    transport: {
+        target: 'pino-opentelemetry-transport',
+        options: {
+            resourceAttributes: { 'service.name': 'shop-service' }
+        }
+    }
+});
+```
+
+**Fix (Opzione B -- SDK LoggerProvider, senza transport):**
+Rimuovere `pino-opentelemetry-transport` e affidarsi a `@opentelemetry/instrumentation-pino` (incluso in auto-instrumentations) per il log sending (funzionalita' "log sending" disponibile dalla versione 0.42.0+). In questo caso il `logRecordProcessors` nell'SDK gestisce correttamente l'invio. Pino non deve avere `transport` configurato.
+
+**Riscrivere la sezione** "L'SDK abilita due meccanismi complementari" (righe 184-187) per chiarire quale meccanismo si sta usando e perche'.
+
+**Impatto:** Il codice funziona accidentalmente (il transport invia comunque i log), ma l'architettura descritta e' sbagliata. Un lettore che tenta di debuggare problemi di log seguira' la pista sbagliata.
+
+### 2. `new Resource()` e' deprecato
+
+**Riga:** 162
+
+**Problema:** `new Resource({ [ATTR_SERVICE_NAME]: 'shop-service' })` usa il costruttore `Resource` che e' deprecato nella versione corrente di `@opentelemetry/resources`. La documentazione ufficiale OpenTelemetry JS raccomanda `resourceFromAttributes()`.
+
+**Fix:**
+
+```javascript
+const { resourceFromAttributes } = require('@opentelemetry/resources');
+const { ATTR_SERVICE_NAME } = require('@opentelemetry/semantic-conventions');
+
+const sdk = new NodeSDK({
+    resource: resourceFromAttributes({ [ATTR_SERVICE_NAME]: 'shop-service' }),
     // ...
 });
 ```
 
-**Note:** Some older SDK versions accepted `serviceName` as sugar. Verify against the pinned version. If using a version that supports it, add a note about the alternative.
+**Impatto:** Il codice `new Resource()` funziona ancora ma generera' un deprecation warning. I lettori che seguono il tutorial in futuro troveranno l'API rimossa.
+
+### 3. Repository `monte97/otel-demo` non trovata
+
+**Righe:** 22, 371
+
+**Problema:** Il link `https://github.com/monte97/otel-demo` referenziato nell'intro e nelle risorse non risulta pubblicamente accessibile. I lettori non possono clonare il codice completo.
+
+**Fix:** Verificare che la repo sia pubblica, oppure aggiornare il link se il nome e' cambiato. Se la repo non esiste ancora, crearla prima della pubblicazione.
+
+**Impatto:** Il lettore non puo' verificare il codice completo e perde il contesto dei "moduli 01 e 02" citati.
 
 ---
 
-## P1 — Important
+## P1 — Importanti
 
-### 3. Missing `OTEL_EXPORTER_OTLP_ENDPOINT` configuration
+### 4. Loki senza file di configurazione nel Docker Compose
 
-The `instrumentation.js` file creates an `OTLPLogExporter()` with no endpoint argument. The default is `http://localhost:4318`. This works when Node.js runs on the host, but the article also uses Docker Compose. If the app is containerized too, the endpoint must point to `http://otel-collector:4318`. The article should clarify when the default works and when an explicit endpoint is needed.
+**Riga:** 235-241
 
-### 4. Loki OTLP endpoint availability claim
+**Problema:** Il servizio `loki` nel Docker Compose non monta un file di configurazione. L'immagine `grafana/loki:3.6.5` ha un config di default integrato, ma la documentazione ufficiale Grafana raccomanda sempre di fornire un file di configurazione esplicito tramite `-config.file`. Il default integrato potrebbe non avere il schema storage configurato correttamente (tsdb + v13 richiesti per OTLP ingestion con structured metadata). Se il default non include queste impostazioni, Loki rifiutera' i log OTLP con un errore `400 Bad Request: structured metadata is not allowed`.
 
-> "endpoint OTLP nativo (disponibile da Loki 3.x)"
+**Fix:** Aggiungere un file `support/loki-config.yaml` minimo:
 
-The OTLP endpoint was introduced in Loki **3.0** but was experimental. It became stable in **3.3+**. The pinned version (3.6.5) is fine, but the statement "da Loki 3.x" is imprecise -- early 3.x had limited OTLP support. Minor clarification recommended.
-
-### 5. Grafana anonymous admin in Docker Compose
-
-Flagged in the article's own note, which is good. However, the note says "in produzione, abilitare l'autenticazione" without mentioning that the current config also disables the login form entirely (`GF_AUTH_DISABLE_LOGIN_FORM=true`). Recommend explicitly stating this is **dev-only** and should never be in a production compose file.
-
-### 6. No Loki volume persistence
-
-The "Errori comuni" table mentions this, but the Docker Compose itself has no volumes for Loki. For a tutorial that emphasizes persistence as a key benefit, this is contradictory. Add a comment in the compose file or a named volume for Loki data.
-
-### 7. LogQL filter syntax
-
+```yaml
+# support/loki-config.yaml
+auth_enabled: false
+server:
+  http_listen_port: 3100
+common:
+  ring:
+    instance_addr: 127.0.0.1
+    kvstore:
+      store: inmemory
+  replication_factor: 1
+  path_prefix: /loki
+schema_config:
+  configs:
+    - from: "2024-01-01"
+      store: tsdb
+      object_store: filesystem
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
+storage_config:
+  filesystem:
+    directory: /loki/chunks
+limits_config:
+  allow_structured_metadata: true
 ```
-{service_name="shop-service"} | json | level="error"
+
+E nel Docker Compose:
+
+```yaml
+loki:
+  image: grafana/loki:3.6.5
+  command: ["-config.file=/etc/loki/local-config.yaml"]
+  volumes:
+    - ./support/loki-config.yaml:/etc/loki/local-config.yaml
+    - loki-data:/loki
+  ports:
+    - "3100:3100"
 ```
 
-After `| json`, field filters use `|` not `| `. The correct syntax for label filter expressions is:
+**Impatto:** Rischio che il setup non funzioni out-of-the-box, soprattutto su piattaforme dove il default di Loki non include tsdb/v13.
 
-```
-{service_name="shop-service"} | json | level=`error`
-```
+### 5. Versione Grafana non aggiornata
 
-or with double equals for strict matching. The shown syntax will work but only because Loki is lenient with `=` vs `==` after `| json`. Worth noting that for nested JSON fields or special characters, backtick quoting is preferred.
+**Riga:** 242
+
+**Problema:** `grafana/grafana:12.3.2` -- la versione corrente di Grafana e' 12.4.x (rilasciata il 16 febbraio 2026). Non e' un errore critico in quanto 12.3.2 esiste e funziona, ma per un articolo datato febbraio 2026 e' preferibile usare la versione corrente.
+
+**Fix:** Aggiornare a `grafana/grafana:12.4.0` o superiore, oppure lasciare 12.3.2 annotando che e' una versione stabile testata.
+
+### 6. Versione Collector potenzialmente superata
+
+**Riga:** 228
+
+**Problema:** `otel/opentelemetry-collector-contrib:0.145.0` -- la versione 0.145.0 esiste ed e' stata rilasciata recentemente. Tuttavia, la versione piu' recente e' la 0.146.0 (rilasciata il 18 febbraio 2026). Per un tutorial datato febbraio 2026, usare la versione piu' recente disponibile.
+
+**Fix:** Aggiornare a `0.146.0` o annotare che la versione specifica e' stata testata.
+
+### 7. `@opentelemetry/exporter-logs-otlp-http` e `@opentelemetry/sdk-logs` non necessari (se si usa Opzione A)
+
+**Righe:** 141-146
+
+**Problema:** Se il fix del P0 #1 segue l'Opzione A (transport-only), i pacchetti `@opentelemetry/exporter-logs-otlp-http` e `@opentelemetry/sdk-logs` non servono e vanno rimossi dal comando `npm install`. Se invece si segue l'Opzione B, `pino-opentelemetry-transport` va rimosso.
+
+**Fix:** Allineare il comando `npm install` all'architettura scelta.
+
+### 8. Claim "senza cambiare codice" e' impreciso
+
+**Riga:** 134 (titolo sezione) e righe 189-204
+
+**Problema:** Il titolo della sezione e' *"Log persistenti senza cambiare codice"*, ma subito dopo si chiede di modificare `logger.js` per aggiungere la proprieta' `transport` (righe 189-204). Questo **e'** un cambio al codice applicativo.
+
+**Fix:** Riformulare il titolo in qualcosa come *"Log persistenti con modifiche minime"* oppure, se si segue l'Opzione B del P0 #1 (solo `instrumentation-pino` senza transport), il claim diventa corretto perche' l'injection avviene automaticamente via il `--require`.
+
+### 9. Nota su `OTLPLogExporter()` endpoint default: path `/v1/logs` non menzionato
+
+**Riga:** 210
+
+**Problema:** La nota dice che `OTLPLogExporter()` senza argomenti usa `http://localhost:4318`. In realta' l'URL completo di default e' `http://localhost:4318/v1/logs`. Questo e' rilevante se il lettore vuole sovrascrivere solo l'host: deve impostare `OTEL_EXPORTER_OTLP_ENDPOINT` (senza path) oppure `OTEL_EXPORTER_OTLP_LOGS_ENDPOINT` (con path completo). Confondere i due porta a errori 404.
+
+**Fix:** Specificare che l'endpoint base e' `http://localhost:4318` e il path `/v1/logs` viene aggiunto automaticamente. Quando si usa `OTEL_EXPORTER_OTLP_ENDPOINT`, non includere `/v1/logs`.
 
 ---
 
-## P2 — Minor
+## P2 — Minori
 
-### 8. Typo: "solo solo"
+### 10. LogQL: sintassi dei filtri dopo `| json`
 
-Line 57: "non richiede infrastruttura, solo solo aggiungere" -- duplicated "solo".
+**Righe:** 321-323
 
-### 9. Collector version pinning
+**Problema:** Le query LogQL mostrate usano `| json | level="error"`. Questa sintassi funziona correttamente in Loki (il `=` e' l'operatore di uguaglianza per le label filter expressions dopo un parser stage). La sintassi e' tecnicamente corretta. Tuttavia, per chiarezza didattica, potrebbe valere la pena menzionare che i valori con caratteri speciali richiedono backtick (`` ` ``).
 
-`otel/opentelemetry-collector-contrib:0.145.0` -- as of February 2026 the latest is around 0.120.x. Version 0.145.0 does not exist yet. Use a real, current version.
-
-### 10. LGTM acronym usage
-
-Line 327: "Infrastruttura LGTM" -- LGTM stands for Loki, Grafana, Tempo, Mimir. The article only uses Loki and Grafana (no Tempo, no Mimir), so calling it "LGTM" is inaccurate. Use "Collector + Loki + Grafana" or simply "stack di osservabilita".
+**Fix:** Aggiungere una nota breve sul backtick quoting per valori con caratteri speciali, oppure lasciare invariato.
 
 ### 11. `require` vs ESM
 
-All code uses CommonJS (`require`). Node.js 22+ defaults to ESM in many setups. A brief note about module system would help readers using `"type": "module"` in `package.json`.
+**Righe:** Tutti gli snippet di codice
 
-### 12. Missing `pino-pretty` mention
+**Problema:** Tutti gli snippet usano CommonJS (`require`). Node.js 22+ con `"type": "module"` in `package.json` usa ESM di default. Una nota breve sull'alternativa ESM (`import`) aiuterebbe i lettori con setup moderno.
 
-For local development, `pino-pretty` is commonly used to make JSON logs human-readable. A one-line mention would improve DX coverage.
+**Fix:** Aggiungere una nota tipo: *"Questi esempi usano CommonJS. Se il tuo `package.json` ha `\"type\": \"module\"`, sostituisci `require()` con `import`."*
+
+### 12. `pino-opentelemetry-transport` v3 appena rilasciata
+
+**Riga:** 146
+
+**Problema:** La versione 3.0.0 di `pino-opentelemetry-transport` e' stata rilasciata il 24 febbraio 2026 (ieri rispetto alla data di questa review). Se il lettore installa con `npm install pino-opentelemetry-transport`, otterra' la v3 che potrebbe avere breaking changes rispetto alla v2 con cui l'articolo e' stato scritto. Verificare la compatibilita' con la v3.
+
+**Fix:** Testare con v3 oppure pinnare la versione: `pino-opentelemetry-transport@2`.
+
+### 13. Benchmark Pino: link punta al branch `main`
+
+**Riga:** 128
+
+**Problema:** Il link `https://github.com/pinojs/pino/blob/main/docs/benchmarks.md` punta a `main`, che potrebbe cambiare nel tempo. Il file potrebbe essere rinominato o rimosso.
+
+**Fix:** Considerare di linkare a un tag specifico o alla documentazione su getpino.io.
+
+### 14. Loki volume path
+
+**Riga:** 240
+
+**Problema:** Il volume `loki-data:/loki` monta su `/loki`. Verificare che questo sia il path corretto per il default storage di Loki 3.6.5. Il `common.path_prefix` di default potrebbe essere diverso (es. `/tmp/loki`). Se non coincide, i dati non persistono effettivamente.
+
+**Fix:** Allineare il path del volume con il `path_prefix` della configurazione Loki. Se si aggiunge il file di config suggerito nel P1 #4, il `path_prefix: /loki` e' coerente con il volume.
+
+### 15. Parola "specificatamente"
+
+**Riga:** 57
+
+**Problema:** "specificatamente" e' un calco dall'inglese "specifically". La forma italiana corretta e' "specificamente" o meglio ancora "appositamente" o "pensata apposta".
+
+**Fix:** Sostituire con "una libreria pensata apposta per gestire il logging" o "una libreria dedicata al logging".
 
 ---
 
-## Summary
+## Riepilogo
 
-| Priority | Count | Items |
-|----------|-------|-------|
-| P0 | 2 | #1 (transport not wired), #2 (serviceName API) |
-| P1 | 5 | #3-#7 |
-| P2 | 5 | #8-#12 |
+| Priorita' | Conteggio | Items |
+|-----------|-----------|-------|
+| P0 | 3 | #1 (architettura transport/SDK conflittuale), #2 (Resource deprecata), #3 (repo non accessibile) |
+| P1 | 6 | #4 (Loki senza config), #5 (versione Grafana), #6 (versione Collector), #7 (deps npm superflue), #8 (claim "senza cambiare codice"), #9 (endpoint path /v1/logs) |
+| P2 | 6 | #10-#15 |
 
-The two P0 issues mean a reader following the tutorial step-by-step will likely not see logs in Grafana. Fixing the Pino-to-OTel transport wiring and the `serviceName` configuration resolves the critical path. The remaining issues are correctness and polish improvements.
+Il P0 #1 e' il problema principale: l'articolo descrive un'architettura in cui `pino-opentelemetry-transport` e `logRecordProcessors` nell'SDK collaborano, ma in realta' operano in contesti separati (worker thread vs main thread). Il codice funziona per coincidenza (il transport invia i log autonomamente), ma la spiegazione e' errata. Risolvere questo punto richiede una scelta architetturale netta (Opzione A o B) e l'allineamento di codice, dipendenze e testo.

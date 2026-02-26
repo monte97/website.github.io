@@ -1,76 +1,127 @@
-# Montelli Style Review
+# Montelli-Review: Da console.log a Grafana
 
-**Articolo:** `08-console-to-grafana/index.md`
-**Data review:** 2026-02-20
-**Parole:** ~1471
-**Score: 8/10**
+**Articolo**: `content/posts/otel-website-material/08-console-to-grafana/index.md`
+**Data review**: 2026-02-25
+**Parole**: 1638
 
 ---
 
-## Summary
+## Score: 7/10
 
-Articolo ben scritto e coerente con lo stile del blog. Struttura chiara con progressione logica impeccabile (problema -> struttura -> centralizzazione -> query). Ogni step nasce dai limiti del precedente, il che rende la lettura fluida e motivata. Le violazioni sono tutte minori.
+| Severita | Conteggio |
+|----------|-----------|
+| P0 (critica) | 1 |
+| P1 (importante) | 3 |
+| P2 (minore) | 3 |
 
 ---
 
 ## Violazioni
 
-### Minor
+### P0 -- Critiche
 
-1. **Typo: "solo solo"** (riga 57)
-   - `"Il primo step non richiede infrastruttura, solo solo aggiungere una libreria specificatamente pensata"`
-   - Ripetizione di "solo". Correggere in "solo aggiungere".
+#### V01 -- Hook emotivo/retorico in apertura (riga 18)
 
-2. **`reviewed: true` con `draft: true`** (righe 13-14)
-   - Un articolo in draft marcato come reviewed e' incoerente. Se e' ancora in draft, `reviewed` dovrebbe essere `false` fino alla pubblicazione finale.
+**Problema**: L'articolo apre con "Quante volte hai aggiunto un `console.log` 'temporaneo'...". Questo e' un pattern "hai mai..." che viola la regola del tono tecnico, diretto e impersonale. L'apertura deve andare dritta sul problema, senza domande retoriche rivolte al lettore.
 
-3. **Blockquote con code block annidato** (righe 21-25)
-   - Il blocco repo demo usa un blockquote che contiene un code block bash. Il pattern del blog prevede il link repo prominente ma senza code block annidato nel blockquote. Meglio separare blockquote e code block.
+**Testo attuale** (riga 18):
+```
+Quante volte hai aggiunto un `console.log` "temporaneo" per capire perche' una richiesta
+falliva in produzione? L'output e' una stringa piatta, senza timestamp, senza livello,
+senza contesto e se il container si riavvia, quei log spariscono. [...]
+```
 
-4. **Due note consecutive in blockquote** (righe 222-224)
-   - Due `> **Nota:**` consecutive senza testo intermedio. Meglio accorpare in un unico blockquote o separarle con testo per evitare un muro di note.
-
-5. **Emoji nel corpo dell'articolo** (riga 308)
-   - L'uso di `⚠️` nel warning sulla security e' ai limiti dello stile. La guida limita le emoji a link repo e sezione risorse. Violazione marginale perche' il contesto (warning di sicurezza) lo giustifica parzialmente.
-
-6. **Mancanza di immagini/screenshot**
-   - L'articolo menziona Grafana e query LogQL ma non include screenshot dell'interfaccia. Per un tutorial pratico, almeno uno screenshot di Grafana Explore con i risultati filtrati sarebbe utile.
-
-7. **Conclusione senza frase motivazionale finale**
-   - La guida indica il pattern "frase di chiusura impattante". La conclusione termina con l'anticipazione del prossimo articolo (buona pratica), ma manca una frase conclusiva incisiva prima del teaser (es. "Ora quei `console.log` temporanei possono finalmente sparire per davvero.").
-
-8. **Description al limite** (riga 4)
-   - 147 caratteri: rientra nel range 120-150 ma la frase e' molto densa. Accettabile.
+**Fix suggerito**:
+```
+`console.log` e' il modo piu' rapido per ottenere visibilita' su un servizio Node.js,
+ma l'output e' una stringa piatta: nessun timestamp, nessun livello, nessun contesto.
+Se il container si riavvia, quei log spariscono. Con piu' istanze serve saltare da un
+`docker logs` all'altro sperando di trovare la riga giusta.
+```
 
 ---
 
-## Punti di forza
+### P1 -- Importanti
 
-- **Hook iniziale** eccellente: domanda retorica con `console.log` + problema concreto nei primi due paragrafi
-- **Tabella comparativa** nella prima sezione: chiara, immediata, ad alto valore
-- **Progressione incrementale** ben motivata: ogni step nasce dai limiti del precedente
-- **Code blocks** ben formattati: linguaggio specificato, path file indicato, commenti presenti
-- **Sezione errori comuni** in formato tabella: pratica e utile
-- **Sezione risorse** completa con link alla documentazione ufficiale
-- **Separatori `---`** tra sezioni principali: coerente con lo stile
-- **Tono**: mix corretto di costruzioni impersonali e "tu" nell'hook
-- **Tags** in PascalCase: coerente con la raccomandazione della style guide
-- **Concisione**: ~1471 parole, completo senza padding
+#### V02 -- Uso del "tu" implicito in apertura (riga 18)
+
+**Problema**: "hai aggiunto", "devi saltare" -- forma personale diretta (seconda persona). Il tono deve essere impersonale (terza persona o forma passiva/impersonale).
+
+**Riga**: 18
+**Fix suggerito**: Riformulare in forma impersonale: "serve saltare", "si finisce per saltare", oppure con soggetto tecnico ("il servizio", "l'output").
+
+#### V03 -- Registro oscillante in chiusura primo paragrafo (riga 18)
+
+**Problema**: "E' il modo piu' rapido per iniziare ma anche il primo a crollare quando serve davvero." -- il verbo "crollare" e l'enfasi "serve davvero" hanno un tono narrativo/enfatico, non allineato con il registro tecnico asciutto del resto dell'articolo.
+
+**Riga**: 18
+**Fix suggerito**: "E' l'approccio piu' semplice, ma il primo a mostrare i propri limiti in produzione."
+
+#### V04 -- Frase di chiusura informale (riga 363)
+
+**Problema**: "Ora quei `console.log` temporanei possono finalmente sparire per davvero." -- il tono colloquiale ("sparire per davvero") non e' coerente con il registro tecnico/impersonale del resto dell'articolo.
+
+**Riga**: 363
+**Fix suggerito**: Rimuovere la frase oppure sostituire con: "A questo punto i `console.log` temporanei non hanno piu' ragione di esistere."
 
 ---
 
-## Riepilogo azioni
+### P2 -- Minori
 
-| # | Severita | Azione |
-|---|----------|--------|
-| 1 | Minor | Correggere typo "solo solo" -> "solo" |
-| 2 | Minor | Allineare `reviewed: false` con stato `draft: true` |
-| 3 | Minor | Separare blockquote e code block per il repo link |
-| 4 | Minor | Accorpare o distanziare le due note consecutive |
-| 5 | Minor | Valutare rimozione emoji nel warning security |
-| 6 | Minor | Aggiungere almeno uno screenshot di Grafana Explore |
-| 7 | Minor | Aggiungere frase conclusiva impattante prima del teaser |
+#### V05 -- Emoji nel corpo della sezione Risorse Utili (riga 371)
 
-## Verdict
+**Problema**: La riga contiene un'emoji nella lista delle risorse utili. Le emoji sono permesse solo nelle blockquote con link al repository (come a riga 22). La sezione "Risorse Utili" e' una lista Markdown standard, non una blockquote.
 
-**proceed** -- con fix minori richiesti: (1) correggere typo "solo solo", (2) allineare reviewed/draft, (3) aggiungere screenshot Grafana, (4) aggiungere frase di chiusura impattante.
+**Riga**: 371
+**Testo attuale**:
+```markdown
+* **Repository**: [emoji] [github.com/monte97/otel-demo](https://github.com/monte97/otel-demo)
+```
+
+**Fix suggerito**:
+```markdown
+* **Repository**: [github.com/monte97/otel-demo](https://github.com/monte97/otel-demo)
+```
+
+#### V06 -- Typo: accento mancante su "osservabilita" (riga 360)
+
+**Problema**: "Infrastruttura di osservabilita" manca l'accento finale.
+
+**Riga**: 360
+**Testo attuale**: `4. **Infrastruttura di osservabilita** -`
+**Fix suggerito**: `4. **Infrastruttura di osservabilita'** -` (oppure con accento Unicode)
+
+#### V07 -- Heading "Risorse Utili" con maiuscola non standard (riga 369)
+
+**Problema**: L'heading "Risorse Utili" ha la U maiuscola. Gli altri heading dell'articolo usano correttamente il minuscolo dopo la prima parola (es. "Da stringhe piatte a JSON filtrabili", "Log persistenti senza cambiare codice", "Errori comuni"). Incoerenza stilistica.
+
+**Riga**: 369
+**Fix suggerito**: `## Risorse utili`
+
+---
+
+## Aspetti positivi
+
+- **Heading hierarchy**: corretta (H2 > H3), nessun salto di livello.
+- **Nessun heading "Introduzione"**: l'articolo apre direttamente sul contenuto.
+- **Heading di chiusura**: correttamente "Conclusioni" (riga 353).
+- **Code block**: tutti con linguaggio specificato (`javascript`, `bash`, `yaml`, `json`, `text`).
+- **Tabelle**: ben formattate e allineate, usate efficacemente per confronti (righe 43-51, 318-324, 333-339).
+- **Progressione logica**: i tre step sono ben motivati e incrementali; ogni sezione spiega perche' si passa al livello successivo.
+- **Note e avvertenze**: le blockquote con note di sicurezza e configurazione sono appropriate e ben posizionate.
+- **Sezione "Errori comuni"**: aggiunge valore pratico concreto con formato tabella.
+- **Secondo paragrafo** (riga 20): dichiarazione di intent chiara e asciutta ("Questo articolo copre il passaggio...").
+
+---
+
+## Riepilogo fix richiesti
+
+| ID | Sev | Riga | Azione |
+|----|-----|------|--------|
+| V01 | P0 | 18 | Riscrivere apertura: rimuovere domanda retorica, aprire sul problema |
+| V02 | P1 | 18 | Eliminare forma "tu": riformulare in impersonale |
+| V03 | P1 | 18 | Uniformare registro, ridurre enfasi narrativa ("crollare", "serve davvero") |
+| V04 | P1 | 363 | Riscrivere frase di chiusura in tono tecnico |
+| V05 | P2 | 371 | Rimuovere emoji dalla lista Risorse Utili |
+| V06 | P2 | 360 | Aggiungere accento a "osservabilita" |
+| V07 | P2 | 369 | Heading "Risorse Utili" -> "Risorse utili" |

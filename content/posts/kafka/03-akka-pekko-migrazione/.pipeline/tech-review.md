@@ -1,141 +1,175 @@
-# Tech Review: Akka è morto, lunga vita a Pekko
+# Tech Review: "Akka e' morto, lunga vita a Pekko"
 
-**Reviewer**: Claude Opus 4.6 (tech-review)
-**Data**: 2026-02-20
-**Articolo**: `content/posts/kafka/akka-pekko-migrazione/index.md`
+**Data review**: 2026-02-25
+**Reviewer**: Claude Opus 4.6 (automated tech review)
+**Articolo**: `content/posts/kafka/03-akka-pekko-migrazione/index.md`
+**Review precedente**: 2026-02-20 (su versione con errore "2.6.19", ora corretto a "2.6.20")
+
+---
 
 ## Score: 7/10
 
-L'articolo e' una guida pratica solida con una checklist di migrazione ben strutturata. Presenta pero' un errore critico sulla versione del fork e alcune imprecisioni fattuali che richiedono correzione prima della pubblicazione.
+L'articolo e' solido nella struttura e nella maggior parte dei contenuti tecnici. La checklist di migrazione e' pratica e ben organizzata. I gotcha dal campo aggiungono valore reale. Rispetto alla review precedente, il P0 sulla versione "2.6.19" e' stato corretto e alcuni P1 sono stati integrati (clausola reversion BSL). Restano pero' un errore fattuale critico sulla licenza di Akka 2.6.21, un'imprecisione sulla base del fork Pekko, e la relazione invertita tra `SerdeConfig` e `SchemaResolverConfig` in Apicurio 3.x.
 
 ---
 
-## Findings
+## Errori P0 (fattuali/critici)
 
-### P0 - Errori Critici
+### P0-1: Akka 2.6.21 NON e' sotto BSL 1.1
 
-**P0-1: Versione del fork Pekko errata (2.6.19 vs 2.6.20)**
+**Riga 23**
+**Testo attuale**: "Akka 2.6.20 e' l'ultima versione sotto Apache 2.0; dalla 2.6.21 anche la serie 2.6.x e' sotto BSL 1.1."
+**Problema**: Falso. Akka 2.6.21 e' stata rilasciata il 21 giugno 2023 come critical security fix ed e' anch'essa sotto licenza Apache 2.0. L'intera serie 2.6.x e' rimasta sotto Apache 2.0 fino all'end-of-life. La BSL 1.1 si applica a partire da Akka 2.7+ e alle nuove major (Akka HTTP 10.4+, ecc.). Dal 19 ottobre 2023, la serie 2.6.x e' EOL (nessuna ulteriore patch), ma la licenza resta Apache 2.0.
+**Fix suggerito**: Riscrivere il paragrafo:
+> "Akka 2.6.x e' l'ultima serie sotto Apache 2.0. La versione 2.6.21, rilasciata a giugno 2023 come ultimo fix critico, e' l'ultima release della serie. Dalla 2.7 in poi, tutte le versioni sono sotto BSL 1.1. Dal 19 ottobre 2023, la serie 2.6.x e' ufficialmente end-of-life: nessun aggiornamento futuro, ma la licenza resta Apache 2.0."
 
-L'articolo afferma in due punti:
-
-- Riga 22: "Akka 2.6.19 è l'ultima versione sotto Apache 2.0; dalla 2.6.20 anche la serie 2.6.x è sotto BSL 1.1."
-- Riga 36: "Apache Pekko è nato come fork di Akka 2.6.19 (l'ultima versione Apache 2.0)"
-
-**Fatto:** Akka **2.6.20** e' l'ultima versione rilasciata sotto Apache 2.0. La release 2.6.20 e' avvenuta il giorno prima dell'annuncio del cambio licenza (settembre 2022). Apache Pekko 1.0.0 e' basato su Akka **2.6.20**, non 2.6.19.
-
-Il codice di esempio a riga 64 usa correttamente `"2.6.20"`, il che contraddice il testo stesso dell'articolo.
-
-**Fonte:** [Pekko 1.0 Release Notes](https://pekko.apache.org/docs/pekko/1.0/release-notes/index.html), [Akka BSL License FAQ](https://akka.io/bsl-license-faq)
-
-**Fix:** Sostituire "2.6.19" con "2.6.20" in entrambe le occorrenze. Riformulare la frase sulla BSL: le versioni 2.6.21+ della serie 2.6 e tutte le 2.7+ sono sotto BSL 1.1.
+**Fonti**:
+- [Akka BSL License FAQ](https://akka.io/bsl-license-faq)
+- [SoftwareMill - What to do with your End Of Life Akka](https://softwaremill.com/what-to-do-with-your-end-of-life-akka/)
+- [Lunatech - Akka Licence Change (One Year Later)](https://blog.lunatech.com/posts/2023-10-27-akka-licence-change-one-year-later)
 
 ---
 
-### P1 - Errori Significativi
+### P0-2: Pekko e' un fork della serie Akka 2.6.x, non specificamente di "2.6.20"
 
-**P1-1: Versione `akka-stream-kafka 4.0.2` e' sotto BSL**
+**Riga 37**
+**Testo attuale**: "Apache Pekko e' nato come fork di Akka 2.6.20 (l'ultima versione Apache 2.0)"
+**Problema**: Doppia imprecisione. (1) Pekko e' un fork della serie Akka 2.6.x (il ramo di sviluppo), non di una singola patch release. La documentazione ufficiale di Pekko e l'ASF lo descrivono come "fork of Akka 2.6.x, prior to the Akka project's adoption of the Business Source License". (2) L'ultima versione Apache 2.0 e' la 2.6.21, non la 2.6.20 (vedi P0-1).
+**Fix suggerito**: "Apache Pekko e' nato come fork della serie Akka 2.6.x (l'ultima mantenuta sotto Apache 2.0) sotto la Apache Software Foundation."
 
-L'esempio a riga 67 mostra:
-
-```scala
-"com.typesafe.akka" %% "akka-stream-kafka" % "4.0.2"
-```
-
-La versione 4.0.x di Alpakka Kafka e' stata rilasciata sotto BSL, non sotto Apache 2.0. L'ultima versione Apache 2.0 e' la **3.0.x**. Se l'intento e' mostrare un progetto che usava gia' la 4.0.2, andrebbe esplicitato. Altrimenti usare la 3.0.1 per coerenza con la narrativa "migrazione dall'ultima versione open-source".
-
----
-
-**P1-2: Manca la menzione della clausola di reversion BSL a 3 anni**
-
-L'articolo dice che "l'uso commerciale di Akka richiede una licenza a pagamento" ma omette che le versioni BSL 1.1 **revertono automaticamente ad Apache 2.0 dopo 3 anni** dalla data di rilascio. Questo e' un dettaglio rilevante per chi valuta le tre opzioni presentate.
-
-**Fix:** Aggiungere una frase come: "Le versioni BSL revertono automaticamente ad Apache 2.0 dopo 3 anni, ma per chi necessita di patch tempestive questa clausola non risolve il problema."
+**Fonti**:
+- [Apache Pekko - Sito ufficiale](https://pekko.apache.org/)
+- [ASF Announcement - Apache Pekko TLP](https://news.apache.org/foundation/entry/apache-software-foundation-announces-new-top-level-project-apache-pekko)
 
 ---
 
-**P1-3: Affermazione su Apicurio SerdeConfig da verificare**
+## Errori P1 (importanti)
 
-L'articolo afferma (riga 178):
+### P1-1: Versioni Pekko nell'esempio build.sbt corrette per 1.0.x ma datate
 
-> `SerdeConfig` e' deprecata in favore di `SchemaResolverConfig`, che la estende con opzioni aggiuntive per la risoluzione degli schema.
+**Righe 71-74**
+**Testo attuale**: `pekko-actor-typed % "1.0.3"`, `pekko-stream % "1.0.3"`, `pekko-http % "1.0.1"`, `pekko-connectors-kafka % "1.0.0"`
+**Problema**: Le versioni indicate sono corrette per la serie 1.0.x e coerenti con il consiglio dell'articolo di "partire da 1.0.x". Tuttavia, al febbraio 2026 le versioni attuali sono avanzate significativamente: Pekko core 1.4.0 (dicembre 2025), Pekko HTTP 1.1.0+ (settembre 2024), Pekko Connectors Kafka 1.1.0. Un lettore potrebbe usare le versioni dell'esempio senza sapere che esistono release piu' recenti con bugfix e miglioramenti.
+**Fix suggerito**: Aggiungere una nota dopo il blocco di codice:
+> "Le versioni qui indicate sono le ultime della serie 1.0.x, la piu' vicina ad Akka 2.6.x. Per le versioni piu' recenti (incluse le serie 1.1.x e successive), verificare la [pagina download di Pekko](https://pekko.apache.org/download.html)."
 
-La relazione di ereditarieta' tra `SerdeConfig` e `SchemaResolverConfig` in Apicurio 3.x potrebbe essere invertita. In Apicurio 3.x, `SerdeConfig` estende `SchemaResolverConfig`, non il contrario. Verificare il codice sorgente Apicurio prima della pubblicazione.
-
----
-
-**P1-4: Data di graduazione Pekko a TLP**
-
-L'articolo dice "promosso a progetto top-level ASF nel marzo 2024". La risoluzione del Board e' del 20 marzo 2024, ma l'annuncio ufficiale e' del **16 maggio 2024**.
-
-**Fonte:** [ASF Announcement](https://news.apache.org/foundation/entry/apache-software-foundation-announces-new-top-level-project-apache-pekko)
-
-**Fix:** Usare "nella prima meta' del 2024" oppure "maggio 2024" (data dell'annuncio ufficiale).
+**Fonti**:
+- [Maven Repository - org.apache.pekko](https://mvnrepository.com/artifact/org.apache.pekko)
+- [Pekko Downloads](https://pekko.apache.org/download.html)
+- [Pekko 1.1.x Release Notes](https://pekko.apache.org/docs/pekko/1.1/release-notes/releases-1.1.html)
 
 ---
 
-### P2 - Suggerimenti
+### P1-2: Descrizione invertita di SerdeConfig/SchemaResolverConfig in Apicurio 3.x
 
-**P2-1: Manca menzione della compatibilita' Scala 3**
+**Riga 179**
+**Testo attuale**: "`SerdeConfig` e' deprecata in favore di `SchemaResolverConfig`, che la estende con opzioni aggiuntive per la risoluzione degli schema."
+**Problema**: Due errori in una frase. (1) La relazione di ereditarieta' e' invertita: nel codice sorgente di Apicurio Registry 3.x, e' `SerdeConfig` che estende `SchemaResolverConfig` (`public class SerdeConfig extends SchemaResolverConfig`), non il contrario. `SchemaResolverConfig` e' la classe base con le opzioni di risoluzione schema; `SerdeConfig` la estende aggiungendo opzioni specifiche per serializzazione/deserializzazione. (2) `SerdeConfig` non e' deprecata in Apicurio 3.x: esiste ancora ed e' attivamente usata. Il cambiamento principale e' il rename del package (`io.apicurio.registry.serde.config.SerdeConfig` in 3.x vs `io.apicurio.registry.serde.SerdeConfig` in 2.x) e il rename dell'artefatto Maven.
+**Fix suggerito**: Riformulare:
+> "In Apicurio 3.x la configurazione dei SerDes e' stata ristrutturata: `SerdeConfig` estende `SchemaResolverConfig` (che contiene le opzioni per la risoluzione degli schema). I package Java sono cambiati (`io.apicurio.registry.serde.config.SerdeConfig` in 3.x vs `io.apicurio.registry.serde.SerdeConfig` in 2.x). Se il codice referenzia direttamente queste classi, servono modifiche agli import."
 
-Pekko 1.0.x supporta Scala 2.12, 2.13 e 3. Per chi migra, sapere che Pekko apre la strada anche a Scala 3 e' un'informazione utile.
-
----
-
-**P2-2: Il regex di sostituzione import e' incompleto**
-
-Il regex `s/import akka\./import org.apache.pekko./g` non copre:
-- Import raggruppati Scala (`import akka.{actor, stream}`)
-- Riferimenti qualificati nel corpo del codice
-- Pattern matching su tipi Akka
-
-Suggerire di usare IntelliJ "Replace in Files" con revisione manuale, oppure menzionare gli script di migrazione della community Pekko.
+**Fonte**: [Apicurio Registry - SerdeConfig.java (main branch)](https://github.com/Apicurio/apicurio-registry/blob/main/serdes/generic/serde-common/src/main/java/io/apicurio/registry/serde/config/SerdeConfig.java)
 
 ---
 
-**P2-3: `sbt dependencyTree` come step esplicito nella checklist**
+### P1-3: Data di promozione Pekko a TLP: preferire "maggio 2024"
 
-Il Gotcha 4 menziona `sbt dependencyTree` come strumento di debug, ma non e' incluso nella checklist come step preventivo. Andrebbe aggiunto come step 0 ("analisi dipendenze transitive prima di iniziare").
+**Riga 37**
+**Testo attuale**: "promosso a progetto top-level ASF nel maggio 2024"
+**Problema**: La data non e' errata: l'annuncio ufficiale ASF e' del 16 maggio 2024. Il Board ha approvato la risoluzione il 20 marzo 2024. L'articolo usa la data dell'annuncio pubblico, che e' la scelta piu' comune nelle fonti giornalistiche. Nessuna correzione necessaria, ma per maggiore precisione si potrebbe specificare.
+**Fix suggerito (opzionale)**: "incubato e promosso a progetto top-level ASF nel 2024 (risoluzione Board a marzo, annuncio ufficiale a maggio)."
 
----
-
-**P2-4: Manca nota su serializzazione per chi usa Akka Cluster**
-
-Per sistemi che usano Akka Cluster con serializzazione o Akka Persistence, non e' possibile fare rolling upgrade misto Akka/Pekko. Una nota di avvertimento sarebbe utile anche se i servizi descritti nell'articolo sono standalone.
-
----
-
-**P2-5: Manca menzione di test framework changes**
-
-La migrazione coinvolge anche le dipendenze di test (`akka-actor-testkit-typed` -> `pekko-actor-testkit-typed`, `akka-stream-testkit` -> `pekko-stream-testkit`). Citarli nella checklist renderebbe la guida piu' completa.
+**Fonti**:
+- [ASF Blog - Pekko TLP](https://news.apache.org/foundation/entry/apache-software-foundation-announces-new-top-level-project-apache-pekko)
+- [GlobeNewsWire - 16 maggio 2024](https://www.globenewswire.com/en/news-release/2024/05/16/2883480/17401/en/Apache-Software-Foundation-Announces-New-Top-Level-Project-Apache-Pekko.html)
 
 ---
 
-**P2-6: Configurazione serializzazione e logging**
+## Errori P2 (minori)
 
-Namespace di configurazione come `akka.event.slf4j.Slf4jLogger` -> `org.apache.pekko.event.slf4j.Slf4jLogger` e configurazioni di serializzazione Jackson non sono menzionati. Sono parte del rename meccanico ma facili da dimenticare.
+### P2-1: Regex di sostituzione import copre solo gli import statement
 
----
-
-## Codice
-
-Tutti i blocchi di codice sono sintatticamente corretti. Le dichiarazioni SBT, gli import Scala, la configurazione HOCON e il pattern `SystemMaterializer` sono validi. Nessun errore di sintassi rilevato.
-
-## Sicurezza
-
-Nessun anti-pattern di sicurezza rilevato. L'articolo correttamente evidenzia il rischio di restare su versioni Akka senza patch di sicurezza.
-
-## Completezza
-
-L'articolo copre i punti fondamentali della migrazione. I gotcha dal campo aggiungono valore reale. Mancano: test framework, serializzazione/logging config, compatibilita' Scala 3, e la clausola di reversion BSL a 3 anni.
+**Riga 95**
+**Testo attuale**: `s/import akka\./import org.apache.pekko./g`
+**Problema**: La regex copre solo le dichiarazioni `import`. Non copre tipi fully-qualified usati nel corpo del codice (es. `akka.actor.typed.ActorRef` come tipo inline, annotazioni, pattern matching). L'articolo gia' avverte sui falsi positivi in stringhe e commenti, ma non menziona questo caso.
+**Fix suggerito**: Aggiungere una nota: "Per i tipi fully-qualified usati nel codice (non solo import), serve una regex piu' ampia: `s/akka\./org.apache.pekko./g`. Applicare con revisione manuale per evitare falsi positivi (es. nomi di package non Akka che contengono 'akka')."
 
 ---
 
-## Summary
+### P2-2: Nota sul Materializer: chiarire che non cambia nella migrazione
 
-| Priority | Count | Descrizione |
-|----------|-------|-------------|
-| P0       | 1     | Versione fork errata (2.6.19 -> 2.6.20) |
-| P1       | 4     | Versione BSL in esempio, reversion clause, Apicurio SerdeConfig, data TLP |
-| P2       | 6     | Scala 3, regex, dependencyTree, Cluster, test, logging |
+**Righe 183-193**
+**Problema**: La spiegazione del Materializer implicito e' tecnicamente corretta. L'affermazione che `ActorSystem[T]` estende `ClassicActorSystemProvider` e che esiste una conversione implicita nel companion object di `Materializer` e' accurata sia per Akka 2.6.x che per Pekko 1.0.x. Il codice di esempio con `SystemMaterializer(system).materializer` e' valido. Tuttavia, il testo non chiarisce esplicitamente che questo comportamento e' identico tra Akka 2.6.x e Pekko 1.0.x, il che potrebbe portare il lettore a pensare che ci sia qualcosa di diverso da gestire.
+**Fix suggerito**: Aggiungere: "Questo comportamento e' identico tra Akka 2.6.x e Pekko 1.0.x: se il progetto gia' usava il typed ActorSystem senza Materializer esplicito, non cambia nulla durante la migrazione."
 
-**Verdict:** Correggere il P0 e i P1 prima della pubblicazione. Dopo le correzioni, il punteggio puo' salire a **8-9/10**.
+---
+
+### P2-3: Link "Pekko Migration Guide" punta a `current` (ora 1.4.x)
+
+**Riga 240**
+**Testo attuale**: Link a `https://pekko.apache.org/docs/pekko/current/project/migration-guides.html`
+**Problema**: Il link e' valido. Ma `current` ora punta a Pekko 1.4.x, non 1.0.x. Per chi segue l'articolo (migrazione a 1.0.x), il link alla versione 1.0 sarebbe piu' coerente: `https://pekko.apache.org/docs/pekko/1.0/project/migration-guides.html`
+**Fix suggerito**: Cambiare il link a `https://pekko.apache.org/docs/pekko/1.0/project/migration-guides.html` oppure mantenere `current` aggiungendo "(la guida copre anche migrazione tra versioni Pekko)".
+
+---
+
+### P2-4: Mancano dipendenze di test nella checklist
+
+**Checklist, sezione 1 (righe 59-77)**
+**Problema**: La checklist delle dipendenze Maven non menziona le dipendenze di test (`akka-actor-testkit-typed` -> `pekko-actor-testkit-typed`, `akka-stream-testkit` -> `pekko-stream-testkit`). Per una migrazione completa, anche queste vanno aggiornate.
+**Fix suggerito**: Aggiungere un commento nel blocco di codice o una nota sotto:
+> "Lo stesso rename si applica alle dipendenze di test: `akka-actor-testkit-typed` -> `pekko-actor-testkit-typed`, `akka-stream-testkit` -> `pekko-stream-testkit`, ecc."
+
+---
+
+### P2-5: Manca nota su serializzazione/logging config namespace
+
+**Sezione application.conf (righe 97-129)**
+**Problema**: Il rename del namespace `akka {}` -> `pekko {}` e' ben descritto per la configurazione generale. Non vengono pero' menzionati i nomi fully-qualified delle classi di configurazione che cambiano, come ad esempio `akka.event.slf4j.Slf4jLogger` -> `org.apache.pekko.event.slf4j.Slf4jLogger` e le configurazioni di serializzazione Jackson. Questi sono parte del rename meccanico ma facili da dimenticare.
+**Fix suggerito**: Aggiungere una nota: "Attenzione anche ai nomi di classe fully-qualified nella configurazione (es. `akka.event.slf4j.Slf4jLogger` -> `org.apache.pekko.event.slf4j.Slf4jLogger`)."
+
+---
+
+### P2-6: Manca menzione della compatibilita' Scala 3
+
+**Sezione Pekko (righe 36-51)**
+**Problema**: Pekko 1.0.x supporta Scala 2.12, 2.13 e 3. Per chi migra, sapere che Pekko apre la strada anche a Scala 3 e' un'informazione utile e un valore aggiunto rispetto ad Akka 2.6.x (che non supportava Scala 3 in modo completo).
+**Fix suggerito (opzionale)**: Aggiungere: "Pekko 1.0.x supporta anche Scala 3, aprendo la strada a una futura migrazione del linguaggio."
+
+---
+
+## Codice Scala: verifica sintassi
+
+Tutti i blocchi di codice dell'articolo sono sintatticamente corretti:
+
+- **build.sbt** (righe 63-75): dichiarazioni SBT valide, formato `"groupId" %% "artifactId" % "version"` corretto
+- **Import** (righe 83-93): import Scala validi, namespace Pekko corretti
+- **application.conf** (righe 101-127): HOCON valido, struttura corretta
+- **CORS** (righe 136-143): dichiarazioni SBT e import corretti
+- **Materializer** (righe 188-191): pattern `Behaviors.empty`, `SystemMaterializer` corretto
+
+---
+
+## Link esterni: verifica
+
+| # | URL | Stato |
+|---|-----|-------|
+| 1 | `https://pekko.apache.org/` | Valido (confermato via web search) |
+| 2 | `https://pekko.apache.org/docs/pekko/current/project/migration-guides.html` | Valido (confermato via web search, titolo: "Migration from Akka to Apache Pekko") |
+| 3 | `https://akka.io/blog/why-we-are-changing-the-license-for-akka` | Valido (confermato via web search) |
+| 4 | `https://pekko.apache.org/docs/pekko-connectors-kafka/current/home.html` | Valido (confermato via web search) |
+| 5 | `https://github.com/monte97/kafka-pekko` | Da verificare manualmente (accesso HTTP bloccato in questo ambiente) |
+
+---
+
+## Riepilogo
+
+| Severita' | Count | Dettagli principali |
+|-----------|-------|---------------------|
+| P0 | 2 | Errore licenza 2.6.21 sotto BSL (falso); imprecisione fork "2.6.20" |
+| P1 | 3 | Versioni datate nell'esempio; SerdeConfig/SchemaResolverConfig invertiti; data TLP |
+| P2 | 6 | Regex incompleta; Materializer chiarimento; link versione 1.0; test deps; logging config; Scala 3 |
+
+**Azione raccomandata**: Correggere i due P0 prima della pubblicazione -- sono errori fattuali verificabili che minano la credibilita' dell'articolo. I P1 migliorano significativamente l'accuratezza tecnica. I P2 sono miglioramenti opzionali di completezza.
+
+**Dopo le correzioni P0 + P1, il punteggio stimato e': 8-9/10.**
