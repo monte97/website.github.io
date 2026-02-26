@@ -10,7 +10,7 @@ menu:
     parent: OBS
 tags: ["Node.js", "OpenTelemetry", "Logging", "Grafana", "Pino"]
 categories: ["DevOps", "Observability"]
-draft: true
+draft: false
 reviewed: true
 pillar: "Observability"
 ---
