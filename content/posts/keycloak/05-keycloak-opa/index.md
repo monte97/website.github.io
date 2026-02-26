@@ -11,12 +11,13 @@ menu:
 tags: ["OPA", "Keycloak", "Authorization", "Rego", "OpenPolicyAgent"]
 categories: ["Security", "Architecture"]
 draft: true
-reviewed: machine
+reviewed: true
+pillar: "Security"
 ---
 
-Hai mai dovuto bloccare un utente dal checkout e scoprire che il claim JWT era ancora valido fino alla scadenza del token? Oppure aggiungere una regola di accesso e ritrovarti a modificare Keycloak, il codice Express, e magari anche un mapper custom?
+Bloccare un utente dal checkout quando il claim JWT e' ancora valido fino alla scadenza del token. Aggiungere una regola di accesso e dover modificare Keycloak, il codice Express, e magari anche un mapper custom. Sono problemi comuni quando autenticazione e autorizzazione non sono separate.
 
-In un sistema che usa Keycloak per autenticazione e autorizzazione, è comune che le regole di accesso finiscano sparse tra claim JWT, mapper custom e logica applicativa. Funziona, ma crea un accoppiamento: modificare chi può fare cosa richiede toccare Keycloak, il codice, o entrambi.
+In un sistema che usa Keycloak per entrambe le responsabilità, le regole di accesso finiscono sparse tra claim JWT, mapper custom e logica applicativa. Funziona, ma crea un accoppiamento: modificare chi può fare cosa richiede toccare Keycloak, il codice, o entrambi.
 
 Questo articolo mostra come separare le due responsabilità: **Keycloak autentica** (chi sei), **OPA autorizza** (cosa puoi fare). L'integrazione avviene in MockMart, lo stesso e-commerce demo usato negli articoli precedenti, con tre pattern concreti:
 
