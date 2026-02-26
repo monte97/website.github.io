@@ -11,10 +11,11 @@ menu:
 tags: ["Node.js", "OpenTelemetry", "Logging", "Grafana", "Pino"]
 categories: ["DevOps", "Observability"]
 draft: true
-reviewed: machine
+reviewed: true
+pillar: "Observability"
 ---
 
-Quante volte hai aggiunto un `console.log` "temporaneo" per capire perché una richiesta falliva in produzione? L'output è una stringa piatta, senza timestamp, senza livello, senza contesto e se il container si riavvia, quei log spariscono. Se ci sono più istanze, devi saltare da un `docker logs` all'altro sperando di trovare la riga giusta. È il modo più rapido per iniziare ma anche il primo a crollare quando serve davvero.
+Un `console.log` "temporaneo" per capire perché una richiesta fallisce in produzione produce una stringa piatta: senza timestamp, senza livello, senza contesto. Se il container si riavvia, quei log spariscono. Con più istanze, l'unica opzione è saltare da un `docker logs` all'altro cercando la riga giusta. È l'approccio più rapido per iniziare, ma il primo a diventare inutile quando il sistema cresce.
 
 Questo articolo copre il passaggio da `console.log` a un sistema di logging strutturato e centralizzato in tre step incrementali, ognuno motivato dai limiti del precedente.
 
@@ -54,7 +55,7 @@ In sintesi: formato, persistenza e centralizzazione mancano tutti. Le sezioni su
 
 ## Da stringhe piatte a JSON filtrabili
 
-Il primo step non richiede infrastruttura, solo aggiungere una libreria specificatamente pensata per gestire il logging. In questi esempi useremo [Pino](https://github.com/pinojs/pino).
+Il primo step non richiede infrastruttura, solo aggiungere una libreria dedicata al logging. In questi esempi useremo [Pino](https://github.com/pinojs/pino).
 
 ```bash
 npm install pino
@@ -128,9 +129,9 @@ I log sono strutturati e performanti ([benchmark Pino](https://github.com/pinojs
 
 ---
 
-## Log persistenti senza cambiare codice
+## Log persistenti con modifiche minime
 
-L'aggiunta di OpenTelemetry rende i log persistenti e centralizzati **senza modificare il codice applicativo**.
+L'aggiunta di OpenTelemetry rende i log persistenti e centralizzati con **modifiche minime al codice applicativo**: un file di instrumentazione e una proprietà `transport` nel logger.
 
 ### Dipendenze
 
@@ -140,8 +141,8 @@ Oltre a Pino (già installato nello step precedente), servono l'SDK OpenTelemetr
 npm install @opentelemetry/api \
   @opentelemetry/sdk-node \
   @opentelemetry/auto-instrumentations-node \
-  @opentelemetry/exporter-logs-otlp-http \
-  @opentelemetry/sdk-logs \
+  @opentelemetry/resources \
+  @opentelemetry/semantic-conventions \
   pino-opentelemetry-transport
 ```
 
@@ -151,19 +152,11 @@ npm install @opentelemetry/api \
 // instrumentation.js
 const { NodeSDK } = require('@opentelemetry/sdk-node');
 const { getNodeAutoInstrumentations } = require('@opentelemetry/auto-instrumentations-node');
-const { OTLPLogExporter } = require('@opentelemetry/exporter-logs-otlp-http');
-const { BatchLogRecordProcessor } = require('@opentelemetry/sdk-logs');
-
-const { Resource } = require('@opentelemetry/resources');
+const { resourceFromAttributes } = require('@opentelemetry/resources');
 const { ATTR_SERVICE_NAME } = require('@opentelemetry/semantic-conventions');
 
 const sdk = new NodeSDK({
-    resource: new Resource({ [ATTR_SERVICE_NAME]: 'shop-service' }),
-    logRecordProcessors: [
-        new BatchLogRecordProcessor(
-            new OTLPLogExporter()
-        )
-    ],
+    resource: resourceFromAttributes({ [ATTR_SERVICE_NAME]: 'shop-service' }),
     instrumentations: [getNodeAutoInstrumentations()]
 });
 
@@ -180,12 +173,9 @@ node index.js
 node --require ./instrumentation.js index.js
 ```
 
-Il flag `--require` carica l'SDK prima del codice applicativo. L'SDK abilita due meccanismi complementari:
+Il flag `--require` carica l'SDK prima del codice applicativo. L'SDK abilita `@opentelemetry/instrumentation-pino` (incluso in `auto-instrumentations-node`), che inietta automaticamente `trace_id` e `span_id` nei log Pino, collegando log e trace.
 
-- **`@opentelemetry/instrumentation-pino`** (incluso in `auto-instrumentations-node`) inietta automaticamente `trace_id` e `span_id` nei log Pino, collegando log e trace.
-- **`pino-opentelemetry-transport`** invia i log al `LoggerProvider` dell'SDK, che li esporta al Collector via OTLP.
-
-Per collegare Pino al transport, aggiornare `logger.js`:
+Per inviare i log al Collector via OTLP, si configura `pino-opentelemetry-transport` come transport Pino. Il transport opera in un worker thread separato e gestisce autonomamente l'invio dei log al Collector, senza dipendere dal `LoggerProvider` dell'SDK. Aggiornare `logger.js`:
 
 ```javascript
 // logger.js (con OpenTelemetry)
@@ -356,18 +346,16 @@ L'articolo ha coperto:
 1. **Limiti di `console.log`** - assenza di struttura, persistenza e centralizzazione
 2. **Logging strutturato con Pino** - JSON, livelli, child logger per contesto HTTP
 3. **Centralizzazione con OpenTelemetry** - 20 righe di `instrumentation.js`, zero modifiche al codice applicativo
-4. **Infrastruttura di osservabilita** - Collector, Loki e Grafana con tre servizi Docker
+4. **Infrastruttura di osservabilità** - Collector, Loki e Grafana con tre servizi Docker
 5. **Query LogQL** - filtraggio per livello, utente, azione su dati centralizzati
-
-Ora quei `console.log` temporanei possono finalmente sparire per davvero.
 
 Il logging è il primo pilastro dell'osservabilità. Nel prossimo articolo: **distributed tracing** per seguire una request attraverso più servizi.
 
 ---
 
-## Risorse Utili
+## Risorse utili
 
-* **Repository**: 👉 [github.com/monte97/otel-demo](https://github.com/monte97/otel-demo)
+* **Repository**: [github.com/monte97/otel-demo](https://github.com/monte97/otel-demo)
 * **Pino**: [getpino.io](https://getpino.io/) - documentazione ufficiale
 * **OpenTelemetry Node.js**: [opentelemetry.io/docs/languages/js](https://opentelemetry.io/docs/languages/js/getting-started/nodejs/) - setup SDK
 * **Grafana Loki LogQL**: [grafana.com/docs/loki/latest/query](https://grafana.com/docs/loki/latest/query/) - linguaggio di query
