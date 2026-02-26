@@ -11,15 +11,16 @@ menu:
 tags: ["Scala", "Pekko", "Akka", "JVM", "Migrazione"]
 categories: ["Backend", "Tecnologie"]
 draft: true
-reviewed: machine
+reviewed: true
+pillar: "Event Streaming"
 reproducibility: true
 ---
 
-Il tuo servizio Scala gira su Akka 2.6 da tre anni. Un giorno scopri che la licenza è cambiata e le patch di sicurezza non arrivano più. Che fai? In questo articolo vediamo la migrazione pratica da Akka ad Apache Pekko, con checklist, gotcha e lezioni dal campo.
+Un servizio Scala su Akka 2.6 in produzione da tre anni. La licenza cambia, le patch di sicurezza non arrivano più. Questo articolo copre la migrazione pratica da Akka ad Apache Pekko: checklist, gotcha e lezioni dal campo.
 
 ## Il cambio licenza di Akka
 
-A settembre 2022, Lightbend ha annunciato che Akka 2.7 e tutte le versioni successive sarebbero state rilasciate sotto Business Source License (BSL 1.1). In pratica: l'uso commerciale di Akka richiede una licenza a pagamento. Akka 2.6.20 è l'ultima versione sotto Apache 2.0; dalla 2.6.21 anche la serie 2.6.x è sotto BSL 1.1. Le versioni BSL revertono automaticamente ad Apache 2.0 dopo 3 anni dalla data di rilascio, ma per chi necessita di patch tempestive questa clausola non risolve il problema. Le versioni Apache 2.0 non ricevono più patch di sicurezza né bugfix.
+A settembre 2022, Lightbend ha annunciato che Akka 2.7 e tutte le versioni successive sarebbero state rilasciate sotto Business Source License (BSL 1.1). In pratica: l'uso commerciale di Akka richiede una licenza a pagamento. L'intera serie Akka 2.6.x è rimasta sotto Apache 2.0 fino all'end-of-life. La versione 2.6.21, rilasciata a giugno 2023 come ultimo fix critico, è l'ultima release della serie. Dalla 2.7 in poi, tutte le versioni sono sotto BSL 1.1. Le versioni BSL revertono automaticamente ad Apache 2.0 dopo 3 anni dalla data di rilascio, ma per chi necessita di patch tempestive questa clausola non risolve il problema. Dal 19 ottobre 2023, la serie 2.6.x è ufficialmente end-of-life: nessun aggiornamento futuro, ma la licenza resta Apache 2.0.
 
 La decisione ha colpito un ecosistema ampio. Akka è la base di framework come Play e di migliaia di sistemi in produzione nel mondo JVM. Per chi gestisce sistemi in produzione basati su Akka, le opzioni sono tre:
 
@@ -33,7 +34,7 @@ La decisione ha colpito un ecosistema ampio. Akka è la base di framework come P
 
 ## Apache Pekko: il fork della community
 
-Apache Pekko è nato come fork di Akka 2.6.20 (l'ultima versione Apache 2.0) sotto la Apache Software Foundation. Il progetto è stato incubato e promosso a progetto top-level ASF nel maggio 2024. La licenza è Apache 2.0, senza ambiguità.
+Apache Pekko è nato come fork della serie Akka 2.6.x (l'ultima mantenuta sotto Apache 2.0) sotto la Apache Software Foundation. Il progetto è stato incubato e promosso a progetto top-level ASF nel maggio 2024. La licenza è Apache 2.0, senza ambiguità.
 
 La versione **Pekko 1.0.x** è un fork diretto di Akka 2.6.x. L'API è identica: stesse classi, stessi pattern, stessi comportamenti. L'unica differenza è il namespace: `org.apache.pekko` invece di `akka`. Questo rende la migrazione meccanica: cerca e sostituisci.
 
@@ -175,7 +176,7 @@ Questo non è strettamente legato a Pekko, ma la migrazione Akka->Pekko è stata
 "io.apicurio" % "apicurio-registry-avro-serde-kafka" % "3.0.4"
 ```
 
-Inoltre, la classe di configurazione è stata spostata: `SerdeConfig` è deprecata in favore di `SchemaResolverConfig`, che la estende con opzioni aggiuntive per la risoluzione degli schema. Se il codice referenzia direttamente queste classi per configurare l'URL del registry o la strategia di lookup, servono modifiche puntuali.
+Inoltre, la classe di configurazione è stata spostata: `SerdeConfig` estende `SchemaResolverConfig` (che contiene le opzioni per la risoluzione degli schema). I package Java sono cambiati (`io.apicurio.registry.serde.config.SerdeConfig` in 3.x vs `io.apicurio.registry.serde.SerdeConfig` in 2.x). Se il codice referenzia direttamente queste classi per configurare l'URL del registry o la strategia di lookup, servono modifiche agli import.
 
 ### Gotcha 2: Materializer con ActorSystem typed
 
@@ -204,7 +205,7 @@ Se il progetto usa librerie che hanno Akka come dipendenza transitiva, queste co
 ## Demo
 
 L'intero codice del progetto è disponibile nel repository pubblico:
-👉 [https://github.com/monte97/kafka-pekko](https://github.com/monte97/kafka-pekko)
+[https://github.com/monte97/kafka-pekko](https://github.com/monte97/kafka-pekko)
 
 Il repository include un consumer Scala/Pekko che mostra l'integrazione Pekko + Avro + Apicurio Registry. Il consumer usa il serde nativo di Apicurio (`AvroKafkaDeserializer`) per consumare messaggi Avro da un topic, deserializzarli tramite il registry, e stamparli a console.
 
@@ -229,7 +230,7 @@ In questo articolo abbiamo visto come migrare da Akka ad Apache Pekko:
 3. **I gotcha**: Apicurio 3.x, Materializer implicito, `reference.conf` di terze parti e dipendenze transitive sono i punti dove servono verifiche manuali
 4. **Il costo reale**: non è nel rename, ma nella verifica — per tre servizi e ~50 file, circa mezza giornata
 
-Una volta su Pekko 1.0.x, si torna su un binario di rilascio attivo con bugfix, patch di sicurezza e nuove feature. La migrazione più spaventosa è quella che non fai.
+Una volta su Pekko 1.0.x, si torna su un binario di rilascio attivo con bugfix, patch di sicurezza e nuove feature.
 
 ---
 
