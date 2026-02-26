@@ -228,7 +228,7 @@ Il refactoring di tre servizi (`current`, `history`, `usage`) ha prodotto:
 
 - **Conftest**: da 228 a 148 righe totali (-35%)
 - **Hack `sys.modules`**: da 12 a 0
-- **Mutation score su logica di business**: zero mutanti sopravvissuti (prima: dal 19% al 46% di kill rate)
+- **Mutation score su logica di business**: zero mutanti sopravvissuti (prima: 19%, 41% e 46% di kill rate sui tre servizi)
 
 Il miglioramento piu' significativo non e' nelle righe di conftest. E' nella separazione tra logica di business e infrastruttura. Il servizio `usage` ha 469 righe nel file originale. Dopo il refactoring, le funzioni pure (`compute_delta`, `should_compute_delta`, `get_cost_sources`) vivono in `business.py` -- un modulo che importa solo `datetime` dalla libreria standard. Zero Flask, zero Kafka, zero MongoDB. Queste funzioni sono testabili con un import diretto, senza fixture:
 
