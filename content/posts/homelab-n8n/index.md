@@ -10,6 +10,7 @@ menu:
 tags: ["n8n", "Automazione", "Homelab", "DevOps", "Self-Hosted"]
 categories: ["Tecnologie", "Automazione"]
 reviewed: human
+pillar: "DevOps & Quality"
 reproducibility: true
 ---
 

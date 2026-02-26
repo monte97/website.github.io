@@ -11,6 +11,7 @@ menu:
 tags: ["Kubernetes", "CAPI", "Cluster API", "Infrastructure as Code", "DevOps", "Automazione"]
 categories: ["Kubernetes", "Cloud Native", "Infrastruttura"]
 reviewed: human
+pillar: "DevOps & Quality"
 reproducibility: true
 ---
 ## Il Problema della Gestione Manuale di Kubernetes

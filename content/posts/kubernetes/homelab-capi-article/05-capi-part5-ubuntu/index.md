@@ -11,6 +11,7 @@ menu:
 tags: ["Kubernetes", "CAPI", "Cluster API", "Ubuntu", "Proxmox", "Image Builder", "Homelab"]
 categories: ["Kubernetes", "Cloud Native", "Infrastruttura"]
 reviewed: human
+pillar: "DevOps & Quality"
 reproducibility: true
 ---
 

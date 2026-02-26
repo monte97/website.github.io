@@ -11,6 +11,7 @@ menu:
 tags: ["Playwright", "E2E", "Testing", "OpenTelemetry", "VisualTesting", "Observability"]
 categories: ["Testing", "DevOps"]
 reviewed: human
+pillar: "DevOps & Quality"
 reproducibility: true
 ---
 

@@ -11,6 +11,7 @@ menu:
 tags: ["OpenTelemetry", "Observability", "LGTM Stack", "Loki", "Grafana", "Tempo", "Mimir", "Prometheus", "Tracing", "Metrics", "Logging", "Instrumentation", "DevOps", "Telemetry", "Sistemi Distribuiti", "Docker"]
 categories: ["Monitoring", "DevOps", "Architettura Software", "Cloud Native"]
 reviewed: human
+pillar: "Observability"
 reproducibility: true
 ---
 

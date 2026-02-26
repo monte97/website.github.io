@@ -11,6 +11,7 @@ menu:
 tags: ["Vue", "OpenLayers", "TypeScript", "Nuxt", "Composables"]
 categories: ["Frontend", "Web Development"]
 reviewed: human
+pillar: "System Design"
 ---
 
 ## Il problema: Vue wrappa ciò che non dovrebbe

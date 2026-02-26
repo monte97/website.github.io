@@ -11,6 +11,7 @@ menu:
     parent: PLAYWRIGHT
     weight: 10
 reviewed: human
+pillar: "DevOps & Quality"
 reproducibility: true
 ---
 

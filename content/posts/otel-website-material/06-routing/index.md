@@ -11,6 +11,7 @@ menu:
 tags: ["OpenTelemetry", "Observability", "Routing", "Compliance", "Production"]
 categories: ["Observability", "DevOps"]
 reviewed: human
+pillar: "Observability"
 reproducibility: true
 ---
 

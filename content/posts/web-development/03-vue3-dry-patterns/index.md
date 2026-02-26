@@ -11,6 +11,7 @@ menu:
 tags: ["Vue", "Nuxt", "Vuetify", "Composables", "Frontend"]
 categories: ["Frontend"]
 reviewed: human
+pillar: "System Design"
 ---
 
 Nelle SPA di grandi dimensioni con Vue 3 è comune trovarsi con decine di pagine che sono variazioni dello stesso tema: stessa struttura, stesso boilerplate, stesse cinque righe di setup. Si parte con copia-incolla, poi un bug nel flusso di salvataggio va corretto in dodici posti.

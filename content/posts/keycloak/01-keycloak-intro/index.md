@@ -11,6 +11,7 @@ menu:
 tags: ["Keycloak", "OAuth2", "OpenID Connect", "Security", "Autenticazione"]
 categories: ["Security"]
 reviewed: human
+pillar: "Security"
 reproducibility: true
 ---
 

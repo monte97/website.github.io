@@ -11,6 +11,7 @@ menu:
 tags: ["Kubernetes", "Controller", "Operator", "Go", "CRD", "DevOps"]
 categories: ["Kubernetes", "Cloud Native"]
 reviewed: human
+pillar: "DevOps & Quality"
 reproducibility: true
 ---
 

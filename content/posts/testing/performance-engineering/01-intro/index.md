@@ -11,6 +11,7 @@ menu:
 tags: ["Performance Testing", "Monitoring", "SRE", "Metrics", "Observability"]
 categories: ["Performance Engineering", "Testing"]
 reviewed: human
+pillar: "DevOps & Quality"
 reproducibility: true
 ---
 

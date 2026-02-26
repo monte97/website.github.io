@@ -10,6 +10,7 @@ menu:
 tags: ["Docker", "Linux", "Containerizzazione", "DevOps"]
 categories: ["Tecnologie", "Sistema"]
 reviewed: human
+pillar: "DevOps & Quality"
 reproducibility: true
 ---
 

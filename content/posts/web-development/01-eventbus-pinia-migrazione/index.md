@@ -11,6 +11,7 @@ menu:
 tags: ["Vue", "Pinia", "Nuxt", "TypeScript", "Frontend"]
 categories: ["Frontend"]
 reviewed: human
+pillar: "System Design"
 ---
 
 ## EventBus: stato implicito distribuito tra componenti

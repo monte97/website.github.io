@@ -11,6 +11,7 @@ menu:
 tags: ["Observability", "OpenTelemetry", "Sistemi Distribuiti", "Tracing", "Metrics", "Logging", "DevOps", "Architettura", "Monitoring"]
 categories: ["Architettura Software", "DevOps"]
 reviewed: human
+pillar: "Observability"
 reproducibility: true
 ---
 

@@ -11,6 +11,7 @@ menu:
 tags: ["Kubernetes", "kind", "Ingress", "NGINX", "DevOps", "Sviluppo Locale"]
 categories: ["Kubernetes", "Cloud Native", "Infrastruttura"]
 reviewed: human
+pillar: "DevOps & Quality"
 reproducibility: true
 ---
 
