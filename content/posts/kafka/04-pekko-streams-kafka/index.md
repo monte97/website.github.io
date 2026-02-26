@@ -11,12 +11,13 @@ menu:
 tags: ["Scala", "Pekko", "Kafka", "Streaming", "Avro"]
 categories: ["Backend", "Tecnologie"]
 draft: true
-reviewed: machine
+reviewed: true
+pillar: "Event Streaming"
 reproducibility: true
 ---
 ## Il pattern di partenza: while(true) dentro un attore
 
-Hai mai avuto un attore Pekko che blocca il dispatcher con una `poll()` bloccante, e poi ti chiedi perché il sistema non risponde? In un sistema Akka (ora [Apache Pekko](https://pekko.apache.org/)), l'approccio più immediato è mettere tutta la logica in un attore. L'attore consuma da Kafka, processa i messaggi, produce su un altro topic. Sembra pulito: un attore per responsabilità, supervisione automatica, tutto nel modello ad attori.
+In un sistema Akka (ora [Apache Pekko](https://pekko.apache.org/)), l'approccio più immediato è mettere tutta la logica in un attore che consuma da Kafka. L'attore consuma da Kafka, processa i messaggi, produce su un altro topic. Sembra pulito: un attore per responsabilità, supervisione automatica, tutto nel modello ad attori.
 
 Il sistema in esame è una piattaforma di telemetria per mezzi d'opera in cantiere. Il servizio di aggregazione (`c40-aggregation`) aveva tre attori `KafkaReaderActor`, uno per topic, che facevano così:
 
@@ -38,7 +39,7 @@ class KafkaReaderActor(consumer: KafkaConsumer[String, String],
 
 Questo pattern ha quattro problemi concreti.
 
-**1. Blocca un thread del dispatcher.** `consumer.poll()` è una chiamata bloccante. In Akka/Pekko, gli attori condividono un pool di thread (il dispatcher). Un attore che chiama `poll(Duration.ofSeconds(5))` tiene occupato un thread per 5 secondi ad ogni ciclo. Con tre reader, tre thread sono permanentemente occupati. Il dispatcher default usa un fork-join pool con un minimo di 8 thread (`parallelism-min`): su una macchina a 2 core con tre reader bloccanti, una porzione significativa del pool è permanentemente occupata. Gli altri attori del sistema (compresi quelli di supervisione) faticano a ricevere CPU.
+**1. Blocca un thread del dispatcher.** `consumer.poll()` è una chiamata bloccante. In Akka/Pekko, gli attori condividono un pool di thread (il dispatcher). Un attore che chiama `poll(Duration.ofSeconds(5))` tiene occupato un thread per 5 secondi ad ogni ciclo. Con tre reader, tre thread sono permanentemente occupati. Il dispatcher default usa un fork-join pool con un numero di thread calcolato come `max(parallelism-min, ceil(cores * parallelism-factor))`. Con i default Pekko 1.x (`parallelism-min = 2`, `parallelism-factor = 1.0`), su una macchina a 2 core il pool ha solo 2 hot thread. Con tre reader bloccanti, il pool è completamente saturo. Gli altri attori del sistema (compresi quelli di supervisione) faticano a ricevere CPU.
 
 **2. Nessuna backpressure.** Se `MachineryEnrichActor` è lento a processare i messaggi (per esempio perché deve fare una chiamata HTTP o un lookup costoso), i messaggi si accumulano nella mailbox dell'attore. Non c'è nessun meccanismo per dire al consumer di rallentare. In un sistema di telemetria con burst di dati, questo può portare a OutOfMemoryError.
 
@@ -274,7 +275,7 @@ import io.apicurio.registry.serde.avro.{AvroKafkaDeserializer, AvroKafkaSerializ
 ## Demo
 
 L'intero codice del progetto è disponibile nel repository pubblico:
-👉 [https://github.com/monte97/kafka-pekko](https://github.com/monte97/kafka-pekko)
+[https://github.com/monte97/kafka-pekko](https://github.com/monte97/kafka-pekko)
 
 Il modulo `pekko-patterns/` implementa entrambi i pattern in un progetto self-contained.
 
