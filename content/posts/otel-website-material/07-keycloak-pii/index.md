@@ -11,14 +11,13 @@ menu:
 tags: ["OpenTelemetry", "Keycloak", "GDPR", "Security", "Observability"]
 categories: ["Observability", "Security"]
 draft: true
-reviewed: machine
+reviewed: true
+pillar: "Observability"
 ---
 
-Hai appena abilitato il tracing su Keycloak e nei tuoi span compare l'email dell'utente in chiaro. Apri Grafana, cerchi un trace e ti ritrovi username, password e token JWT perfettamente leggibili. Se ti e' successo, non sei il solo.
+Abilitare il tracing su Keycloak significa ritrovarsi email, username e token JWT in chiaro negli span. Keycloak gestisce credenziali, token e sessioni — quando il tracing e' attivo, tutto questo finisce nel backend di observability senza alcun filtro. Il rischio: data breach e violazione GDPR con un click su Explore.
 
-Il punto e' che Keycloak gestisce credenziali, token e sessioni - e quando abiliti il tracing, tutto questo finisce nel backend di observability senza alcun filtro. Il rischio? Data breach e violazione GDPR con un click su Explore.
-
-In questo articolo vediamo come filtrare i dati sensibili direttamente nell'OTel Collector, prima che raggiungano Tempo. La nostra strategia si basa su quattro tecniche - DELETE, REDACT, HASH e SANITIZE - che ti permettono di mantenere piena visibilita' senza esporre PII.
+Questo articolo mostra come filtrare i dati sensibili direttamente nell'OTel Collector, prima che raggiungano Tempo. La strategia si basa su quattro tecniche — DELETE, REDACT, HASH e SANITIZE — per mantenere piena visibilita' senza esporre PII.
 
 ---
 
