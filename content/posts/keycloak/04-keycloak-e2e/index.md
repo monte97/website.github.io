@@ -11,10 +11,11 @@ menu:
 tags: ["Keycloak", "OAuth2", "OIDC", "Microservizi", "Security", "PKCE", "M2M"]
 categories: ["Security", "Backend"]
 draft: true
-reviewed: machine
+reviewed: true
+pillar: "Security"
 ---
 
-Quante volte hai visto un'integrazione Keycloak funzionare perfettamente su localhost, per poi esplodere al primo deploy in staging?
+Un'integrazione Keycloak che funziona perfettamente su localhost e poi esplode al primo deploy in staging e' uno scenario comune.
 
 Keycloak configurato, login funzionante, checkout che gira. L'integrazione sembra completa. I problemi iniziano dopo: un 401 inspiegabile in staging, un token che passa la validazione di servizi a cui non era destinato, un service account che qualsiasi utente può impersonare.
 
