@@ -11,7 +11,8 @@ menu:
     weight: 10
 technologies: ["Keycloak", "OAuth2", "OpenID Connect", "LDAP", "Docker"]
 categories: ["Security", "Identity Management", "Workshop"]
-reviewed: false
+reviewed: true
+pillar: "Security"
 ---
 
 ## Overview

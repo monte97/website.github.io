@@ -17,7 +17,7 @@ team_size: "1 technical"
 client_type: "SME / Enterprise"
 featured: false
 related_posts: ["/posts/otel-website-material/01-observability/", "/posts/otel-website-material/02-opentelenetry/", "/posts/otel-website-material/03-lgtm/"]
-reviewed: false
+reviewed: true
 ---
 
 ## Overview

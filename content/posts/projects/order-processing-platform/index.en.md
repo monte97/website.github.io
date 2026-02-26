@@ -14,7 +14,7 @@ categories: ["Event-Driven", "Platform Engineering", "Demo"]
 role: "Author"
 featured: true
 related_posts: ["/posts/otel-website-material/01-observability/", "/posts/otel-website-material/02-opentelenetry/"]
-reviewed: false
+reviewed: true
 ---
 
 ## Overview

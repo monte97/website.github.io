@@ -17,7 +17,8 @@ team_size: "10 developer"
 client_type: "Scale-up"
 featured: false
 related_posts: ["/posts/testing/performance-engineering/01-intro/"]
-reviewed: false
+reviewed: true
+pillar: "DevOps & Quality"
 ---
 
 ## Overview

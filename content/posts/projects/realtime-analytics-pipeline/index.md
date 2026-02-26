@@ -17,7 +17,8 @@ team_size: "1 tecnico + team interdisciplinare"
 client_type: "Startup (early stage)"
 featured: false
 related_posts: ["/posts/otel-website-material/03-lgtm/"]
-reviewed: false
+reviewed: true
+pillar: "Event Streaming"
 ---
 
 ## Overview

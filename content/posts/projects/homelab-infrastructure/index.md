@@ -17,7 +17,8 @@ team_size: "Personal"
 client_type: "Personal"
 featured: true
 related_posts: ["/posts/kubernetes/fondamenti/homelab-capi-article/capi-part1-intro/", "/posts/kubernetes/fondamenti/homelab-capi-article/capi-part2-internals/", "/posts/kubernetes/fondamenti/homelab-capi-article/capi-part3-talos/", "/posts/kubernetes/fondamenti/homelab-capi-article/capi-part4-day1/", "/posts/kubernetes/fondamenti/homelab-capi-article/capi-part5-ubuntu/", "/posts/homelab-n8n/"]
-reviewed: false
+reviewed: true
+pillar: "DevOps & Quality"
 ---
 
 ## Overview
