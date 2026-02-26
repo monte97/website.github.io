@@ -11,12 +11,11 @@ menu:
 tags: ["CI/CD", "OpenTofu", "Ansible", "Proxmox", "Semaphore", "Infrastructure as Code", "DevOps"]
 categories: ["DevOps", "Automazione", "Infrastruttura"]
 draft: true
-reviewed: machine
+reviewed: true
+pillar: "DevOps & Quality"
 ---
 
-## Il Contesto
-
-Quante volte ti è capitato di deployare manualmente un'applicazione su una VM, ripetendo gli stessi passi a memoria? Crei la macchina dalla UI, configuri SSH, copi i file, lanci i container... e poi lo rifai per staging. E poi per produzione. E la volta dopo cambi un parametro e te ne accorgi solo quando qualcosa si rompe.
+## Il contesto
 
 Un'applicazione composta da più servizi containerizzati: backend API, frontend, database PostgreSQL e identity provider (Keycloak). Ogni ambiente (staging, produzione) gira su una VM dedicata, provisionata su un hypervisor Proxmox. Il deploy avviene via Docker Compose.
 
