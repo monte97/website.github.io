@@ -1,0 +1,60 @@
+---
+import Card from '@/components/ui/Card.astro';
+import Badge from '@/components/ui/Badge.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  pillar: 'progettare' | 'verificare' | 'automatizzare' | null;
+  tags: string[];
+  href: string;
+  lang?: 'it' | 'en';
+}
+
+const { title, description, date, pillar, tags, href, lang = 'it' } = Astro.props;
+
+const formattedDate = date.toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+
+const pillarLabels: Record<string, string> = {
+  progettare: lang === 'it' ? 'Progettare' : 'Design',
+  verificare: lang === 'it' ? 'Verificare' : 'Verify',
+  automatizzare: lang === 'it' ? 'Automatizzare' : 'Automate',
+};
+
+const displayTags = tags.slice(0, 3);
+---
+
+<a href={href} class="group block">
+  <Card pillar={pillar}>
+    <div class="flex items-center gap-3 mb-2">
+      <time class="text-xs text-text-muted" datetime={date.toISOString()}>
+        {formattedDate}
+      </time>
+      {pillar && (
+        <Badge pillar={pillar}>
+          {pillarLabels[pillar]}
+        </Badge>
+      )}
+    </div>
+    <h3 class="text-lg font-bold mb-2 group-hover:text-accent transition-colors">
+      {title}
+    </h3>
+    <p class="text-text-muted text-sm line-clamp-2 mb-3">
+      {description}
+    </p>
+    {displayTags.length > 0 && (
+      <div class="flex flex-wrap gap-1.5">
+        {displayTags.map((tag) => (
+          <span class="text-xs text-text-muted bg-text-muted/10 px-2 py-0.5 rounded">
+            {tag}
+          </span>
+        ))}
+      </div>
+    )}
+  </Card>
+</a>

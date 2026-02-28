@@ -1,0 +1,61 @@
+---
+import { getCollection } from 'astro:content';
+import PostCard from '@/components/blog/PostCard.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+
+interface Props {
+  lang?: 'it' | 'en';
+  count?: number;
+}
+
+const { lang = 'it', count = 6 } = Astro.props;
+
+const text = {
+  it: { title: 'Ultimi articoli', viewAll: 'Tutti gli articoli →' },
+  en: { title: 'Latest posts', viewAll: 'All posts →' },
+};
+
+const t = text[lang];
+
+const allPosts = await getCollection('posts');
+const posts = allPosts
+  .filter((p) => p.data.lang === lang && !p.data.draft && p.data.pillar !== null)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, count);
+
+/**
+ * Build the blog href from a post ID.
+ * The glob loader generates IDs like:
+ *   progettare/kafka/01-intro/index       (Italian)
+ *   progettare/kafka/02-schema/index.en   (English)
+ * We strip the trailing /index or /index.en to get the slug path.
+ */
+function postHref(postId: string): string {
+  const slug = postId.replace(/\/index(\.en)?$/, '');
+  return `/blog/${slug}/`;
+}
+---
+
+<section class="py-20">
+  <div class="max-w-6xl mx-auto px-6">
+    <SectionHeading title={t.title} />
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {posts.map((post) => (
+        <PostCard
+          title={post.data.title}
+          description={post.data.description}
+          date={post.data.date}
+          pillar={post.data.pillar}
+          tags={post.data.tags}
+          href={postHref(post.id)}
+          lang={lang}
+        />
+      ))}
+    </div>
+    <div class="text-center mt-10">
+      <a href="/blog/" class="text-accent font-medium hover:underline">
+        {t.viewAll}
+      </a>
+    </div>
+  </div>
+</section>
