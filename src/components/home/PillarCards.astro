@@ -1,0 +1,76 @@
+---
+import Card from '@/components/ui/Card.astro';
+
+interface Props {
+  lang?: 'it' | 'en';
+}
+
+const { lang = 'it' } = Astro.props;
+
+const pillars = {
+  it: [
+    {
+      pillar: 'progettare' as const,
+      title: 'Progettare',
+      tagline: 'Sistemi che reggono quando cresci.',
+      link: '/servizi/#architecture',
+      cta: 'Scopri di piu\u0300 →',
+    },
+    {
+      pillar: 'verificare' as const,
+      title: 'Verificare',
+      tagline: 'Vedi cosa succede. Proteggi quello che conta.',
+      link: '/servizi/#observability-security',
+      cta: 'Scopri di piu\u0300 →',
+    },
+    {
+      pillar: 'automatizzare' as const,
+      title: 'Automatizzare',
+      tagline: "Togli l'errore umano dal loop.",
+      link: '/servizi/#pipeline-automation',
+      cta: 'Scopri di piu\u0300 →',
+    },
+  ],
+  en: [
+    {
+      pillar: 'progettare' as const,
+      title: 'Design',
+      tagline: 'Systems that hold up as you grow.',
+      link: '/servizi/#architecture',
+      cta: 'Learn more →',
+    },
+    {
+      pillar: 'verificare' as const,
+      title: 'Verify',
+      tagline: 'See what happens. Protect what matters.',
+      link: '/servizi/#observability-security',
+      cta: 'Learn more →',
+    },
+    {
+      pillar: 'automatizzare' as const,
+      title: 'Automate',
+      tagline: 'Remove the human error from the loop.',
+      link: '/servizi/#pipeline-automation',
+      cta: 'Learn more →',
+    },
+  ],
+};
+
+const cards = pillars[lang];
+---
+
+<section class="py-20">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {cards.map((card) => (
+        <Card pillar={card.pillar}>
+          <h3 class="text-xl font-bold mb-3">{card.title}</h3>
+          <p class="text-text-muted mb-4">{card.tagline}</p>
+          <a href={card.link} class="text-accent font-medium hover:underline">
+            {card.cta}
+          </a>
+        </Card>
+      ))}
+    </div>
+  </div>
+</section>
