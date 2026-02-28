@@ -72,7 +72,7 @@ Noi definiamo solamente le caratteristiche che desideriamo, in questo caso un co
 
 ## Componenti Core di CAPI
 
-![CAPI Core Components](imgs/management-cluster.svg)
+![CAPI Core Components](/images/posts/kubernetes/02-capi-part2-internals/management-cluster.svg)
 
 ### CAPI Core Controller
 

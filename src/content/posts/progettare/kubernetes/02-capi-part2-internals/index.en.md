@@ -71,7 +71,7 @@ We only define the characteristics we desire, in this case a control plane manag
 
 ## CAPI Core Components
 
-![CAPI Core Components](imgs/management-cluster.svg)
+![CAPI Core Components](/images/posts/kubernetes/02-capi-part2-internals/management-cluster.svg)
 
 ### CAPI Core Controller
 
