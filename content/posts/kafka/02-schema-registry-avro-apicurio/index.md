@@ -88,10 +88,10 @@ services:
     ports:
       - "9092:9092"
     healthcheck:
-      test: kafka-broker-api-versions --bootstrap-server localhost:9092
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      test: kafka-broker-api-versions --bootstrap-server localhost:29092 > /dev/null 2>&1
+      interval: 5s
+      timeout: 10s
+      retries: 10
 
   schema-registry:
     image: apicurio/apicurio-registry:3.0.4
@@ -188,7 +188,7 @@ const { SchemaRegistry, SchemaType } = require("@kafkajs/confluent-schema-regist
 const fs = require("fs");
 const path = require("path");
 
-const BROKER = process.env.KAFKA_BROKER || "localhost:9092";
+const BROKER = process.env.KAFKA_BROKER || "localhost:29092";
 const REGISTRY_URL = process.env.SCHEMA_REGISTRY_URL || "http://localhost:8081";
 const TOPIC = "sensor-data";
 
@@ -261,7 +261,7 @@ from confluent_kafka.schema_registry import SchemaRegistryClient
 from confluent_kafka.schema_registry.avro import AvroDeserializer
 from confluent_kafka.serialization import MessageField, SerializationContext
 
-BROKER = os.environ.get("KAFKA_BROKER", "localhost:9092")
+BROKER = os.environ.get("KAFKA_BROKER", "localhost:29092")
 REGISTRY_URL = os.environ.get("SCHEMA_REGISTRY_URL", "http://localhost:8081")
 TOPIC = "sensor-data"
 
@@ -351,7 +351,7 @@ Dalla migrazione del sistema da JSON senza schema ad Avro con Apicurio emergono 
 
 **4. L'API Confluent-compatible di Apicurio è il fattore abilitante.** Il path `/apis/ccompat/v7` permette di usare `@kafkajs/confluent-schema-registry` per Node.js e `confluent-kafka[avro]` per Python senza nessuna modifica. Non serve cercare librerie client specifiche per Apicurio. Questo riduce significativamente il costo della migrazione.
 
-**5. Schema inline vs file .avsc.** Per servizi interpretati (Node.js, Python) caricare il file `.avsc` a runtime funziona bene. Per servizi compilati (Scala) può essere più pratico avere lo schema inline nel codice o generato a build-time, specialmente se si usa `SpecificRecord`. I file `.avsc` sono mantenuti in una directory condivisa nel repository (`schemas/avro/`) come source of truth, e ogni servizio li carica nel modo più naturale per il suo linguaggio.
+**5. Schema inline vs file .avsc.** Per servizi interpretati (Node.js, Python) caricare il file `.avsc` a runtime funziona bene. Per servizi compilati (Scala) può essere più pratico avere lo schema inline nel codice o generato a build-time, specialmente se si usa `SpecificRecord`. I file `.avsc` sono mantenuti in una directory condivisa nel repository (`schemas/`) come source of truth, e ogni servizio li carica nel modo più naturale per il suo linguaggio.
 
 ---
 

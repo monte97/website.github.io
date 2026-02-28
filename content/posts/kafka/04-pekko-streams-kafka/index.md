@@ -74,7 +74,7 @@ val producer = new KafkaProducer[String, GenericRecord](KafkaProducerConfig.prod
 
 implicit val materializer: Materializer = Materializer(context.system)
 
-val (queue, _) = Source.queue[C40StandardModel](bufferSize = 256, OverflowStrategy.dropHead)
+val (queue, _) = Source.queue[C40StandardModel](bufferSize = 100, OverflowStrategy.dropHead)
   .mapAsync(parallelism = 4) { data =>
     val record = new ProducerRecord[String, GenericRecord](
       KafkaProducerConfig.topic,
@@ -98,7 +98,7 @@ val enqueueData: C40StandardModel => Unit = { data =>
 
 Il flusso è questo:
 
-1. Si crea un `Source.queue` con buffer di 256 elementi e strategia `dropHead` (se il buffer è pieno, scarta il messaggio più vecchio)
+1. Si crea un `Source.queue` con buffer di 100 elementi e strategia `dropHead` (se il buffer è pieno, scarta il messaggio più vecchio)
 2. Ogni elemento che entra nella queue viene convertito in un `GenericRecord` Avro e inviato a Kafka in modo asincrono tramite `mapAsync`, che evita di bloccare il thread del materializer e propaga correttamente gli errori del producer
 3. Gli attori `HttpC40Reader` ricevono la funzione `enqueueData` e la chiamano quando hanno nuovi dati
 
