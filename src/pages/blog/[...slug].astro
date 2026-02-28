@@ -1,0 +1,36 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import BlogPostLayout from '@/layouts/BlogPostLayout.astro';
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection('posts');
+  return posts
+    .filter(p => p.data.lang === 'it' && !p.data.draft)
+    .map(post => {
+      const slug = post.id.replace(/\/index(\.en)?$/, '');
+      return {
+        params: { slug },
+        props: { post },
+      };
+    });
+}) satisfies GetStaticPaths;
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const editUrl = `https://github.com/monte97/website.github.io/edit/main/src/content/posts/${post.id}.md`;
+---
+
+<BlogPostLayout
+  title={post.data.title}
+  description={post.data.description}
+  date={post.data.date}
+  pillar={post.data.pillar}
+  tags={post.data.tags}
+  headings={headings}
+  editUrl={editUrl}
+  series={post.data.series}
+  postId={post.id}
+>
+  <Content />
+</BlogPostLayout>

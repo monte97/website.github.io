@@ -1,0 +1,29 @@
+---
+interface Props {
+  lang?: 'it' | 'en';
+}
+const { lang = 'it' } = Astro.props;
+const t = lang === 'it'
+  ? { question: 'Ti è piaciuto questo articolo?', linkedin: 'Seguimi su LinkedIn', email: 'Scrivimi' }
+  : { question: 'Did you enjoy this article?', linkedin: 'Follow me on LinkedIn', email: 'Write me' };
+---
+
+<div class="border-t border-border dark:border-border-dark mt-12 pt-8 text-center">
+  <p class="text-lg font-medium mb-4">{t.question}</p>
+  <div class="flex items-center justify-center gap-4">
+    <a
+      href="https://linkedin.com/in/francesco-montelli"
+      target="_blank"
+      rel="noopener"
+      class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0077b5] text-white text-sm font-medium hover:bg-[#006399] transition-colors"
+    >
+      {t.linkedin}
+    </a>
+    <a
+      href="mailto:francesco@montelli.dev"
+      class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-text-muted/20 text-sm font-medium hover:bg-text-muted/30 transition-colors"
+    >
+      {t.email}
+    </a>
+  </div>
+</div>

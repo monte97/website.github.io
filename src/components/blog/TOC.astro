@@ -1,0 +1,30 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+interface Props {
+  headings: Heading[];
+}
+const { headings } = Astro.props;
+const filtered = headings.filter(h => h.depth >= 2 && h.depth <= 3);
+---
+
+{filtered.length > 0 && (
+  <nav class="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto">
+    <h4 class="text-sm font-semibold mb-3 text-text-muted uppercase tracking-wide">Indice</h4>
+    <ul class="space-y-1.5 text-sm">
+      {filtered.map(h => (
+        <li style={`padding-left: ${(h.depth - 2) * 0.75}rem`}>
+          <a
+            href={`#${h.slug}`}
+            class="text-text-muted hover:text-accent transition-colors block py-0.5 border-l-2 border-transparent hover:border-accent pl-2"
+          >
+            {h.text}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}
