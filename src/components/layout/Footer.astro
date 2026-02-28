@@ -1,0 +1,21 @@
+---
+interface Props {
+  lang?: 'it' | 'en';
+}
+
+const { lang = 'it' } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-border dark:border-border-dark mt-20">
+  <div class="max-w-6xl mx-auto px-4 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-4">
+      <a href="mailto:francesco@montelli.dev" class="text-text-muted hover:text-accent transition-colors text-sm">Email</a>
+      <a href="https://linkedin.com/in/francesco-montelli" target="_blank" rel="noopener" class="text-text-muted hover:text-accent transition-colors text-sm">LinkedIn</a>
+      <a href="https://github.com/monte97" target="_blank" rel="noopener" class="text-text-muted hover:text-accent transition-colors text-sm">GitHub</a>
+    </div>
+    <p class="text-text-muted text-sm">
+      &copy; {year} Francesco Montelli. {lang === 'it' ? 'Tutti i diritti riservati' : 'All rights reserved'}.
+    </p>
+  </div>
+</footer>
