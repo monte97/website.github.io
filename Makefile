@@ -1,48 +1,16 @@
-.PHONY: help build build-prod dev clean new-post new-project new-note update-modules index
+.PHONY: help dev build preview clean
 
-help:
-	@echo "Comandi disponibili:"
-	@echo "  make build           - Compila il sito (minificazione abilitata)"
-	@echo "  make build-prod      - Compila il sito per la produzione (con garbage collection)"
-	@echo "  make dev             - Avvia il server di sviluppo con live reload"
-	@echo "  make clean           - Elimina la cartella 'public'"
-	@echo "  make new-post        - Crea un nuovo blog post interattivo"
-	@echo "  make new-project     - Crea un nuovo progetto interattivo"
-	@echo "  make new-note        - Crea una nuova nota interattiva"
-	@echo "  make update-modules  - Aggiorna i moduli Hugo e le dipendenze npm"
-	@echo "  make index           - Genera CONTENT_INDEX.md con l'indice dei post"
-	@echo "  make help            - Mostra questo aiuto"
+help: ## Show available commands
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
-build:
-	hugo --minify
+dev: ## Dev server with hot reload
+	npx astro dev
 
-build-prod:
-	hugo --gc --minify
+build: ## Build for production (includes Pagefind indexing)
+	npm run build
 
-dev:
-	hugo server --buildDrafts
+preview: ## Preview production build locally
+	npx astro preview
 
-clean:
-	rm -rf public/
-
-update-modules:
-	@echo "Aggiornamento moduli Hugo..."
-	hugo mod tidy
-	@echo "Preparazione dipendenze npm..."
-	hugo mod npm pack
-	@echo "Installazione dipendenze npm..."
-	npm install
-	@echo "Build del sito..."
-	hugo --minify
-
-new-post:
-	@./scripts/new_post.sh
-
-new-project:
-	@./scripts/new_project.sh
-
-new-note:
-	@./scripts/new_note.sh
-
-index:
-	@./scripts/content_index.sh
+clean: ## Remove build output
+	rm -rf dist .astro
