@@ -1,13 +1,21 @@
 ---
+import '../styles/global.css';
 ---
 <html lang="it">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>montelli.dev</title>
-  </head>
-  <body>
-    <h1>montelli.dev</h1>
-    <p>Astro scaffold working.</p>
-  </body>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>montelli.dev</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+</head>
+<body class="bg-base-light dark:bg-base-dark">
+  <main class="flex items-center justify-center min-h-screen">
+    <div class="text-center">
+      <h1 class="text-4xl font-bold text-accent">montelli.dev</h1>
+      <p class="text-text-muted mt-2">Tailwind design tokens working</p>
+    </div>
+  </main>
+</body>
 </html>

@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+/* Dark mode via class strategy */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Design tokens from style.md */
+@theme {
+  --color-base-dark: #1E1E2E;
+  --color-base-light: #F5F3EF;
+  --color-accent: #E8973A;
+  --color-accent-hover: #D4832E;
+  --color-text-dark: #2D2D3A;
+  --color-text-light: #E0DDD6;
+  --color-text-muted: #8A8A96;
+  --color-border: #D4D1CA;
+  --color-border-dark: #3A3A4C;
+  --color-pillar-progettare: #5B7FA5;
+  --color-pillar-verificare: #6B9B78;
+  --color-pillar-automatizzare: #9B7FB5;
+  --color-code-bg: #1E1E2E;
+  --color-code-inline-light: #F0EDE6;
+  --color-code-inline-dark: #2A2A3C;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+/* Base styles */
+html {
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-base-light);
+  color: var(--color-text-dark);
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+
+.dark body {
+  background-color: var(--color-base-dark);
+  color: var(--color-text-light);
+}
+
+/* Prose max-width for readability */
+.prose {
+  max-width: 70ch;
+}
+
+/* Inline code */
+:not(pre) > code {
+  background-color: var(--color-code-inline-light);
+  padding: 0.125rem 0.375rem;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+}
+
+.dark :not(pre) > code {
+  background-color: var(--color-code-inline-dark);
+}
+
+/* Code blocks */
+pre {
+  background-color: var(--color-code-bg) !important;
+  border-radius: 8px;
+  padding: 1rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+}
+
+/* Shiki dual theme support */
+html:not(.dark) .shiki,
+html:not(.dark) .shiki span {
+  color: var(--shiki-light) !important;
+  background-color: var(--shiki-light-bg) !important;
+}
+
+html.dark .shiki,
+html.dark .shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}
