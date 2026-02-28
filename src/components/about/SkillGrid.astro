@@ -1,0 +1,24 @@
+---
+import { skills } from '@/data/skills';
+---
+
+<div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-6">
+  {skills.map((skill) => (
+    <a
+      href={skill.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-border/20 dark:hover:bg-border-dark/30 transition-colors"
+      title={skill.summary}
+    >
+      {skill.logo ? (
+        <img src={skill.logo} alt={skill.name} class="w-10 h-10 object-contain" />
+      ) : (
+        <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent font-bold text-sm">
+          {skill.name.charAt(0)}
+        </div>
+      )}
+      <span class="text-xs text-center font-medium text-text-dark dark:text-text-light">{skill.name}</span>
+    </a>
+  ))}
+</div>
