@@ -1,0 +1,40 @@
+---
+import Button from '@/components/ui/Button.astro';
+
+interface Props {
+  lang?: 'it' | 'en';
+}
+
+const { lang = 'it' } = Astro.props;
+
+const text = {
+  it: {
+    title: 'Contatto',
+    cta: 'Inizia dal Health Check →',
+  },
+  en: {
+    title: 'Contact',
+    cta: 'Start with a Health Check →',
+  },
+};
+
+const t = text[lang];
+---
+
+<section class="py-20">
+  <div class="max-w-3xl mx-auto px-6 text-center">
+    <h2 class="text-3xl font-bold mb-6">{t.title}</h2>
+    <p class="text-text-muted text-lg mb-8">
+      <a href="mailto:francesco@montelli.dev" class="text-accent hover:underline">
+        francesco@montelli.dev
+      </a>
+      <span class="mx-3 text-border dark:text-border-dark">|</span>
+      <a href="https://linkedin.com/in/francesco-montelli" class="text-accent hover:underline" target="_blank" rel="noopener noreferrer">
+        LinkedIn
+      </a>
+    </p>
+    <Button href="/servizi/#health-check" size="lg">
+      {t.cta}
+    </Button>
+  </div>
+</section>
