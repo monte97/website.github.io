@@ -82,3 +82,21 @@ html.dark .shiki span {
   color: var(--shiki-dark) !important;
   background-color: var(--shiki-dark-bg) !important;
 }
+
+/* Pagefind theme */
+:root {
+  --pagefind-ui-scale: 0.9;
+  --pagefind-ui-primary: #E8973A;
+  --pagefind-ui-text: #2D2D3A;
+  --pagefind-ui-background: #F5F3EF;
+  --pagefind-ui-border: #D4D1CA;
+  --pagefind-ui-border-radius: 8px;
+  --pagefind-ui-font: "Inter", system-ui, sans-serif;
+}
+
+.dark {
+  --pagefind-ui-primary: #E8973A;
+  --pagefind-ui-text: #E0DDD6;
+  --pagefind-ui-background: #1E1E2E;
+  --pagefind-ui-border: #3A3A4C;
+}

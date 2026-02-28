@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "postbuild": "pagefind --site dist --glob '**/*.html'",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -24,6 +25,7 @@
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^25.3.2",
     "js-yaml": "^4.1.1",
+    "pagefind": "^1.4.0",
     "tsx": "^4.21.0"
   }
 }
