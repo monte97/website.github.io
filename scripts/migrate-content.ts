@@ -93,8 +93,10 @@ function serializeFrontmatter(data: Record<string, any>, body: string): string {
 }
 
 function resolveDestination(relPath: string): DestMapping | null {
+  // Normalize: ensure relPath ends with / for consistent prefix matching
+  const normalized = relPath.endsWith('/') ? relPath : relPath + '/';
   for (const [prefix, dest] of PATH_TO_DEST) {
-    if (relPath.startsWith(prefix)) {
+    if (normalized.startsWith(prefix)) {
       return dest;
     }
   }
@@ -258,14 +260,19 @@ function copyAssets(srcDir: string, destDir: string): void {
   const entries = fs.readdirSync(srcDir, { withFileTypes: true });
 
   for (const entry of entries) {
-    // Skip index files (already processed) and hidden/pipeline dirs
+    // Skip index files (already processed), pipeline dirs, hidden dirs, and stray .md files
     if (entry.name === 'index.md' || entry.name === 'index.en.md') continue;
-    if (entry.name.startsWith('.pipeline')) continue;
+    if (entry.name.startsWith('.pipeline') || entry.name.startsWith('.reproducibility')) continue;
+    if (entry.name.startsWith('.')) continue;
+    // Skip non-index .md files (README.md, report.md, skeleton.md etc.)
+    if (entry.name.endsWith('.md') || entry.name.endsWith('.mdx')) continue;
 
     const srcPath = path.join(srcDir, entry.name);
     const destPath = path.join(destDir, entry.name);
 
     if (entry.isDirectory()) {
+      // Skip hidden subdirectories
+      if (entry.name.startsWith('.')) continue;
       fs.cpSync(srcPath, destPath, { recursive: true });
     } else {
       fs.copyFileSync(srcPath, destPath);
