@@ -5,6 +5,7 @@ import Footer from '@/components/layout/Footer.astro';
 import Badge from '@/components/ui/Badge.astro';
 import TOC from '@/components/blog/TOC.astro';
 import PostCTA from '@/components/blog/PostCTA.astro';
+import SeriesNav from '@/components/blog/SeriesNav.astro';
 
 interface Heading {
   depth: number;
@@ -110,8 +111,8 @@ if (pillar) {
       )}
     </header>
 
-    <!-- Series nav slot (filled by SeriesNav when series is defined) -->
-    <slot name="series-nav" />
+    <!-- Series navigation -->
+    {series && <SeriesNav series={series} currentId={postId} />}
 
     <!-- Two-column layout: content + TOC -->
     <div class="flex gap-12">

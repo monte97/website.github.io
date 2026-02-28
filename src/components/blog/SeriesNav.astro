@@ -1,0 +1,86 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+  series: string;
+  currentId: string;
+}
+
+const { series, currentId } = Astro.props;
+
+const allPosts = await getCollection('posts');
+const seriesPosts = allPosts
+  .filter(p => p.data.series === series && p.data.lang === 'it' && !p.data.draft)
+  .sort((a, b) => (a.data.seriesOrder ?? 0) - (b.data.seriesOrder ?? 0));
+
+const showNav = seriesPosts.length > 1;
+
+function postHref(postId: string): string {
+  const slug = postId.replace(/\/index(\.en)?$/, '');
+  return `/blog/${slug}/`;
+}
+
+const currentIndex = seriesPosts.findIndex(p => p.id === currentId);
+const prevPost = currentIndex > 0 ? seriesPosts[currentIndex - 1] : null;
+const nextPost = currentIndex < seriesPosts.length - 1 ? seriesPosts[currentIndex + 1] : null;
+
+// Format series name for display
+const seriesLabel = series
+  .replace(/-/g, ' ')
+  .replace(/\b\w/g, c => c.toUpperCase());
+---
+
+{showNav && (
+  <aside class="mb-10 rounded-lg border border-border dark:border-border-dark bg-text-muted/5 p-5">
+    <h4 class="text-sm font-semibold uppercase tracking-wide text-text-muted mb-3">
+      Serie: {seriesLabel}
+    </h4>
+
+    <ol class="space-y-1.5 text-sm mb-4">
+      {seriesPosts.map((post, i) => {
+        const isCurrent = post.id === currentId;
+        return (
+          <li>
+            {isCurrent ? (
+              <span class="block py-1 px-3 rounded border-l-2 border-accent font-medium text-accent bg-accent/5">
+                {i + 1}. {post.data.title}
+              </span>
+            ) : (
+              <a
+                href={postHref(post.id)}
+                class="block py-1 px-3 rounded border-l-2 border-transparent text-text-muted hover:text-accent hover:border-accent/50 transition-colors"
+              >
+                {i + 1}. {post.data.title}
+              </a>
+            )}
+          </li>
+        );
+      })}
+    </ol>
+
+    <div class="flex items-center justify-between gap-4 pt-3 border-t border-border dark:border-border-dark">
+      {prevPost ? (
+        <a
+          href={postHref(prevPost.id)}
+          class="text-sm text-text-muted hover:text-accent transition-colors truncate"
+          title={prevPost.data.title}
+        >
+          &larr; Precedente
+        </a>
+      ) : (
+        <span />
+      )}
+      {nextPost ? (
+        <a
+          href={postHref(nextPost.id)}
+          class="text-sm text-text-muted hover:text-accent transition-colors truncate text-right"
+          title={nextPost.data.title}
+        >
+          Successivo &rarr;
+        </a>
+      ) : (
+        <span />
+      )}
+    </div>
+  </aside>
+)}
