@@ -1,7 +1,22 @@
 ---
-import PageLayout from '@/layouts/PageLayout.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import Hero from '@/components/home/Hero.astro';
+import PillarCards from '@/components/home/PillarCards.astro';
+import FeaturedProjects from '@/components/home/FeaturedProjects.astro';
+import FilteredPosts from '@/components/home/FilteredPosts.astro';
+import AboutBrief from '@/components/home/AboutBrief.astro';
+import ContactSection from '@/components/home/ContactSection.astro';
 ---
-<PageLayout title="Home">
-  <h1 class="text-4xl font-bold text-accent">montelli.dev</h1>
-  <p class="text-text-muted mt-2">Layout working</p>
-</PageLayout>
+
+<BaseLayout title="Progetto, verifico e automatizzo sistemi software">
+  <Header lang="it" />
+  <Hero lang="it" />
+  <PillarCards lang="it" />
+  <FeaturedProjects lang="it" />
+  <FilteredPosts lang="it" />
+  <AboutBrief lang="it" />
+  <ContactSection lang="it" />
+  <Footer lang="it" />
+</BaseLayout>
