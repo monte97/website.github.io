@@ -1,0 +1,25 @@
+---
+interface Props {
+  pillar?: 'progettare' | 'verificare' | 'automatizzare' | null;
+  class?: string;
+}
+
+const { pillar, class: className = '' } = Astro.props;
+
+const borderColors: Record<string, string> = {
+  progettare: 'border-l-pillar-progettare',
+  verificare: 'border-l-pillar-verificare',
+  automatizzare: 'border-l-pillar-automatizzare',
+};
+
+const borderClass = pillar ? `border-l-[3px] ${borderColors[pillar]}` : '';
+---
+
+<div class:list={[
+  'bg-base-light dark:bg-base-dark/60 rounded-lg border border-border dark:border-border-dark p-6',
+  'shadow-sm hover:shadow transition-shadow duration-200',
+  borderClass,
+  className,
+]}>
+  <slot />
+</div>
