@@ -1,0 +1,59 @@
+---
+import { getCollection } from 'astro:content';
+import Card from '@/components/ui/Card.astro';
+import Badge from '@/components/ui/Badge.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+
+interface Props {
+  lang?: 'it' | 'en';
+}
+
+const { lang = 'it' } = Astro.props;
+
+const text = {
+  it: { title: 'Progetti selezionati', viewAll: 'Tutti i progetti →' },
+  en: { title: 'Featured Projects', viewAll: 'All projects →' },
+};
+
+const t = text[lang];
+
+const allProjects = await getCollection('projects');
+const featured = allProjects
+  .filter((p) => p.data.featured)
+  .sort((a, b) => a.data.weight - b.data.weight);
+
+const pillarLabels: Record<string, string> = {
+  progettare: lang === 'it' ? 'Progettare' : 'Design',
+  verificare: lang === 'it' ? 'Verificare' : 'Verify',
+  automatizzare: lang === 'it' ? 'Automatizzare' : 'Automate',
+};
+---
+
+<section class="py-20">
+  <div class="max-w-6xl mx-auto px-6">
+    <SectionHeading title={t.title} />
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {featured.map((project) => (
+        <Card pillar={project.data.pillar}>
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <h3 class="text-lg font-bold">{project.data.title}</h3>
+            <Badge pillar={project.data.pillar} class="shrink-0">
+              {pillarLabels[project.data.pillar]}
+            </Badge>
+          </div>
+          <p class="text-text-muted text-sm mb-4">{project.data.description}</p>
+          {project.data.links?.blog && (
+            <a href={project.data.links.blog} class="text-accent text-sm font-medium hover:underline">
+              {lang === 'it' ? 'Leggi di piu\u0300 →' : 'Read more →'}
+            </a>
+          )}
+          {project.data.links?.github && (
+            <a href={project.data.links.github} class="text-accent text-sm font-medium hover:underline ml-4">
+              GitHub →
+            </a>
+          )}
+        </Card>
+      ))}
+    </div>
+  </div>
+</section>
