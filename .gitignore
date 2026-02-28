@@ -1,6 +1,10 @@
 resources/*
 node_modules/*
 public/*
+!public/images/
+!public/files/
+!public/favicon.ico
+!public/site.webmanifest
 /.*
 .*/
 DOCS.md
