@@ -1,0 +1,102 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Button from '@/components/ui/Button.astro';
+import SkillGrid from '@/components/about/SkillGrid.astro';
+import Timeline from '@/components/about/Timeline.astro';
+import { author } from '@/data/author';
+import { experiences } from '@/data/experiences';
+import { degrees } from '@/data/education';
+import { publications } from '@/data/publications';
+
+const bio = "Software Engineer with 5+ years of experience on distributed systems. I work with growing teams and help them build infrastructure that scales without driving the team crazy. Registered with the Order of Engineers of the Province of Ravenna.";
+
+const experienceItems = experiences.flatMap((exp) =>
+  exp.positions.map((pos) => ({
+    title: pos.designation,
+    subtitle: exp.company.name,
+    period: pos.end ? `${pos.start} - ${pos.end}` : `${pos.start} - Present`,
+    description: pos.responsibilities.join('. ') + '.',
+  }))
+);
+
+const educationItems = degrees.map((deg) => ({
+  title: deg.name,
+  subtitle: deg.institution.name,
+  period: deg.timeframe,
+  description: [
+    deg.grade ? `Grade: ${deg.grade.achieved}` : null,
+    deg.thesis ? `Thesis: ${deg.thesis}` : null,
+  ].filter(Boolean).join(' — '),
+}));
+---
+
+<PageLayout title="About" lang="en">
+  {/* Bio */}
+  <section class="mb-20">
+    <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
+      <img
+        src={author.image}
+        alt={author.name}
+        class="w-32 h-32 rounded-full object-cover border-2 border-accent"
+      />
+      <div>
+        <h1 class="text-4xl font-bold mb-4">About me</h1>
+        <p class="text-text-muted text-lg leading-relaxed max-w-2xl">
+          {bio}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* Tech Stack */}
+  <section class="mb-20">
+    <SectionHeading title="Tech Stack" />
+    <SkillGrid />
+  </section>
+
+  {/* Experience */}
+  <section class="mb-20">
+    <SectionHeading title="Experience" />
+    <Timeline items={experienceItems} />
+  </section>
+
+  {/* Education */}
+  <section class="mb-20">
+    <SectionHeading title="Education" />
+    <Timeline items={educationItems} />
+  </section>
+
+  {/* Publications */}
+  <section class="mb-20">
+    <SectionHeading title="Publications" />
+    <div class="space-y-6">
+      {publications.map((pub) => (
+        <div class="border-l-2 border-accent pl-4">
+          <a
+            href={pub.paper.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-lg font-semibold text-text-dark dark:text-text-light hover:text-accent transition-colors"
+          >
+            {pub.title}
+          </a>
+          {pub.authors && (
+            <p class="text-sm text-text-muted mt-1">{pub.authors}</p>
+          )}
+          <p class="text-sm text-accent mt-1">
+            {pub.publishedIn.name} ({pub.publishedIn.date})
+          </p>
+          <p class="text-sm text-text-muted mt-2">{pub.paper.summary}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  {/* CV Download */}
+  <div class="text-center">
+    <Button href="/files/Francesco_Montelli_CV.pdf" variant="primary" size="lg">
+      Download CV (PDF)
+    </Button>
+  </div>
+</PageLayout>

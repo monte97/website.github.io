@@ -51,14 +51,15 @@ const pillarLabels: Record<string, { it: string; en: string }> = {
   automatizzare: { it: 'Automatizzare', en: 'Automate' },
 };
 
+const prefix = lang === 'en' ? '/en' : '';
 const breadcrumbs = [
-  { label: 'Home', href: '/' },
-  { label: 'Blog', href: '/blog/' },
+  { label: 'Home', href: `${prefix}/` || '/' },
+  { label: 'Blog', href: `${prefix}/blog/` },
 ];
 if (pillar) {
   breadcrumbs.push({
     label: pillarLabels[pillar][lang],
-    href: `/blog/${pillar}/`,
+    href: `${prefix}/blog/${pillar}/`,
   });
 }
 ---

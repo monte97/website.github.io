@@ -1,0 +1,55 @@
+---
+import { getCollection, render } from 'astro:content';
+import PageLayout from '@/layouts/PageLayout.astro';
+import Badge from '@/components/ui/Badge.astro';
+import Button from '@/components/ui/Button.astro';
+
+const services = (await getCollection('services')).sort((a, b) => a.data.weight - b.data.weight);
+
+const rendered = await Promise.all(
+  services.map(async (service) => {
+    const { Content } = await render(service);
+    return { service, Content };
+  })
+);
+
+const pillarLabels: Record<string, string> = {
+  progettare: 'Design',
+  verificare: 'Verify',
+  automatizzare: 'Automate',
+};
+---
+
+<PageLayout title="Services" lang="en">
+  <h1 class="text-4xl font-bold mb-4">How I can help</h1>
+  <p class="text-text-muted text-lg mb-16 max-w-2xl">
+    I help engineering teams build, monitor, and automate software systems with method.
+  </p>
+
+  <div class="space-y-16">
+    {rendered.map(({ service, Content }) => {
+      const slug = service.id;
+      const pillar = service.data.pillar;
+      const mailto = `mailto:francesco@montelli.dev?subject=${encodeURIComponent(service.data.title)}`;
+
+      return (
+        <section id={slug} class="scroll-mt-20">
+          <div class="flex items-center gap-3 mb-4">
+            <h2 class="text-2xl font-bold">{service.data.title}</h2>
+            {pillar !== 'tutti' && (
+              <Badge pillar={pillar as 'progettare' | 'verificare' | 'automatizzare'}>
+                {pillarLabels[pillar] ?? pillar}
+              </Badge>
+            )}
+          </div>
+          <div class="prose dark:prose-invert max-w-none text-text-muted mb-6">
+            <Content />
+          </div>
+          <Button href={mailto} variant="primary" size="sm">
+            {service.data.cta}
+          </Button>
+        </section>
+      );
+    })}
+  </div>
+</PageLayout>

@@ -1,0 +1,90 @@
+---
+import { getCollection } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import PageLayout from '@/layouts/PageLayout.astro';
+import PostCard from '@/components/blog/PostCard.astro';
+import Badge from '@/components/ui/Badge.astro';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const posts = (await getCollection('posts'))
+    .filter(p => p.data.lang === 'en' && !p.data.draft)
+    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  return paginate(posts, { pageSize: 12 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+
+function postHref(postId: string): string {
+  const slug = postId.replace(/\/index(-en|\.en)?$/, '');
+  return `/en/blog/${slug}/`;
+}
+
+const pillars = [
+  { label: 'All', href: '/en/blog/', active: true },
+  { label: 'Design', href: '/en/blog/progettare/', pillar: 'progettare' as const },
+  { label: 'Verify', href: '/en/blog/verificare/', pillar: 'verificare' as const },
+  { label: 'Automate', href: '/en/blog/automatizzare/', pillar: 'automatizzare' as const },
+];
+---
+
+<PageLayout title="Blog" description="Articles on software architecture, DevOps, observability and security" lang="en">
+  <h1 class="text-3xl md:text-4xl font-bold mb-6">Blog</h1>
+
+  <div class="flex flex-wrap gap-2 mb-10">
+    {pillars.map(p => (
+      <a href={p.href}>
+        <Badge
+          pillar={p.pillar}
+          class:list={[
+            'cursor-pointer transition-opacity text-sm',
+            p.active ? 'ring-2 ring-accent ring-offset-2 ring-offset-base-light dark:ring-offset-base-dark' : 'opacity-60 hover:opacity-100',
+          ]}
+        >
+          {p.label}
+        </Badge>
+      </a>
+    ))}
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {page.data.map((post) => (
+      <PostCard
+        title={post.data.title}
+        description={post.data.description}
+        date={post.data.date}
+        pillar={post.data.pillar}
+        tags={post.data.tags}
+        href={postHref(post.id)}
+        lang="en"
+      />
+    ))}
+  </div>
+
+  {page.lastPage > 1 && (
+    <nav class="flex items-center justify-center gap-4 mt-12" aria-label="Pagination">
+      {page.url.prev ? (
+        <a href={page.url.prev} class="inline-flex items-center gap-1 px-4 py-2 rounded-lg border border-border dark:border-border-dark text-sm font-medium hover:bg-border/20 dark:hover:bg-border-dark/20 transition-colors">
+          &larr; Previous
+        </a>
+      ) : (
+        <span class="inline-flex items-center gap-1 px-4 py-2 rounded-lg border border-border/50 dark:border-border-dark/50 text-sm font-medium text-text-muted/50 cursor-not-allowed">
+          &larr; Previous
+        </span>
+      )}
+
+      <span class="text-sm text-text-muted">
+        Page {page.currentPage} of {page.lastPage}
+      </span>
+
+      {page.url.next ? (
+        <a href={page.url.next} class="inline-flex items-center gap-1 px-4 py-2 rounded-lg border border-border dark:border-border-dark text-sm font-medium hover:bg-border/20 dark:hover:bg-border-dark/20 transition-colors">
+          Next &rarr;
+        </a>
+      ) : (
+        <span class="inline-flex items-center gap-1 px-4 py-2 rounded-lg border border-border/50 dark:border-border-dark/50 text-sm font-medium text-text-muted/50 cursor-not-allowed">
+          Next &rarr;
+        </span>
+      )}
+    </nav>
+  )}
+</PageLayout>
