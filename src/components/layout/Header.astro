@@ -78,7 +78,11 @@ const langSwitchHref = lang === 'it'
 </header>
 
 <script>
-  const toggle = document.getElementById('mobile-menu-toggle');
-  const menu = document.getElementById('mobile-menu');
-  toggle?.addEventListener('click', () => menu?.classList.toggle('hidden'));
+  function initMobileMenu() {
+    const toggle = document.getElementById('mobile-menu-toggle');
+    const menu = document.getElementById('mobile-menu');
+    toggle?.addEventListener('click', () => menu?.classList.toggle('hidden'));
+  }
+  initMobileMenu();
+  document.addEventListener('astro:after-swap', initMobileMenu);
 </script>
