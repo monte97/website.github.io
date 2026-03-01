@@ -1,5 +1,6 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
 import Button from '@/components/ui/Button.astro';
 import SkillGrid from '@/components/about/SkillGrid.astro';
@@ -8,8 +9,13 @@ import { author } from '@/data/author';
 import { experiences } from '@/data/experiences';
 import { degrees } from '@/data/education';
 import { publications } from '@/data/publications';
+import { getCollection } from 'astro:content';
 
-const bio = "Software Engineer con oltre 5 anni di esperienza su sistemi distribuiti. Lavoro con team che crescono e li aiuto a costruire infrastrutture che scalano senza che il team impazzisca. Iscritto all'Ordine degli Ingegneri della Provincia di Ravenna.";
+const bio = author.bio.it;
+
+const allPosts = await getCollection('posts');
+const articleCount = allPosts.filter((p) => p.data.lang === 'it' && !p.data.draft && p.data.pillar !== null).length;
+const yearsExperience = new Date().getFullYear() - 2021;
 
 const experienceItems = experiences.flatMap((exp) =>
   exp.positions.map((pos) => ({
@@ -32,45 +38,55 @@ const educationItems = degrees.map((deg) => ({
 ---
 
 <PageLayout title="About">
+  <PageHero
+    title="Chi sono"
+    subtitle="Backend Engineer & DevOps Consultant"
+    image={{ src: author.image, alt: author.name }}
+    cta={{ href: '/files/Francesco_Montelli_CV.pdf', label: 'Scarica CV' }}
+  />
+
   {/* Bio */}
-  <section class="mb-20">
-    <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
-      <img
-        src={author.image}
-        alt={author.name}
-        class="w-32 h-32 rounded-full object-cover border-2 border-accent"
-      />
+  <section class="mb-20 fade-in-section">
+    <p class="text-text-muted text-lg leading-relaxed max-w-2xl">
+      {bio}
+    </p>
+    <div class="flex gap-8 mt-6">
       <div>
-        <h1 class="text-4xl font-bold mb-4">Chi sono</h1>
-        <p class="text-text-muted text-lg leading-relaxed max-w-2xl">
-          {bio}
-        </p>
+        <span class="text-3xl font-bold text-accent">{yearsExperience}+</span>
+        <p class="text-sm text-text-muted">anni di esperienza</p>
+      </div>
+      <div>
+        <span class="text-3xl font-bold text-accent">{articleCount}</span>
+        <p class="text-sm text-text-muted">articoli pubblicati</p>
       </div>
     </div>
   </section>
 
   {/* Stack tecnologico */}
-  <section class="mb-20">
+  <section class="mb-20 fade-in-section">
     <SectionHeading title="Stack tecnologico" />
     <SkillGrid />
   </section>
 
   {/* Esperienze */}
-  <section class="mb-20">
+  <section class="mb-20 fade-in-section">
     <SectionHeading title="Esperienze" />
     <Timeline items={experienceItems} />
   </section>
 
   {/* Istruzione */}
-  <section class="mb-20">
+  <section class="mb-20 fade-in-section">
     <SectionHeading title="Istruzione" />
     <Timeline items={educationItems} />
   </section>
 
   {/* Pubblicazioni */}
-  <section class="mb-20">
+  <section class="mb-20 fade-in-section">
     <SectionHeading title="Pubblicazioni" />
-    <div class="space-y-6">
+    <p class="text-text-muted mb-6 max-w-2xl">
+      Membro del Comitato Tecnico-Scientifico di Operai dell'Arte APS. Ho supervisionato tesi di laurea e collaborato a pubblicazioni peer-reviewed in ambito geomatica e patrimonio culturale.
+    </p>
+    <div class="space-y-6 stagger-children">
       {publications.map((pub) => (
         <div class="border-l-2 border-accent pl-4">
           <a
@@ -93,10 +109,22 @@ const educationItems = degrees.map((deg) => ({
     </div>
   </section>
 
-  {/* CV Download */}
-  <div class="text-center">
-    <Button href="/files/Francesco_Montelli_CV.pdf" variant="primary" size="lg">
-      Scarica CV (PDF)
-    </Button>
-  </div>
+  {/* CTA */}
+  <section class="text-center py-16 fade-in-section">
+    <h2 class="text-3xl font-bold mb-3">Lavoriamo insieme?</h2>
+    <p class="text-text-muted text-lg mb-8 max-w-xl mx-auto">
+      Costruisco infrastrutture che scalano. Se il tuo team sta crescendo, parliamone.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <Button href="/servizi/" variant="secondary" size="lg">
+        Vedi i servizi
+      </Button>
+      <Button href="/files/Francesco_Montelli_CV.pdf" variant="primary" size="lg">
+        Scarica CV
+      </Button>
+    </div>
+    <p class="mt-6 text-sm text-text-muted">
+      oppure scrivimi a <a href="mailto:francesco@montelli.dev" class="text-accent hover:underline">francesco@montelli.dev</a>
+    </p>
+  </section>
 </PageLayout>
