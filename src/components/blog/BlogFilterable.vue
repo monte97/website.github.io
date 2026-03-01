@@ -239,26 +239,6 @@
           </ul>
         </div>
 
-        <!-- Tags -->
-        <div v-if="allTags.length > 0">
-          <h3 class="text-xs font-bold uppercase tracking-wider text-text-muted mb-3">
-            Tags
-          </h3>
-          <div class="flex flex-wrap gap-1.5">
-            <button
-              v-for="tag in allTags"
-              :key="tag.name"
-              @click="toggleTag(tag.name)"
-              class="text-[11px] px-2 py-0.5 rounded-full transition-colors cursor-pointer"
-              :class="isTagActive(tag.name)
-                ? 'bg-accent/15 text-accent font-medium'
-                : 'text-text-muted/80 bg-text-muted/8 hover:bg-text-muted/15'"
-            >
-              {{ tag.name }}
-              <span class="opacity-60 ml-0.5">{{ tag.count }}</span>
-            </button>
-          </div>
-        </div>
 
       </div>
     </aside>
@@ -471,17 +451,6 @@ const series = computed(() => {
     .sort((a, b) => b.count - a.count);
 });
 
-const allTags = computed(() => {
-  const map = new Map<string, number>();
-  for (const post of props.posts) {
-    for (const tag of post.tags) {
-      map.set(tag, (map.get(tag) || 0) + 1);
-    }
-  }
-  return [...map.entries()]
-    .map(([name, count]) => ({ name, count }))
-    .sort((a, b) => b.count - a.count);
-});
 </script>
 
 <style scoped>
