@@ -1,0 +1,117 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '@/layouts/PageLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import Badge from '@/components/ui/Badge.astro';
+import { getPillarLabel } from '@/data/pillars';
+
+const allProjects = (await getCollection('projects'))
+  .sort((a, b) => a.data.weight - b.data.weight);
+
+const projects = allProjects.filter(p => p.data.type !== 'workshop');
+const workshops = allProjects.filter(p => p.data.type === 'workshop');
+const totalCount = allProjects.length;
+---
+
+<PageLayout title="Progetti" description="Progetti e casi reali su architettura software, observability, testing e DevOps">
+
+  <PageHero
+    title="Progetti & Workshop"
+    subtitle={`Casi reali, progetti formativi e workshop su cui ho lavorato. ${totalCount} progetti`}
+  />
+
+  <!-- Progetti section -->
+  {projects.length > 0 && (
+    <section class="mb-16 fade-in-section">
+      <h2 class="text-lg font-semibold tracking-tight mb-6 flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>
+        Progetti
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 stagger-children">
+        {projects.map((project) => (
+          <a
+            href={`/progetti/${project.id}/`}
+            class="group block rounded-xl border border-border/70 dark:border-border-dark/70 border-l-[3px] p-6 bg-white dark:bg-surface-dark hover:shadow-md hover:border-border dark:hover:border-border-dark transition-all duration-300"
+            style={`border-left-color: var(--color-pillar-${project.data.pillar})`}
+          >
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <h3 class="text-base font-bold text-text-dark dark:text-text-light group-hover:text-accent transition-colors">
+                {project.data.title}
+              </h3>
+              <Badge pillar={project.data.pillar} class="shrink-0">
+                {getPillarLabel(project.data.pillar)}
+              </Badge>
+            </div>
+            <p class="text-text-muted text-sm leading-relaxed mb-4">{project.data.description}</p>
+            <div class="flex flex-wrap gap-1.5">
+              {project.data.tags.slice(0, 5).map(tag => (
+                <span class="text-[11px] text-text-muted/80 bg-text-muted/8 px-1.5 py-0.5 rounded">{tag}</span>
+              ))}
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Workshop & Formazione section -->
+  {workshops.length > 0 && (
+    <section class="fade-in-section">
+      <h2 class="text-lg font-semibold tracking-tight mb-2 flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>
+        Workshop & Formazione
+      </h2>
+      <p class="text-text-muted text-sm mb-6">Corsi e materiali formativi su testing, security e best practice.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 stagger-children">
+        {workshops.map((ws) => (
+          <a
+            href={`/progetti/${ws.id}/`}
+            class="group block rounded-xl border border-border/70 dark:border-border-dark/70 border-l-[3px] p-6 bg-white dark:bg-surface-dark hover:shadow-md hover:border-border dark:hover:border-border-dark transition-all duration-300"
+            style={`border-left-color: var(--color-pillar-${ws.data.pillar})`}
+          >
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <h3 class="text-base font-bold text-text-dark dark:text-text-light group-hover:text-accent transition-colors">
+                {ws.data.title}
+              </h3>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="text-[10px] uppercase font-medium tracking-wide text-accent bg-accent/10 px-2 py-0.5 rounded-full">Workshop</span>
+                <Badge pillar={ws.data.pillar} class="shrink-0">
+                  {getPillarLabel(ws.data.pillar)}
+                </Badge>
+              </div>
+            </div>
+            <p class="text-text-muted text-sm leading-relaxed mb-4">{ws.data.description}</p>
+            <div class="flex flex-wrap gap-1.5">
+              {ws.data.tags.slice(0, 5).map(tag => (
+                <span class="text-[11px] text-text-muted/80 bg-text-muted/8 px-1.5 py-0.5 rounded">{tag}</span>
+              ))}
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- CTA bridge -->
+  <section class="mt-16 bg-accent-subtle rounded-xl p-8 text-center fade-in-section">
+    <h2 class="text-xl font-bold mb-2">Hai un progetto simile?</h2>
+    <p class="text-text-muted text-sm max-w-lg mx-auto mb-6">
+      Posso aiutarti a progettare, verificare o automatizzare. Partiamo da un health check gratuito.
+    </p>
+    <div class="flex items-center justify-center gap-3 flex-wrap">
+      <a
+        href="mailto:francesco@montelli.dev?subject=Nuovo%20progetto"
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-accent text-white text-sm font-medium hover:bg-accent-hover transition-colors"
+      >
+        Scrivimi
+      </a>
+      <a
+        href="/servizi/"
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-border dark:border-border-dark text-sm font-medium hover:border-accent hover:text-accent transition-colors"
+      >
+        Scopri i servizi
+      </a>
+    </div>
+  </section>
+
+</PageLayout>
