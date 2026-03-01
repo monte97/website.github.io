@@ -11,13 +11,6 @@
         class="group block mb-6"
       >
         <div class="rounded-xl border border-border/50 dark:border-border-dark/50 bg-white dark:bg-surface-dark overflow-hidden transition-shadow hover:shadow-md">
-          <img
-            v-if="featuredPost.heroImage"
-            :src="featuredPost.heroImage"
-            alt=""
-            class="w-full h-48 md:h-56 object-cover"
-            loading="eager"
-          />
           <div class="p-6">
             <!-- Meta row -->
             <div class="flex items-center gap-2 mb-3">
@@ -69,17 +62,10 @@
               'hover:border-border dark:hover:border-border-dark hover:shadow-md transition-all duration-300',
               post.pillar ? 'border-l-[3px]' : '',
               post.pillar ? pillarBorderClasses[post.pillar] : '',
-              post.heroImage ? 'overflow-hidden !p-0' : 'p-6',
+              'p-6',
             ]"
           >
-            <img
-              v-if="post.heroImage"
-              :src="post.heroImage"
-              alt=""
-              class="w-full h-36 object-cover"
-              loading="lazy"
-            />
-            <div :class="post.heroImage ? 'p-6' : ''">
+            <div>
               <!-- Meta row -->
               <div class="flex items-center gap-2 mb-3">
                 <time
