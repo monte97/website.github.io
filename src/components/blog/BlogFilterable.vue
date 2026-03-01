@@ -3,7 +3,7 @@
     <!-- Main content -->
     <div class="flex-1 min-w-0">
       <Transition name="grid-fade" mode="out-in">
-      <div :key="activeFilter ? `${activeFilter.type}:${activeFilter.value}` : 'all'">
+      <div :key="(activeGroupFilter ? `${activeGroupFilter.type}:${activeGroupFilter.value}` : 'none') + ':' + [...activeTags.value].sort().join(',')">
       <!-- Featured post (first post, full width) -->
       <a
         v-if="featuredPost"
@@ -120,9 +120,9 @@
                 <button
                   v-for="tag in post.tags.slice(0, 3)"
                   :key="tag"
-                  @click.prevent.stop="toggleFilter('tag', tag)"
+                  @click.prevent.stop="toggleTag(tag)"
                   class="text-[11px] px-1.5 py-0.5 rounded transition-colors cursor-pointer"
-                  :class="isActive('tag', tag)
+                  :class="isTagActive(tag)
                     ? 'bg-accent/15 text-accent'
                     : 'text-text-muted/80 bg-text-muted/8 hover:bg-text-muted/15'"
                 >
@@ -140,7 +140,7 @@
           {{ lang === 'en' ? 'No articles for this filter.' : 'Nessun articolo per questo filtro.' }}
         </p>
         <button
-          @click="clearFilter"
+          @click="clearAllFilters"
           class="px-4 py-2 rounded-lg border border-border dark:border-border-dark text-sm font-medium hover:border-accent transition-colors cursor-pointer"
         >
           {{ lang === 'en' ? 'Clear filter' : 'Rimuovi filtro' }}
@@ -154,17 +154,39 @@
     <aside class="hidden lg:block lg:w-56 shrink-0">
       <div class="lg:sticky lg:top-20 space-y-8">
 
-        <!-- Active filter chip -->
-        <div v-if="activeFilter" class="flex items-center gap-2">
-          <span class="text-xs text-text-muted">{{ lang === 'en' ? 'Filter:' : 'Filtro:' }}</span>
+        <!-- Active filter chips -->
+        <div v-if="hasAnyFilter" class="flex flex-wrap items-center gap-2">
+          <span class="text-xs text-text-muted">{{ lang === 'en' ? 'Filters:' : 'Filtri:' }}</span>
+          <!-- Group filter chip -->
           <button
-            @click="clearFilter"
+            v-if="activeGroupFilter"
+            @click="clearGroupFilter"
             class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-accent/15 text-accent hover:bg-accent/25 transition-colors cursor-pointer"
           >
-            {{ filterDisplayLabel }}
+            {{ groupFilterLabel }}
             <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
             </svg>
+          </button>
+          <!-- Tag chips -->
+          <button
+            v-for="tag in activeTags"
+            :key="tag"
+            @click="toggleTag(tag)"
+            class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-accent/15 text-accent hover:bg-accent/25 transition-colors cursor-pointer"
+          >
+            {{ tag }}
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+          <!-- Clear all -->
+          <button
+            v-if="activeGroupFilter && activeTags.size > 0"
+            @click="clearAllFilters"
+            class="text-xs text-text-muted hover:text-accent transition-colors cursor-pointer ml-1"
+          >
+            {{ lang === 'en' ? 'Clear all' : 'Rimuovi tutti' }}
           </button>
         </div>
 
@@ -176,9 +198,9 @@
           <ul class="space-y-1">
             <li v-for="cat in categories" :key="cat.name">
               <button
-                @click="toggleFilter('category', cat.name)"
+                @click="toggleGroupFilter('category', cat.name)"
                 class="w-full flex items-center justify-between py-1 px-2 rounded-md text-sm transition-colors cursor-pointer"
-                :class="isActive('category', cat.name)
+                :class="isGroupActive('category', cat.name)
                   ? 'bg-accent/10 text-accent font-medium'
                   : 'hover:bg-text-muted/10 text-text-dark dark:text-text-light'"
               >
@@ -204,9 +226,9 @@
           <ul class="space-y-1">
             <li v-for="s in series" :key="s.name">
               <button
-                @click="toggleFilter('series', s.name)"
+                @click="toggleGroupFilter('series', s.name)"
                 class="w-full flex items-center justify-between py-1 px-2 rounded-md text-sm transition-colors cursor-pointer"
-                :class="isActive('series', s.name)
+                :class="isGroupActive('series', s.name)
                   ? 'bg-accent/10 text-accent font-medium'
                   : 'hover:bg-text-muted/10 text-text-dark dark:text-text-light'"
               >
@@ -215,6 +237,27 @@
               </button>
             </li>
           </ul>
+        </div>
+
+        <!-- Tags -->
+        <div v-if="allTags.length > 0">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-text-muted mb-3">
+            Tags
+          </h3>
+          <div class="flex flex-wrap gap-1.5">
+            <button
+              v-for="tag in allTags"
+              :key="tag.name"
+              @click="toggleTag(tag.name)"
+              class="text-[11px] px-2 py-0.5 rounded-full transition-colors cursor-pointer"
+              :class="isTagActive(tag.name)
+                ? 'bg-accent/15 text-accent font-medium'
+                : 'text-text-muted/80 bg-text-muted/8 hover:bg-text-muted/15'"
+            >
+              {{ tag.name }}
+              <span class="opacity-60 ml-0.5">{{ tag.count }}</span>
+            </button>
+          </div>
         </div>
 
       </div>
@@ -277,59 +320,95 @@ function getPillarLabel(pillar: string): string {
 
 // ── Filter state ──
 
-const activeFilter = ref<{ type: 'category' | 'series' | 'tag'; value: string } | null>(null);
+// Group filter: category OR series (single select, mutually exclusive)
+const activeGroupFilter = ref<{ type: 'category' | 'series'; value: string } | null>(null);
 
-function toggleFilter(type: 'category' | 'series' | 'tag', value: string) {
-  if (activeFilter.value?.type === type && activeFilter.value?.value === value) {
-    activeFilter.value = null;
+// Tag filter: multi-select, OR logic among tags
+const activeTags = ref<Set<string>>(new Set());
+
+function toggleGroupFilter(type: 'category' | 'series', value: string) {
+  if (activeGroupFilter.value?.type === type && activeGroupFilter.value?.value === value) {
+    activeGroupFilter.value = null;
   } else {
-    activeFilter.value = { type, value };
+    activeGroupFilter.value = { type, value };
   }
 }
 
-function isActive(type: string, value: string): boolean {
-  return activeFilter.value?.type === type && activeFilter.value?.value === value;
+function toggleTag(tag: string) {
+  const newSet = new Set(activeTags.value);
+  if (newSet.has(tag)) {
+    newSet.delete(tag);
+  } else {
+    newSet.add(tag);
+  }
+  activeTags.value = newSet;
 }
 
-function clearFilter() {
-  activeFilter.value = null;
+function isGroupActive(type: string, value: string): boolean {
+  return activeGroupFilter.value?.type === type && activeGroupFilter.value?.value === value;
 }
+
+function isTagActive(tag: string): boolean {
+  return activeTags.value.has(tag);
+}
+
+function clearAllFilters() {
+  activeGroupFilter.value = null;
+  activeTags.value = new Set();
+}
+
+function clearGroupFilter() {
+  activeGroupFilter.value = null;
+}
+
+function clearTags() {
+  activeTags.value = new Set();
+}
+
+const hasAnyFilter = computed(() => {
+  return activeGroupFilter.value !== null || activeTags.value.size > 0;
+});
 
 // ── Filtered posts & splitting ──
 
 const filteredPosts = computed(() => {
-  if (!activeFilter.value) return props.posts;
-  const { type, value } = activeFilter.value;
-  switch (type) {
-    case 'category':
-      return props.posts.filter(p => p.category === value);
-    case 'series':
-      return props.posts.filter(p => p.series === value);
-    case 'tag':
-      return props.posts.filter(p => p.tags.includes(value));
-    default:
-      return props.posts;
+  let result = props.posts;
+
+  // Apply group filter (category or series)
+  if (activeGroupFilter.value) {
+    const { type, value } = activeGroupFilter.value;
+    if (type === 'category') {
+      result = result.filter(p => p.category === value);
+    } else if (type === 'series') {
+      result = result.filter(p => p.series === value);
+    }
   }
+
+  // Apply tag filter (OR logic: post must have at least one of the selected tags)
+  if (activeTags.value.size > 0) {
+    const tags = activeTags.value;
+    result = result.filter(p => p.tags.some(t => tags.has(t)));
+  }
+
+  return result;
 });
 
 const featuredPost = computed(() => {
-  if (activeFilter.value) return null;  // No featured when filtering
+  if (hasAnyFilter.value) return null;
   return filteredPosts.value[0] ?? null;
 });
 
 const gridPosts = computed(() => {
-  if (activeFilter.value) return filteredPosts.value;  // All posts in grid when filtering
-  return filteredPosts.value.slice(1);  // Skip featured
+  if (hasAnyFilter.value) return filteredPosts.value;
+  return filteredPosts.value.slice(1);
 });
 
-const filterDisplayLabel = computed(() => {
-  if (!activeFilter.value) return '';
-  const { type, value } = activeFilter.value;
-  switch (type) {
-    case 'category': return categoryLabels[value] || value;
-    case 'series': return seriesLabels[value] || value;
-    case 'tag': return value;
-  }
+const groupFilterLabel = computed(() => {
+  if (!activeGroupFilter.value) return '';
+  const { type, value } = activeGroupFilter.value;
+  if (type === 'category') return categoryLabels[value] || value;
+  if (type === 'series') return seriesLabels[value] || value;
+  return value;
 });
 
 // ── Sidebar: labels & helpers ──
@@ -392,7 +471,17 @@ const series = computed(() => {
     .sort((a, b) => b.count - a.count);
 });
 
-// (filter functions defined above in "Filter state" section)
+const allTags = computed(() => {
+  const map = new Map<string, number>();
+  for (const post of props.posts) {
+    for (const tag of post.tags) {
+      map.set(tag, (map.get(tag) || 0) + 1);
+    }
+  }
+  return [...map.entries()]
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+});
 </script>
 
 <style scoped>
