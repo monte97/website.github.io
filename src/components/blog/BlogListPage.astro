@@ -48,9 +48,9 @@ const pillars = lang === 'en'
     ];
 
 const activePillarStyles: Record<string, string> = {
-  progettare: 'bg-pillar-progettare/15 text-pillar-progettare border border-pillar-progettare/30',
-  verificare: 'bg-pillar-verificare/15 text-pillar-verificare border border-pillar-verificare/30',
-  automatizzare: 'bg-pillar-automatizzare/15 text-pillar-automatizzare border border-pillar-automatizzare/30',
+  progettare: 'bg-pillar-progettare/15 text-pillar-progettare border-2 border-pillar-progettare/30',
+  verificare: 'bg-pillar-verificare/15 text-pillar-verificare border-2 border-pillar-verificare/30',
+  automatizzare: 'bg-pillar-automatizzare/15 text-pillar-automatizzare border-2 border-pillar-automatizzare/30',
 };
 
 const t = lang === 'en'
@@ -103,23 +103,25 @@ const serializedPosts = (activePillar
 
   <div class="fade-in-section">
     <!-- Pillar tabs + search -->
-    <div class="flex flex-wrap items-center gap-2 mb-8">
+    <div class="flex flex-wrap items-center gap-3 mb-10">
       {pillars.map(p => {
         const count = p.pillar ? pillarCounts[p.pillar] || 0 : allPosts.length;
         const activeStyle = p.active
           ? (p.pillar
               ? activePillarStyles[p.pillar]
-              : 'bg-accent/15 text-accent border border-accent/30')
-          : 'text-text-muted hover:text-text-dark dark:hover:text-text-light hover:bg-text-muted/10 border border-transparent';
+              : 'bg-accent/15 text-accent border-2 border-accent/30')
+          : p.pillar
+            ? `text-text-muted hover:text-pillar-${p.pillar} border-2 border-transparent hover:border-pillar-${p.pillar}/30 hover:bg-pillar-${p.pillar}/5`
+            : 'text-text-muted hover:text-text-dark dark:hover:text-text-light border-2 border-transparent hover:bg-text-muted/10';
         return (
           <a
             href={p.href}
             class:list={[
-              'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
+              'px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200',
               activeStyle,
             ]}
           >
-            {p.label} <span class="text-xs opacity-70 ml-1">{count}</span>
+            {p.label} <span class="text-xs opacity-60 ml-1">{count}</span>
           </a>
         );
       })}
