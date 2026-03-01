@@ -1,8 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
-import BaseLayout from '@/layouts/BaseLayout.astro';
-import Header from '@/components/layout/Header.astro';
-import Footer from '@/components/layout/Footer.astro';
+import PageLayout from '@/layouts/PageLayout.astro';
 import PageHero from '@/components/ui/PageHero.astro';
 import Badge from '@/components/ui/Badge.astro';
 import Button from '@/components/ui/Button.astro';
@@ -59,15 +57,14 @@ const icons: Record<string, string> = {
 };
 ---
 
-<BaseLayout title="Services">
-  <Header lang="en" />
+<PageLayout title="Services" lang="en">
   <PageHero
     title="How I can help"
     subtitle="I help engineering teams build, monitor, and automate software systems with method."
-    cta={{ href: '#health-check', label: 'Start with a Health Check' }}
+    cta={{ href: 'mailto:francesco@montelli.dev', label: 'Get in touch' }}
   />
-  <main class="max-w-5xl mx-auto px-5 py-12">
-    {/* Other services as cards */}
+
+  {/* Services cards */}
     <div class="space-y-8">
       {otherServices.map(({ service, Content }) => {
         const slug = service.id;
@@ -150,6 +147,4 @@ const icons: Record<string, string> = {
         </Button>
       </section>
     )}
-  </main>
-  <Footer lang="en" />
-</BaseLayout>
+</PageLayout>
