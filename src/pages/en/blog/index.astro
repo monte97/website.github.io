@@ -1,11 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
-import type { GetStaticPaths } from 'astro';
 import BlogListPage from '@/components/blog/BlogListPage.astro';
-
-export const getStaticPaths = (() => {
-  return [{ params: { page: undefined } }];
-}) satisfies GetStaticPaths;
 
 const allPosts = (await getCollection('posts'))
   .filter(p => p.data.lang === 'en' && !p.data.draft);
