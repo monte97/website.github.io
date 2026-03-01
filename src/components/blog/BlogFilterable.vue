@@ -9,6 +9,7 @@
           <!-- "Tutti / All" pill -->
           <button
             @click="setPillar(null)"
+            :aria-pressed="activePillar === null"
             class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors cursor-pointer"
             :class="activePillar === null
               ? 'bg-accent/15 text-accent border-2 border-accent/30'
@@ -23,6 +24,7 @@
             v-for="p in pillars"
             :key="p"
             @click="setPillar(p)"
+            :aria-pressed="activePillar === p"
             class="px-3 py-1.5 rounded-full text-sm font-medium transition-colors cursor-pointer"
             :class="activePillar === p
               ? pillarStyles[p].tabActive
@@ -37,6 +39,8 @@
         <div class="relative" ref="dropdownRef">
           <button
             @click="dropdownOpen = !dropdownOpen"
+            aria-haspopup="listbox"
+            :aria-expanded="dropdownOpen"
             class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors cursor-pointer border"
             :class="activeCategory
               ? 'bg-accent/10 text-accent border-accent/30'
@@ -58,12 +62,16 @@
           <Transition name="dropdown">
             <div
               v-if="dropdownOpen"
+              role="listbox"
+              @keydown.escape="dropdownOpen = false"
               class="absolute right-0 top-full mt-1 w-56 bg-white dark:bg-surface-dark border border-border/70 dark:border-border-dark/70 rounded-xl shadow-lg z-20 py-1 overflow-hidden"
             >
               <button
                 v-for="cat in availableCategories"
                 :key="cat.name"
                 @click="setCategory(cat.name)"
+                role="option"
+                :aria-selected="activeCategory === cat.name"
                 class="w-full flex items-center justify-between px-3 py-2 text-sm transition-colors cursor-pointer"
                 :class="activeCategory === cat.name
                   ? 'bg-accent/10 text-accent font-medium'
@@ -96,6 +104,7 @@
         <button
           v-if="activePillar"
           @click="setPillar(null)"
+          aria-label="Remove pillar filter"
           class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-colors cursor-pointer"
           :class="pillarStyles[activePillar].badge"
         >
@@ -109,6 +118,7 @@
         <button
           v-if="activeCategory"
           @click="clearCategory"
+          aria-label="Remove category filter"
           class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-accent/15 text-accent hover:bg-accent/25 transition-colors cursor-pointer"
         >
           {{ categoryLabels[activeCategory] || activeCategory }}
@@ -122,6 +132,7 @@
           v-for="tag in activeTags"
           :key="tag"
           @click="toggleTag(tag)"
+          :aria-label="`Remove tag filter: ${tag}`"
           class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-accent/15 text-accent hover:bg-accent/25 transition-colors cursor-pointer"
         >
           {{ tag }}
