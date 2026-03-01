@@ -8,11 +8,12 @@ export const getStaticPaths = (() => {
 }) satisfies GetStaticPaths;
 
 const allPosts = (await getCollection('posts'))
-  .filter(p => p.data.lang === 'it' && !p.data.draft);
+  .filter(p => p.data.lang === 'en' && !p.data.draft);
 ---
 
 <BlogListPage
   allPosts={allPosts}
-  title="Blog - Verificare"
-  description="Articoli su testing, observability, monitoring e quality assurance"
+  title="Blog - Automate"
+  description="Articles on CI/CD, Infrastructure as Code, DevOps and automation"
+  lang="en"
 />

@@ -3,25 +3,17 @@ import { getCollection } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import BlogListPage from '@/components/blog/BlogListPage.astro';
 
-export const getStaticPaths = (async ({ paginate }) => {
-  const posts = (await getCollection('posts'))
-    .filter(p => p.data.lang === 'en' && !p.data.draft)
-    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-  return paginate(posts, { pageSize: 12 });
+export const getStaticPaths = (() => {
+  return [{ params: { page: undefined } }];
 }) satisfies GetStaticPaths;
-
-const { page } = Astro.props;
 
 const allPosts = (await getCollection('posts'))
   .filter(p => p.data.lang === 'en' && !p.data.draft);
 ---
 
 <BlogListPage
-  page={page}
   allPosts={allPosts}
-  activePillar={null}
   title="Blog"
   description="What I learn, I write down"
-  currentPath="/en/blog/"
   lang="en"
 />

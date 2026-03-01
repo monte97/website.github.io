@@ -1,84 +1,29 @@
 ---
-import type { Page } from 'astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import PageHero from '@/components/ui/PageHero.astro';
 import BlogFilterable from '@/components/blog/BlogFilterable.vue';
-import { postHref } from '@/utils/blog';
-import type { Pillar } from '@/data/pillars';
+import { postHref, estimateReadingTime, getHeroImage } from '@/utils/blog';
 
 interface Props {
-  page: Page;
   allPosts: any[];
-  activePillar: Pillar | null;
   title: string;
   description: string;
-  currentPath: string;
   lang?: 'it' | 'en';
 }
 
-const { page, allPosts, activePillar, title, description, currentPath, lang = 'it' } = Astro.props;
+const { allPosts, title, description, lang = 'it' } = Astro.props;
 
-const prefix = lang === 'en' ? '/en' : '';
-
-// Total count for the current view
-const totalCount = activePillar
-  ? allPosts.filter(p => p.data.pillar === activePillar).length
-  : allPosts.length;
-
-// Pillar post counts
-const pillarCounts: Record<string, number> = {};
-for (const p of allPosts) {
-  if (p.data.pillar) {
-    pillarCounts[p.data.pillar] = (pillarCounts[p.data.pillar] || 0) + 1;
-  }
-}
-
-const pillars = lang === 'en'
-  ? [
-      { label: 'All', href: `${prefix}/blog/`, pillar: undefined as Pillar | undefined, active: activePillar === null },
-      { label: 'Design', href: `${prefix}/blog/progettare/`, pillar: 'progettare' as const, active: activePillar === 'progettare' },
-      { label: 'Verify', href: `${prefix}/blog/verificare/`, pillar: 'verificare' as const, active: activePillar === 'verificare' },
-      { label: 'Automate', href: `${prefix}/blog/automatizzare/`, pillar: 'automatizzare' as const, active: activePillar === 'automatizzare' },
-    ]
-  : [
-      { label: 'Tutti', href: '/blog/', pillar: undefined as Pillar | undefined, active: activePillar === null },
-      { label: 'Progettare', href: '/blog/progettare/', pillar: 'progettare' as const, active: activePillar === 'progettare' },
-      { label: 'Verificare', href: '/blog/verificare/', pillar: 'verificare' as const, active: activePillar === 'verificare' },
-      { label: 'Automatizzare', href: '/blog/automatizzare/', pillar: 'automatizzare' as const, active: activePillar === 'automatizzare' },
-    ];
-
-const activePillarStyles: Record<string, string> = {
-  progettare: 'bg-pillar-progettare/15 text-pillar-progettare border-2 border-pillar-progettare/30',
-  verificare: 'bg-pillar-verificare/15 text-pillar-verificare border-2 border-pillar-verificare/30',
-  automatizzare: 'bg-pillar-automatizzare/15 text-pillar-automatizzare border-2 border-pillar-automatizzare/30',
-};
+const totalCount = allPosts.length;
 
 const t = lang === 'en'
-  ? { prev: 'Previous', next: 'Next', paginationLabel: 'Pagination', search: 'Search articles...', noResults: 'No results', articles: 'articles' }
-  : { prev: 'Precedente', next: 'Successiva', paginationLabel: 'Paginazione', search: 'Cerca articoli...', noResults: 'Nessun risultato', articles: 'articoli' };
+  ? { articles: 'articles' }
+  : { articles: 'articoli' };
 
-// Hero image resolution via import.meta.glob
+// Hero image resolution via import.meta.glob (must stay here — Vite statically analyzes globs)
 const heroImages = import.meta.glob<{ default: { src: string } }>('/src/content/posts/**/hero.webp', { eager: true });
 
-function getHeroImage(postId: string): string | null {
-  // postId looks like: "progettare/kafka/01-intro/index"
-  const dir = postId.replace(/\/index(\.en|-en)?$/, '');
-  const key = `/src/content/posts/${dir}/hero.webp`;
-  const img = heroImages[key];
-  return img?.default?.src || null;
-}
-
-// Reading time estimation
-function estimateReadingTime(post: any): number {
-  const words = post.body?.split(/\s+/).length || 0;
-  return Math.max(1, Math.ceil(words / 200));
-}
-
-// Serialize posts for the Vue component
-const serializedPosts = (activePillar
-  ? allPosts.filter(p => p.data.pillar === activePillar)
-  : allPosts
-)
+// Serialize ALL posts sorted by date descending for the Vue component
+const serializedPosts = allPosts
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .map(post => ({
     id: post.id,
@@ -90,8 +35,8 @@ const serializedPosts = (activePillar
     tags: post.data.tags,
     series: post.data.series,
     href: postHref(post.id, lang),
-    heroImage: getHeroImage(post.id) || undefined,
-    readingTime: estimateReadingTime(post),
+    heroImage: getHeroImage(post.id, heroImages) || undefined,
+    readingTime: estimateReadingTime(post.body),
   }));
 ---
 
@@ -102,63 +47,6 @@ const serializedPosts = (activePillar
   />
 
   <div class="fade-in-section">
-    <!-- Pillar tabs + search -->
-    <div class="flex flex-wrap items-center gap-3 mb-10">
-      {pillars.map(p => {
-        const count = p.pillar ? pillarCounts[p.pillar] || 0 : allPosts.length;
-        const activeStyle = p.active
-          ? (p.pillar
-              ? activePillarStyles[p.pillar]
-              : 'bg-accent/15 text-accent border-2 border-accent/30')
-          : p.pillar
-            ? `text-text-muted hover:text-pillar-${p.pillar} border-2 border-transparent hover:border-pillar-${p.pillar}/30 hover:bg-pillar-${p.pillar}/5`
-            : 'text-text-muted hover:text-text-dark dark:hover:text-text-light border-2 border-transparent hover:bg-text-muted/10';
-        return (
-          <a
-            href={p.href}
-            class:list={[
-              'px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200',
-              activeStyle,
-            ]}
-          >
-            {p.label} <span class="text-xs opacity-60 ml-1">{count}</span>
-          </a>
-        );
-      })}
-      <div class="ml-auto">
-        <div id="blog-search" class="w-64"></div>
-      </div>
-    </div>
-
-    <!-- Filterable post grid + sidebar (Vue island) -->
     <BlogFilterable client:load posts={serializedPosts} lang={lang} />
   </div>
 </PageLayout>
-
-<!-- Pagefind inline search (only works after build) -->
-<script define:vars={{ searchPlaceholder: t.search, noResultsText: t.noResults }}>
-  function initBlogSearch() {
-    const container = document.getElementById('blog-search');
-    if (!container || container.children.length > 0) return;
-
-    const script = document.createElement('script');
-    script.src = '/pagefind/pagefind-ui.js';
-    script.onload = () => {
-      const PagefindUI = window.PagefindUI;
-      if (!PagefindUI) return;
-      new PagefindUI({
-        element: '#blog-search',
-        showSubResults: false,
-        showImages: false,
-        resetStyles: false,
-        translations: {
-          placeholder: searchPlaceholder,
-          zero_results: noResultsText,
-        },
-      });
-    };
-    document.head.appendChild(script);
-  }
-  initBlogSearch();
-  document.addEventListener('astro:after-swap', initBlogSearch);
-</script>
