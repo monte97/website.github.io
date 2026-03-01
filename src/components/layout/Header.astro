@@ -10,12 +10,16 @@ const { lang = 'it' } = Astro.props;
 
 const nav = {
   it: [
+    { label: 'Home', href: '/' },
     { label: 'Blog', href: '/blog/' },
+    { label: 'Progetti', href: '/progetti/' },
     { label: 'Servizi', href: '/servizi/' },
     { label: 'About', href: '/about/' },
   ],
   en: [
+    { label: 'Home', href: '/en/' },
     { label: 'Blog', href: '/en/blog/' },
+    { label: 'Projects', href: '/en/progetti/' },
     { label: 'Services', href: '/en/services/' },
     { label: 'About', href: '/en/about/' },
   ],
@@ -25,54 +29,85 @@ const currentPath = Astro.url.pathname;
 const langSwitchHref = lang === 'it'
   ? `/en${currentPath}`
   : currentPath.replace(/^\/en/, '') || '/';
+
+function isActive(href: string): boolean {
+  if (href === '/' || href === '/en/') return currentPath === href;
+  return currentPath.startsWith(href);
+}
 ---
 
-<header class="sticky top-0 z-50 bg-base-light/80 dark:bg-base-dark/80 backdrop-blur-md border-b border-border dark:border-border-dark">
-  <nav class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-    <a href={lang === 'it' ? '/' : '/en/'} class="text-xl font-semibold hover:text-accent transition-colors">
-      montelli.dev
+<header class="sticky top-0 z-50 bg-base-light/95 dark:bg-base-dark/95 backdrop-blur-lg border-b border-border/60 dark:border-border-dark/60">
+  <nav class="max-w-5xl mx-auto px-5 h-14 flex items-center justify-between">
+
+    <!-- Logo -->
+    <a href={lang === 'it' ? '/' : '/en/'} class="flex items-center gap-2 group">
+      <span class="w-8 h-8 rounded-md bg-accent flex items-center justify-center text-white text-sm font-bold tracking-tight transition-transform group-hover:scale-105">
+        M
+      </span>
+      <span class="text-sm font-semibold text-text-dark dark:text-text-light tracking-tight hidden sm:inline">
+        montelli.dev
+      </span>
     </a>
 
-    <div class="hidden md:flex items-center gap-6">
+    <!-- Desktop nav -->
+    <div class="hidden md:flex items-center gap-1">
       {nav[lang].map(item => (
         <a
           href={item.href}
           class:list={[
-            'text-sm font-medium transition-colors hover:text-accent',
-            currentPath.startsWith(item.href) ? 'text-accent' : 'text-text-muted',
+            'px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200',
+            isActive(item.href)
+              ? 'text-accent bg-accent-subtle'
+              : 'text-text-dark dark:text-text-light hover:text-accent hover:bg-accent-subtle',
           ]}
         >
           {item.label}
         </a>
       ))}
+    </div>
 
+    <!-- Right side actions -->
+    <div class="flex items-center gap-2">
       <SearchModal client:load />
 
-      <a href={langSwitchHref} class="text-sm text-text-muted hover:text-accent transition-colors">
+      <a
+        href={langSwitchHref}
+        class="px-2 py-1 rounded-md text-xs font-bold uppercase tracking-wider text-text-muted hover:text-accent hover:bg-accent-subtle transition-all duration-200"
+      >
         {lang === 'it' ? 'EN' : 'IT'}
       </a>
 
       <ThemeToggle client:load />
-    </div>
 
-    <button id="mobile-menu-toggle" class="md:hidden p-2 rounded-lg hover:bg-border/30 dark:hover:bg-border-dark/30 transition-colors" aria-label="Menu">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
-    </button>
+      <!-- Mobile hamburger -->
+      <button
+        id="mobile-menu-toggle"
+        class="md:hidden p-1.5 rounded-md hover:bg-accent-subtle transition-colors"
+        aria-label="Menu"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
   </nav>
 
-  <div id="mobile-menu" class="hidden md:hidden border-t border-border dark:border-border-dark bg-base-light dark:bg-base-dark px-4 py-4">
-    <div class="flex flex-col gap-3">
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="hidden md:hidden border-t border-border/60 dark:border-border-dark/60 bg-base-light dark:bg-base-dark px-5 py-3">
+    <div class="flex flex-col gap-1">
       {nav[lang].map(item => (
-        <a href={item.href} class="text-base font-medium text-text-muted hover:text-accent transition-colors py-1">
+        <a
+          href={item.href}
+          class:list={[
+            'px-3 py-2 rounded-md text-sm font-medium transition-all',
+            isActive(item.href)
+              ? 'text-accent bg-accent-subtle'
+              : 'text-text-dark dark:text-text-light hover:text-accent hover:bg-accent-subtle',
+          ]}
+        >
           {item.label}
         </a>
       ))}
-      <div class="flex items-center gap-4 pt-2 border-t border-border dark:border-border-dark">
-        <a href={langSwitchHref} class="text-sm text-text-muted hover:text-accent">{lang === 'it' ? 'EN' : 'IT'}</a>
-        <ThemeToggle client:load />
-      </div>
     </div>
   </div>
 </header>
