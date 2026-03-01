@@ -129,17 +129,66 @@
       </div>
     </div>
 
-    <!-- Sidebar placeholder -->
+    <!-- Sidebar -->
     <aside class="hidden lg:block lg:w-56 shrink-0">
       <div class="lg:sticky lg:top-20 space-y-8">
-        <p class="text-xs text-text-muted">Sidebar placeholder</p>
+
+        <!-- Categories -->
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-text-muted mb-3">
+            {{ lang === 'en' ? 'Topics' : 'Argomenti' }}
+          </h3>
+          <ul class="space-y-1">
+            <li v-for="cat in categories" :key="cat.name">
+              <button
+                @click="toggleFilter('category', cat.name)"
+                class="w-full flex items-center justify-between py-1 px-2 rounded-md text-sm transition-colors cursor-pointer"
+                :class="isActive('category', cat.name)
+                  ? 'bg-accent/10 text-accent font-medium'
+                  : 'hover:bg-text-muted/10 text-text-dark dark:text-text-light'"
+              >
+                <span class="flex items-center gap-2">
+                  <span
+                    v-if="cat.pillar"
+                    class="w-1.5 h-1.5 rounded-full"
+                    :class="pillarDotClasses[cat.pillar]"
+                  />
+                  {{ categoryLabels[cat.name] || cat.name }}
+                </span>
+                <span class="text-xs text-text-muted">{{ cat.count }}</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Series -->
+        <div v-if="series.length > 0">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-text-muted mb-3">
+            {{ lang === 'en' ? 'Series' : 'Serie' }}
+          </h3>
+          <ul class="space-y-1">
+            <li v-for="s in series" :key="s.name">
+              <button
+                @click="toggleFilter('series', s.name)"
+                class="w-full flex items-center justify-between py-1 px-2 rounded-md text-sm transition-colors cursor-pointer"
+                :class="isActive('series', s.name)
+                  ? 'bg-accent/10 text-accent font-medium'
+                  : 'hover:bg-text-muted/10 text-text-dark dark:text-text-light'"
+              >
+                {{ seriesLabels[s.name] || s.name }}
+                <span class="text-xs text-text-muted">{{ s.count }}</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+
       </div>
     </aside>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 
 export interface PostData {
   id: string;
@@ -195,4 +244,74 @@ function getPillarLabel(pillar: string): string {
 
 const featuredPost = computed(() => props.posts[0] ?? null);
 const gridPosts = computed(() => props.posts.slice(1));
+
+// ── Sidebar: labels & helpers ──
+
+const categoryLabels: Record<string, string> = {
+  kafka: 'Kafka',
+  kubernetes: 'Kubernetes',
+  'system-design': 'System Design',
+  keycloak: 'Keycloak',
+  observability: 'Observability',
+  devops: 'DevOps',
+  docker: 'Docker',
+  homelab: 'Homelab',
+  testing: 'Testing',
+  'web-development': 'Web Dev',
+  devcontainer: 'Dev Container',
+};
+
+const seriesLabels: Record<string, string> = {
+  kafka: 'Apache Kafka',
+  keycloak: 'Keycloak',
+  'kubernetes-fondamenti': 'Kubernetes Fondamenti',
+  'homelab-capi': 'Homelab CAPI',
+  linq: 'LINQ Deep Dive',
+  observability: 'Observability',
+  'performance-engineering': 'Performance Engineering',
+  cicd: 'CI/CD',
+  'unit-testing': 'Unit Testing',
+  playwright: 'Playwright',
+  'web-development': 'Web Development',
+};
+
+const pillarDotClasses: Record<string, string> = {
+  progettare: 'bg-pillar-progettare',
+  verificare: 'bg-pillar-verificare',
+  automatizzare: 'bg-pillar-automatizzare',
+};
+
+// ── Sidebar: computed data ──
+
+const categories = computed(() => {
+  const map = new Map<string, { count: number; pillar: string | null }>();
+  for (const post of props.posts) {
+    const existing = map.get(post.category);
+    if (existing) existing.count++;
+    else map.set(post.category, { count: 1, pillar: post.pillar });
+  }
+  return [...map.entries()]
+    .map(([name, { count, pillar }]) => ({ name, count, pillar }))
+    .sort((a, b) => b.count - a.count);
+});
+
+const series = computed(() => {
+  const map = new Map<string, number>();
+  for (const post of props.posts) {
+    if (post.series) map.set(post.series, (map.get(post.series) || 0) + 1);
+  }
+  return [...map.entries()]
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+});
+
+// ── Sidebar: filter placeholders (real logic in Task 4) ──
+
+function toggleFilter(type: string, value: string) {
+  // no-op for now
+}
+
+function isActive(type: string, value: string): boolean {
+  return false; // no-op for now
+}
 </script>
