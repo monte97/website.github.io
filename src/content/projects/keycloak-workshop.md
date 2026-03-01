@@ -1,6 +1,6 @@
 ---
-title: "Workshop Keycloak: Identity Management Completo"
-description: "Serie completa di articoli su Keycloak, OAuth 2.0, OpenID Connect e architetture Zero Trust con demo pratiche"
+title: "Workshop Keycloak: Identity Management"
+description: "Serie di 10+ articoli su OAuth 2.0, OpenID Connect e architetture Zero Trust, con demo pratiche e repository di esempio"
 type: workshop
 pillar: progettare
 featured: true
@@ -10,6 +10,4 @@ links:
 weight: 10
 ---
 
-Workshop completo su **Keycloak** e Identity & Access Management moderno, dalla teoria dei protocolli OAuth 2.0 e OpenID Connect fino all'implementazione pratica di architetture Zero Trust.
-
-Il progetto comprende una serie di articoli tecnici che coprono tutti gli aspetti dell'Identity Management enterprise, con demo funzionanti e repository di esempio.
+Percorso formativo completo su Identity & Access Management moderno. Dalla teoria dei protocolli OAuth 2.0 e OpenID Connect fino all'implementazione di architetture Zero Trust con Keycloak. Ogni articolo include una demo funzionante e codice sorgente pubblico.
