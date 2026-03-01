@@ -115,23 +115,54 @@
                 v-if="post.tags && post.tags.length > 0"
                 class="flex flex-wrap gap-1.5 mt-3"
               >
-                <span
+                <button
                   v-for="tag in post.tags.slice(0, 3)"
                   :key="tag"
-                  class="text-[11px] text-text-muted/80 bg-text-muted/8 px-1.5 py-0.5 rounded"
+                  @click.prevent.stop="toggleFilter('tag', tag)"
+                  class="text-[11px] px-1.5 py-0.5 rounded transition-colors cursor-pointer"
+                  :class="isActive('tag', tag)
+                    ? 'bg-accent/15 text-accent'
+                    : 'text-text-muted/80 bg-text-muted/8 hover:bg-text-muted/15'"
                 >
                   {{ tag }}
-                </span>
+                </button>
               </div>
             </div>
           </div>
         </a>
+      </div>
+
+      <!-- Empty state -->
+      <div v-if="filteredPosts.length === 0" class="text-center py-12">
+        <p class="text-text-muted mb-4">
+          {{ lang === 'en' ? 'No articles for this filter.' : 'Nessun articolo per questo filtro.' }}
+        </p>
+        <button
+          @click="clearFilter"
+          class="px-4 py-2 rounded-lg border border-border dark:border-border-dark text-sm font-medium hover:border-accent transition-colors cursor-pointer"
+        >
+          {{ lang === 'en' ? 'Clear filter' : 'Rimuovi filtro' }}
+        </button>
       </div>
     </div>
 
     <!-- Sidebar -->
     <aside class="hidden lg:block lg:w-56 shrink-0">
       <div class="lg:sticky lg:top-20 space-y-8">
+
+        <!-- Active filter chip -->
+        <div v-if="activeFilter" class="flex items-center gap-2">
+          <span class="text-xs text-text-muted">{{ lang === 'en' ? 'Filter:' : 'Filtro:' }}</span>
+          <button
+            @click="clearFilter"
+            class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-accent/15 text-accent hover:bg-accent/25 transition-colors cursor-pointer"
+          >
+            {{ filterDisplayLabel }}
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
 
         <!-- Categories -->
         <div>
@@ -240,10 +271,62 @@ function getPillarLabel(pillar: string): string {
   return pillarLabels[pillar]?.[props.lang] ?? pillar;
 }
 
-// ── Post splitting ──
+// ── Filter state ──
 
-const featuredPost = computed(() => props.posts[0] ?? null);
-const gridPosts = computed(() => props.posts.slice(1));
+const activeFilter = ref<{ type: 'category' | 'series' | 'tag'; value: string } | null>(null);
+
+function toggleFilter(type: 'category' | 'series' | 'tag', value: string) {
+  if (activeFilter.value?.type === type && activeFilter.value?.value === value) {
+    activeFilter.value = null;
+  } else {
+    activeFilter.value = { type, value };
+  }
+}
+
+function isActive(type: string, value: string): boolean {
+  return activeFilter.value?.type === type && activeFilter.value?.value === value;
+}
+
+function clearFilter() {
+  activeFilter.value = null;
+}
+
+// ── Filtered posts & splitting ──
+
+const filteredPosts = computed(() => {
+  if (!activeFilter.value) return props.posts;
+  const { type, value } = activeFilter.value;
+  switch (type) {
+    case 'category':
+      return props.posts.filter(p => p.category === value);
+    case 'series':
+      return props.posts.filter(p => p.series === value);
+    case 'tag':
+      return props.posts.filter(p => p.tags.includes(value));
+    default:
+      return props.posts;
+  }
+});
+
+const featuredPost = computed(() => {
+  if (activeFilter.value) return null;  // No featured when filtering
+  return filteredPosts.value[0] ?? null;
+});
+
+const gridPosts = computed(() => {
+  if (activeFilter.value) return filteredPosts.value;  // All posts in grid when filtering
+  return filteredPosts.value.slice(1);  // Skip featured
+});
+
+const filterDisplayLabel = computed(() => {
+  if (!activeFilter.value) return '';
+  const { type, value } = activeFilter.value;
+  switch (type) {
+    case 'category': return categoryLabels[value] || value;
+    case 'series': return seriesLabels[value] || value;
+    case 'tag': return value;
+  }
+});
 
 // ── Sidebar: labels & helpers ──
 
@@ -305,13 +388,5 @@ const series = computed(() => {
     .sort((a, b) => b.count - a.count);
 });
 
-// ── Sidebar: filter placeholders (real logic in Task 4) ──
-
-function toggleFilter(type: string, value: string) {
-  // no-op for now
-}
-
-function isActive(type: string, value: string): boolean {
-  return false; // no-op for now
-}
+// (filter functions defined above in "Filter state" section)
 </script>
