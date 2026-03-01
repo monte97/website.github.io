@@ -74,10 +74,10 @@ const t = text[lang];
           {t.subtitle}
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
-          <Button href="/servizi/#health-check" size="md">
+          <Button href={lang === 'en' ? '/en/services/#health-check' : '/servizi/#health-check'} size="md">
             {t.cta} &rarr;
           </Button>
-          <Button href="/blog/" variant="secondary" size="md">
+          <Button href={lang === 'en' ? '/en/blog/' : '/blog/'} variant="secondary" size="md">
             {t.ctaSecondary}
           </Button>
         </div>
