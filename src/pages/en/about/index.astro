@@ -1,5 +1,6 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
 import Button from '@/components/ui/Button.astro';
 import SkillGrid from '@/components/about/SkillGrid.astro';
@@ -8,8 +9,13 @@ import { author } from '@/data/author';
 import { experiences } from '@/data/experiences';
 import { degrees } from '@/data/education';
 import { publications } from '@/data/publications';
+import { getCollection } from 'astro:content';
 
-const bio = "Software Engineer with 5+ years of experience on distributed systems. I work with growing teams and help them build infrastructure that scales without driving the team crazy. Registered with the Order of Engineers of the Province of Ravenna.";
+const bio = author.bio.en;
+
+const allPosts = await getCollection('posts');
+const articleCount = allPosts.filter((p) => p.data.lang === 'en' && !p.data.draft && p.data.pillar !== null).length;
+const yearsExperience = new Date().getFullYear() - 2021;
 
 const experienceItems = experiences.flatMap((exp) =>
   exp.positions.map((pos) => ({
@@ -32,45 +38,55 @@ const educationItems = degrees.map((deg) => ({
 ---
 
 <PageLayout title="About" lang="en">
+  <PageHero
+    title="About me"
+    subtitle="Backend Engineer & DevOps Consultant"
+    image={{ src: author.image, alt: author.name }}
+    cta={{ href: '/files/Francesco_Montelli_CV.pdf', label: 'Download CV' }}
+  />
+
   {/* Bio */}
-  <section class="mb-20">
-    <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
-      <img
-        src={author.image}
-        alt={author.name}
-        class="w-32 h-32 rounded-full object-cover border-2 border-accent"
-      />
+  <section class="mb-20 fade-in-section">
+    <p class="text-text-muted text-lg leading-relaxed max-w-2xl">
+      {bio}
+    </p>
+    <div class="flex gap-8 mt-6">
       <div>
-        <h1 class="text-4xl font-bold mb-4">About me</h1>
-        <p class="text-text-muted text-lg leading-relaxed max-w-2xl">
-          {bio}
-        </p>
+        <span class="text-3xl font-bold text-accent">{yearsExperience}+</span>
+        <p class="text-sm text-text-muted">years experience</p>
+      </div>
+      <div>
+        <span class="text-3xl font-bold text-accent">{articleCount}</span>
+        <p class="text-sm text-text-muted">articles published</p>
       </div>
     </div>
   </section>
 
   {/* Tech Stack */}
-  <section class="mb-20">
+  <section class="mb-20 fade-in-section">
     <SectionHeading title="Tech Stack" />
     <SkillGrid />
   </section>
 
   {/* Experience */}
-  <section class="mb-20">
+  <section class="mb-20 fade-in-section">
     <SectionHeading title="Experience" />
     <Timeline items={experienceItems} />
   </section>
 
   {/* Education */}
-  <section class="mb-20">
+  <section class="mb-20 fade-in-section">
     <SectionHeading title="Education" />
     <Timeline items={educationItems} />
   </section>
 
   {/* Publications */}
-  <section class="mb-20">
+  <section class="mb-20 fade-in-section">
     <SectionHeading title="Publications" />
-    <div class="space-y-6">
+    <p class="text-text-muted mb-6 max-w-2xl">
+      Member of the Scientific Committee of Operai dell'Arte APS. I have supervised master's theses and co-authored peer-reviewed publications in geomatics and cultural heritage.
+    </p>
+    <div class="space-y-6 stagger-children">
       {publications.map((pub) => (
         <div class="border-l-2 border-accent pl-4">
           <a
@@ -93,10 +109,22 @@ const educationItems = degrees.map((deg) => ({
     </div>
   </section>
 
-  {/* CV Download */}
-  <div class="text-center">
-    <Button href="/files/Francesco_Montelli_CV.pdf" variant="primary" size="lg">
-      Download CV (PDF)
-    </Button>
-  </div>
+  {/* CTA */}
+  <section class="text-center py-16 fade-in-section">
+    <h2 class="text-3xl font-bold mb-3">Let's work together?</h2>
+    <p class="text-text-muted text-lg mb-8 max-w-xl mx-auto">
+      I build infrastructure that scales. If your team is growing, let's talk.
+    </p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <Button href="/en/services/" variant="secondary" size="lg">
+        View services
+      </Button>
+      <Button href="/files/Francesco_Montelli_CV.pdf" variant="primary" size="lg">
+        Download CV
+      </Button>
+    </div>
+    <p class="mt-6 text-sm text-text-muted">
+      or write me at <a href="mailto:francesco@montelli.dev" class="text-accent hover:underline">francesco@montelli.dev</a>
+    </p>
+  </section>
 </PageLayout>
