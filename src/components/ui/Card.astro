@@ -1,23 +1,21 @@
 ---
+import { pillarStyles } from '@/data/pillar-styles';
+import type { Pillar } from '@/data/pillars';
+
 interface Props {
-  pillar?: 'progettare' | 'verificare' | 'automatizzare' | null;
+  pillar?: Pillar | null;
   class?: string;
 }
 
 const { pillar, class: className = '' } = Astro.props;
 
-const borderColors: Record<string, string> = {
-  progettare: 'border-l-pillar-progettare',
-  verificare: 'border-l-pillar-verificare',
-  automatizzare: 'border-l-pillar-automatizzare',
-};
-
-const borderClass = pillar ? `border-l-[3px] ${borderColors[pillar]}` : '';
+const borderClass = pillar ? `border-l-[3px] ${pillarStyles[pillar].borderLeft}` : '';
 ---
 
 <div class:list={[
-  'bg-base-light dark:bg-base-dark/60 rounded-lg border border-border dark:border-border-dark p-6',
-  'shadow-sm hover:shadow transition-shadow duration-200',
+  'bg-white dark:bg-surface-dark rounded-xl border border-border/70 dark:border-border-dark/70 p-6',
+  'hover:border-border dark:hover:border-border-dark hover:shadow-md transition-all duration-300',
+  'h-full flex flex-col',
   borderClass,
   className,
 ]}>

@@ -1,6 +1,7 @@
 ---
 title: "Workshop Keycloak: Identity Management Completo"
 description: "Serie completa di articoli su Keycloak, OAuth 2.0, OpenID Connect e architetture Zero Trust con demo pratiche"
+type: workshop
 pillar: progettare
 featured: true
 tags: ["Keycloak", "OAuth2", "OpenID Connect", "LDAP", "Docker"]

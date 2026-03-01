@@ -5,13 +5,15 @@ import Header from '@/components/layout/Header.astro';
 
 <BaseLayout title="Contatti">
   <Header lang="it" />
-  <div class="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12">
+  <main class="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12">
     <div class="w-full max-w-sm rounded-2xl border border-border dark:border-border-dark bg-base-light dark:bg-base-dark/80 shadow-xl p-8 text-center">
       {/* Photo with gradient ring */}
       <div class="mx-auto mb-6 w-28 h-28 rounded-full p-[3px] bg-gradient-to-br from-accent to-accent-hover">
         <img
           src="/images/author/monte.png"
           alt="Francesco Montelli"
+          width="112"
+          height="112"
           class="w-full h-full rounded-full object-cover border-2 border-base-light dark:border-base-dark"
         />
       </div>
@@ -56,5 +58,5 @@ import Header from '@/components/layout/Header.astro';
         </a>
       </div>
     </div>
-  </div>
+  </main>
 </BaseLayout>

@@ -1,6 +1,7 @@
 ---
 import Card from '@/components/ui/Card.astro';
 import Badge from '@/components/ui/Badge.astro';
+import { getPillarLabel } from '@/data/pillars';
 
 interface Props {
   title: string;
@@ -10,9 +11,11 @@ interface Props {
   tags: string[];
   href: string;
   lang?: 'it' | 'en';
+  heroImage?: string;
+  readingTime?: number;
 }
 
-const { title, description, date, pillar, tags, href, lang = 'it' } = Astro.props;
+const { title, description, date, pillar, tags, href, lang = 'it', heroImage, readingTime } = Astro.props;
 
 const formattedDate = date.toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-US', {
   year: 'numeric',
@@ -20,41 +23,43 @@ const formattedDate = date.toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-US',
   day: 'numeric',
 });
 
-const pillarLabels: Record<string, string> = {
-  progettare: lang === 'it' ? 'Progettare' : 'Design',
-  verificare: lang === 'it' ? 'Verificare' : 'Verify',
-  automatizzare: lang === 'it' ? 'Automatizzare' : 'Automate',
-};
-
 const displayTags = tags.slice(0, 3);
 ---
 
-<a href={href} class="group block">
-  <Card pillar={pillar}>
-    <div class="flex items-center gap-3 mb-2">
-      <time class="text-xs text-text-muted" datetime={date.toISOString()}>
-        {formattedDate}
-      </time>
-      {pillar && (
-        <Badge pillar={pillar}>
-          {pillarLabels[pillar]}
-        </Badge>
+<a href={href} class="group block h-full">
+  <Card pillar={pillar} class={heroImage ? 'overflow-hidden !p-0' : ''}>
+    {heroImage && (
+      <img src={heroImage} alt="" class="w-full h-36 object-cover" loading="lazy" />
+    )}
+    <div class:list={[heroImage ? 'p-6' : '', 'flex flex-col flex-1']}>
+      <div class="flex items-center gap-2 mb-3">
+        <time class="text-xs text-text-muted tabular-nums" datetime={date.toISOString()}>
+          {formattedDate}
+        </time>
+        {pillar && (
+          <Badge pillar={pillar}>
+            {getPillarLabel(pillar, lang)}
+          </Badge>
+        )}
+        {readingTime && (
+          <span class="text-xs text-text-muted">{readingTime} min</span>
+        )}
+      </div>
+      <h3 class="text-base font-semibold mb-1.5 text-text-dark dark:text-text-light group-hover:text-accent transition-colors leading-snug">
+        {title}
+      </h3>
+      <p class="text-text-muted text-sm line-clamp-2 leading-relaxed">
+        {description}
+      </p>
+      {displayTags.length > 0 && (
+        <div class="flex flex-wrap gap-1.5 mt-auto pt-3">
+          {displayTags.map((tag) => (
+            <span class="text-[11px] text-text-muted/80 bg-text-muted/8 px-1.5 py-0.5 rounded">
+              {tag}
+            </span>
+          ))}
+        </div>
       )}
     </div>
-    <h3 class="text-lg font-bold mb-2 group-hover:text-accent transition-colors">
-      {title}
-    </h3>
-    <p class="text-text-muted text-sm line-clamp-2 mb-3">
-      {description}
-    </p>
-    {displayTags.length > 0 && (
-      <div class="flex flex-wrap gap-1.5">
-        {displayTags.map((tag) => (
-          <span class="text-xs text-text-muted bg-text-muted/10 px-2 py-0.5 rounded">
-            {tag}
-          </span>
-        ))}
-      </div>
-    )}
   </Card>
 </a>

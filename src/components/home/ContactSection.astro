@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Button from '@/components/ui/Button.astro';
+import { yearsExperience } from '@/utils/blog';
 
 interface Props {
   lang?: 'it' | 'en';
@@ -47,7 +48,7 @@ const seriesCount = [...seriesSlugs].filter((slug) => {
   return postsInSeries.length >= 2;
 }).length;
 
-const yearsExperience = new Date().getFullYear() - 2021;
+const yrsExp = yearsExperience();
 ---
 
 <section class="py-24 border-t border-border/30 dark:border-border-dark/30 fade-in-section" aria-label={t.heading}>
@@ -78,7 +79,7 @@ const yearsExperience = new Date().getFullYear() - 2021;
         {t.series}
       </div>
       <div>
-        <span class="block text-lg font-bold text-text-dark dark:text-text-light">{yearsExperience}+</span>
+        <span class="block text-lg font-bold text-text-dark dark:text-text-light">{yrsExp}+</span>
         {t.years}
       </div>
     </div>

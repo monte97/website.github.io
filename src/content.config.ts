@@ -26,6 +26,7 @@ const projects = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
+    type: z.enum(['project', 'workshop']).default('project'),
     pillar: z.enum(['progettare', 'verificare', 'automatizzare']),
     featured: z.boolean().default(false),
     tags: z.array(z.string()).default([]),

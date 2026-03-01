@@ -1,20 +1,48 @@
 ---
 interface Props {
   lang?: 'it' | 'en';
+  pillar?: 'progettare' | 'verificare' | 'automatizzare' | null;
 }
-const { lang = 'it' } = Astro.props;
+const { lang = 'it', pillar } = Astro.props;
+
 const t = lang === 'it'
-  ? { question: 'Ti è piaciuto questo articolo?', linkedin: 'Seguimi su LinkedIn', email: 'Scrivimi' }
-  : { question: 'Did you enjoy this article?', linkedin: 'Follow me on LinkedIn', email: 'Write me' };
+  ? { question: 'Ti è piaciuto questo articolo?', linkedin: 'Seguimi su LinkedIn', email: 'Scrivimi', learnMore: 'Scopri il servizio' }
+  : { question: 'Did you enjoy this article?', linkedin: 'Follow me on LinkedIn', email: 'Write me', learnMore: 'Learn more' };
+
+const pillarCTA: Record<string, Record<string, { text: string; href: string }>> = {
+  it: {
+    progettare: { text: 'Hai bisogno di una revisione architetturale?', href: '/servizi/#architecture' },
+    verificare: { text: "Vuoi migliorare l'observability del tuo sistema?", href: '/servizi/#observability-security' },
+    automatizzare: { text: 'Vuoi automatizzare il tuo workflow?', href: '/servizi/#pipeline-automation' },
+  },
+  en: {
+    progettare: { text: 'Need an architectural review?', href: '/en/services/#architecture' },
+    verificare: { text: 'Want to improve your system observability?', href: '/en/services/#observability-security' },
+    automatizzare: { text: 'Want to automate your workflow?', href: '/en/services/#pipeline-automation' },
+  },
+};
+
+const ctaInfo = pillar ? pillarCTA[lang]?.[pillar] : null;
 ---
 
 <div class="border-t border-border dark:border-border-dark mt-12 pt-8 text-center">
+  {ctaInfo && (
+    <div class="mb-6">
+      <p class="text-lg font-medium mb-3">{ctaInfo.text}</p>
+      <a
+        href={ctaInfo.href}
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-accent text-white text-sm font-medium hover:bg-accent-hover transition-colors"
+      >
+        {t.learnMore} &rarr;
+      </a>
+    </div>
+  )}
   <p class="text-lg font-medium mb-4">{t.question}</p>
   <div class="flex items-center justify-center gap-4">
     <a
       href="https://linkedin.com/in/francesco-montelli"
       target="_blank"
-      rel="noopener"
+      rel="noopener noreferrer"
       class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0077b5] text-white text-sm font-medium hover:bg-[#006399] transition-colors"
     >
       {t.linkedin}

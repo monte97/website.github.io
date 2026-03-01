@@ -1,6 +1,5 @@
 export interface Degree {
   name: string;
-  icon: string;
   timeframe: string;
   institution: {
     name: string;
@@ -18,10 +17,9 @@ export interface Degree {
 export const degrees: Degree[] = [
   {
     name: 'LM in Ingegneria e Scienze Informatiche',
-    icon: 'fa-graduation-cap',
     timeframe: '2019-2021',
     institution: {
-      name: 'Universita\' di Bologna (UNIBO)',
+      name: 'Università di Bologna (UNIBO)',
       url: 'https://www.unibo.it',
       logo: '/images/sections/education/unibo.jpg',
     },
@@ -34,10 +32,9 @@ export const degrees: Degree[] = [
   },
   {
     name: 'Laurea in Ingegneria e Scienze Informatiche',
-    icon: 'fa-university',
     timeframe: '2016-2019',
     institution: {
-      name: 'Universita\' di Bologna (UNIBO)',
+      name: 'Università di Bologna (UNIBO)',
       url: 'https://www.unibo.it',
       logo: '/images/sections/education/unibo.jpg',
     },

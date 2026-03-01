@@ -3,20 +3,22 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import Hero from '@/components/home/Hero.astro';
+import StatsBar from '@/components/home/StatsBar.astro';
 import PillarCards from '@/components/home/PillarCards.astro';
 import FeaturedProjects from '@/components/home/FeaturedProjects.astro';
 import FilteredPosts from '@/components/home/FilteredPosts.astro';
-import AboutBrief from '@/components/home/AboutBrief.astro';
 import ContactSection from '@/components/home/ContactSection.astro';
 ---
 
 <BaseLayout title="I design, verify, and automate software systems" lang="en">
   <Header lang="en" />
-  <Hero lang="en" />
-  <PillarCards lang="en" />
-  <FeaturedProjects lang="en" />
-  <FilteredPosts lang="en" />
-  <AboutBrief lang="en" />
-  <ContactSection lang="en" />
+  <main>
+    <Hero lang="en" />
+    <StatsBar lang="en" />
+    <PillarCards lang="en" />
+    <FilteredPosts lang="en" />
+    <FeaturedProjects lang="en" />
+    <ContactSection lang="en" />
+  </main>
   <Footer lang="en" />
 </BaseLayout>

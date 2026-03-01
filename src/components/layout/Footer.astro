@@ -7,15 +7,16 @@ const { lang = 'it' } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
-<footer class="border-t border-border dark:border-border-dark mt-20">
-  <div class="max-w-6xl mx-auto px-4 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
-    <div class="flex items-center gap-4">
-      <a href="mailto:francesco@montelli.dev" class="text-text-muted hover:text-accent transition-colors text-sm">Email</a>
-      <a href="https://linkedin.com/in/francesco-montelli" target="_blank" rel="noopener" class="text-text-muted hover:text-accent transition-colors text-sm">LinkedIn</a>
-      <a href="https://github.com/monte97" target="_blank" rel="noopener" class="text-text-muted hover:text-accent transition-colors text-sm">GitHub</a>
-    </div>
-    <p class="text-text-muted text-sm">
-      &copy; {year} Francesco Montelli. {lang === 'it' ? 'Tutti i diritti riservati' : 'All rights reserved'}.
+<footer class="border-t border-border/60 dark:border-border-dark/60 mt-16">
+  <div class="max-w-5xl mx-auto px-5 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <p class="text-text-muted text-xs">
+      &copy; {year} Francesco Montelli &middot; P.IVA 02726990399
+      &middot; <a href="/privacy/" class="hover:text-accent transition-colors">{lang === 'it' ? 'Privacy Policy' : 'Privacy Policy'}</a>
     </p>
+    <div class="flex items-center gap-5">
+      <a href="mailto:francesco@montelli.dev" class="text-text-muted hover:text-accent transition-colors text-xs">Email</a>
+      <a href="https://linkedin.com/in/francesco-montelli" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-accent transition-colors text-xs">LinkedIn</a>
+      <a href="https://github.com/monte97" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-accent transition-colors text-xs">GitHub</a>
+    </div>
   </div>
 </footer>

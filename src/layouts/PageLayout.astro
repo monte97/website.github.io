@@ -15,7 +15,7 @@ const { title, description, ogImage, lang = 'it' } = Astro.props;
 
 <BaseLayout title={title} description={description} ogImage={ogImage} lang={lang}>
   <Header lang={lang} />
-  <main class="max-w-6xl mx-auto px-4 py-12">
+  <main class="max-w-5xl mx-auto px-5 py-12">
     <slot />
   </main>
   <Footer lang={lang} />

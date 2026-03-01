@@ -4,106 +4,110 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Hugo static site (montelli.dev) using **Toha theme v4** as a Hugo module. Bilingual (Italian default + English), deployed to GitHub Pages. Features blog, portfolio, notes.
+Astro static site (montelli.dev) with Vue islands for interactivity. Bilingual (Italian default + English with `/en/` prefix), deployed to GitHub Pages. Features blog, portfolio, services.
+
+**Tech stack**: Astro 5, Vue 3, Tailwind CSS v4, Pagefind (search), Shiki (syntax highlighting), KaTeX (math).
 
 ## Build & Development Commands
 
-All common operations are available via Makefile:
-
 | Command | Description |
 |---------|-------------|
-| `make dev` | Dev server with live reload (includes drafts) |
-| `make build` | Build with minification |
-| `make build-prod` | Production build (gc + minify) |
-| `make clean` | Remove `public/` |
-| `make update-modules` | Update Hugo modules + npm deps + rebuild |
-| `make new-post` | Interactive script to scaffold a new blog post |
-| `make new-project` | Interactive script to scaffold a new project |
-| `make new-note` | Interactive script to scaffold a new note |
+| `make dev` | Dev server with hot reload |
+| `make build` | Production build + Pagefind search indexing |
+| `make preview` | Preview production build locally |
+| `make clean` | Remove `dist/` and `.astro/` |
 
-Full Netlify-equivalent local build: `hugo mod tidy && hugo mod npm pack && npm install && hugo --gc --minify`
+Equivalent npm scripts: `npm run dev`, `npm run build` (includes postbuild Pagefind step), `npm run preview`.
 
-## Content Architecture
+## Architecture
 
-### Blog Post Organization
+### Routing & i18n
 
-Posts live under `content/posts/` organized by **topic categories**:
+File-based routing in `src/pages/`. Italian is the default language (no URL prefix). English pages live under `src/pages/en/` and serve at `/en/...`.
 
-```
-content/posts/
-├── kafka/                    # Series with umbrella _index.md
-│   ├── _index.md             # Series landing page
-│   ├── 01-intro/
-│   │   ├── index.md          # Italian (default)
-│   │   └── index.en.md       # English
-│   └── pekko-streams-kafka/
-├── kubernetes/               # Single posts (no _index.md needed)
-│   └── article-ingress-k8s/
-├── homelab-capi/             # Multi-part series
-│   ├── _index.md
-│   └── capi-part1-intro/
-└── ...
-```
+### Content Collections (`src/content/`)
 
-**Key patterns:**
-- **Single posts**: `content/posts/<category>/<slug>/index.md` (+ `index.en.md` for English)
-- **Series**: Add `_index.md` at category level to create a sidebar parent, then individual posts use `parent: CATEGORY_ID` in frontmatter
-- **Images**: Stored in `imgs/` subdirectory within each post directory
-- **Pipeline reviews**: Some posts have `.pipeline/` subdirectories with review artifacts (gitignored)
+Three Astro content collections defined in `src/content.config.ts`:
 
-### Frontmatter Structure
+- **posts** — Blog articles. Organized by pillar: `posts/progettare/`, `posts/verificare/`, `posts/automatizzare/`, `posts/altro/`. Each post is a directory with `index.md` (IT) and optionally `index.en.md` or `index-en.md` (EN). Hero images at `hero.webp` in each post directory.
+- **projects** — Portfolio projects (`type: 'project' | 'workshop'`).
+- **services** — Service offerings with pillar association.
+
+### Key Frontmatter (posts)
 
 ```yaml
----
-title: "Titolo Descrittivo con Keyword"
-date: 2025-07-30T21:30:00+02:00
-description: Descrizione breve per SEO e preview social
-menu:
-  sidebar:
-    name: Nome breve per sidebar
-    identifier: slug-unico
-    weight: 10
-    parent: categoria-parent  # for series members
-tags: ["Tag1", "Tag2"]
-categories: ["Categoria1"]
-reviewed: false
----
+title: string
+date: YYYY-MM-DD
+description: string
+pillar: progettare | verificare | automatizzare  # nullable
+category: string           # topic group (kafka, kubernetes, etc.)
+tags: [string]
+lang: it | en              # default: it
+draft: boolean             # default: false
+series: string             # optional, groups related posts
 ```
 
-- `parent` in `menu.sidebar` links a post to its series `_index.md` identifier
-- `weight` controls ordering within the sidebar
-- `draft: true` hides from production builds (visible only with `make dev`)
-- `reviewed: false` indicates the article has not yet passed the validation pipeline (`article-pipeline` skill). Set to `true` after successful review
+### Three-Pillar System
 
-### Site Data
+Content is organized around three pillars: **progettare** (Design), **verificare** (Verify), **automatizzare** (Automate). Each pillar has:
 
-`data/{it,en}/` contains YAML configs for non-blog content:
-- `site.yaml` — site metadata, footer, OpenGraph
-- `author.yaml` — profile information
-- `sections/*.yaml` — homepage sections (about, skills, experiences, education, projects, etc.)
+- A color defined in `src/styles/global.css` (`--color-pillar-{name}`)
+- Tailwind class mappings in `src/data/pillar-styles.ts`
+- Labels in `src/data/pillars.ts`
+- Dedicated blog filter routes (`/blog/progettare/`, etc.)
 
-## Theme & Styling
+### Component Architecture
 
-- Theme: Toha v4, imported as Hugo module (`hugo.yaml` → `module.imports`)
-- **Only modify `assets/styles/override.scss`** for CSS changes — never edit theme files directly
-- After theme updates: run `hugo mod npm pack && npm install` to sync npm deps
-- Theme updates automated via daily `theme-update.yml` workflow (creates PRs)
+```
+src/components/
+├── about/       — About page sections (SkillGrid, Timeline)
+├── blog/        — Blog components (BlogFilterable.vue, BlogListPage, PostCard, TOC, SeriesNav)
+├── home/        — Homepage sections (Hero, PillarCards, FilteredPosts, StatsBar, ContactSection)
+├── interactive/ — Client-side Vue islands (SearchModal, ThemeToggle)
+├── layout/      — Header, Footer
+└── ui/          — Reusable primitives (Badge, Button, Card, PageHero, SectionHeading)
+```
+
+**Layouts**: `BaseLayout.astro` (raw wrapper, used by home page), `PageLayout.astro` (adds `max-w-5xl` container), `BlogPostLayout.astro` (post-specific with TOC/series nav).
+
+**Vue islands**: `BlogFilterable.vue` (client-side filtering/sidebar), `SearchModal.vue` (Pagefind), `ThemeToggle.vue`. Use `client:load` directive.
+
+### Data Layer (`src/data/`)
+
+TypeScript modules for structured site data:
+
+| File | Content |
+|------|---------|
+| `author.ts` | Author name, bio (IT/EN) |
+| `pillars.ts` | Pillar type, labels |
+| `pillar-styles.ts` | Shared Tailwind class mappings for pillar colors |
+| `blog-labels.ts` | Display labels for categories and series |
+| `experiences.ts` | Work experience entries |
+| `education.ts` | Education entries |
+| `skills.ts` | Technical skills |
+| `publications.ts` | Publications |
+
+### Utilities (`src/utils/`)
+
+`blog.ts` contains shared functions: `postHref()`, `yearsExperience()`, `estimateReadingTime()`, `getHeroImage()`.
+
+## Styling
+
+- **Tailwind CSS v4** via Vite plugin — no `tailwind.config` file, tokens defined in `src/styles/global.css` using `@theme`.
+- Design tokens: warm editorial palette with accent orange (#E8973A), pillar-colored categories.
+- Fonts: Inter (sans), JetBrains Mono (code).
+- Dark mode: class-based toggle via ThemeToggle.vue.
 
 ## Deployment
 
-- **Production**: Push to `main` → `merge-to-main.yml` builds and deploys to `gh-pages` branch
-- **PRs**: `pull-request.yml` runs build + Lighthouse checks
-- **Netlify** (`netlify.toml`): Hugo 0.146.4, Node v23.11.0, deploy previews enabled for branches
+- **Production**: Push to `main` → `.github/workflows/deploy.yml` builds and deploys to GitHub Pages.
+- **PRs**: `.github/workflows/pr.yml` runs build to validate.
+- **Netlify**: `netlify.toml` configured for deploy previews on branches.
 
-## Key Configuration
+## Conventions
 
-- `hugo.yaml`: All site config — languages, features, taxonomies (tags, categories, technologies), theme params
-- Raw HTML allowed in markdown (`markup.goldmark.renderer.unsafe: true`)
-- Output formats: HTML, RSS, JSON (for client-side search)
-- Taxonomies: `tags`, `categories`, `technologies`
-
-## Important Notes
-
-- Italian is the default language (`defaultContentLanguage: it`). Always create `index.md` first, then `index.en.md`
-- Use `make new-post` to scaffold posts — it handles frontmatter and directory structure correctly
-- The style guide at `.claude/rules/style-guide.md` defines tone, formatting, and structural conventions for blog articles
+- Italian is always created first, English second.
+- `import.meta.glob` for hero images must stay in the consuming file (Vite static analysis). Pass the result to `getHeroImage()` from `@/utils/blog`.
+- Path alias `@/` maps to `src/`.
+- Blog post IDs follow the pattern `pillar/category/slug/index` (e.g., `progettare/kafka/01-intro/index`).
+- The style guide at `.claude/rules/style-guide.md` defines tone, formatting, and structural conventions for blog articles.

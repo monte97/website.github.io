@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { yearsExperience } from '@/utils/blog';
 
 interface Props {
   lang?: 'it' | 'en';
@@ -32,13 +33,13 @@ const seriesCount = [...seriesSlugs].filter((slug) => {
 const allProjects = await getCollection('projects');
 const projectCount = allProjects.length;
 
-const yearsExperience = new Date().getFullYear() - 2021;
+const yrsExp = yearsExperience();
 
 const stats = [
   { value: articleCount, label: t.articles },
   { value: seriesCount, label: t.series },
   { value: projectCount, label: t.projects },
-  { value: `${yearsExperience}+`, label: t.years },
+  { value: `${yrsExp}+`, label: t.years },
 ];
 ---
 

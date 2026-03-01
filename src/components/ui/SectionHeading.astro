@@ -2,12 +2,19 @@
 interface Props {
   title: string;
   subtitle?: string;
+  align?: 'left' | 'center';
 }
 
-const { title, subtitle } = Astro.props;
+const { title, subtitle, align = 'left' } = Astro.props;
 ---
 
-<div class="text-center mb-12">
-  <h2 class="text-3xl font-bold mb-3">{title}</h2>
-  {subtitle && <p class="text-text-muted text-lg">{subtitle}</p>}
+<div class:list={['mb-10', align === 'center' ? 'text-center' : '']}>
+  <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light">
+    {title}
+  </h2>
+  {subtitle && (
+    <p class="mt-2 text-text-muted text-base max-w-xl">
+      {subtitle}
+    </p>
+  )}
 </div>

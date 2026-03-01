@@ -1,6 +1,6 @@
 ---
 title: "OpenTelemetry Implementation"
-description: "Implementazione di observability con OpenTelemetry su applicazione C# moderna. Primo step di una strategia aziendale di miglioramento della visibilita'"
+description: "Implementazione di observability con OpenTelemetry su applicazione C# moderna. Primo step di una strategia aziendale di miglioramento della visibilità"
 pillar: verificare
 featured: true
 tags: ["OpenTelemetry", "C#/.NET", "Loki", "Grafana", "Tempo", "Mimir"]

@@ -2,6 +2,13 @@
 import { getCollection, render } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import BlogPostLayout from '@/layouts/BlogPostLayout.astro';
+import { getHeroImage, estimateReadingTime } from '@/utils/blog';
+
+// Hero image auto-detection via import.meta.glob (must stay here — Vite statically analyzes globs)
+const heroImages = import.meta.glob<{ default: { src: string } }>(
+  '/src/content/posts/**/hero.webp',
+  { eager: true }
+);
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection('posts');
@@ -19,6 +26,9 @@ export const getStaticPaths = (async () => {
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
 const editUrl = `https://github.com/monte97/website.github.io/edit/main/src/content/posts/${post.id}.md`;
+
+const heroImage = getHeroImage(post.id, heroImages);
+const readingTime = estimateReadingTime(post.body);
 ---
 
 <BlogPostLayout
@@ -32,6 +42,9 @@ const editUrl = `https://github.com/monte97/website.github.io/edit/main/src/cont
   editUrl={editUrl}
   series={post.data.series}
   postId={post.id}
+  heroImage={heroImage}
+  readingTime={readingTime}
+  ogImage={heroImage}
 >
   <Content />
 </BlogPostLayout>

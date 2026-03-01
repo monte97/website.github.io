@@ -50,11 +50,8 @@ const pillars = {
   ],
 };
 
-const colors: Record<string, { border: string; text: string; bg: string; hex: string }> = {
-  progettare:    { border: 'border-pillar-progettare', text: 'text-pillar-progettare', bg: 'bg-pillar-progettare/8', hex: '#5B7FA5' },
-  verificare:    { border: 'border-pillar-verificare', text: 'text-pillar-verificare', bg: 'bg-pillar-verificare/8', hex: '#6B9B78' },
-  automatizzare: { border: 'border-pillar-automatizzare', text: 'text-pillar-automatizzare', bg: 'bg-pillar-automatizzare/8', hex: '#9B7FB5' },
-};
+import { pillarStyles } from '@/data/pillar-styles';
+const colors = pillarStyles;
 
 const cards = pillars[lang];
 
@@ -89,7 +86,7 @@ const countLabel = lang === 'it' ? 'articoli' : 'articles';
             style={`--pillar-color: ${c.hex}`}
             data-pillar-hover
           >
-            <div class:list={['w-9 h-9 rounded-lg flex items-center justify-center mb-4', c.bg]}>
+            <div class:list={['w-9 h-9 rounded-lg flex items-center justify-center mb-4', c.bgSubtle]}>
               <span class:list={['text-lg font-bold', c.text]}>
                 {card.title.charAt(0)}
               </span>

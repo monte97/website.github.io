@@ -14,7 +14,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
-<html lang={lang} class="dark">
+<html lang={lang}>
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -32,11 +32,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <meta name="twitter:card" content="summary_large_image" />
 
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="manifest" href="/site.webmanifest" />
 
   <!-- Pagefind search UI styles (available after build) -->
   <link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
 
-  <!-- Google Fonts -->
+  <!-- Google Fonts — Inter variable + JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -44,35 +45,46 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <!-- View Transitions -->
   <ClientRouter />
 
-  <!-- Theme initialization (prevent flash, re-apply after View Transition swaps) -->
+  <!-- Theme init — light by default, dark only if explicitly toggled -->
   <script is:inline>
-    function applyTheme() {
-      const theme = localStorage.getItem('theme') ??
-        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    (function() {
+      // One-shot migration: clear stale dark preference from old build
+      if (!localStorage.getItem('theme-v2')) {
+        localStorage.removeItem('theme');
+        localStorage.setItem('theme-v2', '1');
+      }
+      var theme = localStorage.getItem('theme') || 'light';
+      if (theme === 'dark') document.documentElement.classList.add('dark');
+    })();
+    document.addEventListener('astro:after-swap', function() {
+      var theme = localStorage.getItem('theme') || 'light';
       document.documentElement.classList.toggle('dark', theme === 'dark');
-    }
-    applyTheme();
-    document.addEventListener('astro:after-swap', applyTheme);
+    });
   </script>
 </head>
-<body class="bg-base-light dark:bg-base-dark text-text-dark dark:text-text-light transition-colors duration-200 min-h-screen">
+<body class="bg-base-light dark:bg-base-dark text-text-dark dark:text-text-light min-h-screen transition-colors duration-300">
   <slot />
 
-  <!-- Fade-in on scroll observer -->
+  <!-- Teleport target for Vue modals (must be outside component tree) -->
+  <div id="modal-root"></div>
+
+  <!-- Scroll observer for fade-in + stagger-children -->
   <script is:inline>
-    function initFadeIn() {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+    function initScrollObserver() {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
           if (entry.isIntersecting) {
             entry.target.classList.add('is-visible');
             observer.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.1 });
-      document.querySelectorAll('.fade-in-section').forEach(el => observer.observe(el));
+      }, { threshold: 0.08 });
+      document.querySelectorAll('.fade-in-section, .stagger-children').forEach(function(el) {
+        observer.observe(el);
+      });
     }
-    initFadeIn();
-    document.addEventListener('astro:after-swap', initFadeIn);
+    initScrollObserver();
+    document.addEventListener('astro:after-swap', initScrollObserver);
   </script>
 </body>
 </html>

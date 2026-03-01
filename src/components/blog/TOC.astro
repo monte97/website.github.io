@@ -6,20 +6,22 @@ interface Heading {
 }
 interface Props {
   headings: Heading[];
+  lang?: 'it' | 'en';
 }
-const { headings } = Astro.props;
+const { headings, lang = 'it' } = Astro.props;
 const filtered = headings.filter(h => h.depth >= 2 && h.depth <= 3);
 ---
 
 {filtered.length > 0 && (
   <nav class="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto">
-    <h4 class="text-sm font-semibold mb-3 text-text-muted uppercase tracking-wide">Indice</h4>
+    <h4 class="text-sm font-semibold mb-3 text-text-muted uppercase tracking-wide">{lang === 'en' ? 'Table of Contents' : 'Indice'}</h4>
     <ul class="space-y-1.5 text-sm">
       {filtered.map(h => (
         <li style={`padding-left: ${(h.depth - 2) * 0.75}rem`}>
           <a
             href={`#${h.slug}`}
-            class="text-text-muted hover:text-accent transition-colors block py-0.5 border-l-2 border-transparent hover:border-accent pl-2"
+            data-toc-link={h.slug}
+            class="toc-link text-text-muted hover:text-accent transition-colors block py-0.5 border-l-2 border-transparent hover:border-accent pl-2"
           >
             {h.text}
           </a>
@@ -28,3 +30,40 @@ const filtered = headings.filter(h => h.depth >= 2 && h.depth <= 3);
     </ul>
   </nav>
 )}
+
+<script>
+function initTocHighlight() {
+  const tocLinks = document.querySelectorAll('[data-toc-link]');
+  if (!tocLinks.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(link => {
+          link.classList.remove('!text-accent', '!border-accent');
+        });
+        const activeLink = document.querySelector(`[data-toc-link="${entry.target.id}"]`);
+        if (activeLink) {
+          activeLink.classList.add('!text-accent', '!border-accent');
+        }
+      }
+    }
+  }, { rootMargin: '-80px 0px -70% 0px', threshold: 0 });
+
+  tocLinks.forEach(link => {
+    const slug = link.getAttribute('data-toc-link');
+    if (slug) {
+      const target = document.getElementById(slug);
+      if (target) observer.observe(target);
+    }
+  });
+
+  return observer;
+}
+
+let observer = initTocHighlight();
+document.addEventListener('astro:after-swap', () => {
+  if (observer) observer.disconnect();
+  observer = initTocHighlight();
+});
+</script>

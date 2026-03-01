@@ -1,5 +1,6 @@
 ---
 import Button from '@/components/ui/Button.astro';
+import { author } from '@/data/author';
 
 interface Props {
   lang?: 'it' | 'en';
@@ -10,30 +11,30 @@ const { lang = 'it' } = Astro.props;
 const text = {
   it: {
     title: 'Chi sono',
-    bio: "Software Engineer con oltre 5 anni di esperienza su sistemi distribuiti. Lavoro con team che crescono e li aiuto a costruire infrastrutture che scalano senza che il team impazzisca. Iscritto all'Ordine degli Ingegneri della Provincia di Ravenna.",
-    aboutCta: 'Piu\u0300 su di me →',
-    cvCta: 'Scarica CV (PDF)',
+    aboutCta: 'Di più su di me',
+    cvCta: 'Scarica CV',
   },
   en: {
     title: 'About me',
-    bio: 'Software Engineer with 5+ years of experience on distributed systems. I work with growing teams and help them build infrastructure that scales without driving the team crazy. Registered with the Order of Engineers of the Province of Ravenna.',
-    aboutCta: 'More about me →',
-    cvCta: 'Download CV (PDF)',
+    aboutCta: 'More about me',
+    cvCta: 'Download CV',
   },
 };
 
 const t = text[lang];
 ---
 
-<section class="py-20 bg-base-dark text-text-light fade-in-section">
-  <div class="max-w-3xl mx-auto px-6 text-center">
-    <h2 class="text-3xl font-bold mb-6">{t.title}</h2>
-    <p class="text-text-muted text-lg leading-relaxed mb-8">
-      {t.bio}
+<section class="py-20 bg-surface/50 dark:bg-surface-dark/30 fade-in-section" aria-label={t.title}>
+  <div class="max-w-2xl mx-auto px-5 text-center">
+    <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light mb-5">
+      {t.title}
+    </h2>
+    <p class="text-text-muted text-base leading-relaxed mb-8">
+      {author.bio[lang]}
     </p>
-    <div class="flex flex-wrap justify-center gap-4">
-      <Button href="/about/" variant="secondary">{t.aboutCta}</Button>
-      <Button href="/files/cv-montelli.pdf" variant="ghost">{t.cvCta}</Button>
+    <div class="flex flex-wrap justify-center gap-3">
+      <Button href="/about/" variant="secondary" size="sm">{t.aboutCta} &rarr;</Button>
+      <Button href="/files/Francesco_Montelli_CV.pdf" variant="ghost" size="sm">{t.cvCta} (PDF)</Button>
     </div>
   </div>
 </section>

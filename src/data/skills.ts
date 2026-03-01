@@ -1,33 +1,24 @@
 export interface Skill {
   name: string;
   logo?: string;
+  darkInvert?: boolean;
   summary: string;
   categories: string[];
   url: string;
 }
 
-export const skillFilters = [
-  { name: 'Tutti', filter: 'all' },
-  { name: 'Linguaggi', filter: 'language' },
-  { name: 'Container', filter: 'container' },
-  { name: 'Framework', filter: 'frameworks' },
-  { name: 'Database', filter: 'database' },
-  { name: 'DevOps', filter: 'devops' },
-  { name: 'Cloud', filter: 'cloud' },
-] as const;
-
 export const skills: Skill[] = [
   {
     name: 'Kubernetes',
     logo: '/images/sections/skills/kubernetes.png',
-    summary: 'Capacita\' di deployment e gestione di applicazioni su Kubernetes. Esperienza nella scrittura di controller per CRD.',
+    summary: 'Capacità di deployment e gestione di applicazioni su Kubernetes. Esperienza nella scrittura di controller per CRD.',
     categories: ['container'],
     url: 'https://kubernetes.io/',
   },
   {
     name: 'Go Development',
     logo: '/images/sections/skills/go.png',
-    summary: 'Utilizzato come linguaggio principale per lo sviluppo professionale. Capacita\' di scrivere programmi scalabili, testabili e mantenibili.',
+    summary: 'Utilizzato come linguaggio principale per lo sviluppo professionale. Capacità di scrivere programmi scalabili, testabili e mantenibili.',
     categories: ['basic', 'language'],
     url: 'https://golang.org/',
   },
@@ -41,8 +32,8 @@ export const skills: Skill[] = [
   {
     name: 'Prometheus',
     logo: '/images/sections/skills/prometheus.png',
-    summary: 'Capacita\' di setup e configurazione delle metriche Prometheus. Esperienza con PromQL, AlertManager e scrittura di metric exporter.',
-    categories: ['basic'],
+    summary: 'Capacità di setup e configurazione delle metriche Prometheus. Esperienza con PromQL, AlertManager e scrittura di metric exporter.',
+    categories: ['observability'],
     url: 'https://prometheus.io/',
   },
   {
@@ -74,14 +65,16 @@ export const skills: Skill[] = [
     url: 'https://www.python.org/',
   },
   {
-    name: 'Akka',
-    summary: 'Framework per sistemi distribuiti e architetture basate su attori. Esperienza con Akka Streams e Akka Cluster.',
+    name: 'Apache Pekko',
+    logo: '/images/sections/skills/pekko.png',
+    summary: 'Framework per sistemi distribuiti e architetture basate su attori. Esperienza con Pekko Streams e Pekko Cluster.',
     categories: ['frameworks'],
-    url: 'https://akka.io/',
+    url: 'https://pekko.apache.org/',
   },
   {
     name: 'Apache Kafka',
-    logo: '/images/sections/skills/kafka.png',
+    logo: '/images/sections/skills/kafka.svg',
+    darkInvert: true,
     summary: 'Piattaforma di streaming distribuito per architetture event-driven. Esperienza con Kafka Streams e Kafka Connect.',
     categories: ['frameworks'],
     url: 'https://kafka.apache.org/',
@@ -120,5 +113,42 @@ export const skills: Skill[] = [
     summary: 'Cloud provider principale. Esperienza con EC2, S3, Lambda, RDS e altri servizi core per architetture scalabili.',
     categories: ['cloud'],
     url: 'https://aws.amazon.com/',
+  },
+  {
+    name: 'OpenTelemetry',
+    logo: '/images/sections/skills/opentelemetry.svg',
+    summary: 'Standard open-source per l\'instrumentazione di applicazioni. Esperienza con SDK, Collector e integrazione con backend di observability.',
+    categories: ['observability'],
+    url: 'https://opentelemetry.io/',
+  },
+  {
+    name: 'Grafana',
+    logo: '/images/sections/skills/grafana.svg',
+    summary: 'Piattaforma di visualizzazione e monitoring. Esperienza nella creazione di dashboard, alerting e integrazione con diverse data source.',
+    categories: ['observability'],
+    url: 'https://grafana.com/',
+  },
+  {
+    name: 'Loki',
+    logo: '/images/sections/skills/loki.png',
+    summary: 'Sistema di aggregazione log scalabile. Esperienza con LogQL e integrazione con Grafana per il log management.',
+    categories: ['observability'],
+    url: 'https://grafana.com/oss/loki/',
+  },
+  {
+    name: 'Tempo',
+    logo: '/images/sections/skills/tempo.svg',
+    darkInvert: true,
+    summary: 'Backend per distributed tracing ad alte performance. Esperienza con TraceQL e correlazione tra traces, metriche e log.',
+    categories: ['observability'],
+    url: 'https://grafana.com/oss/tempo/',
+  },
+  {
+    name: 'Mimir',
+    logo: '/images/sections/skills/mimir.svg',
+    darkInvert: true,
+    summary: 'Storage scalabile per metriche Prometheus in multi-tenancy. Esperienza con deployment e configurazione per ambienti enterprise.',
+    categories: ['observability'],
+    url: 'https://grafana.com/oss/mimir/',
   },
 ];

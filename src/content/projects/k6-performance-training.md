@@ -1,6 +1,7 @@
 ---
 title: "K6 Performance Testing Training"
 description: "Corso di formazione su performance testing con k6 per un team di 10 developer, dalla teoria all'implementazione di test di carico"
+type: workshop
 pillar: verificare
 featured: false
 tags: ["k6", "JavaScript", "Grafana", "Docker", "Jenkins"]

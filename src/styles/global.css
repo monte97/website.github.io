@@ -3,28 +3,34 @@
 /* Dark mode via class strategy */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Design tokens from style.md */
+/* Design tokens */
 @theme {
-  --color-base-dark: #1E1E2E;
-  --color-base-light: #F5F3EF;
+  /* Palette — warm, editorial */
+  --color-base-dark: #1A1A28;
+  --color-base-light: #FAF8F5;
+  --color-surface: #F2EFE9;
+  --color-surface-dark: #242436;
   --color-accent: #E8973A;
   --color-accent-hover: #D4832E;
+  --color-accent-subtle: #E8973A1A;
   --color-text-dark: #2D2D3A;
-  --color-text-light: #E0DDD6;
-  --color-text-muted: #8A8A96;
-  --color-border: #D4D1CA;
-  --color-border-dark: #3A3A4C;
+  --color-text-light: #E8E5DE;
+  --color-text-muted: #7C7C8A;
+  --color-border: #DDD9D0;
+  --color-border-dark: #33334A;
   --color-pillar-progettare: #5B7FA5;
   --color-pillar-verificare: #6B9B78;
   --color-pillar-automatizzare: #9B7FB5;
-  --color-code-bg: #1E1E2E;
-  --color-code-inline-light: #F0EDE6;
+  --color-code-bg: #1A1A28;
+  --color-code-inline-light: #EDEAE3;
   --color-code-inline-dark: #2A2A3C;
+
+  /* Typography */
   --font-sans: "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 }
 
-/* Base styles */
+/* ── Base ── */
 html {
   font-family: var(--font-sans);
   scroll-behavior: smooth;
@@ -42,73 +48,243 @@ body {
   color: var(--color-text-light);
 }
 
-/* Prose max-width for readability */
-.prose {
-  max-width: 70ch;
+/* ── Selection ── */
+::selection {
+  background-color: var(--color-accent);
+  color: #fff;
 }
 
-/* Inline code */
+/* ── Prose ── */
+.prose { max-width: 70ch; }
+
+/* ── Inline code ── */
 :not(pre) > code {
   background-color: var(--color-code-inline-light);
-  padding: 0.125rem 0.375rem;
-  border-radius: 3px;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
   font-family: var(--font-mono);
-  font-size: 0.95rem;
+  font-size: 0.9em;
 }
-
 .dark :not(pre) > code {
   background-color: var(--color-code-inline-dark);
 }
 
-/* Code blocks */
+/* ── Code blocks ── */
 pre {
-  background-color: var(--color-code-bg) !important;
-  border-radius: 8px;
-  padding: 1rem;
+  border-radius: 10px;
+  padding: 1.25rem;
   overflow-x: auto;
   font-family: var(--font-mono);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  border: 1px solid var(--color-border);
+}
+.dark pre {
+  border-color: var(--color-border-dark);
 }
 
-/* Shiki dual theme support */
-html:not(.dark) .shiki,
-html:not(.dark) .shiki span {
+/* ── Prose: links ── */
+.prose a {
+  color: var(--color-accent);
+  text-decoration: none;
+  text-underline-offset: 4px;
+}
+.prose a:hover {
+  text-decoration: underline;
+}
+
+/* ── Prose: images ── */
+.prose img {
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+}
+
+/* ── Prose: blockquotes ── */
+.prose blockquote {
+  border-left: 3px solid var(--color-accent);
+  background-color: color-mix(in srgb, var(--color-accent) 5%, transparent);
+  border-radius: 0 8px 8px 0;
+  padding: 0.25rem 1rem;
+  margin: 1.5rem 0;
+}
+
+/* ── Prose: lists ── */
+.prose li::marker {
+  color: var(--color-accent);
+}
+
+/* ── Prose: paragraphs ── */
+.prose p {
+  line-height: 1.75;
+  margin-bottom: 1rem;
+}
+
+/* ── Tables ── */
+.prose table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 0.9rem;
+}
+.dark .prose table {
+  border-color: var(--color-border-dark);
+}
+.prose thead th {
+  background-color: var(--color-surface);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.6rem 1rem;
+  text-align: left;
+}
+.dark .prose thead th {
+  background-color: var(--color-surface-dark);
+}
+.prose tbody td {
+  padding: 0.5rem 1rem;
+  border-top: 1px solid var(--color-border);
+}
+.dark .prose tbody td {
+  border-color: var(--color-border-dark);
+}
+.prose tbody tr:hover {
+  background-color: var(--color-accent-subtle);
+}
+
+/* ── Horizontal rules ── */
+.prose hr {
+  border: none;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--color-border) 20%, var(--color-border) 80%, transparent);
+  margin: 3rem 0;
+}
+.dark .prose hr {
+  background: linear-gradient(to right, transparent, var(--color-border-dark) 20%, var(--color-border-dark) 80%, transparent);
+}
+
+/* ── Headings ── */
+.prose h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--color-accent);
+  scroll-margin-top: 5rem;
+}
+.prose h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  padding-left: 0.75rem;
+  border-left: 3px solid var(--color-accent);
+  scroll-margin-top: 5rem;
+}
+
+/* ── Copy button ── */
+.code-block-wrapper {
+  position: relative;
+}
+.copy-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.35rem;
+  border: none;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s, color 0.2s, background-color 0.2s;
+  line-height: 0;
+}
+.code-block-wrapper:hover .copy-btn {
+  opacity: 1;
+}
+.copy-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: var(--color-text-light);
+}
+.copy-btn.copied {
+  color: var(--color-accent);
+  opacity: 1;
+}
+
+/* Shiki dual theme — light mode gets light bg, dark mode gets dark bg */
+html:not(.dark) pre.astro-code {
+  background-color: var(--shiki-light-bg, #fff) !important;
+}
+html:not(.dark) .astro-code span {
   color: var(--shiki-light) !important;
-  background-color: var(--shiki-light-bg) !important;
 }
-
-html.dark .shiki,
-html.dark .shiki span {
+html.dark pre.astro-code {
+  background-color: var(--shiki-dark-bg, #24292e) !important;
+}
+html.dark .astro-code span {
   color: var(--shiki-dark) !important;
-  background-color: var(--shiki-dark-bg) !important;
 }
 
-/* Fade-in on scroll */
+/* ── Scroll-triggered animations ── */
 .fade-in-section {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
-
 .fade-in-section.is-visible {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* Pagefind theme */
+/* Staggered children */
+.stagger-children > * {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.stagger-children.is-visible > *:nth-child(1) { transition-delay: 0ms; opacity: 1; transform: translateY(0); }
+.stagger-children.is-visible > *:nth-child(2) { transition-delay: 100ms; opacity: 1; transform: translateY(0); }
+.stagger-children.is-visible > *:nth-child(3) { transition-delay: 200ms; opacity: 1; transform: translateY(0); }
+.stagger-children.is-visible > *:nth-child(4) { transition-delay: 300ms; opacity: 1; transform: translateY(0); }
+.stagger-children.is-visible > *:nth-child(5) { transition-delay: 400ms; opacity: 1; transform: translateY(0); }
+.stagger-children.is-visible > *:nth-child(6) { transition-delay: 500ms; opacity: 1; transform: translateY(0); }
+.stagger-children.is-visible > *:nth-child(7) { transition-delay: 600ms; opacity: 1; transform: translateY(0); }
+.stagger-children.is-visible > *:nth-child(8) { transition-delay: 700ms; opacity: 1; transform: translateY(0); }
+.stagger-children.is-visible > *:nth-child(9) { transition-delay: 800ms; opacity: 1; transform: translateY(0); }
+.stagger-children.is-visible > *:nth-child(10) { transition-delay: 900ms; opacity: 1; transform: translateY(0); }
+.stagger-children.is-visible > *:nth-child(11) { transition-delay: 1000ms; opacity: 1; transform: translateY(0); }
+.stagger-children.is-visible > *:nth-child(n+12) { transition-delay: 1100ms; opacity: 1; transform: translateY(0); }
+
+/* ── Pagefind theme ── */
 :root {
   --pagefind-ui-scale: 0.9;
   --pagefind-ui-primary: #E8973A;
   --pagefind-ui-text: #2D2D3A;
-  --pagefind-ui-background: #F5F3EF;
-  --pagefind-ui-border: #D4D1CA;
-  --pagefind-ui-border-radius: 8px;
+  --pagefind-ui-background: #FAF8F5;
+  --pagefind-ui-border: #DDD9D0;
+  --pagefind-ui-border-radius: 10px;
   --pagefind-ui-font: "Inter", system-ui, sans-serif;
 }
-
 .dark {
   --pagefind-ui-primary: #E8973A;
-  --pagefind-ui-text: #E0DDD6;
-  --pagefind-ui-background: #1E1E2E;
-  --pagefind-ui-border: #3A3A4C;
+  --pagefind-ui-text: #E8E5DE;
+  --pagefind-ui-background: #1A1A28;
+  --pagefind-ui-border: #33334A;
+}
+
+/* ── Accent underline utility ── */
+.accent-underline {
+  background-image: linear-gradient(var(--color-accent), var(--color-accent));
+  background-size: 100% 2px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
 }

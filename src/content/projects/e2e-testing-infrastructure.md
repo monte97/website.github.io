@@ -1,6 +1,7 @@
 ---
 title: "E2E Testing Infrastructure"
 description: "Corso di formazione su E2E testing con Playwright per un team di 10 developer, partendo da zero fino a una test suite completa"
+type: workshop
 pillar: verificare
 featured: false
 tags: ["Playwright", "Docker", "Jenkins", "PostgreSQL", "Vue.js"]

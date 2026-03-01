@@ -1,20 +1,17 @@
 ---
+import { pillarStyles } from '@/data/pillar-styles';
+import type { Pillar } from '@/data/pillars';
+
 interface Props {
-  pillar?: 'progettare' | 'verificare' | 'automatizzare';
+  pillar?: Pillar;
   class?: string;
 }
 
 const { pillar, class: className = '' } = Astro.props;
 
-const pillarStyles: Record<string, string> = {
-  progettare: 'bg-pillar-progettare/15 text-pillar-progettare',
-  verificare: 'bg-pillar-verificare/15 text-pillar-verificare',
-  automatizzare: 'bg-pillar-automatizzare/15 text-pillar-automatizzare',
-};
-
-const style = pillar ? pillarStyles[pillar] : 'bg-text-muted/15 text-text-muted';
+const style = pillar ? pillarStyles[pillar].badge : 'bg-text-muted/10 text-text-muted';
 ---
 
-<span class:list={['inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium', style, className]}>
+<span class:list={['inline-flex items-center px-2 py-0.5 rounded text-xs font-medium tracking-wide', style, className]}>
   <slot />
 </span>
