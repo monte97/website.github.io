@@ -1,6 +1,7 @@
 ---
 import type { Page } from 'astro';
 import PageLayout from '@/layouts/PageLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
 import BlogFilterable from '@/components/blog/BlogFilterable.vue';
 import { postHref } from '@/utils/blog';
 import type { Pillar } from '@/data/pillars';
@@ -95,13 +96,12 @@ const serializedPosts = (activePillar
 ---
 
 <PageLayout title={title} description={description} lang={lang}>
-  <div class="fade-in-section">
-    <!-- Editorial header -->
-    <h1 class="text-3xl font-bold tracking-tight mb-2">{title}</h1>
-    <p class="text-text-muted text-base mb-8">
-      {description} — <span class="font-medium text-text-dark dark:text-text-light">{totalCount}</span> {t.articles}
-    </p>
+  <PageHero
+    title={title}
+    subtitle={`${description} — ${totalCount} ${t.articles}`}
+  />
 
+  <div class="fade-in-section">
     <!-- Pillar tabs + search -->
     <div class="flex flex-wrap items-center gap-2 mb-8">
       {pillars.map(p => {
