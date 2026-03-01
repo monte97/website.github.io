@@ -2,6 +2,8 @@
   <div class="flex flex-col lg:flex-row gap-10">
     <!-- Main content -->
     <div class="flex-1 min-w-0">
+      <Transition name="grid-fade" mode="out-in">
+      <div :key="activeFilter ? `${activeFilter.type}:${activeFilter.value}` : 'all'">
       <!-- Featured post (first post, full width) -->
       <a
         v-if="featuredPost"
@@ -144,6 +146,8 @@
           {{ lang === 'en' ? 'Clear filter' : 'Rimuovi filtro' }}
         </button>
       </div>
+      </div>
+      </Transition>
     </div>
 
     <!-- Sidebar -->
@@ -390,3 +394,14 @@ const series = computed(() => {
 
 // (filter functions defined above in "Filter state" section)
 </script>
+
+<style scoped>
+.grid-fade-enter-active,
+.grid-fade-leave-active {
+  transition: opacity 0.15s ease;
+}
+.grid-fade-enter-from,
+.grid-fade-leave-to {
+  opacity: 0;
+}
+</style>
