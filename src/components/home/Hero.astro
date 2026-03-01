@@ -13,7 +13,7 @@ const text = {
     headline: 'Progetto, verifico e automatizzo',
     headlineAccent: 'sistemi software.',
     subtitle: 'Per team che crescono senza perdere il controllo.',
-    cta: 'Inizia dal Health Check',
+    cta: 'Scopri i servizi',
     ctaSecondary: 'Leggi il blog',
   },
   en: {
@@ -21,7 +21,7 @@ const text = {
     headline: 'I design, verify, and automate',
     headlineAccent: 'software systems.',
     subtitle: 'For teams that scale without breaking apart.',
-    cta: 'Start with a Health Check',
+    cta: 'Explore services',
     ctaSecondary: 'Read the blog',
   },
 };
@@ -74,7 +74,7 @@ const t = text[lang];
           {t.subtitle}
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
-          <Button href={lang === 'en' ? '/en/services/#health-check' : '/servizi/#health-check'} size="md">
+          <Button href={lang === 'en' ? '/en/services/' : '/servizi/'} size="md">
             {t.cta} &rarr;
           </Button>
           <Button href={lang === 'en' ? '/en/blog/' : '/blog/'} variant="secondary" size="md">
