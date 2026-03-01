@@ -8,9 +8,7 @@ export interface Position {
 export interface Experience {
   company: {
     name: string;
-    url?: string;
     location: string;
-    logo?: string;
     overview: string;
   };
   positions: Position[];
@@ -21,14 +19,14 @@ export const experiences: Experience[] = [
     company: {
       name: 'Freelance',
       location: 'Italia',
-      overview: 'Attivita\' di consulenza freelance specializzata in Fullstack Software Development, DevOps, System Design & Architecture e formazione di team di sviluppo.',
+      overview: 'Attività di consulenza freelance specializzata in Fullstack Software Development, DevOps, System Design & Architecture e formazione di team di sviluppo.',
     },
     positions: [
       {
         designation: 'Freelance Software Engineer',
         start: 2025,
         responsibilities: [
-          'Iscrizione all\'Ordine degli Ingegneri della Provincia di Ravenna (N. 2467)',
+          "Iscrizione all'Ordine degli Ingegneri della Provincia di Ravenna (N. 2467)",
           'Consulenza in Fullstack Software Development e architetture scalabili',
           'Implementazione di metodologie DevOps e CI/CD pipeline',
           'System Design & Architecture per sistemi distribuiti',
@@ -40,7 +38,24 @@ export const experiences: Experience[] = [
   },
   {
     company: {
-      name: 'Operai dell\'Arte APS',
+      name: 'TheRedCode',
+      location: 'theredcode.it',
+      overview: 'Community e blog tecnico italiano dedicato a sviluppo software, DevOps, cloud e best practice ingegneristiche.',
+    },
+    positions: [
+      {
+        designation: 'Technical Writer',
+        start: 2025,
+        responsibilities: [
+          'Redazione di articoli tecnici su testing, observability, DevOps e architettura software',
+          'Collaborazione editoriale con la community per la produzione di contenuti di qualita\'',
+        ],
+      },
+    ],
+  },
+  {
+    company: {
+      name: "Operai dell'Arte APS",
       location: 'Italia',
       overview: 'Associazione che promuove la formazione, la cultura e la coesione sociale, con particolare attenzione alla sensibilizzazione sulla protezione del patrimonio culturale.',
     },
@@ -62,7 +77,7 @@ export const experiences: Experience[] = [
     company: {
       name: 'HyperVista',
       location: 'Startup',
-      overview: 'Startup dedicata allo sviluppo di software per l\'applicazione di tecnologie Industria 4.0 nel settore edile.',
+      overview: "Startup dedicata allo sviluppo di software per l'applicazione di tecnologie Industria 4.0 nel settore edile.",
     },
     positions: [
       {
@@ -74,7 +89,7 @@ export const experiences: Experience[] = [
           'Implementazione di sistemi di Project Workflow Management per ottimizzare i processi aziendali',
           'Sviluppo di soluzioni di Gestione Documentale integrate con tecnologie Industria 4.0',
           'Ricerca e sviluppo di nuove tecnologie per il settore edile',
-          'Collaborazione con team multidisciplinari per l\'innovazione tecnologica',
+          "Collaborazione con team multidisciplinari per l'innovazione tecnologica",
         ],
       },
     ],
@@ -83,8 +98,7 @@ export const experiences: Experience[] = [
     company: {
       name: 'Consorzio Ediltecnica',
       location: 'Ravenna, Italia',
-      logo: '/images/sections/experiences/ediltecnica.jpg',
-      overview: 'Consorzio che raggruppa diverse societa\' operanti nel settore edilizio e tecnologico, con focus su innovazione e digitalizzazione.',
+      overview: 'Consorzio che raggruppa diverse società operanti nel settore edilizio e tecnologico, con focus su innovazione e digitalizzazione.',
     },
     positions: [
       {
@@ -92,11 +106,11 @@ export const experiences: Experience[] = [
         start: 2016,
         end: 2021,
         responsibilities: [
-          'Evoluzione dal supporto IT di base all\'amministrazione completa dell\'infrastruttura IT',
-          'Sviluppo di applicativi personalizzati per le esigenze specifiche delle societa\' del consorzio',
+          "Evoluzione dal supporto IT di base all'amministrazione completa dell'infrastruttura IT",
+          'Sviluppo di applicativi personalizzati per le esigenze specifiche delle società del consorzio',
           'Gestione e manutenzione di sistemi server e reti aziendali',
-          'Collaborazione con diverse societa\' del consorzio durante il percorso di studi universitari',
-          'Implementazione di soluzioni tecnologiche per migliorare l\'efficienza operativa',
+          'Collaborazione con diverse società del consorzio durante il percorso di studi universitari',
+          "Implementazione di soluzioni tecnologiche per migliorare l'efficienza operativa",
         ],
       },
     ],
