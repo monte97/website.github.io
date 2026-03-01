@@ -34,13 +34,15 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="manifest" href="/site.webmanifest" />
 
-  <!-- Pagefind search UI styles (available after build) -->
-  <link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
+  <!-- Pagefind search UI styles — loaded async (not render-critical) -->
+  <link rel="preload" href="/pagefind/pagefind-ui.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link href="/pagefind/pagefind-ui.css" rel="stylesheet" /></noscript>
 
-  <!-- Google Fonts — Inter variable + JetBrains Mono -->
+  <!-- Google Fonts — loaded async to avoid render-blocking -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" /></noscript>
 
   <!-- View Transitions -->
   <ClientRouter />
