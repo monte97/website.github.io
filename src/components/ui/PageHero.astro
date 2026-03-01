@@ -34,9 +34,7 @@ const { title, subtitle, image, cta, ctaSecondary } = Astro.props;
         {title}
       </h1>
       {subtitle && (
-        <p class="mt-3 text-base md:text-lg text-text-muted max-w-2xl leading-relaxed">
-          {subtitle}
-        </p>
+        <p class="mt-3 text-base md:text-lg text-text-muted max-w-2xl leading-relaxed" set:html={subtitle} />
       )}
       {(cta || ctaSecondary) && (
         <div class="mt-6 flex flex-wrap gap-3">
