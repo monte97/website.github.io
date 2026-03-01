@@ -1,0 +1,75 @@
+---
+import Button from '@/components/ui/Button.astro';
+
+interface Props {
+  title: string;
+  subtitle?: string;
+  image?: { src: string; alt: string };
+  cta?: { href: string; label: string };
+  ctaSecondary?: { href: string; label: string };
+}
+
+const { title, subtitle, image, cta, ctaSecondary } = Astro.props;
+---
+
+<section class="relative overflow-hidden border-b border-border/30 dark:border-border-dark/30">
+  <!-- Dot pattern background -->
+  <div class="absolute inset-0 opacity-[0.04] dark:opacity-[0.07]" aria-hidden="true">
+    <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="page-hero-dots" width="32" height="32" patternUnits="userSpaceOnUse">
+          <circle cx="16" cy="16" r="1" fill="currentColor" class="text-text-dark dark:text-text-light" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#page-hero-dots)" />
+    </svg>
+  </div>
+
+  <!-- Accent gradient blob -->
+  <div class="absolute top-0 right-0 w-96 h-96 bg-accent/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" aria-hidden="true"></div>
+
+  <!-- Content -->
+  <div class="relative z-10 max-w-5xl mx-auto px-5 pt-16 pb-12 md:pt-20 md:pb-16">
+    <div class:list={[
+      'flex flex-col',
+      image ? 'md:flex-row md:items-center md:gap-12' : '',
+    ]}>
+      {image && (
+        <div class="shrink-0 mb-6 md:mb-0">
+          <img
+            src={image.src}
+            alt={image.alt}
+            width="128"
+            height="128"
+            class="w-28 h-28 md:w-32 md:h-32 rounded-2xl object-cover shadow-lg ring-4 ring-accent"
+          />
+        </div>
+      )}
+
+      <div class="flex-1">
+        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-text-dark dark:text-text-light">
+          {title}
+        </h1>
+        {subtitle && (
+          <p class="mt-3 text-base md:text-lg text-text-muted max-w-2xl leading-relaxed">
+            {subtitle}
+          </p>
+        )}
+        {(cta || ctaSecondary) && (
+          <div class="mt-6 flex flex-wrap gap-3">
+            {cta && (
+              <Button href={cta.href} size="md">
+                {cta.label}
+              </Button>
+            )}
+            {ctaSecondary && (
+              <Button href={ctaSecondary.href} variant="secondary" size="md">
+                {ctaSecondary.label}
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</section>
