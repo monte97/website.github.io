@@ -1,0 +1,217 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import Button from '@/components/ui/Button.astro';
+import SkillGrid from '@/components/about/SkillGrid.astro';
+import Timeline from '@/components/about/Timeline.astro';
+import { author } from '@/data/author';
+import { experiences } from '@/data/experiences';
+import { degrees } from '@/data/education';
+import { yearsExperience } from '@/utils/blog';
+import { publications } from '@/data/publications';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  lang?: 'it' | 'en';
+}
+
+const { lang = 'it' } = Astro.props;
+
+const bio = author.bio[lang];
+const prefix = lang === 'en' ? '/en' : '';
+
+const allPosts = await getCollection('posts');
+const articleCount = allPosts.filter((p) => p.data.lang === lang && !p.data.draft && p.data.pillar !== null).length;
+const yrsExp = yearsExperience();
+
+// Split experiences into current (active) and past (ended)
+const currentRoles = experiences.flatMap((exp) =>
+  exp.positions
+    .filter((pos) => !pos.end)
+    .map((pos) => ({
+      title: pos.designation,
+      company: exp.company.name,
+      location: exp.company.location,
+      since: pos.start,
+      responsibilities: pos.responsibilities,
+    }))
+);
+
+const pastItems = experiences.flatMap((exp) =>
+  exp.positions
+    .filter((pos) => !!pos.end)
+    .map((pos) => ({
+      title: pos.designation,
+      subtitle: exp.company.name,
+      period: `${pos.start} - ${pos.end}`,
+      description: pos.responsibilities.join('. ') + '.',
+    }))
+);
+
+const educationItems = degrees.map((deg) => ({
+  title: deg.name,
+  subtitle: deg.institution.name,
+  period: deg.timeframe,
+  description: [
+    deg.grade ? `${lang === 'en' ? 'Grade' : 'Voto'}: ${deg.grade.achieved}` : null,
+    deg.thesis ? `${lang === 'en' ? 'Thesis' : 'Tesi'}: ${deg.thesis}` : null,
+  ].filter(Boolean).join(' — '),
+}));
+
+const t = lang === 'en'
+  ? {
+      pageTitle: 'About',
+      heroTitle: 'About me',
+      cvLabel: 'Download CV',
+      yearsLabel: 'years experience',
+      articlesLabel: 'articles published',
+      stackTitle: 'Tech Stack',
+      currentTitle: 'What I do today',
+      sinceLabel: 'Since',
+      pastTitle: 'Background',
+      eduTitle: 'Education',
+      pubTitle: 'Publications',
+      pubDesc: "Member of the Scientific Committee of Operai dell'Arte APS. I have supervised master's theses and co-authored peer-reviewed publications in geomatics and cultural heritage.",
+      ctaTitle: "Let's work together?",
+      ctaDesc: "I build infrastructure that scales. If your team is growing, let's talk.",
+      servicesLabel: 'View services',
+      emailCta: 'or write me at',
+    }
+  : {
+      pageTitle: 'About',
+      heroTitle: 'Chi sono',
+      cvLabel: 'Scarica CV',
+      yearsLabel: 'anni di esperienza',
+      articlesLabel: 'articoli pubblicati',
+      stackTitle: 'Stack tecnologico',
+      currentTitle: 'Cosa faccio oggi',
+      sinceLabel: 'Dal',
+      pastTitle: 'Percorso',
+      eduTitle: 'Istruzione',
+      pubTitle: 'Pubblicazioni',
+      pubDesc: "Membro del Comitato Tecnico-Scientifico di Operai dell'Arte APS. Ho supervisionato tesi di laurea e collaborato a pubblicazioni peer-reviewed in ambito geomatica e patrimonio culturale.",
+      ctaTitle: 'Lavoriamo insieme?',
+      ctaDesc: 'Costruisco infrastrutture che scalano. Se il tuo team sta crescendo, parliamone.',
+      servicesLabel: 'Vedi i servizi',
+      emailCta: 'oppure scrivimi a',
+    };
+---
+
+<PageLayout title={t.pageTitle} lang={lang}>
+  <PageHero
+    title={t.heroTitle}
+    subtitle="Backend Engineer & DevOps Consultant"
+    image={{ src: author.image, alt: author.name }}
+    cta={{ href: '/files/Francesco_Montelli_CV.pdf', label: t.cvLabel }}
+  />
+
+  {/* Bio */}
+  <section class="mb-20 fade-in-section">
+    <p class="text-text-muted text-lg leading-relaxed max-w-2xl">
+      {bio}
+    </p>
+    <div class="flex gap-8 mt-6">
+      <div>
+        <span class="text-3xl font-bold text-accent">{yrsExp}+</span>
+        <p class="text-sm text-text-muted">{t.yearsLabel}</p>
+      </div>
+      <div>
+        <span class="text-3xl font-bold text-accent">{articleCount}</span>
+        <p class="text-sm text-text-muted">{t.articlesLabel}</p>
+      </div>
+    </div>
+  </section>
+
+  {/* Tech Stack */}
+  <section class="mb-20 fade-in-section">
+    <SectionHeading title={t.stackTitle} />
+    <SkillGrid />
+  </section>
+
+  {/* Current roles */}
+  {currentRoles.length > 0 && (
+    <section class="mb-20 fade-in-section">
+      <SectionHeading title={t.currentTitle} />
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 stagger-children">
+        {currentRoles.map((role) => (
+          <div class="rounded-xl border border-border/70 dark:border-border-dark/70 border-l-[3px] border-l-accent p-6 bg-white dark:bg-surface-dark h-full flex flex-col">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <h3 class="font-semibold text-base text-text-dark dark:text-text-light">{role.title}</h3>
+              <span class="text-[11px] text-accent bg-accent/10 px-2 py-0.5 rounded-full font-medium whitespace-nowrap shrink-0">
+                {t.sinceLabel} {role.since}
+              </span>
+            </div>
+            <p class="text-accent text-sm mb-3">{role.company} · {role.location}</p>
+            <ul class="space-y-1">
+              {role.responsibilities.slice(0, 3).map((r) => (
+                <li class="text-text-muted text-sm leading-relaxed flex gap-2">
+                  <span class="text-accent mt-1.5 shrink-0 w-1 h-1 rounded-full bg-accent" />
+                  {r}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {/* Past experience */}
+  {pastItems.length > 0 && (
+    <section class="mb-20 fade-in-section">
+      <SectionHeading title={t.pastTitle} />
+      <Timeline items={pastItems} />
+    </section>
+  )}
+
+  {/* Education */}
+  <section class="mb-20 fade-in-section">
+    <SectionHeading title={t.eduTitle} />
+    <Timeline items={educationItems} />
+  </section>
+
+  {/* Publications */}
+  <section class="mb-20 fade-in-section">
+    <SectionHeading title={t.pubTitle} />
+    <p class="text-text-muted mb-6 max-w-2xl">{t.pubDesc}</p>
+    <div class="space-y-6 stagger-children">
+      {publications.map((pub) => (
+        <div class="border-l-2 border-accent pl-4">
+          <a
+            href={pub.paper.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-lg font-semibold text-text-dark dark:text-text-light hover:text-accent transition-colors"
+          >
+            {pub.title}
+          </a>
+          {pub.authors && (
+            <p class="text-sm text-text-muted mt-1">{pub.authors}</p>
+          )}
+          <p class="text-sm text-accent mt-1">
+            {pub.publishedIn.name} ({pub.publishedIn.date})
+          </p>
+          <p class="text-sm text-text-muted mt-2">{pub.paper.summary}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  {/* CTA */}
+  <section class="text-center py-16 fade-in-section">
+    <h2 class="text-3xl font-bold mb-3">{t.ctaTitle}</h2>
+    <p class="text-text-muted text-lg mb-8 max-w-xl mx-auto">{t.ctaDesc}</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <Button href={lang === 'en' ? '/en/services/' : '/servizi/'} variant="secondary" size="lg">
+        {t.servicesLabel}
+      </Button>
+      <Button href="/files/Francesco_Montelli_CV.pdf" variant="primary" size="lg">
+        {t.cvLabel}
+      </Button>
+    </div>
+    <p class="mt-6 text-sm text-text-muted">
+      {t.emailCta} <a href="mailto:francesco@montelli.dev" class="text-accent hover:underline">francesco@montelli.dev</a>
+    </p>
+  </section>
+</PageLayout>

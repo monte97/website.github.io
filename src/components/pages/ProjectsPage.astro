@@ -1,0 +1,152 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '@/layouts/PageLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import Badge from '@/components/ui/Badge.astro';
+import { getPillarLabel } from '@/data/pillars';
+
+interface Props {
+  lang?: 'it' | 'en';
+}
+
+const { lang = 'it' } = Astro.props;
+
+const allProjects = (await getCollection('projects'))
+  .sort((a, b) => a.data.weight - b.data.weight);
+
+const projects = allProjects.filter(p => p.data.type !== 'workshop');
+const workshops = allProjects.filter(p => p.data.type === 'workshop');
+const totalCount = allProjects.length;
+
+const prefix = lang === 'en' ? '/en' : '';
+
+const t = lang === 'en'
+  ? {
+      pageTitle: 'Projects',
+      pageDesc: 'Real projects on software architecture, observability, testing and DevOps',
+      heroTitle: 'Projects & Workshops',
+      heroSubtitle: `Architectures designed, infrastructure tested, pipelines automated. ${totalCount} projects.`,
+      projectsHeading: 'Projects',
+      workshopsHeading: 'Workshops & Training',
+      workshopsDesc: 'Courses and training materials on testing, security and best practices.',
+      ctaTitle: 'Have a similar project?',
+      ctaDesc: "I can help you design, verify or automate. Let's start with a free health check.",
+      ctaPrimary: 'Get in touch',
+      ctaSecondary: 'Explore services',
+      emailSubject: 'New%20project',
+      servicesHref: '/en/services/',
+    }
+  : {
+      pageTitle: 'Progetti',
+      pageDesc: 'Progetti e casi reali su architettura software, observability, testing e DevOps',
+      heroTitle: 'Progetti & Workshop',
+      heroSubtitle: `Architetture progettate, infrastrutture testate, pipeline automatizzate. ${totalCount} progetti.`,
+      projectsHeading: 'Progetti',
+      workshopsHeading: 'Workshop & Formazione',
+      workshopsDesc: 'Corsi e materiali formativi su testing, security e best practice.',
+      ctaTitle: 'Hai un progetto simile?',
+      ctaDesc: 'Posso aiutarti a progettare, verificare o automatizzare. Partiamo da un health check gratuito.',
+      ctaPrimary: 'Scrivimi',
+      ctaSecondary: 'Scopri i servizi',
+      emailSubject: 'Nuovo%20progetto',
+      servicesHref: '/servizi/',
+    };
+---
+
+<PageLayout title={t.pageTitle} description={t.pageDesc} lang={lang}>
+
+  <PageHero title={t.heroTitle} subtitle={t.heroSubtitle} />
+
+  <!-- Projects section -->
+  {projects.length > 0 && (
+    <section class="mb-16 fade-in-section">
+      <h2 class="text-lg font-semibold tracking-tight mb-6 flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>
+        {t.projectsHeading}
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 stagger-children">
+        {projects.map((project) => (
+          <a
+            href={`${prefix}/progetti/${project.id}/`}
+            class="group block rounded-xl border border-border/70 dark:border-border-dark/70 border-l-[3px] p-6 bg-white dark:bg-surface-dark hover:shadow-md hover:border-border dark:hover:border-border-dark transition-all duration-300"
+            style={`border-left-color: var(--color-pillar-${project.data.pillar})`}
+          >
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <h3 class="text-base font-bold text-text-dark dark:text-text-light group-hover:text-accent transition-colors">
+                {project.data.title}
+              </h3>
+              <Badge pillar={project.data.pillar} class="shrink-0">
+                {getPillarLabel(project.data.pillar, lang)}
+              </Badge>
+            </div>
+            <p class="text-text-muted text-sm leading-relaxed mb-4">{project.data.description}</p>
+            <div class="flex flex-wrap gap-1.5">
+              {project.data.tags.slice(0, 5).map(tag => (
+                <span class="text-[11px] text-text-muted/80 bg-text-muted/8 px-1.5 py-0.5 rounded">{tag}</span>
+              ))}
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Workshops section -->
+  {workshops.length > 0 && (
+    <section class="fade-in-section">
+      <h2 class="text-lg font-semibold tracking-tight mb-2 flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>
+        {t.workshopsHeading}
+      </h2>
+      <p class="text-text-muted text-sm mb-6">{t.workshopsDesc}</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 stagger-children">
+        {workshops.map((ws) => (
+          <a
+            href={`${prefix}/progetti/${ws.id}/`}
+            class="group block rounded-xl border border-border/70 dark:border-border-dark/70 border-l-[3px] p-6 bg-white dark:bg-surface-dark hover:shadow-md hover:border-border dark:hover:border-border-dark transition-all duration-300"
+            style={`border-left-color: var(--color-pillar-${ws.data.pillar})`}
+          >
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <h3 class="text-base font-bold text-text-dark dark:text-text-light group-hover:text-accent transition-colors">
+                {ws.data.title}
+              </h3>
+              <div class="flex items-center gap-2 shrink-0">
+                <span class="text-[10px] uppercase font-medium tracking-wide text-accent bg-accent/10 px-2 py-0.5 rounded-full">Workshop</span>
+                <Badge pillar={ws.data.pillar} class="shrink-0">
+                  {getPillarLabel(ws.data.pillar, lang)}
+                </Badge>
+              </div>
+            </div>
+            <p class="text-text-muted text-sm leading-relaxed mb-4">{ws.data.description}</p>
+            <div class="flex flex-wrap gap-1.5">
+              {ws.data.tags.slice(0, 5).map(tag => (
+                <span class="text-[11px] text-text-muted/80 bg-text-muted/8 px-1.5 py-0.5 rounded">{tag}</span>
+              ))}
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- CTA bridge -->
+  <section class="mt-16 bg-accent-subtle rounded-xl p-8 text-center fade-in-section">
+    <h2 class="text-xl font-bold mb-2">{t.ctaTitle}</h2>
+    <p class="text-text-muted text-sm max-w-lg mx-auto mb-6">{t.ctaDesc}</p>
+    <div class="flex items-center justify-center gap-3 flex-wrap">
+      <a
+        href={`mailto:francesco@montelli.dev?subject=${t.emailSubject}`}
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-accent text-white text-sm font-medium hover:bg-accent-hover transition-colors"
+      >
+        {t.ctaPrimary}
+      </a>
+      <a
+        href={t.servicesHref}
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-border dark:border-border-dark text-sm font-medium hover:border-accent hover:text-accent transition-colors"
+      >
+        {t.ctaSecondary}
+      </a>
+    </div>
+  </section>
+
+</PageLayout>
