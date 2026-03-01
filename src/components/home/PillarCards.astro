@@ -1,5 +1,5 @@
 ---
-import Card from '@/components/ui/Card.astro';
+import { getCollection } from 'astro:content';
 
 interface Props {
   lang?: 'it' | 'en';
@@ -10,67 +10,110 @@ const { lang = 'it' } = Astro.props;
 const pillars = {
   it: [
     {
-      pillar: 'progettare' as const,
+      key: 'progettare',
       title: 'Progettare',
       tagline: 'Sistemi che reggono quando cresci.',
       link: '/servizi/#architecture',
-      cta: 'Scopri di piu\u0300 →',
     },
     {
-      pillar: 'verificare' as const,
+      key: 'verificare',
       title: 'Verificare',
-      tagline: 'Vedi cosa succede. Proteggi quello che conta.',
+      tagline: 'Osserva, testa, proteggi.',
       link: '/servizi/#observability-security',
-      cta: 'Scopri di piu\u0300 →',
     },
     {
-      pillar: 'automatizzare' as const,
+      key: 'automatizzare',
       title: 'Automatizzare',
       tagline: "Togli l'errore umano dal loop.",
       link: '/servizi/#pipeline-automation',
-      cta: 'Scopri di piu\u0300 →',
     },
   ],
   en: [
     {
-      pillar: 'progettare' as const,
+      key: 'progettare',
       title: 'Design',
       tagline: 'Systems that hold up as you grow.',
       link: '/servizi/#architecture',
-      cta: 'Learn more →',
     },
     {
-      pillar: 'verificare' as const,
+      key: 'verificare',
       title: 'Verify',
-      tagline: 'See what happens. Protect what matters.',
+      tagline: 'Observe, test, protect.',
       link: '/servizi/#observability-security',
-      cta: 'Learn more →',
     },
     {
-      pillar: 'automatizzare' as const,
+      key: 'automatizzare',
       title: 'Automate',
-      tagline: 'Remove the human error from the loop.',
+      tagline: 'Take the human error out of the loop.',
       link: '/servizi/#pipeline-automation',
-      cta: 'Learn more →',
     },
   ],
 };
 
+const colors: Record<string, { border: string; text: string; bg: string; hex: string }> = {
+  progettare:    { border: 'border-pillar-progettare', text: 'text-pillar-progettare', bg: 'bg-pillar-progettare/8', hex: '#5B7FA5' },
+  verificare:    { border: 'border-pillar-verificare', text: 'text-pillar-verificare', bg: 'bg-pillar-verificare/8', hex: '#6B9B78' },
+  automatizzare: { border: 'border-pillar-automatizzare', text: 'text-pillar-automatizzare', bg: 'bg-pillar-automatizzare/8', hex: '#9B7FB5' },
+};
+
 const cards = pillars[lang];
+
+// Count posts per pillar
+const allPosts = await getCollection('posts');
+const published = allPosts.filter((p) => p.data.lang === lang && !p.data.draft && p.data.pillar !== null);
+const pillarCounts: Record<string, number> = {};
+for (const post of published) {
+  const key = post.data.pillar!;
+  pillarCounts[key] = (pillarCounts[key] || 0) + 1;
+}
+
+const countLabel = lang === 'it' ? 'articoli' : 'articles';
 ---
 
-<section class="py-20 fade-in-section">
-  <div class="max-w-6xl mx-auto px-6">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      {cards.map((card) => (
-        <Card pillar={card.pillar}>
-          <h3 class="text-xl font-bold mb-3">{card.title}</h3>
-          <p class="text-text-muted mb-4">{card.tagline}</p>
-          <a href={card.link} class="text-accent font-medium hover:underline">
-            {card.cta}
+<section class="py-20 fade-in-section" aria-label={lang === 'en' ? 'Service pillars' : 'Pilastri dei servizi'}>
+  <div class="max-w-5xl mx-auto px-5">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 stagger-children">
+      {cards.map((card) => {
+        const c = colors[card.key];
+        const count = pillarCounts[card.key] || 0;
+        return (
+          <a
+            href={card.link}
+            class:list={[
+              'group block rounded-xl border-l-[3px] p-6 transition-all duration-300',
+              c.border,
+              'bg-white dark:bg-surface-dark',
+              'border border-border/50 dark:border-border-dark/50',
+              'hover:shadow-md hover:border-border dark:hover:border-border-dark',
+            ]}
+            style={`--pillar-color: ${c.hex}`}
+            data-pillar-hover
+          >
+            <div class:list={['w-9 h-9 rounded-lg flex items-center justify-center mb-4', c.bg]}>
+              <span class:list={['text-lg font-bold', c.text]}>
+                {card.title.charAt(0)}
+              </span>
+            </div>
+            <h3 class="text-lg font-bold mb-1.5 text-text-dark dark:text-text-light group-hover:text-accent transition-colors">
+              {card.title}
+            </h3>
+            <p class="text-text-muted text-sm leading-relaxed">
+              {card.tagline}
+            </p>
+            {count > 0 && (
+              <p class="text-xs text-text-muted mt-2">
+                {count} {countLabel}
+              </p>
+            )}
           </a>
-        </Card>
-      ))}
+        );
+      })}
     </div>
   </div>
 </section>
+
+<style>
+  [data-pillar-hover]:hover {
+    background-color: color-mix(in srgb, var(--pillar-color) 10%, transparent);
+  }
+</style>

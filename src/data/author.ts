@@ -1,18 +1,9 @@
 export const author = {
   name: 'Francesco Montelli',
   nickname: 'Monte',
-  greeting: 'Ciao! Sono',
   image: '/images/author/monte.png',
-  contactInfo: {
-    email: 'francesco@montelli.dev',
-    github: 'monte97',
-    linkedin: 'francesco-montelli',
+  bio: {
+    it: "Software Engineer specializzato in sistemi distribuiti. Lavoro con team che crescono e li aiuto a costruire infrastrutture che scalano senza che il team impazzisca. Iscritto all'Ordine degli Ingegneri della Provincia di Ravenna.",
+    en: 'Software Engineer specialized in distributed systems. I work with growing teams and help them build infrastructure that scales without driving the team crazy. Registered with the Order of Engineers of the Province of Ravenna.',
   },
-  summary: [
-    'I am a Developer',
-    'I am a Devops',
-    'I love servers',
-    'I work on open-source projects',
-    'I love to work with some fun projects',
-  ],
 } as const;

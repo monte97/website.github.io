@@ -1,0 +1,61 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+  lang?: 'it' | 'en';
+}
+
+const { lang = 'it' } = Astro.props;
+
+const text = {
+  it: { articles: 'articoli', series: 'serie', projects: 'progetti', years: 'anni esperienza' },
+  en: { articles: 'articles', series: 'series', projects: 'projects', years: 'years experience' },
+};
+
+const t = text[lang];
+
+const allPosts = await getCollection('posts');
+const published = allPosts.filter((p) => p.data.lang === lang && !p.data.draft && p.data.pillar !== null);
+
+const articleCount = published.length;
+
+// Series with 2+ posts
+const seriesSlugs = new Set(
+  published.map((p) => p.id.split('/').slice(0, -1).join('/')).filter(Boolean)
+);
+const seriesCount = [...seriesSlugs].filter((slug) => {
+  const postsInSeries = published.filter((p) => p.id.startsWith(slug + '/'));
+  return postsInSeries.length >= 2;
+}).length;
+
+// Project count
+const allProjects = await getCollection('projects');
+const projectCount = allProjects.length;
+
+const yearsExperience = new Date().getFullYear() - 2021;
+
+const stats = [
+  { value: articleCount, label: t.articles },
+  { value: seriesCount, label: t.series },
+  { value: projectCount, label: t.projects },
+  { value: `${yearsExperience}+`, label: t.years },
+];
+---
+
+<div class="bg-accent-subtle fade-in-section">
+  <div class="max-w-5xl mx-auto px-5 py-5">
+    <div class="flex justify-center items-center gap-6 md:gap-10 flex-wrap">
+      {stats.map((stat, i) => (
+        <div class="flex items-center gap-6 md:gap-10">
+          {i > 0 && (
+            <div class="hidden md:block w-px h-8 bg-border/40 dark:bg-border-dark/40" aria-hidden="true"></div>
+          )}
+          <div class="text-center">
+            <span class="block text-xl font-bold text-accent">{stat.value}</span>
+            <span class="text-xs text-text-muted uppercase tracking-wide">{stat.label}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>

@@ -1,18 +1,21 @@
 ---
 import { getCollection } from 'astro:content';
 import PostCard from '@/components/blog/PostCard.astro';
+import Badge from '@/components/ui/Badge.astro';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
+import { getPillarLabel } from '@/data/pillars';
+import { postHref } from '@/utils/blog';
 
 interface Props {
   lang?: 'it' | 'en';
   count?: number;
 }
 
-const { lang = 'it', count = 6 } = Astro.props;
+const { lang = 'it', count = 5 } = Astro.props;
 
 const text = {
-  it: { title: 'Ultimi articoli', viewAll: 'Tutti gli articoli →' },
-  en: { title: 'Latest posts', viewAll: 'All posts →' },
+  it: { title: 'Ultimi articoli', subtitle: 'Quello che imparo, lo scrivo.' },
+  en: { title: 'Latest posts', subtitle: 'What I learn, I write down.' },
 };
 
 const t = text[lang];
@@ -23,38 +26,66 @@ const posts = allPosts
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, count);
 
-/**
- * Build the blog href from a post ID.
- * The glob loader generates IDs like:
- *   progettare/kafka/01-intro/index       (Italian)
- *   progettare/kafka/02-schema/index.en   (English)
- * We strip the trailing /index or /index.en to get the slug path.
- */
-function postHref(postId: string): string {
-  const slug = postId.replace(/\/index(\.en)?$/, '');
-  return `/blog/${slug}/`;
-}
+const [featured, ...rest] = posts;
+
+const featuredDate = featured?.data.date.toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-US', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+
 ---
 
-<section class="py-20 fade-in-section">
-  <div class="max-w-6xl mx-auto px-6">
-    <SectionHeading title={t.title} />
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {posts.map((post) => (
+<section class="py-20 border-t border-border/30 dark:border-border-dark/30 fade-in-section" aria-label={t.title}>
+  <div class="max-w-5xl mx-auto px-5">
+    <div class="flex items-end justify-between mb-10">
+      <SectionHeading title={t.title} subtitle={t.subtitle} />
+      <a href={lang === 'en' ? '/en/blog/' : '/blog/'} class="text-accent text-sm font-medium hover:underline underline-offset-4 shrink-0 hidden md:block">
+        {lang === 'it' ? 'Tutti gli articoli' : 'All posts'} &rarr;
+      </a>
+    </div>
+
+    {/* Featured post — full width */}
+    {featured && (
+      <a href={postHref(featured.id, lang)} class="group block mb-6">
+        <div class="rounded-xl border border-border/50 dark:border-border-dark/50 bg-white dark:bg-surface-dark p-6 transition-shadow hover:shadow-md">
+          <div class="flex items-center gap-2 mb-3">
+            <time class="text-xs text-text-muted tabular-nums" datetime={featured.data.date.toISOString()}>
+              {featuredDate}
+            </time>
+            {featured.data.pillar && (
+              <Badge pillar={featured.data.pillar}>
+                {getPillarLabel(featured.data.pillar, lang)}
+              </Badge>
+            )}
+          </div>
+          <h3 class="text-xl font-bold mb-2 text-text-dark dark:text-text-light group-hover:text-accent transition-colors leading-snug">
+            {featured.data.title}
+          </h3>
+          <p class="text-text-muted text-sm leading-relaxed">
+            {featured.data.description}
+          </p>
+        </div>
+      </a>
+    )}
+
+    {/* Remaining posts — 2-col grid */}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 stagger-children">
+      {rest.map((post) => (
         <PostCard
           title={post.data.title}
           description={post.data.description}
           date={post.data.date}
           pillar={post.data.pillar}
           tags={post.data.tags}
-          href={postHref(post.id)}
+          href={postHref(post.id, lang)}
           lang={lang}
         />
       ))}
     </div>
-    <div class="text-center mt-10">
-      <a href="/blog/" class="text-accent font-medium hover:underline">
-        {t.viewAll}
+    <div class="text-center mt-8 md:hidden">
+      <a href={lang === 'en' ? '/en/blog/' : '/blog/'} class="text-accent text-sm font-medium hover:underline underline-offset-4">
+        {lang === 'it' ? 'Tutti gli articoli' : 'All posts'} &rarr;
       </a>
     </div>
   </div>
