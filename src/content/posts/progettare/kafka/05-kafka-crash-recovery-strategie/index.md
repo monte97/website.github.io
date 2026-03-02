@@ -13,6 +13,8 @@ lang: it
 draft: true
 series: kafka
 seriesOrder: 50
+reviewed: true
+reproducibility: true
 ---
 
 Un consumer Kafka crasha. Cosa succede ai dati che stava processando? La risposta non dipende da Kafka, ma dal tipo di stato che il consumer mantiene. Un consumer idempotente puo' ripartire dall'inizio del topic senza conseguenze. Un consumer che accumula delta non puo' permetterselo: ricalcolerebbe valori gia' contati. Un consumer stateless non ha nulla da recuperare.
@@ -186,7 +188,7 @@ Questa regola si applica anche a scenari non coperti dalla demo. Un consumer che
 La demo privilegia la chiarezza sulla robustezza. Alcuni limiti da tenere presenti in un contesto di produzione:
 
 * **Nessun graceful shutdown**: i consumer usano `KeyboardInterrupt` come unico meccanismo di arresto. Non c'e' gestione di segnali SIGTERM, il che significa che Docker Compose uccide il processo dopo il timeout. In produzione servirebbe un signal handler che chiude il consumer e committa l'offset corrente.
-* **GIL come unica protezione concorrente**: il consumer-usage legge da Kafka e scrive su MongoDB nello stesso thread. In Python, il GIL garantisce che non ci siano race condition tra operazioni in-memory, ma il checkpoint su MongoDB e il salvataggio del delta non sono atomici. Un crash tra le due operazioni puo' lasciare lo stato inconsistente.
+* **Checkpoint e delta non atomici**: il consumer-usage esegue due scritture MongoDB separate (salvataggio delta e aggiornamento checkpoint) senza una transazione. Un crash tra le due operazioni puo' lasciare lo stato inconsistente. L'approccio e' accettabile per la demo perche' l'errore introdotto e' dell'ordine di un singolo intervallo di polling.
 * **Health check assente**: nessuno dei container espone un endpoint di health. Docker non ha modo di sapere se un consumer e' bloccato in un poll infinito o se sta effettivamente processando messaggi. Un health check reale dovrebbe verificare l'avanzamento dell'offset.
 * **Nessuna gestione del backpressure**: se MongoDB rallenta, il consumer-usage continua a leggere da Kafka alla stessa velocita', accumulando messaggi in memoria. In produzione servirebbe un meccanismo di flow control.
 
