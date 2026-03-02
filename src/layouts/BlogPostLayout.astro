@@ -77,17 +77,6 @@ const relatedPosts = pillar
       .slice(0, 3)
   : [];
 
-// Series prev/next navigation
-let prevSeriesPost = null;
-let nextSeriesPost = null;
-if (series) {
-  const seriesPosts = allPosts
-    .filter(p => p.data.series === series && p.data.lang === lang && !p.data.draft)
-    .sort((a, b) => (a.data.seriesOrder ?? 0) - (b.data.seriesOrder ?? 0));
-  const currentIndex = seriesPosts.findIndex(p => p.id === postId);
-  prevSeriesPost = currentIndex > 0 ? seriesPosts[currentIndex - 1] : null;
-  nextSeriesPost = currentIndex < seriesPosts.length - 1 ? seriesPosts[currentIndex + 1] : null;
-}
 ---
 
 <BaseLayout title={title} description={description} ogImage={ogImage} lang={lang}>
@@ -166,22 +155,6 @@ if (series) {
         <TOC headings={headings} lang={lang} />
       </aside>
     </div>
-
-    <!-- Series prev/next compact navigation -->
-    {(prevSeriesPost || nextSeriesPost) && (
-      <div class="flex items-center justify-between gap-4 mt-10 pt-6 border-t border-border/50 dark:border-border-dark/50">
-        {prevSeriesPost ? (
-          <a href={postHref(prevSeriesPost.id, lang)} class="text-sm text-text-muted hover:text-accent transition-colors">
-            &larr; {lang === 'it' ? 'Precedente' : 'Previous'}
-          </a>
-        ) : <span />}
-        {nextSeriesPost ? (
-          <a href={postHref(nextSeriesPost.id, lang)} class="text-sm text-text-muted hover:text-accent transition-colors text-right">
-            {lang === 'it' ? 'Successivo' : 'Next'} &rarr;
-          </a>
-        ) : <span />}
-      </div>
-    )}
 
     <!-- CTA -->
     <PostCTA lang={lang} pillar={pillar} />
