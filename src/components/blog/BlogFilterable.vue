@@ -2,6 +2,34 @@
   <div>
     <!-- ═══ Filter Bar ═══ -->
     <div class="mb-6 space-y-3">
+      <!-- Row 0: Search input -->
+      <div class="relative">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+        </svg>
+        <input
+          v-model="searchQuery"
+          type="text"
+          :placeholder="t('searchPlaceholder')"
+          class="w-full pl-9 pr-9 py-2 rounded-lg text-sm border border-border/50 dark:border-border-dark/50 bg-white dark:bg-surface-dark text-text-dark dark:text-text-light placeholder-text-muted focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 transition-colors"
+        />
+        <button
+          v-if="searchQuery"
+          @click="clearSearch"
+          aria-label="Clear search"
+          class="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-accent transition-colors cursor-pointer"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+
       <!-- Row 1: Pillar pills + Category dropdown -->
       <div class="flex items-center justify-between gap-4 flex-wrap">
         <!-- Pillar pills -->
@@ -99,6 +127,19 @@
       <!-- Row 2: Active filter chips -->
       <div v-if="hasAnyFilter" class="flex items-center gap-2 flex-wrap">
         <span class="text-xs text-text-muted font-medium">{{ t('filters') }}</span>
+
+        <!-- Search chip -->
+        <button
+          v-if="searchQuery.trim()"
+          @click="clearSearch"
+          aria-label="Remove search filter"
+          class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-text-muted/15 text-text-dark dark:text-text-light hover:bg-text-muted/25 transition-colors cursor-pointer"
+        >
+          {{ t('search') }} "{{ searchQuery.trim() }}"
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </button>
 
         <!-- Pillar chip -->
         <button
@@ -336,12 +377,14 @@ const pillars = ['progettare', 'verificare', 'automatizzare'] as const;
 // ── i18n ──
 
 const i18n: Record<string, { it: string; en: string }> = {
-  all:         { it: 'Tutti',           en: 'All' },
-  topic:       { it: 'Argomento',       en: 'Topic' },
-  filters:     { it: 'Filtri:',         en: 'Filters:' },
-  clearAll:    { it: 'Rimuovi tutti',   en: 'Clear all' },
-  clearFilter: { it: 'Rimuovi filtro',  en: 'Clear filter' },
-  empty:       { it: 'Nessun articolo per questo filtro.', en: 'No articles for this filter.' },
+  all:               { it: 'Tutti',           en: 'All' },
+  topic:             { it: 'Argomento',       en: 'Topic' },
+  filters:           { it: 'Filtri:',         en: 'Filters:' },
+  clearAll:          { it: 'Rimuovi tutti',   en: 'Clear all' },
+  clearFilter:       { it: 'Rimuovi filtro',  en: 'Clear filter' },
+  empty:             { it: 'Nessun articolo per questo filtro.', en: 'No articles for this filter.' },
+  searchPlaceholder: { it: 'Cerca articoli...',  en: 'Search articles...' },
+  search:            { it: 'Ricerca:',           en: 'Search:' },
 };
 
 function t(key: string): string {
@@ -364,6 +407,7 @@ function getPillarLabel(pillar: string): string {
 
 // ── Filter state ──
 
+const searchQuery = ref('');
 const activePillar = ref<'progettare' | 'verificare' | 'automatizzare' | null>(null);
 const activeCategory = ref<string | null>(null);
 const activeTags = ref<Set<string>>(new Set());
@@ -410,7 +454,12 @@ function isTagActive(tag: string): boolean {
   return activeTags.value.has(tag);
 }
 
+function clearSearch() {
+  searchQuery.value = '';
+}
+
 function clearAllFilters() {
+  searchQuery.value = '';
   activePillar.value = null;
   activeCategory.value = null;
   activeTags.value = new Set();
@@ -467,11 +516,12 @@ const availableCategories = computed(() => {
 // ── Computed: filter state helpers ──
 
 const hasAnyFilter = computed(() => {
-  return activePillar.value !== null || activeCategory.value !== null || activeTags.value.size > 0;
+  return searchQuery.value.trim() !== '' || activePillar.value !== null || activeCategory.value !== null || activeTags.value.size > 0;
 });
 
 const filterCount = computed(() => {
   let c = 0;
+  if (searchQuery.value.trim()) c++;
   if (activePillar.value) c++;
   if (activeCategory.value) c++;
   c += activeTags.value.size;
@@ -480,6 +530,7 @@ const filterCount = computed(() => {
 
 const filterKey = computed(() => {
   const parts = [
+    searchQuery.value.trim(),
     activePillar.value ?? 'all',
     activeCategory.value ?? 'none',
     [...activeTags.value].sort().join(','),
@@ -491,6 +542,16 @@ const filterKey = computed(() => {
 
 const filteredPosts = computed(() => {
   let result = props.posts;
+
+  // Text search filter (AND)
+  const q = searchQuery.value.trim().toLowerCase();
+  if (q) {
+    result = result.filter(p =>
+      p.title.toLowerCase().includes(q) ||
+      p.description.toLowerCase().includes(q) ||
+      p.tags.some(tag => tag.toLowerCase().includes(q))
+    );
+  }
 
   // Pillar filter (AND)
   if (activePillar.value) {
