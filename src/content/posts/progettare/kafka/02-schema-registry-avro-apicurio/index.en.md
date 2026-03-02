@@ -1,6 +1,6 @@
 ---
 title: "Schema Registry with Apache Kafka: From Wild JSON to Avro with Apicurio"
-date: 2026-02-14T09:00:00.000Z
+date: 2026-03-02T09:00:00.000Z
 description: "Migrating from schemaless JSON to Avro with Apicurio Registry: infrastructure, Node.js producer, Python consumer, schema evolution"
 pillar: progettare
 category: kafka
@@ -12,7 +12,6 @@ tags:
   - Node.js
   - Python
 lang: en
-draft: true
 reviewed: true
 series: kafka
 seriesOrder: 20

@@ -1,6 +1,6 @@
 ---
 title: Akka è morto, lunga vita a Pekko
-date: 2026-02-14T09:00:00.000Z
+date: 2026-03-02T09:00:00.000Z
 description: "Guida pratica alla migrazione da Akka a Apache Pekko in produzione: checklist completa, gotcha reali e lezioni apprese dal campo"
 pillar: progettare
 category: kafka
@@ -11,7 +11,6 @@ tags:
   - JVM
   - Migrazione
 lang: it
-draft: true
 reviewed: true
 series: kafka
 seriesOrder: 30

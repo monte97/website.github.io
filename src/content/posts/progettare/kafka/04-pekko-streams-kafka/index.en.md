@@ -1,6 +1,6 @@
 ---
 title: From Blocking Poll to Reactive Streams with Pekko Connectors Kafka
-date: 2026-02-14T09:00:00.000Z
+date: 2026-03-02T09:00:00.000Z
 description: "Refactoring from blocking actors to Source.queue and dedicated consumer threads: practical patterns with Pekko Streams and Kafka for telemetry systems"
 pillar: progettare
 category: kafka
@@ -11,7 +11,6 @@ tags:
   - Streaming
   - Avro
 lang: en
-draft: true
 reviewed: true
 series: kafka
 seriesOrder: 40
