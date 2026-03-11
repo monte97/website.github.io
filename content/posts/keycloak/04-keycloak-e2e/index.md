@@ -10,7 +10,7 @@ menu:
     parent: KEYCLOAK
 tags: ["Keycloak", "OAuth2", "OIDC", "Microservizi", "Security", "PKCE", "M2M"]
 categories: ["Security", "Backend"]
-draft: true
+draft: false
 reviewed: true
 pillar: "Security"
 ---
