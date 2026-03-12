@@ -507,7 +507,7 @@ Se il backend Tempo risiede fuori EU, il filtering da solo non basta per la data
 
 ---
 
-## Conclusioni
+## Riepilogo
 
 Abbiamo visto come:
 
@@ -532,16 +532,15 @@ Il takeaway e' semplice: se tracci servizi che gestiscono dati sensibili, il Col
 
 Il codice completo, comprese le configurazioni safe e unsafe, e' disponibile nel repository:
 
-👉 [github.com/monte97/MockMart](https://github.com/monte97/MockMart)
+[github.com/monte97/MockMart](https://github.com/monte97/MockMart)
 
 Per lanciare la demo con un solo comando: `make up-keycloak-pii` (safe) oppure `make up-keycloak-pii-unsafe` (unsafe).
 
 **Prossimi articoli:**
 
 1. **Metrics Deep Dive** - RED Method, custom metrics, cardinality control
-2. **Tail Sampling** - Sampling intelligente per high-volume services
-3. **Multi-Tenancy Filtering** - Filtering diverso per tenant
-4. **Keycloak Extensions** - Custom event listeners per audit dettagliato
+2. **Multi-Tenancy Filtering** - Filtering diverso per tenant
+3. **Keycloak Extensions** - Custom event listeners per audit dettagliato
 
 **Risorse:**
 
