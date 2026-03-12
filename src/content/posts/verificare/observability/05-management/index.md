@@ -30,7 +30,7 @@ reproducibility: true
 
 Nel [tutorial precedente](https://montelli.dev/posts/otel-website-material/04-correlation/) abbiamo strumentato un e-commerce con OpenTelemetry e risolto tre scenari di debug: silent failure, latency spike, fan-out. Tutto funzionava: trace complete, errori visibili, latenza misurabile.
 
-C'è un dettaglio che però non abbiamo affrontato: ogni singola request generava una trace che viene salvata in modo indefinito all'interno del sistema. In sviluppo è il comportamento accettabile ma in un contesto reale? E' un problema. 
+C'è un dettaglio che però non abbiamo affrontato: ogni singola request generava una trace che viene salvata in modo indefinito all'interno del sistema. In sviluppo e' il comportamento accettabile ma in un contesto reale? E' un problema.
 
 **Struttura dell'articolo:**
 1. Il problema: volume e crescita infinita
@@ -190,7 +190,7 @@ La config completa è in [`otel-config/data-management/otel-collector-config.yam
 
 ### Aggiungere una Policy Custom: Audit Events
 
-Le tre policy base coprono errori, latenza e traffico normale. Resta un caso: le operazioni critiche per il business o la sicurezza (checkout, login, payment) che in, questo esempio, decidiamo di mantere sempre, indipendentemente da errori o latenza.
+Le tre policy base coprono errori, latenza e traffico normale. Resta un caso: le operazioni critiche per il business o la sicurezza (checkout, login, payment) che in questo esempio decidiamo di mantenere sempre, indipendentemente da errori o latenza.
 
 Il `tail_sampling` processor supporta policy basate su attributi. È sufficiente aggiungere una policy `string_attribute` che cerchi un attributo specifico sugli span:
 
