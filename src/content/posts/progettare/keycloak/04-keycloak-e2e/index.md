@@ -13,7 +13,6 @@ tags:
   - PKCE
   - M2M
 lang: it
-draft: true
 reviewed: true
 series: keycloak
 seriesOrder: 40
