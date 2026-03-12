@@ -23,32 +23,23 @@ Questo articolo documenta 6 problemi concreti emersi nell'integrazione di Keyclo
 
 | Problema | Dove | Impatto |
 |---|---|---|
-| Issuer mismatch (401 inspiegabile) | JWT validation | API inaccessibile in staging/prod |
-| Audience non validata | JWT validation | Token cross-client accettati |
-| Service account detection fragile | Notification service | Bypass della sicurezza M2M |
-| `canCheckout` string vs boolean | Checkout | Authorization che fallisce silenziosamente |
-| Race condition nel token caching | M2M | Keycloak sovraccaricato sotto carico |
-| Configurazione non portabile | Realm + frontend | Tutto si rompe fuori da localhost |
+| Due URL per uno stesso Keycloak | JWT validation | API inaccessibile in staging/prod |
+| Un token apre tutte le porte | JWT validation | Token cross-client accettati |
+| Utenti scambiati per servizi | Notification service | Bypass della sicurezza M2M |
+| Il claim che cambia formato | Checkout | Authorization che fallisce silenziosamente |
+| 50 checkout, 50 richieste token | M2M | Keycloak sovraccaricato sotto carico |
+| Configurazioni che non escono da localhost | Realm + frontend | Tutto si rompe fuori da localhost |
 
 ## Architettura MockMart
 
 ```text
-┌─────────────────────────────────────────────────────────────┐
-│                    Gateway (nginx:80)                        │
-└────┬──────────────┬──────────────┬──────────────────────────┘
-     │              │              │
-┌────▼────┐   ┌─────▼─────┐  ┌─────▼─────┐
-│ Shop UI │   │ Shop API  │  │ Keycloak  │
-│ React   │   │ Express   │  │   :8080   │
-│ :3000   │   │   :3001   │  └───────────┘
-└─────────┘   └─────┬─────┘
-                    │
-      ┌─────────────┼─────────────┐
-      │             │             │
-┌─────▼─────┐ ┌─────▼─────┐ ┌─────▼──────┐
-│  Payment  │ │ Inventory │ │Notification│
-│   :3010   │ │   :3011   │ │   :3009    │
-└───────────┘ └───────────┘ └────────────┘
+Gateway (nginx:80)
+├── Shop UI (React, :3000)
+├── Shop API (Express, :3001)
+│   ├── Payment (:3010)
+│   ├── Inventory (:3011)
+│   └── Notification (:3009)
+└── Keycloak (:8080)
 ```
 
 L'autenticazione usa tre pattern: Authorization Code + PKCE per il frontend, JWT validation via JWKS per l'API, Client Credentials per la comunicazione M2M tra servizi.
@@ -61,7 +52,7 @@ make up && make health
 
 ---
 
-## Problema 1: Il 401 Inspiegabile (Issuer Mismatch)
+## Problema 1: Due URL per uno stesso Keycloak
 
 ### Sintomo
 
@@ -82,6 +73,8 @@ const { payload } = await jwtVerify(token, getJWKS(), {
   clockTolerance: 30
 });
 ```
+
+Il codice usa `KEYCLOAK_AUTH_PATH` per gestire il prefisso `/auth`. Keycloak pre-17 (WildFly) lo includeva di default; Keycloak 17+ (Quarkus) non lo usa più, a meno che non sia impostato esplicitamente con `--http-relative-path /auth`.
 
 Due URL distinti servono due scopi diversi:
 
@@ -117,7 +110,7 @@ if (!KEYCLOAK_PUBLIC_URL) {
 
 ---
 
-## Problema 2: Token Cross-Client Accettati (Audience Mancante)
+## Problema 2: Un Token Apre Tutte le Porte
 
 ### Sintomo
 
@@ -155,11 +148,11 @@ const { payload } = await jwtVerify(token, getJWKS(), {
 });
 ```
 
-Lato Keycloak, configurare un audience mapper nel client scope per includere l'`aud` corretto nel token.
+Lato Keycloak, l'`aud` non è incluso negli access token di default. Per aggiungerlo: Client Scopes > selezionare lo scope del client > Mappers > Add mapper > tipo "Audience" > impostare "Included Client Audience" con il client ID target (es. `shop-api`) e abilitare "Add to access token".
 
 ---
 
-## Problema 3: Chiunque Può Essere un Service Account
+## Problema 3: Utenti Scambiati per Servizi
 
 ### Sintomo
 
@@ -209,19 +202,26 @@ Il primo controllo (`isServiceAccount`) passa. Il secondo (`callingService !== '
 Non basare l'identificazione sull'assenza di un campo. Verificare un claim esplicito:
 
 ```javascript
-// Approccio più robusto: clientId è presente solo nei token client credentials (Keycloak 17+)
-// e i token ottenuti via client credentials non hanno session_state
-const isServiceAccount = payload.clientId !== undefined && !payload.session_state;
-
-// In alternativa, preferred_username segue il pattern "service-account-<clientId>"
-// const isServiceAccount = payload.preferred_username?.startsWith('service-account-');
+// preferred_username per i service account segue il pattern "service-account-<clientId>"
+// È l'indicatore più affidabile cross-versione di Keycloak
+const isServiceAccount = payload.preferred_username?.startsWith('service-account-');
 ```
 
-La soluzione ideale è combinare audience validation (Problema 2) con un check esplicito sul tipo di token. Un token destinato a `shop-api` con `azp: shop-api` è un service account confermato.
+Un'alternativa è combinare `clientId` con l'assenza di `sid`:
+
+```javascript
+// clientId è presente nei token ottenuti via client credentials
+// Nota: il nome del claim dipende dalla configurazione del mapper (clientId o client_id)
+const isServiceAccount = (payload.clientId || payload.client_id) !== undefined && !payload.sid;
+```
+
+> Il check `!payload.session_state` che si trova in molte guide non è più affidabile: Keycloak 26+ ha rimosso `session_state` da tutti i token di default (sia utente che service account), rendendo la condizione sempre vera. Usare `sid` come alternativa, oppure affidarsi a `preferred_username`.
+
+La soluzione ideale è combinare audience validation (Problema 2) con un check esplicito sul tipo di token.
 
 ---
 
-## Problema 4: `canCheckout` Che Smette di Funzionare
+## Problema 4: Il Claim Che Cambia Formato tra Versioni
 
 ### Sintomo
 
@@ -287,7 +287,7 @@ canCheckout: payload.realm_access?.roles?.includes('can-checkout') || false
 
 ---
 
-## Problema 5: Keycloak Sotto Carico (Race Condition M2M)
+## Problema 5: 50 Checkout, 50 Richieste Token
 
 ### Sintomo
 
@@ -362,7 +362,7 @@ Con questo pattern, 50 richieste concorrenti producono una sola chiamata a Keycl
 
 ---
 
-## Problema 6: Da localhost a Produzione
+## Problema 6: Configurazioni Che Non Escono da localhost
 
 I problemi precedenti emergono nel codice applicativo. Questa sezione copre le configurazioni che funzionano su localhost e si rompono altrove.
 
@@ -415,7 +415,9 @@ const authenticated = await kc.init({
 })
 ```
 
-L'iframe di sessione verifica periodicamente che la sessione Keycloak sia ancora valida. Disabilitato per evitare problemi di cookie cross-origin su localhost, ma in produzione la conseguenza è che un utente che fa logout da un'altra tab resta autenticato nel frontend fino alla scadenza del token (5 minuti).
+L'iframe di sessione verifica periodicamente che la sessione Keycloak sia ancora valida. Disabilitarlo era inizialmente una scelta di comodità per evitare problemi di cookie cross-origin su localhost. Ma dopo la scoperta di CVE-2024-1249, che sfrutta l'iframe per attacchi DoS cross-origin, disabilitarlo è diventata la pratica raccomandata anche in produzione.
+
+La conseguenza è che il logout da un'altra tab non viene rilevato immediatamente: l'utente resta autenticato nel frontend fino alla scadenza del token (5 minuti). Per gestire questo caso senza l'iframe, è possibile implementare un polling esplicito sul token endpoint o usare i Back-Channel Logout di Keycloak.
 
 ### URL hardcoded nel frontend
 
@@ -441,7 +443,7 @@ Riepilogo delle verifiche da effettuare prima di portare un'integrazione Keycloa
 | Lock su token caching M2M | `getServiceToken()` | Mancante |
 | `sslRequired: "external"` o `"all"` | Realm config | `"none"` |
 | Secret non nel codice/repo | env var senza default | Default hardcoded |
-| `checkLoginIframe` abilitato | Frontend init | Disabilitato |
+| `checkLoginIframe` disabilitato (CVE-2024-1249) | Frontend init | Disabilitato (corretto) |
 | URL Keycloak configurabile nel frontend | Build/runtime config | Hardcoded |
 | HTTPS per tutte le comunicazioni | Nginx, docker-compose | HTTP |
 

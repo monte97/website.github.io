@@ -19,7 +19,7 @@ series: keycloak
 seriesOrder: 40
 ---
 
-Un'integrazione Keycloak che funziona perfettamente su localhost e poi esplode al primo deploy in staging e' uno scenario comune.
+Un'integrazione Keycloak che funziona perfettamente su localhost e poi esplode al primo deploy in staging è uno scenario comune.
 
 Keycloak configurato, login funzionante, checkout che gira. L'integrazione sembra completa. I problemi iniziano dopo: un 401 inspiegabile in staging, un token che passa la validazione di servizi a cui non era destinato, un service account che qualsiasi utente può impersonare.
 

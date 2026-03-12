@@ -1,137 +1,74 @@
-# Tech Review: Keycloak in Pratica — 6 Problemi Reali
+# Tech Review: Keycloak in Pratica - 6 Problemi Reali
 
 **Reviewer**: Claude Opus 4.6 (tech-review)
-**Date**: 2026-02-20
+**Date**: 2026-03-12 (aggiornamento; prima review: 2026-02-20)
 **Article**: `content/posts/keycloak/04-keycloak-e2e/index.md`
 
 ---
 
-## Overall Score: 8/10
+## Overall Score: 9/10
 
-Solid, practical article that documents real integration pitfalls. The problems are well-chosen, the explanations are clear, and the corrections are sound. A few factual inaccuracies and missing nuances prevent a higher score.
-
----
-
-## Issues Found
-
-### P1 — Problema 3: `sub` does not start with `service-account-` in Keycloak
-
-> ```javascript
-> const isServiceAccount = payload.sub?.startsWith('service-account-');
-> ```
-
-The `sub` claim in Keycloak tokens is a UUID, not a human-readable string. It does **not** start with `service-account-`. The `preferred_username` claim contains `service-account-<clientId>`, but `sub` is always a UUID like `f47ac10b-58cc-4372-a567-0e02b2c3d479`. This suggested fix would never match.
-
-**Fix**: Replace the `sub`-based suggestion with `preferred_username`-based check, or remove that alternative entirely and keep only the `clientId` + role approach (which is correct).
+Articolo solido e pratico. I 3 P1 della review precedente sono stati corretti. La review di aggiornamento ha trovato 2 nuovi P1 (checkLoginIframe e session_state in KC 26+), entrambi ora risolti.
 
 ---
 
-### P1 — Problema 3: `realm_access.roles` does not contain `service-account` by default
+## Storico Issue
 
-> ```javascript
-> const isServiceAccount = payload.clientId !== undefined
->   && payload.realm_access?.roles?.includes('service-account');
-> ```
+### P1 risolti (review 2026-02-20)
 
-Keycloak does not assign a `service-account` realm role by default. Service accounts get a composite role `uma_authorization` and client-specific roles under `resource_access`, but no `service-account` realm role. The role is typically named `default-roles-<realm>` or custom roles.
+1. **`sub` does not start with `service-account-`** - Rimosso, sostituito con `preferred_username`
+2. **`realm_access.roles` non contiene `service-account` di default** - Rimosso
+3. **`payload.roles` invece di `payload.realm_access.roles`** - Corretto in `realm_access?.roles`
 
-A more reliable approach: check for the presence of `clientId` claim (only present in client credentials tokens in Keycloak 17+) combined with absence of `session_state` (service account tokens obtained via client credentials do not have a session).
+### P1 risolti (review 2026-03-12)
 
-**Fix**: Adjust the suggested code to use a reliable indicator, e.g.:
+4. **`checkLoginIframe: false` presentato come problema** - Invertito: ora presentato come best practice (CVE-2024-1249)
+5. **`!payload.session_state` non affidabile in KC 26+** - `preferred_username` promosso a soluzione primaria, aggiunto caveat su `session_state`
 
-```javascript
-const isServiceAccount = payload.clientId !== undefined && !payload.session_state;
-```
+### P2 risolti (review 2026-03-12)
 
-Or document that `service-account` is a custom role that must be explicitly assigned.
+6. **`/auth` path prefix** - Aggiunta nota su KC pre-17 vs 17+ (Quarkus)
+7. **Audience mapper generico** - Aggiunti passi concreti per configurare il mapper
+8. **`clientId` camelCase vs `client_id`** - Aggiunto caveat nel codice corretto
+9. **Titoli sezione topic-only** - Riscritti con insight
+10. **Diagramma ASCII con box `┌┐└┘`** - Convertito in formato albero
 
----
+### P2 aperti (non bloccanti)
 
-### P1 — Problema 4: Roles claim location is incorrect
-
-> ```javascript
-> canCheckout: payload.roles?.includes('can-checkout') || false
-> ```
-
-In Keycloak JWT tokens, realm roles are under `payload.realm_access.roles`, not `payload.roles`. The top-level `roles` claim does not exist by default. This code would always evaluate to `false`.
-
-**Fix**: Change to `payload.realm_access?.roles?.includes('can-checkout')`.
+11. **Error handling in `getServiceToken()`** - Se `fetchToken()` fallisce, la Promise rejected si propaga a tutti i caller. Funziona correttamente ma un commento nel codice aiuterebbe i lettori.
 
 ---
 
-### P2 — Problema 1: `/auth` path prefix depends on Keycloak version
+## Knowledge Report
 
-The article uses URLs like `http://localhost:8080/auth/realms/techstore`. The `/auth` context path was the default in Keycloak versions before 17 (WildFly-based). Starting with Keycloak 17+ (Quarkus-based), the default is no prefix: `http://localhost:8080/realms/techstore`. The article references `KEYCLOAK_AUTH_PATH` in code but doesn't clarify this version dependency.
+### Fonti consultate
 
-**Fix**: Add a brief note that the `/auth` prefix applies to legacy Keycloak (pre-17) and that Quarkus-based Keycloak (17+) uses no prefix by default, or clarify which version MockMart uses.
+| # | Fonte | URL | Cosa verificato | Takeaway chiave | Versione/Data |
+|---|-------|-----|-----------------|-----------------|---------------|
+| 1 | RFC 9700 | https://datatracker.ietf.org/doc/rfc9700/ | Numero RFC corretto | RFC 9700, BCP 240, pubblicato gennaio 2025. Precedentemente draft-ietf-oauth-security-topics | Gennaio 2025 |
+| 2 | panva/jose | https://github.com/panva/jose | API jwtVerify | Opzioni `issuer`, `audience`, `clockTolerance` corrette e stabili | v6.x |
+| 3 | Keycloak 26 Release Notes | https://docs.redhat.com/en/documentation/red_hat_build_of_keycloak/26.0/html/release_notes/ | session_state removal | `session_state` rimosso da tutti i token di default in KC 26+. `sid` è l'alternativa | KC 26.0 |
+| 4 | CVE-2024-1249 | https://github.com/keycloak/keycloak/security/advisories/GHSA-m6q9-p373-g5q8 | checkLoginIframe security | Vulnerabilità DoS cross-origin nell'iframe di login check. Disabilitare è la mitigazione raccomandata | 2024 |
+| 5 | Keycloak GitHub #16329 | https://github.com/keycloak/keycloak/issues/16329 | clientId vs client_id | Il mapper di default usa `clientId` (camelCase), non conforme a OAuth2 che prevede `client_id` | 2023 |
+| 6 | Keycloak Migration Guide | https://www.keycloak.org/migration/migrating-to-quarkus | /auth path removal | KC 17+ (Quarkus) non usa `/auth` di default. Configurabile con `--http-relative-path` | KC 17+ |
 
----
+### Sintesi delle scoperte
 
-### P2 — Problema 2: Audience claim requires explicit mapper configuration
+**Service Account Detection**
+- `preferred_username?.startsWith('service-account-')` è l'indicatore più affidabile cross-versione
+- `session_state` rimosso in KC 26+, non più utilizzabile come discriminante
+- `clientId` dipende dalla configurazione del mapper, non è esclusivo dei token client credentials
 
-The article correctly states "configurare un audience mapper nel client scope" but could be more specific. By default, Keycloak does **not** populate the `aud` claim with the client ID for access tokens (only for ID tokens). Readers may configure `audience: 'shop-api'` in `jwtVerify` and find that all tokens are now rejected because the `aud` claim is missing from the access token.
+**checkLoginIframe**
+- CVE-2024-1249 rende la disabilitazione una best practice, non un compromesso
+- Per gestire il logout cross-tab senza iframe: Back-Channel Logout o polling esplicito
 
-**Fix**: Add a concrete step: "In Keycloak, create a Protocol Mapper of type 'Audience' in the client scope, setting 'Included Client Audience' to 'shop-api' and enabling 'Add to access token'."
+**Audience Validation**
+- Keycloak non popola `aud` negli access token di default (solo ID token)
+- Richiede mapper esplicito: tipo "Audience", "Included Client Audience", "Add to access token"
 
----
+### Punti aperti
 
-### P2 — Problema 5: Error handling missing in corrected code
-
-The corrected `getServiceToken()` with `pendingRequest` has a subtle issue: if `fetchToken()` rejects, the error propagates to all 50 waiting callers, which is correct. However, the next call after failure will also return `null` from cache because `cachedToken` was not updated. This is fine but worth noting — the code correctly handles this since the cache check will miss and trigger a new fetch.
-
-No change needed, but a comment in the code clarifying error propagation would help readers.
-
----
-
-### P2 — RFC 9700 reference
-
-The article links to RFC 9700 as "OAuth 2.0 Security Best Current Practice". As of the knowledge cutoff, this was published as RFC 9700 in late 2024. Verify the RFC number is correct and stable (it was previously known as draft-ietf-oauth-security-topics).
-
----
-
-### P2 — `checkLoginIframe: false` nuance
-
-The article says disabling the login iframe means "un utente che fa logout da un'altra tab resta autenticato nel frontend fino alla scadenza del token (5 minuti)." This is correct behavior-wise, but the iframe check only detects SSO session changes — it does not invalidate the local token. Even with the iframe enabled, the access token remains valid until expiry. The iframe triggers a silent re-auth/logout when the session is gone. The explanation could be more precise.
-
-**Fix**: Minor rewording to clarify that the iframe detects session invalidation and triggers local logout, not that it invalidates the token itself.
-
----
-
-## Factual Correctness
-
-| Topic | Verdict |
-|---|---|
-| OAuth 2.0 Authorization Code + PKCE flow | Correct |
-| JWT issuer validation semantics | Correct |
-| Audience claim purpose and behavior | Correct |
-| Client Credentials grant for M2M | Correct |
-| JWKS endpoint for key retrieval | Correct |
-| `sslRequired` values and meaning | Correct |
-| Race condition in token caching | Correct, well-explained |
-| `azp` claim semantics | Correct |
-
-## Code Correctness
-
-| Snippet | Verdict |
-|---|---|
-| `jwtVerify` with jose library | Correct syntax (panva/jose) |
-| Promise-based lock pattern | Correct and idiomatic |
-| `parseBoolean` helper | Correct, covers all cases |
-| Service account detection fix | Incorrect (P1 issues above) |
-| Role-based canCheckout | Incorrect claim path (P1) |
-
-## Security Assessment
-
-The article's security advice is generally sound. It correctly identifies real-world anti-patterns (missing audience, secrets in repos, HTTP in prod). The suggested fixes are in the right direction, with the caveats noted in P1 issues above.
-
-No dangerous advice is given. The article appropriately warns against every insecure pattern it documents.
-
-## Summary
-
-| Priority | Count |
-|---|---|
-| P0 (critical) | 0 |
-| P1 (important) | 3 |
-| P2 (minor) | 4 |
-
-The three P1 issues all relate to Keycloak-specific JWT claim structures in the suggested fixes (Problems 3 and 4). The original problem descriptions are accurate — only the proposed corrections contain errors. Fixing these would bring the article to a 9/10.
+| # | Punto aperto | Contesto | Suggerimento |
+|---|-------------|----------|--------------|
+| 1 | `client_id` vs `clientId` stabilizzazione | Issue #16329 aperta dal 2023 | Monitorare se KC 27+ standardizza su `client_id` |
