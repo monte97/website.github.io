@@ -20,7 +20,7 @@ Un `console.log` "temporaneo" per capire perché una richiesta fallisce in produ
 
 Questo articolo copre il passaggio da `console.log` a un sistema di logging strutturato e centralizzato in tre step incrementali, ognuno motivato dai limiti del precedente.
 
-> 👉 Codice completo: [github.com/monte97/otel-demo](https://github.com/monte97/otel-demo) (moduli 01 e 02)
+> Codice completo: [github.com/monte97/otel-demo](https://github.com/monte97/otel-demo) (moduli 01 e 02)
 > ```bash
 > git clone https://github.com/monte97/otel-demo
 > cd otel-demo
@@ -340,7 +340,7 @@ docker compose down -v
 
 ---
 
-## Conclusioni
+## Riepilogo
 
 L'articolo ha coperto:
 
