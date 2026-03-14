@@ -19,7 +19,7 @@ reproducibility: true
 ---
 ## Il problema: JSON senza contratto
 
-Ti è mai capitato di scoprire che un campo aggiunto tre mesi fa da un altro team non è mai arrivato a destinazione? In un sistema a microservizi con Kafka al centro, il JSON è il formato naturale per i messaggi. È leggibile, tutti i linguaggi lo supportano, non richiede setup. Ma quando il sistema cresce, il JSON senza schema diventa un problema silenzioso.
+In un sistema a microservizi con Kafka al centro, il JSON è il formato naturale per i messaggi. È leggibile, tutti i linguaggi lo supportano, non richiede setup. Ma quando il sistema cresce, il JSON senza schema diventa un problema silenzioso.
 
 Il sistema in esame è una piattaforma di telemetria per mezzi d'opera in cantiere. L'architettura coinvolge tre linguaggi: Node.js per il servizio anagrafica (producer), Scala/Pekko per la standardizzazione e l'aggregazione dei dati telemetrici (consumer e producer), Python/Flask per i servizi di storico, utilizzo e reportistica (consumer). Tutti comunicano attraverso topic Kafka, tutti producono e consumano JSON.
 
@@ -401,7 +401,7 @@ Lo stack base (Kafka KRaft, Apicurio Registry, producer Node.js, consumer Python
 
 ## Conclusioni
 
-In questo articolo abbiamo visto come passare da JSON senza contratto ad Avro con schema registry:
+Il percorso da JSON senza contratto ad Avro con schema registry ha coinvolto:
 
 1. **Il problema**: senza uno schema formale, le divergenze tra producer e consumer si manifestano come dati sbagliati, non come errori
 2. **La scelta di Apicurio**: licenza Apache 2.0, storage su Kafka (KafkaSQL), API compatibile con Confluent

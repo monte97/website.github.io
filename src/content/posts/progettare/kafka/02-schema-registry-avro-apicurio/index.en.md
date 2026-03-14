@@ -19,7 +19,7 @@ reproducibility: true
 ---
 ## The problem: JSON without a contract
 
-Have you ever found out that a field added three months ago by another team never actually reached its destination? In a microservices system with Kafka at its core, JSON is the natural message format. It is human-readable, every language supports it, and it requires no setup. But as the system grows, schemaless JSON becomes a silent problem.
+In a microservices system with Kafka at its core, JSON is the natural message format. It is human-readable, every language supports it, and it requires no setup. But as the system grows, schemaless JSON becomes a silent problem.
 
 The system in question is a telemetry platform for construction-site heavy equipment. The architecture spans three languages: Node.js for the registry service (producer), Scala/Pekko for telemetry data standardization and aggregation (consumer and producer), and Python/Flask for historical data, usage, and reporting services (consumer). All of them communicate through Kafka topics, and all of them produce and consume JSON.
 
@@ -109,7 +109,7 @@ services:
 
 The key point is `APICURIO_STORAGE_KIND: kafkasql`. With this configuration, Apicurio stores all schemas in an internal Kafka topic. No PostgreSQL, no volumes to manage, no additional backups. Schemas are replicated and persisted with the same guarantees as the Kafka broker itself.
 
-Once started, the Apicurio web interface is available at `http://localhost:8081/ui`. From there you can browse all registered schemas, view versions, and test compatibility. It is especially useful during the migration phase, to verify that schemas have been registered correctly.
+Once started, the Apicurio web interface is available at `http://localhost:8081/ui`. From there, all registered schemas can be browsed, versions inspected, and compatibility tested. It is especially useful during the migration phase, to verify that schemas have been registered correctly.
 
 ---
 
@@ -134,7 +134,7 @@ An Avro schema is an `.avsc` file (JSON) that describes the structure of a recor
 
 A few things worth noting:
 
-- **Namespace**: `demo.sensors` uniquely identifies the type in the registry. In production, we use `c40.telemetry`, `c40.registry`, `c40.usage`.
+- **Namespace**: `demo.sensors` uniquely identifies the type in the registry. In production, the namespaces are `c40.telemetry`, `c40.registry`, `c40.usage`.
 
 - **Logical types**: `timestamp-millis` tells the runtime that the `long` field represents a timestamp in milliseconds. Client libraries automatically convert it to the native date type of the language.
 
@@ -401,7 +401,7 @@ The base stack (Kafka KRaft, Apicurio Registry, Node.js producer, Python consume
 
 ## Conclusions
 
-In this article we covered how to move from schemaless JSON to Avro with a schema registry:
+The migration from schemaless JSON to Avro with a schema registry covered:
 
 1. **The problem**: without a formal schema, divergences between producer and consumer manifest as wrong data, not as errors
 2. **Choosing Apicurio**: Apache 2.0 license, Kafka-based storage (KafkaSQL), Confluent-compatible API
