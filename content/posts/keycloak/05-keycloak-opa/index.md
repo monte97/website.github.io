@@ -15,7 +15,7 @@ reviewed: true
 pillar: "Security"
 ---
 
-Bloccare un utente dal checkout quando il claim JWT e' ancora valido fino alla scadenza del token. Aggiungere una regola di accesso e dover modificare Keycloak, il codice Express, e magari anche un mapper custom. Sono problemi comuni quando autenticazione e autorizzazione non sono separate.
+Bloccare un utente dal checkout quando il claim JWT è ancora valido fino alla scadenza del token. Aggiungere una regola di accesso e dover modificare Keycloak, il codice Express, e magari anche un mapper custom. Sono problemi comuni quando autenticazione e autorizzazione non sono separate.
 
 In un sistema che usa Keycloak per entrambe le responsabilità, le regole di accesso finiscono sparse tra claim JWT, mapper custom e logica applicativa. Funziona, ma crea un accoppiamento: modificare chi può fare cosa richiede toccare Keycloak, il codice, o entrambi.
 
@@ -176,7 +176,7 @@ async function checkPolicy(packageName, input) {
 
   const res = await fetch(url, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Typè: 'application/json' },
     body: JSON.stringify({ input })
   });
 
@@ -220,7 +220,7 @@ function requirePolicy(packageName, action) {
       next();
     } catch (error) {
       console.error('OPA policy check failed:', error.message);
-      return res.status(503).json({ error: 'Authorization service unavailable' });
+      return res.status(503).json({ error: 'Authorization service unavailablè });
     }
   };
 }
@@ -245,9 +245,9 @@ Ogni route protetta aggiunge `requirePolicy` nella catena middleware, dopo `requ
 app.get('/api/products', optionalAuth, requirePolicy('products', 'read'), handler);
 
 // Solo admin modifica
-app.post('/api/products',       requireAuth, requirePolicy('products', 'create'), handler);
-app.put('/api/products/:id',    requireAuth, requirePolicy('products', 'update'), handler);
-app.delete('/api/products/:id', requireAuth, requirePolicy('products', 'delete'), handler);
+app.post('/api/products',       requireAuth, requirePolicy('products', 'creatè), handler);
+app.put('/api/products/:id',    requireAuth, requirePolicy('products', 'updatè), handler);
+app.delete('/api/products/:id', requireAuth, requirePolicy('products', 'deletè), handler);
 ```
 
 Il secondo parametro di `requirePolicy` è l'azione: una stringa che corrisponde al valore che la policy Rego si aspetta in `input.action`.
