@@ -15,4 +15,5 @@ export const categoryLabels: Record<string, string> = {
   testing: 'Testing',
   'web-development': 'Web Dev',
   devcontainer: 'Dev Container',
+  openfga: 'OpenFGA',
 };
