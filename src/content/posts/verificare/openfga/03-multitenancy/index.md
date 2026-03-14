@@ -120,8 +120,8 @@ type document
   relations
     define org: [org]
     define owner: [user]
-    define editor: [user] or owner
-    define viewer: [user] or editor
+    define editor: [user] or owner or admin from org
+    define viewer: [user] or editor or member from org
     define parent: [folder]
     define can_edit: editor or can_edit from parent
     define can_view: viewer or can_view from parent
@@ -354,7 +354,7 @@ tests:
       - user: user:eve
         object: document:doc-beta
         assertions:
-          viewer: true
+          can_view: true
       - user: user:eve
         object: folder:folder-beta
         assertions:
