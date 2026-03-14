@@ -115,7 +115,7 @@ val targaReaderActor = context.spawn(
 targaReaderActor ! HttpC40Reader.Start
 ```
 
-The advantage over the previous pattern: `Source.queue` provides a bounded buffer with **load shedding**. If the Kafka producer slows down, the buffer fills up and the oldest messages are discarded (`dropHead`). It should be noted that this is not backpressure in the strict sense: with `dropHead`, the actor calling `queue.offer()` is never slowed down -- older data is simply dropped. True backpressure only exists *within* the stream (between the queue and the sink). To propagate pressure all the way to the actors, one could use `OverflowStrategy.backpressure`, where the `Future` returned by `offer()` does not complete until there is space in the buffer. In a telemetry system, load shedding with `dropHead` is the pragmatic choice: the most recent data point is always the most relevant. No risk of OutOfMemoryError.
+The advantage over the previous pattern: `Source.queue` provides a bounded buffer with **load shedding**. If the Kafka producer slows down, the buffer fills up and the oldest messages are discarded (`dropHead`). It should be noted that this is not backpressure in the strict sense: with `dropHead`, the actor calling `queue.offer()` is never slowed down: older data is simply dropped. True backpressure only exists *within* the stream (between the queue and the sink). To propagate pressure all the way to the actors, one could use `OverflowStrategy.backpressure`, where the `Future` returned by `offer()` does not complete until there is space in the buffer. In a telemetry system, load shedding with `dropHead` is the pragmatic choice: the most recent data point is always the most relevant. No risk of OutOfMemoryError.
 
 The `HttpC40Reader` actors remain simple: they receive an `Act` message from the scheduler, call the HTTP API, diff the data against the previous state, and for each changed data point they call `enqueueData`. They know nothing about Kafka, Avro, or serialization. If the HTTP API fails, `SupervisorStrategy.restart` restarts only the reader, without touching the Kafka stream.
 
@@ -264,7 +264,7 @@ props.put(SchemaResolverConfig.REGISTRY_URL, schemaRegistryUrl)
 
 The producer with `AUTO_REGISTER_ARTIFACT = true` registers the schema in the registry on the first `send()`. The consumer reads the schema ID from the message header (the format depends on the serializer configuration: 5 bytes in the Confluent format, up to 9 bytes in the native Apicurio format). The `POINT_OF_INTEREST_TABLE` topic remains in String/JSON because it is produced by an external system outside our control: for that, `stringConsumerProperties` with `StringDeserializer` are used.
 
-An important gotcha: in Apicurio 3.x, the `SchemaResolverConfig` class was moved from `io.apicurio.registry.serde.config` to `io.apicurio.registry.resolver.config`. If you upgrade Apicurio from 2.x to 3.x, the code compiles but the import changes. Additionally, the concept of "artifact" was renamed internally, although the API remains compatible. The current import:
+An important gotcha: in Apicurio 3.x, the `SchemaResolverConfig` class was moved from `io.apicurio.registry.serde.config` to `io.apicurio.registry.resolver.config`. When upgrading Apicurio from 2.x to 3.x, the code compiles but the import changes. Additionally, the concept of "artifact" was renamed internally, although the API remains compatible. The current import:
 
 ```scala
 import io.apicurio.registry.resolver.config.SchemaResolverConfig
@@ -313,7 +313,7 @@ docker compose down -v
 
 ## Conclusions
 
-The migration from blocking poll to reactive architectures can be incremental. In this article we have seen how:
+The migration from blocking poll to reactive architectures can be incremental. The patterns analyzed show how:
 
 1. **The blocking pattern** (polling inside an actor) occupies dispatcher threads, offers no backpressure, and makes business logic untestable in isolation
 2. **`Source.queue` for the producer** lets actors deposit results into a queue with a buffer and overflow strategy, without blocking the dispatcher

@@ -313,7 +313,7 @@ docker compose down -v
 
 ## Conclusioni
 
-La migrazione da blocking poll ad architetture reattive può essere incrementale. In questo caso abbiamo visto come:
+La migrazione da blocking poll ad architetture reattive può essere incrementale. I pattern analizzati mostrano come:
 
 1. **Il pattern bloccante** (polling in un attore) occupa thread del dispatcher, non offre backpressure e rende la logica di business non testabile in isolamento
 2. **`Source.queue` per il producer** permette agli attori di depositare i risultati in una queue con buffer e strategia di overflow, senza bloccare il dispatcher
