@@ -103,7 +103,7 @@ Per evitare che un fallimento a catena delle repliche porti a scrivere con `acks
 
 ## Esempi Pratici: Producer Node.js e Consumer Python
 
-Per rendere concreti questi concetti, analizziamo il codice della nostra applicazione di monitoraggio sensori. Il producer è in **Node.js** con [**kafkajs**](https://kafka.js.org/), il consumer in **Python** con [**confluent-kafka**](https://docs.confluent.io/platform/current/clients/confluent-kafka-python/html/index.html). La serializzazione Avro è gestita da [**Apicurio Registry**](https://www.apicur.io/registry/) come Schema Registry. Il tutto orchestrato con Docker Compose.
+Il codice dell'applicazione di monitoraggio sensori illustra questi concetti in modo pratico. Il producer è in **Node.js** con [**kafkajs**](https://kafka.js.org/), il consumer in **Python** con [**confluent-kafka**](https://docs.confluent.io/platform/current/clients/confluent-kafka-python/html/index.html). La serializzazione Avro è gestita da [**Apicurio Registry**](https://www.apicur.io/registry/) come Schema Registry. Il tutto orchestrato con Docker Compose.
 
 👉 Il codice completo è disponibile nel repository: [github.com/monte97/kafka-pekko](https://github.com/monte97/kafka-pekko)
 
@@ -257,7 +257,7 @@ Il pattern del consumer merita un'analisi più attenta:
 
 ## Conclusioni
 
-In questo articolo abbiamo analizzato le fondamenta di Apache Kafka:
+Le fondamenta di Apache Kafka coperte in questo articolo:
 
 1. **Il modello a eventi**: la differenza tra comandi sincroni e fatti immutabili, e perché Kafka è una piattaforma di event streaming, non una coda
 2. **Partizioni e segmenti**: la struttura interna che abilita retention efficiente, ricerca rapida tramite indici memory-mapped e ottimizzazione zero-copy
@@ -270,8 +270,6 @@ Nel prossimo articolo della serie esploreremo i **Consumer Group**, le strategie
 ---
 
 ## Risorse per Approfondire
-
-Una selezione di risorse per approfondire.
 
 ### Libri
 
