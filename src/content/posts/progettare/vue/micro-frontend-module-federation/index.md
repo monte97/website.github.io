@@ -12,7 +12,7 @@ tags:
   - Architecture
   - Frontend
 lang: it
-draft: true
+draft: false
 reviewed: false
 reproducibility: true
 ---
