@@ -238,6 +238,8 @@ async function main() {
     await new Promise((r) => setTimeout(r, 1000));
   }
 }
+
+main().catch(console.error);
 ```
 
 Il flusso è lineare:
