@@ -17,7 +17,7 @@ seriesOrder: 30
 reproducibility: true
 ---
 
-Un servizio Scala su Akka 2.6 in produzione da tre anni. La licenza cambia, le patch di sicurezza non arrivano più. Questo articolo copre la migrazione pratica da Akka ad Apache Pekko: checklist, gotcha e lezioni dal campo.
+Un servizio Scala su Akka 2.6 in produzione da tre anni. La licenza cambia, le patch di sicurezza non arrivano più. Quello che segue è la migrazione pratica da Akka ad Apache Pekko: checklist, gotcha e lezioni dal campo.
 
 ## Il cambio licenza di Akka
 
@@ -43,11 +43,11 @@ La versione **Pekko 1.1.x** introduce evoluzioni proprie: nuove feature, ottimiz
 
 L'ecosistema è completo:
 
-- **Pekko HTTP** (ex Akka HTTP) - server e client HTTP
-- **Pekko Connectors** (ex Alpakka) - connettori per Kafka, MongoDB, S3, ecc.
-- **Pekko gRPC** (ex Akka gRPC) - supporto gRPC
-- **Pekko Streams** (ex Akka Streams) - stream processing reattivo
-- **Pekko Cluster** (ex Akka Cluster) - clustering e distribuzione
+- **Pekko HTTP** (ex Akka HTTP): server e client HTTP
+- **Pekko Connectors** (ex Alpakka): connettori per Kafka, MongoDB, S3, ecc.
+- **Pekko gRPC** (ex Akka gRPC): supporto gRPC
+- **Pekko Streams** (ex Akka Streams): stream processing reattivo
+- **Pekko Cluster** (ex Akka Cluster): clustering e distribuzione
 
 Tutti i moduli disponibili in Akka hanno un corrispettivo diretto in Pekko.
 
@@ -55,7 +55,7 @@ Tutti i moduli disponibili in Akka hanno un corrispettivo diretto in Pekko.
 
 ## Checklist di migrazione
 
-Di seguito la checklist pratica seguita per migrare i servizi Scala da Akka a Pekko. La maggior parte dei passi è meccanica.
+La checklist pratica seguita per migrare i servizi Scala da Akka a Pekko. La maggior parte dei passi è meccanica.
 
 ### 1. build.sbt: coordinate Maven
 
@@ -224,12 +224,12 @@ Il consumer Scala si avvia insieme al producer Node.js e al consumer Python, tut
 
 ## Conclusioni
 
-In questo articolo abbiamo visto come migrare da Akka ad Apache Pekko:
+La migrazione da Akka ad Apache Pekko si articola in quattro punti:
 
 1. **Il contesto**: il cambio licenza di Akka a BSL 1.1 rende la migrazione a Pekko la scelta principale per progetti open-source
-2. **La checklist**: coordinate Maven, import, `application.conf`, librerie CORS e plugin SBT — la maggior parte è un rename meccanico
+2. **La checklist**: coordinate Maven, import, `application.conf`, librerie CORS e plugin SBT - la maggior parte è un rename meccanico
 3. **I gotcha**: Apicurio 3.x, Materializer implicito, `reference.conf` di terze parti e dipendenze transitive sono i punti dove servono verifiche manuali
-4. **Il costo reale**: non è nel rename, ma nella verifica — per tre servizi e ~50 file, circa mezza giornata
+4. **Il costo reale**: non è nel rename, ma nella verifica - per tre servizi e ~50 file, circa mezza giornata
 
 Una volta su Pekko 1.0.x, si torna su un binario di rilascio attivo con bugfix, patch di sicurezza e nuove feature.
 
