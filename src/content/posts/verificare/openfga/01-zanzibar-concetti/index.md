@@ -18,11 +18,11 @@ seriesOrder: 10
 reproducibility: true
 ---
 
-Immagina un sistema di file sharing come Google Drive. Alice crea una cartella "Progetto X" e ci mette dentro tre documenti. Condivide la cartella con Bob come editor. Bob dovrebbe poter modificare quei tre documenti, giusto? E se Alice aggiunge un quarto documento domani, Bob dovrebbe vedere anche quello senza che nessuno faccia nulla.
+In un sistema di file sharing come Google Drive, Alice crea una cartella "Progetto X" con tre documenti e la condivide con Bob come editor. Bob deve poter modificare tutti i documenti nella cartella, inclusi quelli aggiunti in seguito, senza che nessuno intervenga manualmente.
 
-Con RBAC classico, questo scenario diventa un incubo. Servono ruoli come `cartella-progetto-x-editor`, `documento-readme-viewer`, `org-acme-member` -- uno per ogni combinazione di risorsa e permesso. Quando le risorse crescono, i ruoli esplodono. Quando le gerarchie si annidano (organizzazione -> team -> cartella -> sottocartella -> documento), il modello collassa.
+Con RBAC classico, questo scenario richiede ruoli come `cartella-progetto-x-editor`, `documento-readme-viewer`, `org-acme-member` - uno per ogni combinazione di risorsa e permesso. Quando le risorse crescono, il numero di ruoli cresce in modo combinatorio. Quando le gerarchie si annidano (organizzazione, team, cartella, sottocartella, documento), il modello non regge.
 
-Google ha affrontato questo problema nel 2019 con un paper che ha cambiato il modo di pensare all'autorizzazione: **Zanzibar**. Questo articolo spiega i concetti fondamentali di quel modello e come OpenFGA, la sua implementazione open source, li rende accessibili a qualsiasi progetto.
+Google ha pubblicato nel 2019 **Zanzibar**, il sistema di autorizzazione che gestisce questo tipo di problema. Questo documento copre i concetti fondamentali di quel modello e come OpenFGA, la sua implementazione open source, li espone tramite API.
 
 ---
 
@@ -50,13 +50,13 @@ Serve un modello diverso: uno che tratti le relazioni come dati di prima classe.
 
 Nel 2019, Google ha pubblicato ["Zanzibar: Google's Consistent, Global Authorization System"](https://research.google/pubs/pub48190/). Il paper descrive il sistema che gestisce l'autorizzazione per Google Drive, YouTube, Google Maps, Cloud e decine di altri prodotti. Numeri dichiarati: oltre un trilione di access check al secondo, con latenza sotto i 10 millisecondi al 95esimo percentile.
 
-L'intuizione centrale è semplice: **le relazioni tra utenti e risorse sono dati, non configurazione**. Invece di definire ruoli e poi assegnare utenti ai ruoli, si scrivono direttamente le relazioni. "Alice è editor del documento readme" non è un ruolo assegnato in un pannello admin -- è un record in un database.
+L'intuizione centrale: **le relazioni tra utenti e risorse sono dati, non configurazione**. Invece di definire ruoli e poi assegnare utenti ai ruoli, si scrivono direttamente le relazioni. "Alice è editor del documento readme" non è un ruolo assegnato in un pannello admin - è un record in un database.
 
 Tre concetti fondamentali:
 
-1. **Tuple** -- il dato atomico: una relazione tra un utente e un oggetto
-2. **Modello di autorizzazione** -- le regole che definiscono quali relazioni esistono e come si ereditano
-3. **Query** -- domande sulle relazioni: "può Alice vedere questo documento?"
+1. **Tuple**: il dato atomico, una relazione tra un utente e un oggetto
+2. **Modello di autorizzazione**: le regole che definiscono quali relazioni esistono e come si ereditano
+3. **Query**: domande sulle relazioni, "può Alice vedere questo documento?"
 
 Da questo paper sono nate diverse implementazioni. La più rilevante per l'ecosistema open source è **OpenFGA** (Fine-Grained Authorization), creata dal team Auth0 e ora [progetto CNCF](https://www.cncf.io/projects/openfga/). Offre lo stesso modello concettuale di Zanzibar con un DSL leggibile, API HTTP/gRPC, e un [playground web](https://play.fga.dev/) per sperimentare.
 
@@ -122,7 +122,7 @@ Le tuple vengono scritte tramite l'API Write e persistite in un database relazio
 
 ## Il DSL: tipi, relazioni, ereditarietà
 
-Le tuple definiscono i dati -- chi ha quale relazione con cosa. Il **modello di autorizzazione** definisce la struttura: quali tipi di oggetto esistono, quali relazioni sono valide, e come i permessi si propagano.
+Le tuple definiscono i dati: chi ha quale relazione con cosa. Il **modello di autorizzazione** definisce la struttura: quali tipi di oggetto esistono, quali relazioni sono valide, e come i permessi si propagano.
 
 OpenFGA usa un DSL (Domain Specific Language) dichiarativo. Partiamo dal caso più semplice: un documento con tre livelli di accesso.
 
@@ -307,7 +307,7 @@ Per sperimentare con OpenFGA serve poco: il server OpenFGA, un database PostgreS
 ```yaml
 services:
   postgres:
-    image: postgres:18-alpine
+    image: postgres:17-alpine
     environment:
       POSTGRES_USER: openfga
       POSTGRES_PASSWORD: openfga
@@ -321,7 +321,7 @@ services:
       retries: 5
 
   openfga-migrate:
-    image: openfga/openfga:latest
+    image: openfga/openfga:v1.8
     command: migrate
     environment:
       OPENFGA_DATASTORE_ENGINE: postgres
@@ -331,7 +331,7 @@ services:
         condition: service_healthy
 
   openfga:
-    image: openfga/openfga:latest
+    image: openfga/openfga:v1.8
     command: run
     environment:
       OPENFGA_DATASTORE_ENGINE: postgres
@@ -463,7 +463,7 @@ Deny-by-default: se non esiste una tupla (diretta o ereditata), l'accesso è neg
 
 ## Cosa viene dopo
 
-Questo articolo ha coperto i fondamentali: il problema di RBAC con le gerarchie, il modello a tuple di Zanzibar, il DSL di OpenFGA, le tre query principali, e un setup funzionante per sperimentare.
+Questo articolo ha trattato i fondamentali: il problema di RBAC con le gerarchie, il modello a tuple di Zanzibar, il DSL di OpenFGA, le tre query principali, e un setup funzionante per sperimentare.
 
 Nel prossimo articolo della serie collegheremo OpenFGA a Keycloak: l'utente fa login con Keycloak (autenticazione), e i permessi granulari sulle risorse vengono gestiti da OpenFGA (autorizzazione). Useremo [VaultDrive](https://github.com/monte97/VaultDrive) come progetto di riferimento, un'applicazione di document sharing che mette in pratica tutto quello che abbiamo visto qui.
 

@@ -18,15 +18,15 @@ seriesOrder: 30
 reproducibility: true
 ---
 
-Ogni applicazione SaaS, prima o poi, arriva allo stesso punto: il primo cliente funziona, il secondo pure, ma al terzo ti rendi conto che l'isolamento tra tenant non è un dettaglio. È l'architettura stessa. Con RBAC tradizionale, la soluzione tipica è un `WHERE tenant_id = ?` in ogni query, un middleware che inietta il contesto del tenant, e la paura costante che un bug faccia trapelare dati da un'organizzazione all'altra. Con ReBAC il problema si affronta diversamente: l'isolamento non è applicativo, ma **strutturale**. Se un utente non ha relazioni con un'organizzazione, non può accedere a nulla al suo interno. Nessun `WHERE` necessario.
+Ogni applicazione SaaS, prima o poi, arriva allo stesso punto: il primo cliente funziona, il secondo pure, ma al terzo emerge che l'isolamento tra tenant non è un dettaglio. È l'architettura stessa. Con RBAC tradizionale, la soluzione tipica è un `WHERE tenant_id = ?` in ogni query, un middleware che inietta il contesto del tenant, e il rischio costante che un bug faccia trapelare dati da un'organizzazione all'altra. Con ReBAC il problema si affronta diversamente: l'isolamento non è applicativo, ma **strutturale**. Se un utente non ha relazioni con un'organizzazione, non può accedere a nulla al suo interno. Nessun `WHERE` necessario.
 
-In questo articolo vediamo due strategie per gestire il multitenancy con OpenFGA, partendo dai concetti introdotti nel [primo articolo]({{< ref "/posts/openfga/01-zanzibar-concetti" >}}) della serie.
+Le due strategie per gestire il multitenancy con OpenFGA partono dai concetti introdotti nel [primo articolo]({{< ref "/posts/openfga/01-zanzibar-concetti" >}}) della serie.
 
 ---
 
 ## Il problema multi-tenant con l'autorizzazione classica
 
-In un sistema RBAC tradizionale, i ruoli sono globali. Un utente ha il ruolo `editor`, punto. Per farlo funzionare in un contesto multi-tenant, devi aggiungere il contesto del tenant ovunque:
+In un sistema RBAC tradizionale, i ruoli sono globali. Un utente ha il ruolo `editor`, punto. Per farlo funzionare in un contesto multi-tenant, è necessario aggiungere il contesto del tenant ovunque:
 
 ```sql
 SELECT * FROM documents
@@ -34,9 +34,9 @@ WHERE tenant_id = :current_tenant
 AND has_permission(:user_id, 'read', 'document')
 ```
 
-Il codice applicativo diventa responsabile dell'isolamento. Ogni endpoint, ogni query, ogni servizio deve sapere in quale tenant sta operando e filtrare di conseguenza. Basta dimenticare un `WHERE` in una query, un filtro in un endpoint, e hai un data leak cross-tenant.
+Il codice applicativo diventa responsabile dell'isolamento. Ogni endpoint, ogni query, ogni servizio deve sapere in quale tenant sta operando e filtrare di conseguenza. Basta dimenticare un `WHERE` in una query, un filtro in un endpoint, e si ha un data leak cross-tenant.
 
-Il problema non è tecnico in senso stretto: il pattern funziona. Il problema è che l'isolamento vive nel codice applicativo, distribuito su decine di file, e devi fidarti che ogni sviluppatore lo applichi correttamente ovunque.
+Il problema non è tecnico in senso stretto: il pattern funziona. Il problema è che l'isolamento vive nel codice applicativo, distribuito su decine di file, e la correttezza dipende da ogni singolo sviluppatore che lo applichi ovunque.
 
 Con ReBAC, l'isolamento è diverso. Non filtri i risultati dopo averli recuperati: chiedi direttamente "quali documenti può vedere alice?" e il grafo delle relazioni restituisce solo quelli raggiungibili tramite le sue relazioni. Se alice non ha relazioni con `org-beta`, nessun documento di `org-beta` comparirà mai nei risultati. L'isolamento non è un filtro, è una proprietà del grafo.
 
@@ -64,9 +64,9 @@ Store: org-gamma    --> modello + tuple di Gamma
 
 **I contro:**
 
-- **Gestione operativa**: devi gestire N store, ognuno con il proprio lifecycle
-- **Migrazione modello**: quando aggiorni il modello di autorizzazione, devi applicare la migrazione su tutti gli store
-- **Nessuna query cross-tenant**: se devi sapere "in quali organizzazioni alice ha accesso?", non c'è un singolo punto da interrogare
+- **Gestione operativa**: N store da gestire, ognuno con il proprio lifecycle
+- **Migrazione modello**: ogni aggiornamento al modello di autorizzazione richiede di applicare la migrazione su tutti gli store
+- **Nessuna query cross-tenant**: per sapere "in quali organizzazioni alice ha accesso?", non c'è un singolo punto da interrogare
 - **Routing**: il codice applicativo deve sapere quale store interrogare per ogni richiesta, aggiungendo complessità al middleware
 
 ### Type-per-tenant
@@ -199,9 +199,9 @@ documents = db.query(
 )
 ```
 
-La differenza non è solo estetica. Nel secondo caso, se dimentichi il filtro `tenant_id` in un endpoint, hai un data leak. Nel primo, il filtro non esiste nel codice perché non serve: l'isolamento è nel dato, non nella logica.
+La differenza non è solo estetica. Nel secondo caso, dimenticare il filtro `tenant_id` in un endpoint produce un data leak. Nel primo, il filtro non esiste nel codice perché non serve: l'isolamento è nel dato, non nella logica.
 
-Questo semplifica anche i test. Con RBAC devi testare che ogni endpoint applichi correttamente il filtro `tenant_id` -- e sono test negativi, i più facili da dimenticare. Con ReBAC, l'isolamento è verificato una volta nel modello e vale per tutti gli endpoint. I test nel file `.fga.yaml` coprono il modello; il codice applicativo non ha logica di isolamento da testare.
+Questo semplifica anche i test. Con RBAC occorre testare che ogni endpoint applichi correttamente il filtro `tenant_id` - e sono test negativi, i più facili da dimenticare. Con ReBAC, l'isolamento è verificato una volta nel modello e vale per tutti gli endpoint. I test nel file `.fga.yaml` coprono il modello; il codice applicativo non ha logica di isolamento da testare.
 
 ---
 
@@ -376,7 +376,7 @@ Questi test si eseguono con [`openfga model test`](https://openfga.dev/docs/gett
 
 Il pattern type-per-tenant copre la maggior parte dei casi SaaS, ma ci sono situazioni in cui store-per-tenant è la scelta giusta:
 
-- **Compliance normativa**: alcuni regolamenti (sanità, finanza) richiedono isolamento fisico dei dati, non solo logico. Se il tuo cliente enterprise vuole la garanzia che le sue tuple di autorizzazione non condividano lo storage con quelle di altri, store-per-tenant è l'unica opzione.
+- **Compliance normativa**: alcuni regolamenti (sanità, finanza) richiedono isolamento fisico dei dati, non solo logico. Se un cliente enterprise richiede la garanzia che le sue tuple di autorizzazione non condividano lo storage con quelle di altri, store-per-tenant è l'unica opzione.
 - **Modelli diversi per tenant**: se un cliente ha bisogno di un modello di autorizzazione significativamente diverso dagli altri (gerarchie custom, tipi di risorsa specifici), un singolo store con un singolo modello non basta.
 - **Limiti di scala**: con milioni di tuple, partizionare per store può migliorare le performance delle query. OpenFGA scala bene, ma la distribuzione del carico su store separati rimane un'opzione.
 

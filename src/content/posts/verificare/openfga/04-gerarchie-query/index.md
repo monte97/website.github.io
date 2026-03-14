@@ -20,7 +20,7 @@ reproducibility: true
 
 Nei primi tre articoli della serie abbiamo costruito un modello di autorizzazione completo: tipi, relazioni, store per tenant, integrazione con Keycloak. Ma finora gli esempi avevano al massimo due livelli di nesting: organizzazione e documento, oppure organizzazione e folder. Il mondo reale è diverso. Una folder contiene subfolder, che contengono altre subfolder, che contengono documenti. Un utente condivide una cartella e si aspetta che tutto il contenuto sotto diventi accessibile. E quando devi mostrare una lista di documenti, non puoi fare un Check per ciascuno.
 
-Questo articolo affronta tre problemi che emergono quando il modello cresce: gerarchie a N livelli, il costo delle query inverse (ListObjects), e il confine tra ciò che OpenFGA può fare e ciò che va gestito altrove.
+Tre problemi emergono quando il modello cresce: gerarchie a N livelli, il costo delle query inverse (ListObjects), e il confine tra ciò che OpenFGA può fare e ciò che va gestito altrove.
 
 ---
 
@@ -60,7 +60,7 @@ type document
 
 ### Esempio: tre livelli di nesting
 
-Immagina questa struttura in [VaultDrive](https://github.com/monte97/VaultDrive), la demo che ho costruito per questa serie con setup containerizzato e codice riproducibile:
+La struttura in [VaultDrive](https://github.com/monte97/VaultDrive), la demo costruita per questa serie con setup containerizzato e codice riproducibile:
 
 ```text
 org-acme/
@@ -206,7 +206,7 @@ Un altro caso d'uso pratico: accesso temporaneo basato su condizioni esterne. Un
 
 ## ListObjects e il Problema WHERE
 
-Fin qui abbiamo usato l'API **Check**: dato un utente e una risorsa, dimmi se ha accesso. Ma quando devi mostrare una lista -- la pagina "I miei documenti", la sidebar con le cartelle -- il problema si inverte. Non hai una risorsa specifica: devi sapere *quali* risorse l'utente può vedere.
+Fin qui abbiamo usato l'API **Check**: dato un utente e una risorsa, dimmi se ha accesso. Ma quando occorre mostrare una lista - la pagina "I miei documenti", la sidebar con le cartelle - il problema si inverte: non c'è una risorsa specifica, bisogna sapere *quali* risorse l'utente può vedere.
 
 OpenFGA offre l'API **ListObjects**: dato un utente e un tipo, restituisce tutti gli oggetti su cui l'utente ha una certa relazione.
 
@@ -219,7 +219,7 @@ const response = await fgaClient.listObjects({
 // response.objects = ["document:api-spec", "document:readme", "document:notes"]
 ```
 
-Il risultato è una lista di ID. Ma la tua applicazione ha bisogno dei dati completi: titolo, contenuto, data di creazione. Quindi dopo ListObjects devi fare una query al database:
+Il risultato è una lista di ID. L'applicazione ha però bisogno dei dati completi: titolo, contenuto, data di creazione. Dopo ListObjects occorre quindi fare una query al database:
 
 ```sql
 SELECT * FROM documents WHERE id IN ('api-spec', 'readme', 'notes');
@@ -494,23 +494,23 @@ Un owner riceve lo stesso documento con tutti i campi, inclusi `sharing_settings
 Le classificazioni dei campi cambiano raramente. In VaultDrive, vengono caricate all'avvio e cachate in memoria:
 
 ```javascript
-let classificationCache = null;
+const classificationCache = {};
 
 async function getFieldClassifications(resourceType) {
-  if (!classificationCache) {
+  if (!classificationCache[resourceType]) {
     const result = await pool.query(
       'SELECT field_name, min_relation FROM field_classifications WHERE resource_type = $1',
       [resourceType]
     );
-    classificationCache = Object.fromEntries(
+    classificationCache[resourceType] = Object.fromEntries(
       result.rows.map(r => [r.field_name, r.min_relation])
     );
   }
-  return classificationCache;
+  return classificationCache[resourceType];
 }
 ```
 
-Per la relazione massima, `getMaxRelation` fa fino a tre Check verso OpenFGA. Se la latenza è un problema, puoi invertire l'ordine (parti da `can_view` e sali) e fermarti al primo `false`, oppure cachare il risultato per la durata della richiesta HTTP.
+Per la relazione massima, `getMaxRelation` fa fino a tre Check verso OpenFGA in sequenza. Se la latenza è un problema, è possibile eseguirli in parallelo con `Promise.all` e determinare il livello massimo dal risultato, oppure cachare il risultato per la durata della richiesta HTTP.
 
 ---
 

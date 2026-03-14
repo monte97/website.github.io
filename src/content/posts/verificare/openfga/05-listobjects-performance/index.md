@@ -20,7 +20,7 @@ reproducibility: true
 
 Nell'[articolo precedente]({{< ref "/posts/openfga/04-gerarchie-query" >}}) abbiamo visto il pattern fast/slow path: usare un JOIN SQL per i casi comuni (accesso derivato dall'organizzazione) e ListObjects solo per le condivisioni dirette. È una buona euristica. Ma non è sempre sufficiente.
 
-Sistemi con milioni di documenti, gerarchie profonde, o molte condivisioni peer-to-peer vedono ListObjects diventare il collo di bottiglia primario. Questo articolo affronta il problema con tre strategie: caching del risultato, pre-materializzazione del grafo di accesso, e BatchCheck come alternativa per certi pattern. Non sono mutualmente esclusive -- in produzione si usano in combinazione.
+Sistemi con milioni di documenti, gerarchie profonde, o molte condivisioni peer-to-peer vedono ListObjects diventare il collo di bottiglia primario. Questo articolo affronta il problema con tre strategie: caching del risultato, pre-materializzazione del grafo di accesso, e BatchCheck come alternativa per certi pattern. Non sono mutualmente esclusive: in produzione si usano in combinazione.
 
 ---
 
@@ -149,16 +149,22 @@ export async function setInCache(userId, relation, type, objects) {
 }
 
 export async function invalidateUser(userId) {
-  // Scan per pattern -- usa con attenzione su Redis in produzione
+  // SCAN con cursor -- non usare KEYS in produzione (bloccante)
   const pattern = `fga:${userId}:*`;
-  const keys = await client.keys(pattern);
+  const keys = [];
+  let cursor = '0';
+  do {
+    const [nextCursor, found] = await client.scan(cursor, 'MATCH', pattern, 'COUNT', 100);
+    cursor = nextCursor;
+    keys.push(...found);
+  } while (cursor !== '0');
   if (keys.length > 0) {
     await client.del(...keys);
   }
 }
 ```
 
-Su Redis in produzione, `KEYS` è bloccante. Preferisci `SCAN` con cursor per invalidazioni su store grandi, o usa un set Redis dedicato per tracciare le chiavi per utente.
+Su Redis in produzione, `KEYS` è bloccante e blocca il server per tutta la durata della scansione. Il codice sopra usa `SCAN` con cursor, che itera incrementalmente senza bloccare. In alternativa, mantieni un set Redis dedicato per tracciare le chiavi per utente e aggiornalo ad ogni scrittura.
 
 ---
 
@@ -317,7 +323,7 @@ async function rematerializeDocument(docId) {
       `INSERT INTO user_document_access (user_id, document_id, relation)
        VALUES ($1, $2, 'can_view')
        ON CONFLICT DO NOTHING`,
-      [u.object.id, docId]
+      [u.user.id, docId]
     );
   }
 }
@@ -487,7 +493,7 @@ async function instrumentedListObjects(userId, relation, type) {
 Le metriche da guardare in fase di ottimizzazione:
 
 - **`fga_list_objects_duration_seconds{cache_hit="false"}` P99** — latenza reale verso OpenFGA, senza cache
-- **`fga_list_objects_result_size`** — distribuizione del numero di oggetti restituiti; code con risultati da 1000+ oggetti indicano che serve pre-materializzazione
+- **`fga_list_objects_result_size`** — distribuzione del numero di oggetti restituiti; code con risultati da 1000+ oggetti indicano che serve pre-materializzazione
 - **Hit rate della cache** — se è sotto il 60-70%, il TTL è troppo basso o la chiave non è abbastanza specifica
 
 ---

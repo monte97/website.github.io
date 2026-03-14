@@ -18,7 +18,7 @@ seriesOrder: 20
 reproducibility: true
 ---
 
-Hai un identity provider che gestisce utenti, ruoli e login. Hai un authorization engine che decide chi può fare cosa su quale risorsa. Il problema non è farli funzionare: è farli parlare senza che uno invada il territorio dell'altro. Nell'[articolo precedente]({{< ref "/posts/openfga/01-zanzibar-concetti" >}}) abbiamo costruito un modello di autorizzazione relationship-based con OpenFGA. Ora lo colleghiamo a Keycloak, usando [VaultDrive](https://github.com/monte97/VaultDrive) come progetto di riferimento — una demo che ho costruito per questa serie con setup containerizzato e codice riproducibile.
+Un identity provider gestisce utenti, ruoli e login. Un authorization engine decide chi può fare cosa su quale risorsa. Il problema non è farli funzionare: è farli parlare senza che uno invada il territorio dell'altro. Nell'[articolo precedente]({{< ref "/posts/openfga/01-zanzibar-concetti" >}}) abbiamo costruito un modello di autorizzazione relationship-based con OpenFGA. Ora lo colleghiamo a Keycloak, usando [VaultDrive](https://github.com/monte97/VaultDrive) come progetto di riferimento: una demo costruita per questa serie con setup containerizzato e codice riproducibile.
 
 ---
 
@@ -39,7 +39,7 @@ Keycloak non sa nulla delle risorse dell'applicazione. Non sa che esistono folde
 
 ## JWT come ponte
 
-Il token JWT emesso da Keycloak contiene un campo `sub` -- un UUID che identifica univocamente l'utente. Questo valore diventa l'identità dell'utente nel mondo OpenFGA.
+Il token JWT emesso da Keycloak contiene un campo `sub` - un UUID che identifica univocamente l'utente. Questo valore diventa l'identità dell'utente nel mondo OpenFGA.
 
 Il flusso per ogni richiesta protetta:
 
@@ -222,7 +222,7 @@ async function syncUserOnLogin(user) {
   }
 
   const userId = `user:${user.sub}`;
-  const isAdmin = user.roles.includes('admin');
+  const isAdmin = (user.roles || []).includes('admin');
 
   for (const group of user.groups) {
     const orgObject = `org:${group}`;
@@ -382,7 +382,7 @@ La regola è semplice: se la relazione nasce dall'identità dell'utente (chi è,
 
 ## Esempio end-to-end con VaultDrive
 
-Mettiamo insieme tutti i pezzi. Alice fa login a VaultDrive, naviga le sue folder e apre un documento. Ecco cosa succede sotto il cofano.
+Di seguito il flusso completo. Alice fa login a VaultDrive, naviga le sue folder e apre un documento.
 
 ### 1. Login e emissione JWT
 
