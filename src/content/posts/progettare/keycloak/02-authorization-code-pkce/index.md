@@ -11,15 +11,15 @@ tags:
   - OpenID Connect
   - Security
 lang: it
-draft: true
+draft: false
 reviewed: true
 series: keycloak
-seriesOrder: 20
+seriesOrder: 2
 ---
 
-Keycloak configurato, realm creato, client registrato. E adesso? Come si collega concretamente un frontend React e un backend Express all'Identity Provider? L'[articolo introduttivo]({{< ref "/posts/keycloak/01-keycloak-intro" >}}) copre il concetto di delegare l'autenticazione. Qui si implementa il pezzo pratico.
+Keycloak configurato, realm creato, client registrato. Il passo successivo è collegare concretamente un frontend React e un backend Express all'Identity Provider. L'[articolo introduttivo]({{< ref "/posts/keycloak/01-keycloak-intro" >}}) copre il concetto di delegare l'autenticazione. Qui si implementa il pezzo pratico.
 
-Questo articolo implementa **Authorization Code Flow con PKCE** in MockMart, un e-commerce demo. Il risultato: l'utente clicca "Login", viene reindirizzato a Keycloak, inserisce le credenziali, e torna nell'app con un token JWT che il backend valida ad ogni richiesta. L'applicazione non tocca mai le password.
+L'implementazione usa **Authorization Code Flow con PKCE** in MockMart, un e-commerce demo. Il risultato: l'utente clicca "Login", viene reindirizzato a Keycloak, inserisce le credenziali, e torna nell'app con un token JWT che il backend valida ad ogni richiesta. L'applicazione non tocca mai le password.
 
 ---
 
@@ -104,8 +104,8 @@ Nella scheda **Advanced**, sotto **Proof Key for Code Exchange**:
 
 In **Realm roles → Create role**, crea due ruoli:
 
-- `user` — utente base, può navigare e fare checkout
-- `admin` — può anche gestire prodotti e vedere tutti gli ordini
+- `user`: utente base, può navigare e fare checkout
+- `admin`: può anche gestire prodotti e vedere tutti gli ordini
 
 ### Creare utenti di test
 
@@ -392,7 +392,7 @@ Output (semplificato):
 
 ### 4. Verificare PKCE con curl
 
-Per vedere il flusso PKCE passo per passo, possiamo simularlo da terminale.
+Per vedere il flusso PKCE passo per passo, è possibile simularlo da terminale.
 
 **Generare code_verifier e code_challenge:**
 
@@ -530,7 +530,7 @@ Due token con scopi diversi:
 
 ## Conclusione
 
-Abbiamo configurato un flusso di autenticazione completo:
+Il flusso di autenticazione coperto in questo articolo:
 
 1. **Keycloak** gestisce realm, client, utenti e ruoli
 2. **React + keycloak-js** gestisce il redirect, PKCE, e il refresh dei token
