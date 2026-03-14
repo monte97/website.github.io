@@ -11,7 +11,7 @@ tags:
   - Rego
   - OpenPolicyAgent
 lang: it
-draft: true
+draft: false
 reviewed: true
 series: keycloak
 seriesOrder: 50
@@ -21,7 +21,7 @@ Bloccare un utente dal checkout quando il claim JWT e' ancora valido fino alla s
 
 In un sistema che usa Keycloak per entrambe le responsabilità, le regole di accesso finiscono sparse tra claim JWT, mapper custom e logica applicativa. Funziona, ma crea un accoppiamento: modificare chi può fare cosa richiede toccare Keycloak, il codice, o entrambi.
 
-Questo articolo mostra come separare le due responsabilità: **Keycloak autentica** (chi sei), **OPA autorizza** (cosa puoi fare). L'integrazione avviene in MockMart, lo stesso e-commerce demo usato negli articoli precedenti, con tre pattern concreti:
+La separazione delle due responsabilità risolve entrambi i problemi: **Keycloak autentica** (chi sei), **OPA autorizza** (cosa puoi fare). L'integrazione avviene in MockMart, lo stesso e-commerce demo usato negli articoli precedenti, con tre pattern concreti:
 
 1. **RBAC su prodotti**: solo admin può creare, modificare ed eliminare
 2. **Deny list su checkout**: blocco immediato senza re-login
@@ -137,7 +137,7 @@ La lista degli utenti bloccati proviene da `data.json`, un file esterno montato 
 }
 ```
 
-`import data.mockmart.blocked_users` rende disponibile questo array nella policy. Per bloccare un utente basta aggiungere il suo username al file e ricaricare OPA: nessuna modifica a Keycloak, nessun re-deploy dell'applicazione, effetto immediato.
+`import data.mockmart.blocked_users` rende disponibile questo array nella policy. Per bloccare un utente basta aggiungere il suo username al file e riavviare il container OPA (`docker compose restart opa`): nessuna modifica a Keycloak, nessun re-deploy dell'applicazione. Per ambienti che richiedono reload a caldo senza restart, OPA supporta la [Bundle API](https://www.openpolicyagent.org/docs/latest/management-bundles/) con aggiornamenti periodici via HTTP.
 
 ### Ordini: Ownership
 
@@ -458,7 +458,7 @@ I tre pattern implementati coprono scenari comuni:
 
 Il trade-off principale è la complessità infrastrutturale: un container in più, una chiamata HTTP per ogni decisione, e la necessità di popolare il contesto (come `resource_owner`) nel middleware. In cambio, le regole diventano centralizzate, testabili offline, e modificabili senza toccare il codice applicativo.
 
-La prossima volta che dovrai bloccare un utente al volo o aggiungere una regola di accesso senza deploy, saprai dove mettere mano: non nel codice, ma in un file `.rego`.
+Bloccare un utente al volo o aggiungere una regola di accesso senza deploy non richiede intervento sul codice applicativo: basta modificare un file `.rego`.
 
 ### Risorse
 
