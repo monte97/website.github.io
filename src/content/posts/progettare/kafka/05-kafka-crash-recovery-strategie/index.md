@@ -18,7 +18,7 @@ reproducibility: true
 
 Un consumer Kafka crasha. Cosa succede ai dati che stava processando? La risposta non dipende da Kafka, ma dal tipo di stato che il consumer mantiene. Un consumer idempotente puo' ripartire dall'inizio del topic senza conseguenze. Un consumer che accumula delta non puo' permetterselo: ricalcolerebbe valori gia' contati. Un consumer stateless non ha nulla da recuperare.
 
-Questo articolo analizza tre strategie di recovery concrete, estratte da una piattaforma IoT industriale dove un singolo topic Kafka alimenta tre consumer indipendenti, ciascuno con proprieta' diverse dello stato interno.
+Tre strategie di recovery concrete, estratte da una piattaforma IoT industriale dove un singolo topic Kafka alimenta tre consumer indipendenti, ciascuno con proprieta' diverse dello stato interno.
 
 ## Contesto: un topic, tre consumer
 
