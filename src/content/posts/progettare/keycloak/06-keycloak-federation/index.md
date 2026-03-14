@@ -12,18 +12,14 @@ tags:
   - SSO
   - Security
 lang: it
-draft: true
+draft: false
 series: keycloak
 seriesOrder: 15
 ---
 
-In un mondo ideale, tutti gli utenti di un'organizzazione vivono in un unico sistema. Nella realta', non succede quasi mai.
+In molte organizzazioni le identita' degli utenti sono distribuite su sistemi eterogenei: un Active Directory con migliaia di dipendenti, un provider di social login per i clienti, un IdP esterno per i partner commerciali. Le applicazioni hanno bisogno di un punto unico di autenticazione, indipendentemente da dove vivono gli utenti.
 
-L'azienda ha un Active Directory con migliaia di dipendenti accumulati in quindici anni. Il team marketing vuole che i clienti facciano login con Google. Una business unit in un altro paese usa il proprio Keycloak. Un partner commerciale autentica i propri utenti tramite Okta e deve poter accedere al portale senza creare un nuovo account.
-
-Il risultato e' sempre lo stesso: le identita' sono sparse in sistemi diversi, e serve un punto unico dove le applicazioni possano verificare "chi e' questo utente e cosa puo' fare".
-
-Keycloak risolve questo problema con due meccanismi distinti: **User Federation** e **Identity Brokering**. Sembrano simili — entrambi portano utenti esterni dentro Keycloak — ma funzionano in modo radicalmente diverso. Capire la differenza e' fondamentale per scegliere l'approccio giusto.
+Keycloak risolve questo problema con due meccanismi distinti: **User Federation** e **Identity Brokering**. Entrambi portano identita' esterne nel realm Keycloak, ma funzionano in modo radicalmente diverso. La scelta tra i due dipende da chi controlla lo storage delle credenziali.
 
 ---
 
@@ -31,28 +27,17 @@ Keycloak risolve questo problema con due meccanismi distinti: **User Federation*
 
 Nell'[articolo introduttivo](../01-keycloak-intro) abbiamo visto come un Identity Provider centralizzato elimini i silos di identita'. Ma c'e' un presupposto implicito: che gli utenti vengano creati dentro Keycloak. In molti scenari reali non e' cosi'.
 
-Considera questa situazione:
+Uno scenario tipico:
 
-```text
-+------------------+     +------------------+     +------------------+
-|   Active Dir.    |     |     Google       |     |   Okta (Partner) |
-|   3000 utenti    |     |   Social Login   |     |   200 utenti     |
-|   dipendenti     |     |   clienti        |     |   consulenti     |
-+------------------+     +------------------+     +------------------+
-        |                        |                        |
-        v                        v                        v
-+----------------------------------------------------------------+
-|                         Keycloak                               |
-|          punto unico di autenticazione per le app              |
-+----------------------------------------------------------------+
-        |                        |                        |
-        v                        v                        v
-   App Interna              Portale Clienti           Area Partner
+```
+Active Directory (3000 dipendenti)  →
+Google (social login clienti)       →  Keycloak  →  App Interna / Portale Clienti / Area Partner
+Okta Partner (200 consulenti)       →
 ```
 
 Tre sorgenti di identita' completamente diverse, tre protocolli diversi, ma le applicazioni devono vedere un unico token JWT con la stessa struttura. Non vogliono sapere se l'utente arriva da LDAP, da Google o da Okta. Vogliono un token firmato da Keycloak, con i claim giusti.
 
-Keycloak raggiunge questo risultato con due strategie complementari. Vediamole.
+Keycloak raggiunge questo risultato con due strategie complementari, descritte nelle sezioni seguenti.
 
 ---
 
@@ -60,7 +45,7 @@ Keycloak raggiunge questo risultato con due strategie complementari. Vediamole.
 
 ### Il Concetto
 
-User Federation significa che Keycloak si collega a un **database di utenti esterno** e lo usa come se fosse il proprio. Le credenziali non vengono copiate — ogni login viene delegato al sistema esterno. Gli attributi (nome, email, gruppi), invece, vengono importati nel database locale di Keycloak per default e sincronizzati periodicamente. E' possibile disabilitare l'importazione e interrogare la directory ad ogni richiesta, ma il comportamento standard prevede una cache locale.
+User Federation significa che Keycloak si collega a un **database di utenti esterno** e lo usa come se fosse il proprio. Le credenziali non vengono copiate: ogni login viene delegato al sistema esterno. Gli attributi (nome, email, gruppi), invece, vengono importati nel database locale di Keycloak per default e sincronizzati periodicamente. E' possibile disabilitare l'importazione e interrogare la directory ad ogni richiesta, ma il comportamento standard prevede una cache locale.
 
 Il caso classico e' LDAP/Active Directory: l'organizzazione ha gia' migliaia di utenti in una directory e non ha alcuna intenzione di migrarli. Con la User Federation, Keycloak diventa una "facciata" davanti a quella directory.
 
@@ -82,14 +67,14 @@ Utente           Keycloak              LDAP / Active Directory
   |<-- JWT ---------|                          |
 ```
 
-Il punto chiave: **l'utente fa login su Keycloak**, inserendo le credenziali nella pagina di login di Keycloak. Ma Keycloak non valida quelle credenziali contro il proprio database — le inoltra al sistema esterno. Se LDAP conferma, Keycloak crea una sessione e emette un token JWT come farebbe per qualsiasi utente locale.
+Il punto chiave: **l'utente fa login su Keycloak**, inserendo le credenziali nella pagina di login di Keycloak. Ma Keycloak non valida quelle credenziali contro il proprio database: le inoltra al sistema esterno. Se LDAP conferma, Keycloak crea una sessione e emette un token JWT come farebbe per qualsiasi utente locale.
 
 Dal punto di vista dell'applicazione, non cambia nulla. Il token JWT e' identico a quello di un utente creato direttamente in Keycloak. La differenza e' tutta dietro le quinte.
 
 ### Caratteristiche
 
-- **Le credenziali restano nel sistema esterno.** Keycloak non memorizza la password dell'utente — ogni login la delega alla directory.
-- **Attributi sincronizzati.** Nome, email, gruppi, ruoli: Keycloak li importa dalla directory e li mappa nei propri claim. La sincronizzazione avviene al login dell'utente e tramite sync periodiche configurabili. Un cambio di reparto in AD si riflette nel token dopo la prossima sincronizzazione — non istantaneamente.
+- **Le credenziali restano nel sistema esterno.** Keycloak non memorizza la password dell'utente: ogni login viene delegato alla directory.
+- **Attributi sincronizzati.** Nome, email, gruppi, ruoli: Keycloak li importa dalla directory e li mappa nei propri claim. La sincronizzazione avviene al login dell'utente e tramite sync periodiche configurabili. Un cambio di reparto in AD si riflette nel token dopo la prossima sincronizzazione, non istantaneamente.
 - **Trasparente per l'utente.** L'utente vede la pagina di login di Keycloak e inserisce le stesse credenziali che usa per la posta aziendale. Non sa (e non deve sapere) che dietro c'e' LDAP.
 - **Bidirezionale (opzionale).** Keycloak puo' anche scrivere sulla directory: se un utente si registra tramite Keycloak o cambia password, la modifica puo' propagarsi a LDAP.
 
@@ -101,7 +86,7 @@ User Federation e' la scelta giusta quando **si controlla il sistema di identita
 - Non e' possibile o desiderabile migrare gli utenti dentro Keycloak
 - Le applicazioni moderne (SPA, microservizi) devono usare token JWT, ma le credenziali devono restare nella directory aziendale
 
-Il punto fondamentale e' che **Keycloak e' l'unica pagina di login**. L'utente non interagisce mai direttamente con LDAP — inserisce le credenziali su Keycloak, che fa il lavoro sporco dietro le quinte.
+Il punto fondamentale e' che **Keycloak e' l'unica pagina di login**. L'utente non interagisce mai direttamente con LDAP: inserisce le credenziali su Keycloak, che gestisce la comunicazione con la directory.
 
 ---
 
@@ -111,7 +96,7 @@ Il punto fondamentale e' che **Keycloak e' l'unica pagina di login**. L'utente n
 
 Identity Brokering e' un meccanismo completamente diverso. Invece di collegarsi a un database esterno, Keycloak **delega l'intero processo di login a un altro Identity Provider**. L'utente non inserisce le credenziali su Keycloak: viene reindirizzato al provider esterno, fa login la', e torna indietro con un token o un'asserzione che Keycloak consuma.
 
-In altre parole: con la User Federation, Keycloak chiede "dammi le credenziali e le verifico per te". Con l'Identity Brokering, Keycloak dice "vai a fare login la' e poi torna da me con la prova".
+La distinzione e' netta: con la User Federation Keycloak riceve le credenziali e le verifica delegando al sistema esterno. Con l'Identity Brokering Keycloak non tocca mai le credenziali: riceve solo il risultato dell'autenticazione effettuata altrove.
 
 ### Come Funziona
 
@@ -140,21 +125,21 @@ Utente           Keycloak              Provider Esterno
 
 > Il diagramma mostra il flusso OIDC (Authorization Code). Con SAML, il meccanismo e' diverso: l'asserzione transita direttamente via browser POST, senza lo scambio code-token server-to-server.
 
-La differenza e' visibile dall'esperienza utente: **l'utente vede due pagine di login** (o almeno potenzialmente — se ha gia' una sessione attiva sul provider esterno, il redirect e' trasparente). Prima viene reindirizzato al provider esterno, poi torna su Keycloak.
+La differenza e' visibile dall'esperienza utente: **l'utente vede due pagine di login** (o almeno potenzialmente - se ha gia' una sessione attiva sul provider esterno, il redirect e' trasparente). Prima viene reindirizzato al provider esterno, poi torna su Keycloak.
 
-Keycloak, in questo scenario, non tocca mai le credenziali dell'utente. Riceve un token dal provider esterno (tramite scambio server-to-server nel caso OIDC, o un'asserzione via browser nel caso SAML), lo valida, e crea una rappresentazione locale dell'utente nel proprio database. Da quel momento in poi, emette i propri token JWT, firmati con la propria chiave — esattamente come per qualsiasi altro utente.
+Keycloak, in questo scenario, non tocca mai le credenziali dell'utente. Riceve un token dal provider esterno (tramite scambio server-to-server nel caso OIDC, o un'asserzione via browser nel caso SAML), lo valida, e crea una rappresentazione locale dell'utente nel proprio database. Da quel momento in poi, emette i propri token JWT, firmati con la propria chiave, esattamente come per qualsiasi altro utente.
 
 ### Protocolli Supportati
 
 L'Identity Brokering funziona con diversi protocolli standard:
 
-- **OpenID Connect / OAuth 2.0** — il piu' comune. Google, Okta, Auth0, un altro Keycloak: tutti espongono endpoint OIDC. Keycloak si registra come client presso il provider esterno, e il flusso segue il normale Authorization Code Flow.
-- **SAML 2.0** — ancora diffuso in ambito enterprise. Se il partner usa ADFS, Shibboleth, o un IdP SAML, Keycloak funge da Service Provider (verso il provider esterno) e da Identity Provider (verso le proprie applicazioni client), consumando le asserzioni SAML e ri-emettendo token nel proprio formato.
-- **Social Login** — Google, GitHub, Facebook, Apple, Microsoft: Keycloak ha connettori preconfigurati che semplificano l'integrazione. Tecnicamente sono casi specifici di OIDC/OAuth2, ma con configurazione semplificata.
+- **OpenID Connect / OAuth 2.0**: il piu' comune. Google, Okta, Auth0, un altro Keycloak - tutti espongono endpoint OIDC. Keycloak si registra come client presso il provider esterno, e il flusso segue il normale Authorization Code Flow.
+- **SAML 2.0**: ancora diffuso in ambito enterprise. Se il partner usa ADFS, Shibboleth, o un IdP SAML, Keycloak funge da Service Provider (verso il provider esterno) e da Identity Provider (verso le proprie applicazioni client), consumando le asserzioni SAML e ri-emettendo token nel proprio formato.
+- **Social Login**: Google, GitHub, Facebook, Apple, Microsoft - Keycloak ha connettori preconfigurati che semplificano l'integrazione. Tecnicamente sono casi specifici di OIDC/OAuth2, ma con configurazione semplificata.
 
 ### Cosa Succede all'Utente Locale
 
-Quando un utente fa login per la prima volta tramite un broker esterno, Keycloak esegue il **First Broker Login Flow** — un flusso configurabile che decide cosa fare con l'identita' ricevuta. Le strategie principali:
+Quando un utente fa login per la prima volta tramite un broker esterno, Keycloak esegue il **First Broker Login Flow**: un flusso configurabile che decide cosa fare con l'identita' ricevuta. Le strategie principali:
 
 - **Creazione automatica**: Keycloak crea un utente locale con gli attributi ricevuti dal provider esterno (email, nome, ecc.)
 - **Collegamento a utente esistente**: se esiste gia' un utente con la stessa email, Keycloak puo' collegare l'identita' esterna a quella locale. L'utente finisce con un account Keycloak che ha piu' "link" a provider diversi
@@ -170,17 +155,11 @@ Questo significa che un singolo utente Keycloak puo' avere **piu' identita' fede
 
 **Multi-Keycloak (KC che fa da broker verso un altro KC):** scenario multi-region o multi-business-unit. Ogni unita' ha il proprio Keycloak con i propri utenti. Un Keycloak centrale funge da broker: quando un utente di un'altra region accede, viene reindirizzato al Keycloak della propria region, fa login, e torna al Keycloak centrale con un token che viene consumato e ri-emesso. Le applicazioni vedono un unico Keycloak e un unico formato di token.
 
-```text
-                    +-------------------+
-                    |   KC Centrale     |
-                    |   (broker)        |
-                    +-------------------+
-                   /         |          \
-                  v          v           v
-        +----------+  +----------+  +----------+
-        | KC Italy |  | KC Germany|  | KC Spain |
-        | 500 users|  | 800 users |  | 300 users|
-        +----------+  +----------+  +----------+
+```
+                  KC Centrale (broker)
+                 /         |          \
+         KC Italy      KC Germany    KC Spain
+         500 users      800 users    300 users
 ```
 
 Ogni KC regionale gestisce i propri utenti. Il KC centrale non duplica nulla: fa brokering verso quello giusto in base al dominio email, alla scelta dell'utente, o a qualsiasi logica di routing configurata.
@@ -206,7 +185,7 @@ Identity Brokering e' la scelta giusta quando **l'identita' e' gestita da un ter
 | **L'utente vede** | Una sola pagina di login (Keycloak) | Potenzialmente due (Keycloak + provider) |
 | **Protocollo verso l'esterno** | LDAP bind / query | OIDC, SAML, OAuth2 |
 | **Utente locale in KC** | Importato per default; facoltativo con Import Users = OFF | Creato al primo login (necessario per la sessione) |
-| **Keycloak tocca le credenziali?** | Si' — le riceve e le inoltra | No — vede solo il token/asserzione risultante |
+| **Keycloak tocca le credenziali?** | Si' - le riceve e le inoltra | No - vede solo il token/asserzione risultante |
 | **Caso d'uso tipico** | Directory aziendale esistente | Social login, partner esterni, multi-IdP |
 
 La regola pratica e' semplice:
@@ -221,28 +200,15 @@ La regola pratica e' semplice:
 
 Le due strategie non si escludono. In uno scenario enterprise realistico, e' comune trovarle entrambe attive nello stesso realm Keycloak:
 
-```text
-+------------------+     +------------------+     +------------------+
-|   LDAP Aziendale |     |     Google       |     |   Okta Partner   |
-+------------------+     +------------------+     +------------------+
-        |                        |                        |
-   User Federation         Identity Broker          Identity Broker
-        |                        |                        |
-        v                        v                        v
-+----------------------------------------------------------------+
-|                       Realm "produzione"                        |
-|                                                                |
-|   Dipendenti: credenziali LDAP, login su KC                   |
-|   Clienti: login con Google, account locale creato auto        |
-|   Consulenti partner: redirect a Okta, account linkato         |
-|                                                                |
-|   --> Tutte le app ricevono lo stesso JWT                      |
-+----------------------------------------------------------------+
+```
+LDAP Aziendale  --[User Federation]-->
+Google          --[Identity Broker]-->  Realm "produzione"  -->  JWT uniforme per tutte le app
+Okta Partner    --[Identity Broker]-->
 ```
 
 I dipendenti fanno login con le credenziali LDAP sulla pagina di Keycloak. I clienti cliccano "Accedi con Google" e vengono reindirizzati. I consulenti del partner vengono reindirizzati a Okta. Ma alla fine, l'applicazione riceve sempre un JWT firmato da Keycloak con la stessa struttura, gli stessi claim, lo stesso formato.
 
-Questo e' il valore reale della federation: **Keycloak diventa il punto di convergenza**. Non importa quante sorgenti di identita' esistano — le applicazioni ne vedono una sola.
+Questo e' il valore reale della federation: **Keycloak diventa il punto di convergenza**. Non importa quante sorgenti di identita' esistano: le applicazioni ne vedono una sola.
 
 ---
 
@@ -260,7 +226,7 @@ Nel prossimo articolo della serie passeremo dalla teoria alla pratica: vedremo c
 ---
 
 **Risorse utili:**
-- [Keycloak User Federation](https://www.keycloak.org/docs/latest/server_admin/index.html#_user-storage-federation) — documentazione ufficiale
-- [Keycloak Identity Brokering](https://www.keycloak.org/docs/latest/server_admin/index.html#_identity_broker) — documentazione ufficiale
-- [LDAP Integration](https://www.keycloak.org/docs/latest/server_admin/index.html#_ldap) — configurazione LDAP/AD
-- [OpenID Connect](https://openid.net/connect/) — lo standard dietro il brokering OIDC
+- [Keycloak User Federation](https://www.keycloak.org/docs/latest/server_admin/index.html#_user-storage-federation) - documentazione ufficiale
+- [Keycloak Identity Brokering](https://www.keycloak.org/docs/latest/server_admin/index.html#_identity_broker) - documentazione ufficiale
+- [LDAP Integration](https://www.keycloak.org/docs/latest/server_admin/index.html#_ldap) - configurazione LDAP/AD
+- [OpenID Connect](https://openid.net/connect/) - lo standard dietro il brokering OIDC
