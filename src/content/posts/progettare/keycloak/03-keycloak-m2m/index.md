@@ -11,7 +11,7 @@ tags:
   - M2M
   - Security
 lang: it
-draft: true
+draft: false
 reviewed: true
 series: keycloak
 seriesOrder: 30
@@ -19,7 +19,7 @@ seriesOrder: 30
 
 Job schedulati, webhook, eventi asincroni: in questi casi non c'è nessun utente davanti allo schermo, ma i servizi devono comunque autenticarsi tra loro. La comunicazione machine-to-machine richiede un meccanismo di autenticazione diverso da quello basato su browser e redirect.
 
-Questo articolo mostra come implementare autenticazione machine-to-machine (M2M) con Keycloak, usando il flusso **Client Credentials**. Vedremo setup, codice e gli errori che tutti fanno.
+L'approccio standard è il flusso **Client Credentials** di OAuth 2.0. Questa guida copre il setup in Keycloak, l'implementazione lato chiamante e lato ricevente, e gli errori più comuni.
 
 ---
 
@@ -30,10 +30,7 @@ Questo articolo mostra come implementare autenticazione machine-to-machine (M2M)
 In [MockMart](https://github.com/monte97/MockMart), quando un utente completa un ordine, `shop-api` deve notificare `notification-service`:
 
 ```text
-┌──────────────┐         ┌───────────────────┐
-│   shop-api   │ ──────► │notification-service│
-│  (checkout)  │         │   (send email)     │
-└──────────────┘         └───────────────────┘
+shop-api (checkout) ──────► notification-service (send email)
 ```
 
 Il problema: questa chiamata avviene **dopo** che il checkout è completato. Non c'è un utente "attivo" in quel momento - è una chiamata server-to-server.
@@ -74,17 +71,11 @@ Il flusso **Client Credentials** permette a un servizio di autenticarsi come "se
 ### Come Funziona
 
 ```text
-┌──────────────┐                         ┌──────────────┐
-│   shop-api   │ ─── (1) credentials ───►│   Keycloak   │
-│              │ ◄── (2) access_token ───│              │
-└──────┬───────┘                         └──────────────┘
-       │
-       │ (3) Bearer token
-       ▼
-┌──────────────┐
-│ notification │ ─── (4) validate JWKS
-│   service    │
-└──────────────┘
+shop-api ─── (1) credentials ───► Keycloak
+shop-api ◄── (2) access_token ─── Keycloak
+
+shop-api ─── (3) Bearer token ───► notification-service
+notification-service ─── (4) validate JWKS ───► Keycloak
 ```
 
 1. `shop-api` invia le proprie credenziali (client_id + secret) a Keycloak
@@ -291,10 +282,10 @@ async function requireServiceAuth(req, res, next) {
     });
 
     // Verifica che sia un service account
-    // Il claim clientId è l'indicatore primario: è presente solo nei token di service account
-    // Il check sul ruolo è supplementare (Keycloak assegna "service-account-<clientId>" di default)
-    const isServiceAccount = payload.clientId !== undefined
-      && payload.clientId === payload.azp;
+    // Il claim client_id (snake_case) è presente nei token di service account Keycloak
+    // Deve coincidere con azp (authorized party) per confermare che il token è emesso per quel client
+    const isServiceAccount = payload.client_id !== undefined
+      && payload.client_id === payload.azp;
     if (!isServiceAccount) {
       return res.status(403).json({
         error: 'This endpoint only accepts service account tokens'
@@ -321,7 +312,7 @@ async function requireServiceAuth(req, res, next) {
 module.exports = { requireServiceAuth };
 ```
 
-**Punto critico:** Due check distinti proteggono l'endpoint. Il primo (`isServiceAccount`) verifica che il token provenga da un service account tramite il claim `clientId`. Il secondo (`payload.azp !== 'shop-api'`) restringe l'accesso al solo servizio autorizzato. Senza entrambi, un token utente o di un altro servizio passerebbe la validazione.
+**Punto critico:** Due check distinti proteggono l'endpoint. Il primo (`isServiceAccount`) verifica che il token provenga da un service account tramite il claim `client_id` (presente nei token Keycloak per service account). Il secondo (`payload.azp !== 'shop-api'`) restringe l'accesso al solo servizio autorizzato. Senza entrambi, un token utente o di un altro servizio passerebbe la validazione.
 
 > **Verso la produzione:** In questo esempio l'`azp` è hardcodato, ma in un sistema con molti servizi questo approccio diventa fragile. L'alternativa scalabile è assegnare **client roles o scopes** (es. `notifications:send`) al service account in Keycloak e verificarli nel middleware, invece di controllare il singolo client ID. In questo modo si disaccoppia l'autorizzazione dall'identità specifica del chiamante.
 
@@ -429,7 +420,7 @@ Abbiamo visto come:
 3. Il servizio ricevente deve validare non solo la firma del token, ma anche verificare che il chiamante sia un service account autorizzato
 4. In produzione, preferire **roles e scopes** rispetto a check hardcodati su `azp` per un'architettura disaccoppiata
 
-L'autenticazione M2M è uno di quei pezzi che, una volta implementato correttamente, diventa invisibile. Ma se fatto male, diventa il punto debole che espone tutto il sistema.
+L'autenticazione M2M implementata correttamente diventa un meccanismo trasparente: i servizi si identificano, il token viene validato, la chiamata passa. Implementata male, è un vettore di accesso laterale tra servizi che in rete interna sembrano fidati.
 
 ---
 
