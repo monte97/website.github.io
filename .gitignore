@@ -9,6 +9,7 @@ public/*
 /.*
 .*/
 !.github/
+!.env.example
 DOCS.md
 GETTING-STARTED.md
 USE-CASES.md
