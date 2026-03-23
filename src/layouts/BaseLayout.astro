@@ -44,6 +44,20 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" /></noscript>
 
+  <!-- Analytics — Umami Cloud (cookie-free, GDPR compliant) -->
+  {import.meta.env.PUBLIC_UMAMI_WEBSITE_ID && (
+    <>
+      <link rel="dns-prefetch" href="https://cloud.umami.is" />
+      <script
+        defer
+        src="https://cloud.umami.is/script.js"
+        data-website-id={import.meta.env.PUBLIC_UMAMI_WEBSITE_ID}
+        data-domains="montelli.dev"
+        is:inline
+      />
+    </>
+  )}
+
   <!-- View Transitions -->
   <ClientRouter />
 
