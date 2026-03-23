@@ -48,16 +48,22 @@ Each translation produces a single file `index.en.md` in the same directory as `
 
 ```
 src/content/posts/<pillar>/<category>/<slug>/
-├── index.md        ← Italian (source)
+├── index.md        ← Italian (source, always read this first)
 └── index.en.md     ← English (to create)
 ```
+
+**Important:** Always read the Italian `index.md` as the authoritative source. Do not infer content from slug names — the actual title and content may differ from what the directory name suggests.
+
+**Ignore** any `.pipeline/` subdirectories inside post folders — do not read or modify files there.
 
 ### Frontmatter rules
 
 - `lang: en`
 - `title`, `description`: translated/adapted in English
 - `pillar`, `category`, `tags`, `series`, `seriesOrder`, `date`: copied from Italian
-- `reviewed: human` — same as existing translations
+- `heroImage`: copy from Italian if present, omit if absent
+- `reviewed: machine` — AI-generated; will be upgraded to `human` after human review
+- Do NOT copy `draft` field — always omit it (schema default is `false`, so EN versions are always published)
 - Do NOT include `reproducibility` field (IT-only)
 
 ---
@@ -72,17 +78,17 @@ git checkout -b feat/translations-bulk
 
 ### Batching (9 parallel agents)
 
-| Agent | Batch | Articles |
-|-------|-------|----------|
-| 1 | verificare/observability | 04, 05, 06, 07, 08 |
-| 2 | verificare/openfga | 01, 02, 03, 04, 05 |
-| 3 | verificare/testing batch 1 | unit-test-nuxt3, mock-traps, otel-trace-correlation, cicd-strategie, flask-factory |
-| 4 | verificare/testing batch 2 | network-mocking, network-mocking-avanzato, visual-regression, flaky-debugging, authentication-testing, page-object-model |
-| 5 | progettare/keycloak batch 1 | 01, 02, 03 |
-| 6 | progettare/keycloak batch 2 | 04, 05, 06 |
-| 7 | progettare/kafka + sd batch 1 | kafka 01, 03, 05 + sd/01-errori-produzione |
-| 8 | progettare/sd batch 2 + k8s + vue | sd 02, 03, 04, di-python + k8s/02 + vue |
-| 9 | automatizzare + altro | devops, docker, web-dev 01, 02, 03 |
+| Agent | Batch | Articles (exact directory names) |
+|-------|-------|----------------------------------|
+| 1 | verificare/observability | 04-correlation, 05-management, 06-routing, 07-keycloak-pii, 08-console-to-grafana |
+| 2 | verificare/openfga | 01-zanzibar-concetti, 02-openfga-keycloak, 03-multitenancy, 04-gerarchie-query, 05-listobjects-performance |
+| 3 | verificare/testing batch 1 | 01-unit-test-nuxt3-logica-pura, 02-mock-traps-python-flask, 02-opentelemetry-trace-correlation, 03-cicd-strategie-avanzate, 03-flask-factory-testabile |
+| 4 | verificare/testing batch 2 | 04-network-mocking, 05-network-mocking-avanzato, 06-visual-regression, 07-flaky-debugging, 08-authentication-testing, 09-page-object-model |
+| 5 | progettare/keycloak batch 1 | 01-keycloak-intro, 02-authorization-code-pkce, 03-keycloak-m2m |
+| 6 | progettare/keycloak batch 2 | 04-keycloak-e2e, 05-keycloak-opa, 06-keycloak-federation |
+| 7 | progettare/kafka + system-design batch 1 | kafka/01-intro, kafka/03-akka-pekko-migrazione, kafka/05-kafka-crash-recovery-strategie, system-design/01-errori-produzione |
+| 8 | progettare/system-design batch 2 + kubernetes + vue | system-design/02-benchmark-net8, system-design/03-compilatore-state-machine, system-design/04-tracing-otel-grafana-tempo, system-design/di-python, kubernetes/02-k8s-controller, vue/micro-frontend-module-federation |
+| 9 | automatizzare + altro | devops/pipeline-proxmox-opentofu-ansible, docker/docker-internals, web-development/01-eventbus-pinia-migrazione, web-development/02-openlayers-vue3-composables, web-development/03-vue3-dry-patterns |
 
 ### Commit
 
