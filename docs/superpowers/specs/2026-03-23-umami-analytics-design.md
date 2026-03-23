@@ -37,6 +37,8 @@ montelli.dev is a static Astro site deployed to GitHub Pages. Currently has zero
 
 **Critical constraint**: we will NOT use `umami.identify()` or pass PII in custom events. Only technical properties (pillar, category, event name). This keeps us in GDPR-compliant territory.
 
+**Implementation rule**: event property values must come from a fixed taxonomy (pillar names, category names, platform names). Never use user-supplied input (search queries, form fields) as an event property value.
+
 ## Architecture
 
 ### Script Injection
@@ -45,8 +47,13 @@ A single `<script>` tag in `BaseLayout.astro` `<head>`:
 
 ```html
 <script defer src="https://cloud.umami.is/script.js"
-        data-website-id={import.meta.env.PUBLIC_UMAMI_WEBSITE_ID}></script>
+        data-website-id={import.meta.env.PUBLIC_UMAMI_WEBSITE_ID}
+        data-domains="montelli.dev"></script>
 ```
+
+The `data-domains` attribute ensures tracking only fires on the production domain — prevents data pollution from localhost, Netlify previews, or forks even if the env var is accidentally set.
+
+A `<link rel="dns-prefetch" href="https://cloud.umami.is" />` hint is added before the script to parallelize DNS resolution at near-zero cost.
 
 **Conditional rendering**: the script tag is only included when `PUBLIC_UMAMI_WEBSITE_ID` is defined. This means:
 
@@ -84,10 +91,11 @@ The `if (window.umami)` guard prevents errors when the script isn't loaded (dev,
 
 | Event Name | Trigger | Properties | Mechanism |
 |-----------|---------|------------|-----------|
-| `cta-contact` | Click on contact CTA (homepage) | — | `data-umami-event` |
+| `cta-contact-email` | Click on "Scrivimi" CTA (homepage) | — | `data-umami-event` |
+| `cta-contact-healthcheck` | Click on "Health Check" CTA (homepage) | — | `data-umami-event` |
 | `click-social` | Click on GitHub/LinkedIn in footer | `{ platform: "github"\|"linkedin" }` | `data-umami-event` + `data-umami-event-platform` |
 | `click-email` | Click on mailto link | — | `data-umami-event` |
-| `blog-read` | Click on blog post card | `{ pillar, category }` | `data-umami-event` + data attributes |
+| `blog-read` | Click on blog post card (homepage + blog page) | `{ pillar, category }` | `data-umami-event` + data attributes (Astro); `umami.track()` (Vue) |
 | `search-open` | Open search modal | — | `umami.track()` in Vue |
 | `click-project` | Click on portfolio project | `{ project }` | `data-umami-event` + `data-umami-event-project` |
 
@@ -99,14 +107,17 @@ The `if (window.umami)` guard prevents errors when the script isn't loaded (dev,
 |------|--------|
 | `src/layouts/BaseLayout.astro` | Add conditional Umami script tag in `<head>` |
 | `src/pages/privacy.astro` | Add mention of Umami, no-cookie policy, no-PII commitment |
-| `src/components/home/ContactSection.astro` | `data-umami-event="cta-contact"` on CTA button |
+| `src/components/home/ContactSection.astro` | `data-umami-event` on both CTA buttons (email + health check) |
 | `src/components/layout/Footer.astro` | `data-umami-event="click-social"` + platform prop on social links, `data-umami-event="click-email"` on email |
 | `src/components/interactive/SearchModal.vue` | `umami.track('search-open')` on modal open |
-| `src/components/blog/PostCard.astro` | `data-umami-event="blog-read"` + pillar/category props |
-| `.github/workflows/deploy.yml` | Add `PUBLIC_UMAMI_WEBSITE_ID` env var to build step |
+| `src/components/blog/PostCard.astro` | `data-umami-event="blog-read"` + pillar/category data attributes on outer `<a>` tag |
+| `src/components/blog/BlogFilterable.vue` | `umami.track('blog-read', { pillar, category })` on post card click (covers the main `/blog/` listing page) |
+| `.github/workflows/deploy.yml` | Add `PUBLIC_UMAMI_WEBSITE_ID` env var via `vars.PUBLIC_UMAMI_WEBSITE_ID` (repository variable, not secret — the value is public in HTML output) |
 | `.env.example` | Document `PUBLIC_UMAMI_WEBSITE_ID` placeholder |
 
 **No new files** (except `.env.example`). **No new npm dependencies.** **No changes to `astro.config.mjs`.**
+
+**Note on PR builds**: `.github/workflows/pr.yml` does not need the env var. Without it, the script tag is simply omitted and the build succeeds normally.
 
 ## What We Are NOT Doing
 
@@ -116,6 +127,10 @@ The `if (window.umami)` guard prevents errors when the script isn't loaded (dev,
 - No analytics wrapper/utility component — too few call sites to justify abstraction
 - No scroll depth or time-on-page tracking — Umami doesn't support these natively; R2 is covered by pageview sequences and navigation patterns
 - No server-side analytics — static site, client-side only
+- No theme toggle or language switch tracking — low-value signals for now
+- No English privacy page in this iteration — can be added as a follow-up
+
+**Ad-blocker note**: Umami is on many ad-blocker lists (uBlock Origin, etc.). For a tech audience, expect 40-60% of visitors to block the script. Analytics numbers will be significantly undercounted. This is inherent to any client-side, non-self-hosted analytics solution and is accepted as a trade-off for R7 (SaaS managed).
 
 ## Setup Prerequisites
 
@@ -124,7 +139,7 @@ Before the code changes have any effect, the user must:
 1. Create an account at https://cloud.umami.is
 2. Add the website (montelli.dev) in the Umami dashboard
 3. Copy the `data-website-id` value
-4. Set it as `PUBLIC_UMAMI_WEBSITE_ID` in GitHub Actions secrets/variables
+4. Set it as `PUBLIC_UMAMI_WEBSITE_ID` in GitHub repository **Variables** (Settings > Secrets and variables > Actions > Variables tab) — not as a Secret, since the value is embedded in public HTML
 5. (Optional) Set it in Netlify env vars for preview deploys
 
 ## Privacy Policy Update
