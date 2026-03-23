@@ -33,7 +33,7 @@ const featured = allProjects
         const prefix = lang === 'en' ? '/en' : '';
         const href = `${prefix}/progetti/${project.id}/`;
         return (
-          <a href={href} class="group block h-full">
+          <a href={href} class="group block h-full" data-umami-event="click-project" data-umami-event-project={project.data.title}>
             <Card pillar={project.data.pillar}>
               <div class="flex items-start justify-between gap-3 mb-3">
                 <h3 class="text-base font-bold text-text-dark dark:text-text-light group-hover:text-accent transition-colors">{project.data.title}</h3>
