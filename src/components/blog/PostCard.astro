@@ -8,6 +8,7 @@ interface Props {
   description: string;
   date: Date;
   pillar: 'progettare' | 'verificare' | 'automatizzare' | null;
+  category?: string;
   tags: string[];
   href: string;
   lang?: 'it' | 'en';
@@ -15,7 +16,7 @@ interface Props {
   readingTime?: number;
 }
 
-const { title, description, date, pillar, tags, href, lang = 'it', heroImage, readingTime } = Astro.props;
+const { title, description, date, pillar, category, tags, href, lang = 'it', heroImage, readingTime } = Astro.props;
 
 const formattedDate = date.toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-US', {
   year: 'numeric',
@@ -26,7 +27,7 @@ const formattedDate = date.toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-US',
 const displayTags = tags.slice(0, 3);
 ---
 
-<a href={href} class="group block h-full">
+<a href={href} class="group block h-full" data-umami-event="blog-read" data-umami-event-pillar={pillar ?? ''} data-umami-event-category={category ?? ''}>
   <Card pillar={pillar} class={heroImage ? 'overflow-hidden !p-0' : ''}>
     {heroImage && (
       <img src={heroImage} alt="" class="w-full h-36 object-cover" loading="lazy" />
