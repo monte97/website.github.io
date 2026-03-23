@@ -68,7 +68,11 @@ function loadPagefindScript(): Promise<void> {
 }
 
 watch(open, async (isOpen) => {
-  if (!isOpen || initialized) return;
+  if (!isOpen) return;
+  if ((window as any).umami) {
+    (window as any).umami.track('search-open');
+  }
+  if (initialized) return;
   await nextTick();
   try {
     await loadPagefindScript();
