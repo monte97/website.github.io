@@ -60,10 +60,10 @@ const yrsExp = yearsExperience();
       {t.sub}
     </p>
     <div class="flex flex-wrap justify-center gap-3 mb-8">
-      <Button href="mailto:francesco@montelli.dev" size="lg">
+      <Button href="mailto:francesco@montelli.dev" size="lg" data-umami-event="cta-contact-email">
         {t.ctaPrimary} &rarr;
       </Button>
-      <Button href="/servizi/#health-check" variant="secondary" size="lg">
+      <Button href="/servizi/#health-check" variant="secondary" size="lg" data-umami-event="cta-contact-healthcheck">
         {t.ctaSecondary}
       </Button>
     </div>
@@ -89,10 +89,10 @@ const yrsExp = yearsExperience();
     </p>
 
     <div class="mt-6 flex justify-center gap-6 text-sm text-text-muted">
-      <a href="mailto:francesco@montelli.dev" class="hover:text-accent transition-colors">
+      <a href="mailto:francesco@montelli.dev" class="hover:text-accent transition-colors" data-umami-event="click-email">
         Email
       </a>
-      <a href="https://linkedin.com/in/francesco-montelli" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors">
+      <a href="https://linkedin.com/in/francesco-montelli" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors" data-umami-event="click-social" data-umami-event-platform="linkedin">
         LinkedIn
       </a>
     </div>
