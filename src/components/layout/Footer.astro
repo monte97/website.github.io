@@ -14,9 +14,9 @@ const year = new Date().getFullYear();
       &middot; <a href="/privacy/" class="hover:text-accent transition-colors">{lang === 'it' ? 'Privacy Policy' : 'Privacy Policy'}</a>
     </p>
     <div class="flex items-center gap-5">
-      <a href="mailto:francesco@montelli.dev" class="text-text-muted hover:text-accent transition-colors text-xs">Email</a>
-      <a href="https://linkedin.com/in/francesco-montelli" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-accent transition-colors text-xs">LinkedIn</a>
-      <a href="https://github.com/monte97" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-accent transition-colors text-xs">GitHub</a>
+      <a href="mailto:francesco@montelli.dev" class="text-text-muted hover:text-accent transition-colors text-xs" data-umami-event="click-email">Email</a>
+      <a href="https://linkedin.com/in/francesco-montelli" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-accent transition-colors text-xs" data-umami-event="click-social" data-umami-event-platform="linkedin">LinkedIn</a>
+      <a href="https://github.com/monte97" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-accent transition-colors text-xs" data-umami-event="click-social" data-umami-event-platform="github">GitHub</a>
     </div>
   </div>
 </footer>
