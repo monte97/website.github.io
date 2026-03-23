@@ -201,6 +201,9 @@
           v-if="featuredPost"
           :href="featuredPost.href"
           class="group block mb-6"
+          data-umami-event="blog-read"
+          :data-umami-event-pillar="featuredPost.pillar ?? ''"
+          :data-umami-event-category="featuredPost.category ?? ''"
         >
           <div class="rounded-xl border border-border/50 dark:border-border-dark/50 bg-white dark:bg-surface-dark overflow-hidden transition-shadow hover:shadow-md">
             <div class="p-6">
@@ -264,6 +267,9 @@
             :key="post.id"
             :href="post.href"
             class="group block h-full"
+            data-umami-event="blog-read"
+            :data-umami-event-pillar="post.pillar ?? ''"
+            :data-umami-event-category="post.category ?? ''"
           >
             <div
               :class="[
