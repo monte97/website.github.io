@@ -1,7 +1,7 @@
 export function postHref(postId: string, lang: 'it' | 'en' = 'it'): string {
-  const slug = lang === 'en'
-    ? postId.replace(/\/index(-en|\.en)?$/, '')
-    : postId.replace(/\/index(\.en)?$/, '');
+  // Astro 5 glob loader: IT index.md → ID without trailing /index
+  //                      EN index.en.md → ID with trailing /indexen
+  const slug = postId.replace(/\/indexen$/, '');
   const prefix = lang === 'en' ? '/en' : '';
   return `${prefix}/blog/${slug}/`;
 }
@@ -27,7 +27,7 @@ export function getHeroImage(
   postId: string,
   heroImages: Record<string, { default: { src: string } }>
 ): string | null {
-  const dir = postId.replace(/\/index(\.en|-en)?$/, '');
+  const dir = postId.replace(/\/indexen$/, '');
   const key = `/src/content/posts/${dir}/hero.webp`;
   const img = heroImages[key];
   return img?.default?.src || null;

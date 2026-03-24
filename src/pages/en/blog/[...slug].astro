@@ -15,7 +15,7 @@ export const getStaticPaths = (async () => {
   return posts
     .filter(p => p.data.lang === 'en' && !p.data.draft)
     .map(post => {
-      const slug = post.id.replace(/\/index(-en|\.en)?$/, '');
+      const slug = post.id.replace(/\/indexen$/, '');
       return {
         params: { slug },
         props: { post },
@@ -27,8 +27,10 @@ const { post } = Astro.props;
 const { Content, headings } = await render(post);
 const editUrl = `https://github.com/monte97/website.github.io/edit/main/src/content/posts/${post.id}.md`;
 
+const slug = post.id.replace(/\/indexen$/, '');
 const heroImage = getHeroImage(post.id, heroImages);
 const readingTime = estimateReadingTime(post.body);
+const alternateUrl = `/blog/${slug}`;
 ---
 
 <BlogPostLayout
@@ -45,6 +47,7 @@ const readingTime = estimateReadingTime(post.body);
   heroImage={heroImage}
   readingTime={readingTime}
   ogImage={heroImage}
+  alternateUrl={alternateUrl}
 >
   <Content />
 </BlogPostLayout>

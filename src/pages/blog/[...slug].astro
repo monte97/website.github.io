@@ -12,23 +12,29 @@ const heroImages = import.meta.glob<{ default: { src: string } }>(
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection('posts');
-  return posts
-    .filter(p => p.data.lang === 'it' && !p.data.draft)
-    .map(post => {
-      const slug = post.id.replace(/\/index(\.en)?$/, '');
-      return {
-        params: { slug },
-        props: { post },
-      };
-    });
+  const itPosts = posts.filter(p => p.data.lang === 'it' && !p.data.draft);
+  const enSlugs = new Set(
+    posts
+      .filter(p => p.data.lang === 'en' && !p.data.draft)
+      .map(p => p.id.replace(/\/indexen$/, ''))
+  );
+  return itPosts.map(post => {
+    const slug = post.id;
+    return {
+      params: { slug },
+      props: { post, hasEnVersion: enSlugs.has(slug) },
+    };
+  });
 }) satisfies GetStaticPaths;
 
-const { post } = Astro.props;
+const { post, hasEnVersion } = Astro.props;
 const { Content, headings } = await render(post);
 const editUrl = `https://github.com/monte97/website.github.io/edit/main/src/content/posts/${post.id}.md`;
 
+const slug = post.id;
 const heroImage = getHeroImage(post.id, heroImages);
 const readingTime = estimateReadingTime(post.body);
+const alternateUrl = hasEnVersion ? `/en/blog/${slug}` : undefined;
 ---
 
 <BlogPostLayout
@@ -44,6 +50,7 @@ const readingTime = estimateReadingTime(post.body);
   heroImage={heroImage}
   readingTime={readingTime}
   ogImage={heroImage}
+  alternateUrl={alternateUrl}
 >
   <Content />
 </BlogPostLayout>
