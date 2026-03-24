@@ -8,7 +8,18 @@ import rehypeKatex from 'rehype-katex';
 export default defineConfig({
   site: 'https://montelli.dev',
   output: 'static',
-  integrations: [vue(), sitemap()],
+  integrations: [
+    vue(),
+    sitemap({
+      i18n: {
+        defaultLocale: 'it',
+        locales: {
+          it: 'it-IT',
+          en: 'en-US',
+        },
+      },
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
   },

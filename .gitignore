@@ -4,6 +4,7 @@ public/*
 !public/images/
 !public/files/
 !public/favicon.ico
+!public/robots.txt
 !public/site.webmanifest
 !public/secret/
 /.*
@@ -17,5 +18,6 @@ _vendor/
 **/demo/
 dist/
 test-results/
+lighthouse-reports/
 org.md
 style.md
