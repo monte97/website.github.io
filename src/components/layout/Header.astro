@@ -68,7 +68,7 @@ function isActive(href: string): boolean {
 
     <!-- Right side actions -->
     <div class="flex items-center gap-2">
-      <SearchModal client:load />
+      <SearchModal client:only="vue" />
 
       <a
         href={langSwitchHref}

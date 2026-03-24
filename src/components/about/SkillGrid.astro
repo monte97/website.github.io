@@ -54,7 +54,7 @@ for (const [cat, items] of grouped) {
             title={skill.summary}
           >
             {skill.logo ? (
-              <img src={skill.logo} alt={skill.name} width="40" height="40" loading="lazy" class:list={["w-10 h-10 object-contain", skill.darkInvert && "dark:brightness-0 dark:invert"]} />
+              <img src={skill.logo} alt="" width="40" height="40" loading="lazy" class:list={["w-10 h-10 object-contain", skill.darkInvert && "dark:brightness-0 dark:invert"]} />
             ) : (
               <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent font-bold text-sm">
                 {skill.name.charAt(0)}

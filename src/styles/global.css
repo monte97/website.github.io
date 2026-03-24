@@ -15,7 +15,7 @@
   --color-accent-subtle: #E8973A1A;
   --color-text-dark: #2D2D3A;
   --color-text-light: #E8E5DE;
-  --color-text-muted: #7C7C8A;
+  --color-text-muted: #606070;
   --color-border: #DDD9D0;
   --color-border-dark: #33334A;
   --color-pillar-progettare: #5B7FA5;
@@ -46,6 +46,11 @@ body {
 .dark body {
   background-color: var(--color-base-dark);
   color: var(--color-text-light);
+}
+
+/* Muted text is darker in light mode for contrast, lighter in dark mode */
+.dark {
+  --color-text-muted: #9090A0;
 }
 
 /* ── Selection ── */

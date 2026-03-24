@@ -8,7 +8,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
       </svg>
-      <kbd class="hidden md:inline text-[10px] font-mono opacity-50">
+      <kbd v-if="isMounted" class="hidden md:inline text-[10px] font-mono opacity-50">
         {{ isMac ? '\u2318K' : 'Ctrl+K' }}
       </kbd>
     </button>
@@ -43,9 +43,11 @@ import { ref, watch, nextTick, onMounted, onUnmounted } from 'vue';
 const open = ref(false);
 const loadError = ref(false);
 const isMac = ref(false);
+const isMounted = ref(false);
 let initialized = false;
 
 onMounted(() => {
+  isMounted.value = true;
   isMac.value = /mac|iphone|ipad/i.test(navigator.userAgentData?.platform ?? navigator.userAgent);
 });
 
