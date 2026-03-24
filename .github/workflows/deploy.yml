@@ -40,3 +40,27 @@ jobs:
     steps:
       - uses: actions/deploy-pages@v4
         id: deployment
+
+  lighthouse:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install -g @lhci/cli
+      - name: Run Lighthouse CI
+        run: |
+          lhci collect \
+            --url=https://montelli.dev/ \
+            --url=https://montelli.dev/blog/ \
+            --url=https://montelli.dev/blog/verificare/observability/01-observability/ \
+            --url=https://montelli.dev/en/blog/verificare/observability/01-observability/ \
+            --url=https://montelli.dev/about/ \
+            --numberOfRuns=1 \
+            --settings.chromeFlags="--no-sandbox --disable-dev-shm-usage"
+          lhci assert \
+            --assertions.categories:accessibility="warn,minScore=0.9" \
+            --assertions.categories:seo="warn,minScore=0.9" \
+            --assertions.categories:performance="warn,minScore=0.8"

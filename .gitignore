@@ -19,5 +19,8 @@ _vendor/
 dist/
 test-results/
 lighthouse-reports/
+Dockerfile.lhci
+docker-compose.lhci.yml
+lighthouserc.json
 org.md
 style.md
