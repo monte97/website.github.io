@@ -11,7 +11,7 @@ tags:
   - Security
   - Observability
 lang: it
-draft: true
+draft: false
 reviewed: true
 series: observability
 seriesOrder: 70
