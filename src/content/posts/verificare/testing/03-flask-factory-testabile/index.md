@@ -20,7 +20,7 @@ seriesOrder: 30
 
 Tre servizi Flask in un sistema di telemetria per mezzi d'opera. Ognuno consuma dati da Kafka, li persiste su MongoDB, e li espone tramite API REST. Tutti e tre condividono lo stesso difetto architetturale: le connessioni a database e broker vengono create al momento dell'import, a livello di modulo.
 
-Il risultato: 88 test che funzionano, ma solo grazie a 228 righe di conftest che iniettano moduli fake in `sys.modules`, patchano `threading.Thread`, e configurano variabili d'ambiente prima dell'import. Il codice sotto test e' un file monolitico per servizio. Il conftest e' la sua immagine speculare.
+Il risultato: 88 test che funzionano, ma solo grazie a 228 righe di conftest che iniettano moduli fake in `sys.modules`, patchano `threading.Thread`, e configurano variabili d'ambiente prima dell'import. Il codice sotto test è un file monolitico per servizio. Il conftest è la sua immagine speculare.
 
 Questo articolo descrive il refactoring dei tre servizi al pattern **application factory** di Flask, con dependency injection esplicita. I conftest passano da 228 a 148 righe totali. Gli hack su `sys.modules` scompaiono completamente.
 
@@ -28,7 +28,7 @@ Questo articolo descrive il refactoring dei tre servizi al pattern **application
 
 ## L'anti-pattern: connessioni a livello di modulo
 
-Il caso piu' evidente e' il servizio `usage`. Queste righe vengono eseguite al momento dell'import:
+Il caso più evidente è il servizio `usage`. Queste righe vengono eseguite al momento dell'import:
 
 ```python
 # usage.py - eseguito al top level
@@ -42,7 +42,7 @@ avro_serializer = AvroSerializer(schema_registry_client, ...) # riga 62
 kafka_producer = SerializingProducer(producer_conf)        # riga 69
 ```
 
-Quattro connessioni esterne create dall'`import`. Il servizio `current` aggiunge un thread Kafka consumer che parte alla riga 62. Il modulo Python e' imperativo: le righe vengono eseguite nell'ordine in cui appaiono.
+Quattro connessioni esterne create dall'`import`. Il servizio `current` aggiunge un thread Kafka consumer che parte alla riga 62. Il modulo Python è imperativo: le righe vengono eseguite nell'ordine in cui appaiono.
 
 Per testare questo codice, il conftest deve preparare un ambiente fake completo **prima** dell'import:
 
@@ -60,15 +60,15 @@ os.environ.setdefault("KAFKA_IP", "localhost")
 from usage import app
 ```
 
-Il modulo e' un file da 469 righe. Il conftest per renderlo importabile ne richiede 94. Ogni nuova connessione aggiunta al modulo richiede una riga corrispondente nel conftest. I due file evolvono in sincrono, ma il conftest non ha test propri: se un mock e' configurato in modo errato, i test passano lo stesso.
+Il modulo è un file da 469 righe. Il conftest per renderlo importabile ne richiede 94. Ogni nuova connessione aggiunta al modulo richiede una riga corrispondente nel conftest. I due file evolvono in sincrono, ma il conftest non ha test propri: se un mock è configurato in modo errato, i test passano lo stesso.
 
-I problemi specifici del mocking con librerie C-backed come `confluent_kafka` sono descritti in [Il tuo servizio Flask e' impossibile da testare](/posts/testing/unit-testing/02-mock-traps-python-flask/).
+I problemi specifici del mocking con librerie C-backed come `confluent_kafka` sono descritti in [Il tuo servizio Flask è impossibile da testare](/posts/testing/unit-testing/02-mock-traps-python-flask/).
 
 ---
 
 ## Il pattern: application factory
 
-L'[application factory](https://flask.palletsprojects.com/en/2.3.x/patterns/appfactories/) e' il pattern standard di Flask per la separazione tra definizione e istanziazione dell'app. L'idea di fondo: l'import di un modulo non deve avere side-effect. Le connessioni vengono create solo quando una funzione le chiede esplicitamente. Il servizio espone una funzione `create_app(config=None)` che:
+L'[application factory](https://flask.palletsprojects.com/en/2.3.x/patterns/appfactories/) è il pattern standard di Flask per la separazione tra definizione e istanziazione dell'app. L'idea di fondo: l'import di un modulo non deve avere side-effect. Le connessioni vengono create solo quando una funzione le chiede esplicitamente. Il servizio espone una funzione `create_app(config=None)` che:
 
 1. Riceve la configurazione come dizionario (o la legge dall'ambiente)
 2. Crea le connessioni e le attacca all'oggetto app Flask
@@ -178,7 +178,7 @@ Il `requests.get` per l'archive service si patcha con `patch("app.http_requests.
 
 ### usage: il caso complesso
 
-Il servizio `usage` e' il piu' complesso: calcola delta ore/km tra eventi consecutivi, persiste su MongoDB, e pubblica su Kafka. L'originale ha 469 righe con MongoClient, SchemaRegistryClient, AvroSerializer, SerializingProducer, e stato in-memory, tutto al top level.
+Il servizio `usage` è il più complesso: calcola delta ore/km tra eventi consecutivi, persiste su MongoDB, e pubblica su Kafka. L'originale ha 469 righe con MongoClient, SchemaRegistryClient, AvroSerializer, SerializingProducer, e stato in-memory, tutto al top level.
 
 **Prima:** un file (`usage.py`, 469 righe), conftest da 94 righe con `sys.modules` injection per `confluent_kafka` e `pymongo`.
 
@@ -193,11 +193,11 @@ consumer.py    # consume_data(app)
 main.py        # entrypoint
 ```
 
-Il conftest scende a 66 righe. Ma la differenza sostanziale non e' nelle righe: e' in `business.py`.
+Il conftest scende a 66 righe. Ma la differenza sostanziale non è nelle righe: è in `business.py`.
 
-Questo modulo contiene `compute_delta`, `should_compute_delta`, `get_cost_sources`, `timestamp_to_date`, `extract_poi_list`. L'unico import e' `datetime` dalla libreria standard. Nessun Flask, nessun Kafka, nessun MongoDB. Le funzioni che prima leggevano lo stato globale (`should_compute_delta`, `get_cost_sources`) ora ricevono `last_processed_data` come parametro.
+Questo modulo contiene `compute_delta`, `should_compute_delta`, `get_cost_sources`, `timestamp_to_date`, `extract_poi_list`. L'unico import è `datetime` dalla libreria standard. Nessun Flask, nessun Kafka, nessun MongoDB. Le funzioni che prima leggevano lo stato globale (`should_compute_delta`, `get_cost_sources`) ora ricevono `last_processed_data` come parametro.
 
-Il risultato: la logica di business e' testabile con import diretto, senza fixture:
+Il risultato: la logica di business è testabile con import diretto, senza fixture:
 
 ```python
 # test_business.py - zero mock, zero fixture
@@ -214,13 +214,13 @@ def test_compute_delta_normal():
     assert dk == 10.0
 ```
 
-I 46 test esistenti richiedono modifiche agli import (`from usage import` diventa `from business import` e `from app import`) e alle signature delle funzioni che ora ricevono `app` o `last_processed_data` come parametro. Il costo del refactoring sui test e' proporzionale al numero di funzioni che cambiano firma. Nel caso di `usage`, 5 funzioni cambiano signature e 3 file di test richiedono aggiornamenti. Le route Flask (`/health`, `/search`, `/debug/lastdata`) restano invariate nei test perche' l'interfaccia delle fixture (`client`, `mock_db`, `mock_producer`) non cambia.
+I 46 test esistenti richiedono modifiche agli import (`from usage import` diventa `from business import` e `from app import`) e alle signature delle funzioni che ora ricevono `app` o `last_processed_data` come parametro. Il costo del refactoring sui test è proporzionale al numero di funzioni che cambiano firma. Nel caso di `usage`, 5 funzioni cambiano signature e 3 file di test richiedono aggiornamenti. Le route Flask (`/health`, `/search`, `/debug/lastdata`) restano invariate nei test perché l'interfaccia delle fixture (`client`, `mock_db`, `mock_producer`) non cambia.
 
 ---
 
 ## Testing: conftest prima e dopo
 
-Il confronto piu' chiaro e' sul servizio `current`.
+Il confronto più chiaro è sul servizio `current`.
 
 **Prima (63 righe):**
 
@@ -259,7 +259,7 @@ def app():
     yield app
 ```
 
-Le tre fasi del conftest originale (sys.modules, env vars, thread patch) scompaiono. L'import non ha side-effect, quindi non serve preparargli un ambiente fake. La configurazione e' un dizionario, non variabili d'ambiente globali.
+Le tre fasi del conftest originale (sys.modules, env vars, thread patch) scompaiono. L'import non ha side-effect, quindi non serve preparargli un ambiente fake. La configurazione è un dizionario, non variabili d'ambiente globali.
 
 Il pattern `business.py` rende possibile un secondo livello di semplificazione. Le funzioni pure non hanno bisogno nemmeno del conftest: si importano direttamente nel test. I 10 test su `compute_delta` in `test_usage_functions.py` non usano alcuna fixture.
 
@@ -275,7 +275,7 @@ I mutation score prima del refactoring raccontano una storia chiara:
 | history  | 26   | 183     | 75     | 41%   |
 | usage    | 46   | 325     | 150    | 46%   |
 
-Il 19% su `current` significa che l'81% delle mutazioni al codice non viene rilevato dai test. Il motivo e' strutturale: la logica del consumer Kafka vive in una funzione che il conftest deve patchare per impedirle di partire. I test coprono le route Flask, non il consumer.
+Il 19% su `current` significa che l'81% delle mutazioni al codice non viene rilevato dai test. Il motivo è strutturale: la logica del consumer Kafka vive in una funzione che il conftest deve patchare per impedirle di partire. I test coprono le route Flask, non il consumer.
 
 Con l'estrazione di `business.py`, le funzioni pure (`compute_delta`, `should_compute_delta`, `get_cost_sources`) diventano raggiungibili dal mutation testing senza passare attraverso mock. Il codice del consumer resta nel modulo `consumer.py`, separato dalla logica di business. I mutanti nelle funzioni pure sono ora uccidibili con test diretti.
 
@@ -285,10 +285,10 @@ I numeri dopo il refactoring non sono ancora stati misurati. La direzione attesa
 
 ## Quando NON serve
 
-L'application factory aggiunge complessita' strutturale: piu' file, piu' import, una funzione factory da mantenere. In alcuni contesti il costo non e' giustificato:
+L'application factory aggiunge complessità strutturale: più file, più import, una funzione factory da mantenere. In alcuni contesti il costo non è giustificato:
 
-* **Script one-shot** - Un file che esegue un task e termina non ha bisogno di testabilita' modulare
-* **CLI tool** - Se il punto di ingresso e' `argparse` o `click`, la factory Flask non si applica
+* **Script one-shot** - Un file che esegue un task e termina non ha bisogno di testabilità modulare
+* **CLI tool** - Se il punto di ingresso è `argparse` o `click`, la factory Flask non si applica
 * **Prototipi** - Un servizio che vive meno di una settimana non giustifica l'investimento
 
 Il pattern ha senso quando il servizio resta in produzione e ha bisogno di test. Tre servizi con connessioni al top level possono funzionare per mesi senza problemi. Il costo emerge quando si scrivono i test: il conftest diventa il contratto implicito tra il codice e il suo ambiente, e quel contratto si rompe silenziosamente.

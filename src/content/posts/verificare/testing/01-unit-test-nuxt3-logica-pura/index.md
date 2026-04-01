@@ -18,15 +18,15 @@ seriesOrder: 10
 
 Ho un frontend Nuxt 3 con 106 componenti Vue, 4 store Pinia, 6 composable e 11 helper API. Zero test. O meglio: nove test di cui sette rotti -- residui di un tentativo precedente mai completato.
 
-Volevo proteggermi dalle regressioni, ma non volevo passare settimane a configurare ambienti di test con Vuetify montato, DOM simulato e componenti renderizzati. Cosi' ho fatto una scelta che sembra controintuitiva per un progetto frontend: **ho ignorato completamente i componenti Vue** e ho testato solo la logica pura.
+Volevo proteggermi dalle regressioni, ma non volevo passare settimane a configurare ambienti di test con Vuetify montato, DOM simulato e componenti renderizzati. Così ho fatto una scelta che sembra controintuitiva per un progetto frontend: **ho ignorato completamente i componenti Vue** e ho testato solo la logica pura.
 
 72 test. 13 file. 1.7 secondi. Zero dipendenze aggiunte.
 
 ---
 
-## Perche' non testare i componenti
+## Perché non testare i componenti
 
-Quando pensi "test frontend", la prima cosa che viene in mente e' montare un componente, simulare un click, verificare che il DOM si aggiorni. Con Vuetify 3 pero' questo significa:
+Quando pensi "test frontend", la prima cosa che viene in mente è montare un componente, simulare un click, verificare che il DOM si aggiorni. Con Vuetify 3 però questo significa:
 
 - Configurare il plugin Vuetify nel test environment
 - Mockare le icone Material Design
@@ -35,15 +35,15 @@ Quando pensi "test frontend", la prima cosa che viene in mente e' montare un com
 
 E il ritorno? Stai testando che Vuetify renderizzi un bottone. Lo fa. Lo fa da anni.
 
-Il vero valore anti-regressione sta altrove: negli store che gestiscono stato condiviso, nelle factory API che costruiscono URL, nei composable che orchestrano logica. Roba che quando si rompe non te ne accorgi finche' un utente non ti scrive.
+Il vero valore anti-regressione sta altrove: negli store che gestiscono stato condiviso, nelle factory API che costruiscono URL, nei composable che orchestrano logica. Roba che quando si rompe non te ne accorgi finché un utente non ti scrive.
 
 ---
 
 ## Il setup: un file per domarli tutti
 
-Il primo problema di Nuxt 3 nei test e' che meta' del codice si basa su auto-import. `useRuntimeConfig()`, `useRoute()`, `useNuxtApp()`, `onMounted()` -- funzionano magicamente nel browser ma non esistono quando esegui Vitest.
+Il primo problema di Nuxt 3 nei test è che metà del codice si basa su auto-import. `useRuntimeConfig()`, `useRoute()`, `useNuxtApp()`, `onMounted()` -- funzionano magicamente nel browser ma non esistono quando esegui Vitest.
 
-La soluzione ufficiale e' `@nuxt/test-utils`, che avvia un'istanza Nuxt per i test. Funziona, ma e' pesante. Io ho scelto un approccio piu' leggero: un singolo file `test/setup.ts` che stubba tutto il necessario.
+La soluzione ufficiale è `@nuxt/test-utils`, che avvia un'istanza Nuxt per i test. Funziona, ma è pesante. Io ho scelto un approccio più leggero: un singolo file `test/setup.ts` che stubba tutto il necessario.
 
 ```typescript
 // test/setup.ts
@@ -115,7 +115,7 @@ export default defineConfig({
 Due scelte importanti qui:
 
 1. **`onMounted` esegue il callback subito.** Nel browser il callback parte dopo il mount del componente; nei test lo vogliamo sincrono per verificare lo stato immediatamente.
-2. **L'alias `~/` punta alla root di `app-frontend`.** Cosi' gli import tipo `~/stores/app` funzionano senza la build Nuxt.
+2. **L'alias `~/` punta alla root di `app-frontend`.** Così gli import tipo `~/stores/app` funzionano senza la build Nuxt.
 
 Con questo setup, tutto il codice che usa auto-import di Nuxt funziona senza modifiche.
 
@@ -154,7 +154,7 @@ describe('useReportFiltersStore', () => {
 })
 ```
 
-Per lo store piu' complesso -- il registry store che gestisce 6 entita', ha caching e deduplicazione delle richieste concorrenti -- serve un mock del modulo API:
+Per lo store più complesso -- il registry store che gestisce 6 entità, ha caching e deduplicazione delle richieste concorrenti -- serve un mock del modulo API:
 
 ```typescript
 const mockGetAll = vi.fn()
@@ -205,15 +205,15 @@ describe('useRegistryStore', () => {
 })
 ```
 
-Il test sulla deduplicazione e' quello con piu' valore: verifica che due chiamate simultanee a `fetchEntities` producano una sola richiesta HTTP. Senza test, un refactoring che rimuove la mappa `pendingRequests` sembrerebbe innocuo -- e raddoppierebbe le chiamate API in produzione.
+Il test sulla deduplicazione è quello con più valore: verifica che due chiamate simultanee a `fetchEntities` producano una sola richiesta HTTP. Senza test, un refactoring che rimuove la mappa `pendingRequests` sembrerebbe innocuo -- e raddoppierebbe le chiamate API in produzione.
 
 ---
 
 ## Testare le factory API
 
-Il pattern API del progetto e' una catena di factory: `createApis(runtimeConfig)` produce oggetti per dominio (`RegistryApi`, `ReportsApi`, ...), ciascuno dei quali accetta `axios` e restituisce i metodi CRUD.
+Il pattern API del progetto è una catena di factory: `createApis(runtimeConfig)` produce oggetti per dominio (`RegistryApi`, `ReportsApi`, ...), ciascuno dei quali accetta `axios` e restituisce i metodi CRUD.
 
-Questo design e' una manna per i test. Ogni livello e' testabile in isolamento.
+Questo design è una manna per i test. Ogni livello è testabile in isolamento.
 
 **Primo livello: la configurazione** genera URL corretti dai parametri:
 
@@ -259,7 +259,7 @@ describe('RegistryRouteGenerator', () => {
 })
 ```
 
-Il test sull'error handling e' cruciale: la funzione `handleError` estrae il messaggio dall'errore Axios e lo rilancia. Se qualcuno la modifica e il messaggio cambia formato, il test lo cattura.
+Il test sull'error handling è cruciale: la funzione `handleError` estrae il messaggio dall'errore Axios e lo rilancia. Se qualcuno la modifica e il messaggio cambia formato, il test lo cattura.
 
 Per le API con query string dinamiche -- come la ricerca nei rapportini -- il test verifica la logica di costruzione dei parametri:
 
@@ -283,13 +283,13 @@ it('SearchHeader uses dateFrom/dateTo when dateExact is absent', async () => {
 })
 ```
 
-Qui il test documenta una regola di business: `dateExact` ha priorita' su `dateFrom`/`dateTo`. Senza test, e' una convenzione implicita nel codice che qualcuno potrebbe violare.
+Qui il test documenta una regola di business: `dateExact` ha priorità su `dateFrom`/`dateTo`. Senza test, è una convenzione implicita nel codice che qualcuno potrebbe violare.
 
 ---
 
 ## Testare i composable
 
-I composable sono la zona grigia. Alcuni -- come `useOlMap` che dipende da OpenLayers -- richiederebbero mock cosi' complessi da essere inutili. Altri -- come `useTitle` o `loadFieldOptions` -- sono logica pura mascherata da composable.
+I composable sono la zona grigia. Alcuni -- come `useOlMap` che dipende da OpenLayers -- richiederebbero mock così complessi da essere inutili. Altri -- come `useTitle` o `loadFieldOptions` -- sono logica pura mascherata da composable.
 
 ```typescript
 // useTitle chiama useAppStore().setTitle() dentro onMounted
@@ -307,9 +307,9 @@ describe('useTitle', () => {
 })
 ```
 
-Funziona perche' nel setup abbiamo stubbato `onMounted` per eseguire il callback subito. Il composable non sa di non essere in un componente.
+Funziona perché nel setup abbiamo stubbato `onMounted` per eseguire il callback subito. Il composable non sa di non essere in un componente.
 
-Il caso piu' interessante e' `loadFieldOptions`, una funzione async che estrae valori unici da una lista:
+Il caso più interessante è `loadFieldOptions`, una funzione async che estrae valori unici da una lista:
 
 ```javascript
 import { loadFieldOptions } from '../useRegistryDetail'
@@ -336,13 +336,13 @@ Quattro test coprono il contratto completo: deduplicazione, filtraggio valori fa
 
 ---
 
-## Cosa ho lasciato fuori (e perche')
+## Cosa ho lasciato fuori (e perché)
 
-**Componenti Vue (.vue)** -- Il ROI non c'e'. Montare un `WorkerInputDialog` con Vuetify richiede mezz'ora di setup per scoprire che il bottone "Salva" emette l'evento giusto. Se cambi il layout il test si rompe. Se cambi la logica di business, il test nello store la copre gia'.
+**Componenti Vue (.vue)** -- Il ROI non c'è. Montare un `WorkerInputDialog` con Vuetify richiede mezz'ora di setup per scoprire che il bottone "Salva" emette l'evento giusto. Se cambi il layout il test si rompe. Se cambi la logica di business, il test nello store la copre già.
 
 **`useOlMap` e `useVectorLayer`** -- Dipendono da OpenLayers. Dovresti mockare `Map`, `View`, `TileLayer`, `VectorSource`, `Feature`. A quel punto stai testando i tuoi mock, non il tuo codice.
 
-**Test E2E** -- Richiedono backend attivo, Playwright/Cypress configurato, e un ordine di grandezza in piu' di manutenzione. Per un'applicazione interna con utenti limitati, il rapporto costo/beneficio non regge ancora.
+**Test E2E** -- Richiedono backend attivo, Playwright/Cypress configurato, e un ordine di grandezza in più di manutenzione. Per un'applicazione interna con utenti limitati, il rapporto costo/beneficio non regge ancora.
 
 ---
 
@@ -357,7 +357,7 @@ Quattro test coprono il contratto completo: deduplicazione, filtraggio valori fa
 | Componenti testati | 0 |
 | Regressioni coperte | store, API, composable |
 
-La prossima volta che qualcuno modifica la logica di caching del registry store, o cambia il formato della query string nella ricerca rapportini, o tocca il fallback dell'expiration warning -- un test rosso glielo dice subito. E i test girano in meno di due secondi, quindi non c'e' scusa per non lanciarli.
+La prossima volta che qualcuno modifica la logica di caching del registry store, o cambia il formato della query string nella ricerca rapportini, o tocca il fallback dell'expiration warning -- un test rosso glielo dice subito. E i test girano in meno di due secondi, quindi non c'è scusa per non lanciarli.
 
 ---
 
@@ -393,4 +393,4 @@ app-frontend/
 │       └── useRegistryDetail.test.js         # 4 test
 ```
 
-I composable hanno i test colocati in `__tests__/` (accanto al codice sorgente). Store e helper li hanno nella directory `test/` centralizzata. E' una convenzione ibrida: i composable cambiano spesso e avere il test accanto aiuta; store e helper sono piu' stabili e averli raggruppati da' una visione d'insieme migliore.
+I composable hanno i test colocati in `__tests__/` (accanto al codice sorgente). Store e helper li hanno nella directory `test/` centralizzata. È una convenzione ibrida: i composable cambiano spesso e avere il test accanto aiuta; store e helper sono più stabili e averli raggruppati dà una visione d'insieme migliore.

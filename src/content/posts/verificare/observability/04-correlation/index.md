@@ -452,7 +452,7 @@ Questo scenario dimostra dove il distributed tracing offre il vantaggio maggiore
 1. **Fan-out visibility**: Vedi tutte le chiamate parallele e sequenziali
 2. **Proportional blame**: Il waterfall mostra quanto ogni servizio contribuisce
 3. **Cross-service correlation**: I log di 4 servizi correlati automaticamente
-4. **Clock skew mitigato**: Il waterfall usa timestamp assoluti e relazioni parent-child per ricostruire il flusso. NTP sui nodi e' raccomandato per minimizzare il clock skew tra servizi
+4. **Clock skew mitigato**: Il waterfall usa timestamp assoluti e relazioni parent-child per ricostruire il flusso. NTP sui nodi è raccomandato per minimizzare il clock skew tra servizi
 
 **Senza tracing distribuito**, con 4 servizi, ci sono 4! = 24 possibili combinazioni da investigare. **Con il tracing**, il bottleneck è visibile nel waterfall in pochi minuti.
 
@@ -651,7 +651,7 @@ In `package.json`:
 }
 ```
 
-> **Nota:** Nel repo MockMart, il flag `--require` e' specificato nel `command` del docker-compose (vedi sezione [Lato Infrastruttura](#lato-infrastruttura)), e lo start script del package.json rimane `"start": "node server.js"`. Per esecuzione locale senza Docker, modificare lo start script come mostrato sopra.
+> **Nota:** Nel repo MockMart, il flag `--require` è specificato nel `command` del docker-compose (vedi sezione [Lato Infrastruttura](#lato-infrastruttura)), e lo start script del package.json rimane `"start": "node server.js"`. Per esecuzione locale senza Docker, modificare lo start script come mostrato sopra.
 
 **4. Logger con Pino (trace context iniettato automaticamente):**
 

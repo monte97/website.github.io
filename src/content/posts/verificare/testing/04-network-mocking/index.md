@@ -17,11 +17,11 @@ seriesOrder: 40
 reproducibility: true
 ---
 
-Il test E2E del checkout fallisce. Lo screenshot mostra un messaggio di errore generico, il log dice `timeout waiting for selector [data-testid="order-confirmation"]`. Apri Grafana, controlli le trace: il payment-service e' down. Non e' un bug del frontend, non e' una regressione -- e' un servizio esterno che non risponde. Ma la suite CI e' rossa, il merge e' bloccato, e il team perde mezza mattinata a capire che il problema non e' nel codice.
+Il test E2E del checkout fallisce. Lo screenshot mostra un messaggio di errore generico, il log dice `timeout waiting for selector [data-testid="order-confirmation"]`. Apri Grafana, controlli le trace: il payment-service è down. Non è un bug del frontend, non è una regressione -- è un servizio esterno che non risponde. Ma la suite CI è rossa, il merge è bloccato, e il team perde mezza mattinata a capire che il problema non è nel codice.
 
-Questa e' la realta' del testing E2E su architetture a microservizi: i test dipendono da N servizi, e se anche uno solo e' lento, instabile o in manutenzione, l'intera suite diventa inaffidabile. Non e' un problema risolvibile con retry o timeout piu' lunghi -- e' un problema strutturale.
+Questa è la realtà del testing E2E su architetture a microservizi: i test dipendono da N servizi, e se anche uno solo è lento, instabile o in manutenzione, l'intera suite diventa inaffidabile. Non è un problema risolvibile con retry o timeout più lunghi -- è un problema strutturale.
 
-`page.route()` di Playwright risolve questo problema intercettando le richieste HTTP a livello di browser e restituendo risposte controllate. Non e' un sostituto dei test di integrazione -- e' uno strumento per testare il comportamento della UI in modo deterministico, isolando il frontend dalle dipendenze esterne. Questo articolo usa [MockMart](https://github.com/monte97/MockMart), lo stesso ambiente dell'[articolo sulla trace correlation](/blog/verificare/testing/02-opentelemetry-trace-correlation/). Il codice completo e' nel [repository](https://github.com/monte97/MockMart), nella directory `tests/e2e/tests/`.
+`page.route()` di Playwright risolve questo problema intercettando le richieste HTTP a livello di browser e restituendo risposte controllate. Non è un sostituto dei test di integrazione -- è uno strumento per testare il comportamento della UI in modo deterministico, isolando il frontend dalle dipendenze esterne. Questo articolo usa [MockMart](https://github.com/monte97/MockMart), lo stesso ambiente dell'[articolo sulla trace correlation](/blog/verificare/testing/02-opentelemetry-trace-correlation/). Il codice completo è nel [repository](https://github.com/monte97/MockMart), nella directory `tests/e2e/tests/`.
 
 ---
 
@@ -33,7 +33,7 @@ Questa e' la realta' del testing E2E su architetture a microservizi: i test dipe
 - **`route.continue()`** -- lascia passare la richiesta al server reale, senza modifiche
 - **`route.abort()`** -- blocca la richiesta, simulando un errore di rete
 
-Il pattern base e' semplice: si registra un handler su un URL pattern, e nel callback si decide quale delle tre azioni eseguire.
+Il pattern base è semplice: si registra un handler su un URL pattern, e nel callback si decide quale delle tre azioni eseguire.
 
 ```typescript
 // Intercetta tutte le richieste a /api/products
@@ -46,15 +46,15 @@ await page.route('**/api/products', (route) =>
 );
 ```
 
-L'URL pattern supporta glob (`**` per qualsiasi path prefix, `*` per qualsiasi segmento). Si possono registrare piu' handler su URL diversi nello stesso test.
+L'URL pattern supporta glob (`**` per qualsiasi path prefix, `*` per qualsiasi segmento). Si possono registrare più handler su URL diversi nello stesso test.
 
-> **Attenzione**: `page.route()` intercetta solo il traffico browser-server. Se il checkout di MockMart chiama internamente il payment-service o l'inventory-service lato server, quelle chiamate server-to-server **non sono intercettabili** da `page.route()`. Per mockare comunicazioni tra servizi serve intervenire a livello di infrastruttura (service mesh, test doubles lato backend). In questo articolo ci concentriamo esclusivamente su cio' che il browser vede.
+> **Attenzione**: `page.route()` intercetta solo il traffico browser-server. Se il checkout di MockMart chiama internamente il payment-service o l'inventory-service lato server, quelle chiamate server-to-server **non sono intercettabili** da `page.route()`. Per mockare comunicazioni tra servizi serve intervenire a livello di infrastruttura (service mesh, test doubles lato backend). In questo articolo ci concentriamo esclusivamente su ciò che il browser vede.
 
 ---
 
 ## Mockare risposte API
 
-Il caso d'uso piu' immediato: sostituire la risposta di un endpoint con dati controllati. Invece di dipendere dal database e dai servizi reali, il test decide esattamente cosa mostra la UI.
+Il caso d'uso più immediato: sostituire la risposta di un endpoint con dati controllati. Invece di dipendere dal database e dai servizi reali, il test decide esattamente cosa mostra la UI.
 
 ### Lista prodotti controllata
 
@@ -87,7 +87,7 @@ test('should render a custom product list from mocked API', async ({ page }) => 
 });
 ```
 
-`fakeProduct()` e' una factory che genera un prodotto con valori di default, sovrascrivibili con `overrides`. E' un pattern utile per evitare di ripetere l'intero schema in ogni test:
+`fakeProduct()` è una factory che genera un prodotto con valori di default, sovrascrivibili con `overrides`. È un pattern utile per evitare di ripetere l'intero schema in ogni test:
 
 ```typescript
 interface Product {
@@ -116,7 +116,7 @@ function fakeProduct(overrides: Partial<Product> = {}): Product {
 
 ### Stato vuoto
 
-Testare la UI quando non ci sono prodotti e' altrettanto importante: l'utente deve vedere un messaggio informativo, non una pagina bianca o un errore.
+Testare la UI quando non ci sono prodotti è altrettanto importante: l'utente deve vedere un messaggio informativo, non una pagina bianca o un errore.
 
 ```typescript
 test('should show empty state when product list is empty', async ({ page }) => {
@@ -138,13 +138,13 @@ test('should show empty state when product list is empty', async ({ page }) => {
 });
 ```
 
-Senza mock, questo scenario e' quasi impossibile da riprodurre in modo affidabile: bisognerebbe svuotare il database, eseguire il test, ripopolare. Con `route.fulfill()`, il test e' autocontenuto e non ha effetti collaterali.
+Senza mock, questo scenario è quasi impossibile da riprodurre in modo affidabile: bisognerebbe svuotare il database, eseguire il test, ripopolare. Con `route.fulfill()`, il test è autocontenuto e non ha effetti collaterali.
 
 ---
 
 ## Simulare errori HTTP
 
-Ogni backend puo' restituire errori. La domanda e': la UI li gestisce correttamente? Senza network mocking, testare un 500 Internal Server Error richiede di mandare in errore il servizio reale. Con `route.fulfill()`, basta dichiarare lo status code desiderato.
+Ogni backend può restituire errori. La domanda è: la UI li gestisce correttamente? Senza network mocking, testare un 500 Internal Server Error richiede di mandare in errore il servizio reale. Con `route.fulfill()`, basta dichiarare lo status code desiderato.
 
 ### 500 Internal Server Error
 
@@ -166,11 +166,11 @@ test('should display error UI when products API returns 500', async ({ page }) =
 });
 ```
 
-Il test verifica due cose: che il messaggio di errore appaia e che le card prodotto non vengano renderizzate. E' un test sulla **graceful degradation** -- la capacita' dell'applicazione di gestire i fallimenti in modo controllato.
+Il test verifica due cose: che il messaggio di errore appaia e che le card prodotto non vengano renderizzate. È un test sulla **graceful degradation** -- la capacità dell'applicazione di gestire i fallimenti in modo controllato.
 
 ### 402 Payment Failed
 
-Scenario piu' specifico: l'utente aggiunge un prodotto al carrello, procede al checkout, ma il pagamento viene rifiutato. Qui la prodotti API funziona normalmente -- si intercetta solo l'endpoint di checkout:
+Scenario più specifico: l'utente aggiunge un prodotto al carrello, procede al checkout, ma il pagamento viene rifiutato. Qui la prodotti API funziona normalmente -- si intercetta solo l'endpoint di checkout:
 
 ```typescript
 test('should show payment error when checkout returns 402', async ({ page }) => {
@@ -206,15 +206,15 @@ test('should show payment error when checkout returns 402', async ({ page }) => 
 });
 ```
 
-Nota: il flusso utente e' reale (navigazione, click, interazione con il carrello). Solo la risposta del checkout e' mockata. Questo approccio e' particolarmente utile perche' mantiene il test realistico nel percorso utente, isolando solo il punto di fallimento.
+Nota: il flusso utente è reale (navigazione, click, interazione con il carrello). Solo la risposta del checkout è mockata. Questo approccio è particolarmente utile perché mantiene il test realistico nel percorso utente, isolando solo il punto di fallimento.
 
-> Ricorda: `page.route('**/api/checkout', ...)` intercetta la chiamata del browser al gateway. Se il checkout internamente chiama il payment-service e questo restituisce un errore reale, quel flusso non e' intercettabile da qui. Il mock simula "il gateway risponde 402 al browser", non "il payment-service rifiuta la transazione". Per scenari di integrazione tra servizi, servono test diversi.
+> Ricorda: `page.route('**/api/checkout', ...)` intercetta la chiamata del browser al gateway. Se il checkout internamente chiama il payment-service e questo restituisce un errore reale, quel flusso non è intercettabile da qui. Il mock simula "il gateway risponde 402 al browser", non "il payment-service rifiuta la transazione". Per scenari di integrazione tra servizi, servono test diversi.
 
 ---
 
 ## Testare loading states
 
-Quando un'API e' lenta, la UI dovrebbe mostrare un indicatore di caricamento -- spinner, skeleton, testo "Caricamento...". Ma come si testa? L'API reale risponde in millisecondi, troppo veloce per verificare lo stato intermedio.
+Quando un'API è lenta, la UI dovrebbe mostrare un indicatore di caricamento -- spinner, skeleton, testo "Caricamento...". Ma come si testa? L'API reale risponde in millisecondi, troppo veloce per verificare lo stato intermedio.
 
 La soluzione: aggiungere un ritardo artificiale nel mock.
 
@@ -245,9 +245,9 @@ test('should show loading indicator while products API is slow', async ({ page }
 });
 ```
 
-Il pattern e' `delay + fulfill`: il ritardo crea la finestra temporale per asserire sullo stato di caricamento, poi la risposta arriva e il test verifica la transizione loading -> contenuto.
+Il pattern è `delay + fulfill`: il ritardo crea la finestra temporale per asserire sullo stato di caricamento, poi la risposta arriva e il test verifica la transizione loading -> contenuto.
 
-> Non serve `await page.waitForTimeout()` o `sleep()` nel test. Il ritardo e' nel mock, non nel test. Playwright usa auto-waiting: `toBeVisible()` aspetta che l'elemento appaia, `toHaveCount()` aspetta fino al `timeout` specificato. Il test resta deterministico senza hard-coded wait.
+> Non serve `await page.waitForTimeout()` o `sleep()` nel test. Il ritardo è nel mock, non nel test. Playwright usa auto-waiting: `toBeVisible()` aspetta che l'elemento appaia, `toHaveCount()` aspetta fino al `timeout` specificato. Il test resta deterministico senza hard-coded wait.
 
 Questo approccio permette di testare il ciclo completo: stato di caricamento visibile, risposta che arriva, contenuto renderizzato, indicatore di caricamento che scompare. Un edge case spesso ignorato ma fondamentale per la user experience.
 
@@ -323,7 +323,7 @@ test('should mock only requests with category param, pass others through', async
 });
 ```
 
-Questo pattern e' utile quando il test dipende da dati reali per la maggior parte del flusso, ma ha bisogno di controllare un caso specifico. La combinazione `continue()` + `fulfill()` nello stesso handler offre la massima flessibilita'.
+Questo pattern è utile quando il test dipende da dati reali per la maggior parte del flusso, ma ha bisogno di controllare un caso specifico. La combinazione `continue()` + `fulfill()` nello stesso handler offre la massima flessibilità.
 
 ---
 
@@ -355,7 +355,7 @@ test('should show error/offline state when all API calls are aborted', async ({ 
 });
 ```
 
-Il pattern e' in tre fasi:
+Il pattern è in tre fasi:
 
 1. **Carica con dati reali** -- verifica che l'app funzioni normalmente
 2. **Installa l'abort handler** -- `route.abort('connectionrefused')` simula una connessione rifiutata
@@ -369,17 +369,17 @@ Il parametro di `abort()` specifica il tipo di errore di rete. Oltre a `'connect
 
 ## Quando mockare e quando no
 
-Il network mocking e' potente, ma non e' la risposta a tutto. Usarlo dove non serve rischia di creare test che passano sempre ma non verificano nulla di reale.
+Il network mocking è potente, ma non è la risposta a tutto. Usarlo dove non serve rischia di creare test che passano sempre ma non verificano nulla di reale.
 
-| Scenario | Mock? | Perche' |
+| Scenario | Mock? | Perché |
 |----------|-------|---------|
 | Test UI su stati specifici (errore, empty, loading) | Si | Deterministico, veloce |
 | Edge case impossibili da riprodurre (timeout, malformed JSON) | Si | L'unico modo per testarli |
 | Happy path critico (checkout completo) | No | Serve il contratto reale |
-| Test di integrazione tra servizi | No | Il valore e' nella comunicazione reale |
+| Test di integrazione tra servizi | No | Il valore è nella comunicazione reale |
 | Test di performance/carico | No | I mock sono troppo veloci |
 
-Il principio guida e' semplice: **mocka cio' che non stai testando**. Se stai testando il comportamento della UI su un errore 500, non ti serve che il server restituisca davvero un 500 -- ti serve che la UI lo gestisca. Se stai testando che il checkout funzioni end-to-end, mockare il payment-service rende il test inutile.
+Il principio guida è semplice: **mocka ciò che non stai testando**. Se stai testando il comportamento della UI su un errore 500, non ti serve che il server restituisca davvero un 500 -- ti serve che la UI lo gestisca. Se stai testando che il checkout funzioni end-to-end, mockare il payment-service rende il test inutile.
 
 I due approcci sono complementari. Una suite E2E robusta ha test con mock per coprire edge case e stati della UI, e test senza mock per verificare i flussi critici con i servizi reali. Nell'[articolo sulla CI/CD](/blog/verificare/testing/03-cicd-strategie-avanzate/) abbiamo visto come organizzare suite diverse con tag e sharding -- lo stesso principio si applica qui: test mockati veloci in ogni PR, test di integrazione completi in pipeline notturne.
 

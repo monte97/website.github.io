@@ -17,23 +17,23 @@ seriesOrder: 90
 reproducibility: true
 ---
 
-La suite funziona. Otto articoli di test, dieci file spec, copertura su checkout, autenticazione, visual regression, network mocking. I test passano, la CI e' verde, il team si fida della suite. Ma apri un file qualsiasi e trovi questo:
+La suite funziona. Otto articoli di test, dieci file spec, copertura su checkout, autenticazione, visual regression, network mocking. I test passano, la CI è verde, il team si fida della suite. Ma apri un file qualsiasi e trovi questo:
 
 ```typescript
 await page.locator('[data-testid="checkout-button"]').click();
 ```
 
-Lo stesso selettore appare in cinque file diversi. `[data-testid="first-name"]` in tre. `[data-testid="add-to-cart-${id}"]` in quattro. Ogni volta che il frontend cambia un `data-testid`, servono N aggiornamenti in N file. Non e' un problema oggi -- e' un problema che cresce linearmente con la suite.
+Lo stesso selettore appare in cinque file diversi. `[data-testid="first-name"]` in tre. `[data-testid="add-to-cart-${id}"]` in quattro. Ogni volta che il frontend cambia un `data-testid`, servono N aggiornamenti in N file. Non è un problema oggi -- è un problema che cresce linearmente con la suite.
 
-Il Page Object Model risolve questo centralizzando selettori e azioni utente in classi riusabili. Non e' un pattern nuovo, non e' un'invenzione di Playwright -- e' il modo standard di scalare una suite E2E oltre il singolo file. Martin Fowler lo ha descritto nel 2013, Selenium lo ha adottato come best practice, e Playwright lo supporta nativamente attraverso il sistema di fixture.
+Il Page Object Model risolve questo centralizzando selettori e azioni utente in classi riusabili. Non è un pattern nuovo, non è un'invenzione di Playwright -- è il modo standard di scalare una suite E2E oltre il singolo file. Martin Fowler lo ha descritto nel 2013, Selenium lo ha adottato come best practice, e Playwright lo supporta nativamente attraverso il sistema di fixture.
 
-Questo articolo usa [MockMart](https://github.com/monte97/MockMart), lo stesso ambiente dell'intera [serie Playwright](/blog/verificare/testing/01-guida-completa-e2e/). Il codice completo e' nel [repository](https://github.com/monte97/MockMart), nella directory `tests/e2e/`.
+Questo articolo usa [MockMart](https://github.com/monte97/MockMart), lo stesso ambiente dell'intera [serie Playwright](/blog/verificare/testing/01-guida-completa-e2e/). Il codice completo è nel [repository](https://github.com/monte97/MockMart), nella directory `tests/e2e/`.
 
 ---
 
 ## Il problema: selettori sparsi
 
-Apri cinque file spec della suite MockMart e conta le occorrenze dei selettori. Il risultato e' prevedibile:
+Apri cinque file spec della suite MockMart e conta le occorrenze dei selettori. Il risultato è prevedibile:
 
 | Selettore | File in cui appare | Occorrenze totali |
 |-----------|-------------------|-------------------|
@@ -44,17 +44,17 @@ Apri cinque file spec della suite MockMart e conta le occorrenze dei selettori. 
 | `[data-testid="place-order-button"]` | 4 | 6 |
 | `[data-testid="order-number"]` | 3 | 5 |
 
-Il costo e' diretto: se il team frontend rinomina `checkout-button` in `proceed-to-checkout`, servono 8 aggiornamenti in 5 file. Se dimentichi un file, il test fallisce. Se il rename avviene in un PR diverso da chi mantiene i test, il problema emerge solo in CI.
+Il costo è diretto: se il team frontend rinomina `checkout-button` in `proceed-to-checkout`, servono 8 aggiornamenti in 5 file. Se dimentichi un file, il test fallisce. Se il rename avviene in un PR diverso da chi mantiene i test, il problema emerge solo in CI.
 
-Ma il costo piu' sottile e' nella leggibilita'. Un test che contiene `page.locator('[data-testid="payment-credit-card"]').click()` parla di attributi DOM. Un test che contiene `checkoutPage.selectCreditCard()` parla di azioni utente. Il primo e' un dettaglio implementativo, il secondo e' un'intenzione. Quando un test fallisce, il secondo si legge in un secondo -- il primo richiede di ricostruire mentalmente cosa fa quel selettore.
+Ma il costo più sottile è nella leggibilità. Un test che contiene `page.locator('[data-testid="payment-credit-card"]').click()` parla di attributi DOM. Un test che contiene `checkoutPage.selectCreditCard()` parla di azioni utente. Il primo è un dettaglio implementativo, il secondo è un'intenzione. Quando un test fallisce, il secondo si legge in un secondo -- il primo richiede di ricostruire mentalmente cosa fa quel selettore.
 
-Il selettore e' un dettaglio implementativo. Il test dovrebbe parlare di azioni utente, non di attributi DOM.
+Il selettore è un dettaglio implementativo. Il test dovrebbe parlare di azioni utente, non di attributi DOM.
 
 ---
 
 ## Page Object in 30 secondi
 
-Il pattern e' semplice: una classe per pagina, i locator come proprieta', le azioni utente come metodi. Il test non vede selettori.
+Il pattern è semplice: una classe per pagina, i locator come proprietà, le azioni utente come metodi. Il test non vede selettori.
 
 **Prima -- selettori inline:**
 
@@ -90,7 +90,7 @@ test('should add product and proceed to checkout', async ({ page }) => {
 
 Il test si legge come una sequenza di azioni utente: vai alla home, aggiungi al carrello, vai al carrello, procedi al checkout, compila, ordina. I selettori sono nascosti dentro le classi. Se il frontend cambia un `data-testid`, si aggiorna la classe -- non i test.
 
-Una regola importante: **il Page Object non fa asserzioni**. Espone locator e metodi, ma non decide cosa verificare. E' il test che chiama `expect()`. Questo mantiene le classi riusabili -- la stessa classe funziona sia per un test che verifica il totale del carrello sia per uno che verifica il numero di prodotti. Se il Page Object contenesse asserzioni, diventerebbe specifico per un singolo scenario e perderebbe il vantaggio della centralizzazione.
+Una regola importante: **il Page Object non fa asserzioni**. Espone locator e metodi, ma non decide cosa verificare. È il test che chiama `expect()`. Questo mantiene le classi riusabili -- la stessa classe funziona sia per un test che verifica il totale del carrello sia per uno che verifica il numero di prodotti. Se il Page Object contenesse asserzioni, diventerebbe specifico per un singolo scenario e perderebbe il vantaggio della centralizzazione.
 
 ---
 
@@ -158,11 +158,11 @@ export class HomePage {
 }
 ```
 
-I locator statici (`searchInput`, `categoryFilter`) sono proprieta' `readonly` inizializzate nel costruttore. I locator dinamici (`productCard(id)`, `addToCartButton(id)`) sono metodi che accettano parametri. Questa distinzione e' intenzionale: i locator statici si risolvono una volta, quelli dinamici dipendono dal contesto.
+I locator statici (`searchInput`, `categoryFilter`) sono proprietà `readonly` inizializzate nel costruttore. I locator dinamici (`productCard(id)`, `addToCartButton(id)`) sono metodi che accettano parametri. Questa distinzione è intenzionale: i locator statici si risolvono una volta, quelli dinamici dipendono dal contesto.
 
 ### CartPage
 
-Il carrello gestisce quantita', rimozione e navigazione verso il checkout.
+Il carrello gestisce quantità, rimozione e navigazione verso il checkout.
 
 ```typescript
 import { type Page, type Locator } from '@playwright/test';
@@ -215,11 +215,11 @@ export class CartPage {
 }
 ```
 
-`proceedToCheckout()` e' un metodo che wrappa un singolo click. Sembra eccessivo, ma il valore e' nella leggibilita' del test: `cartPage.proceedToCheckout()` comunica l'intenzione, `page.locator('[data-testid="checkout-button"]').click()` comunica l'implementazione.
+`proceedToCheckout()` è un metodo che wrappa un singolo click. Sembra eccessivo, ma il valore è nella leggibilità del test: `cartPage.proceedToCheckout()` comunica l'intenzione, `page.locator('[data-testid="checkout-button"]').click()` comunica l'implementazione.
 
 ### CheckoutPage
 
-Il checkout e' la pagina piu' complessa: form di spedizione con sei campi, selezione del metodo di pagamento e conferma ordine.
+Il checkout è la pagina più complessa: form di spedizione con sei campi, selezione del metodo di pagamento e conferma ordine.
 
 ```typescript
 import { type Page, type Locator } from '@playwright/test';
@@ -310,7 +310,7 @@ export class CheckoutPage {
 }
 ```
 
-`completeWithDefaults()` e' un metodo helper che compila il form con dati di test standard e seleziona carta di credito. Senza questo metodo, ogni test che arriva al checkout deve ripetere le stesse 8 righe di compilazione form. Con il metodo, una riga. Non e' un pattern obbligatorio -- se ogni test ha dati diversi, `fillShipping()` e' sufficiente. Ma per i test dove il form di checkout e' un passaggio intermedio e non il soggetto della verifica, `completeWithDefaults()` elimina rumore.
+`completeWithDefaults()` è un metodo helper che compila il form con dati di test standard e seleziona carta di credito. Senza questo metodo, ogni test che arriva al checkout deve ripetere le stesse 8 righe di compilazione form. Con il metodo, una riga. Non è un pattern obbligatorio -- se ogni test ha dati diversi, `fillShipping()` è sufficiente. Ma per i test dove il form di checkout è un passaggio intermedio e non il soggetto della verifica, `completeWithDefaults()` elimina rumore.
 
 L'interfaccia `ShippingInfo` tipizza i dati del form. Se il frontend aggiunge un campo (email, stato), il compilatore TypeScript segnala tutti i test che non passano il nuovo campo. L'errore emerge in fase di compilazione, non in fase di esecuzione.
 
@@ -353,9 +353,9 @@ export const test = base.extend<{
 export { expect } from '@playwright/test';
 ```
 
-`base.extend()` crea un nuovo test object con fixture aggiuntive. Ogni fixture riceve `page` (la fixture built-in di Playwright) e chiama `use()` con l'istanza del Page Object. Il test che importa questo `test` riceve `homePage`, `cartPage` e `checkoutPage` gia' pronti.
+`base.extend()` crea un nuovo test object con fixture aggiuntive. Ogni fixture riceve `page` (la fixture built-in di Playwright) e chiama `use()` con l'istanza del Page Object. Il test che importa questo `test` riceve `homePage`, `cartPage` e `checkoutPage` già pronti.
 
-Il vantaggio non e' solo estetico. Le fixture sono lazy: se un test usa solo `homePage`, Playwright non crea `cartPage` e `checkoutPage`. E il ciclo di vita e' gestito: dopo il `use()`, si puo' aggiungere logica di cleanup (per esempio, svuotare il carrello dopo ogni test). Un singolo punto di creazione per tutte le istanze, nessun `new HomePage(page)` sparso nei file.
+Il vantaggio non è solo estetico. Le fixture sono lazy: se un test usa solo `homePage`, Playwright non crea `cartPage` e `checkoutPage`. E il ciclo di vita è gestito: dopo il `use()`, si può aggiungere logica di cleanup (per esempio, svuotare il carrello dopo ogni test). Un singolo punto di creazione per tutte le istanze, nessun `new HomePage(page)` sparso nei file.
 
 ---
 
@@ -414,7 +414,7 @@ test('complete purchase: home -> cart -> checkout -> confirmation', async ({
 
 Cinque righe di logica. Il test si legge come uno scenario utente: vai alla home, aggiungi il prodotto 1 al carrello, vai al carrello, verifica il totale, procedi al checkout, completa con i dati di default, verifica il numero d'ordine. Nessun selettore visibile, nessun dettaglio implementativo. Se il frontend rinomina `checkout-button` in `proceed-to-checkout`, questo test non cambia -- cambia `CartPage`.
 
-La riduzione non e' solo cosmetica. Ogni `page.locator(...)` inline e' un punto di accoppiamento tra test e DOM. Ogni `cartPage.proceedToCheckout()` e' un punto di accoppiamento tra test e Page Object. Il secondo e' uno strato di indirezione, ma e' uno strato che assorbe i cambiamenti del frontend. Quando la UI cambia, si aggiorna la classe -- e tutti i test che la usano continuano a funzionare.
+La riduzione non è solo cosmetica. Ogni `page.locator(...)` inline è un punto di accoppiamento tra test e DOM. Ogni `cartPage.proceedToCheckout()` è un punto di accoppiamento tra test e Page Object. Il secondo è uno strato di indirezione, ma è uno strato che assorbe i cambiamenti del frontend. Quando la UI cambia, si aggiorna la classe -- e tutti i test che la usano continuano a funzionare.
 
 ---
 
@@ -430,7 +430,7 @@ import { test as mockTest, fakeProduct } from '../fixtures/mock-api';
 const test = mergeTests(pomTest, mockTest);
 ```
 
-`mergeTests(pomTest, mockTest)` crea un nuovo test object che include sia le fixture POM (`homePage`, `cartPage`, `checkoutPage`) sia la fixture mock (`mockApi`). Il test ha accesso a entrambi i mondi. Questo e' lo stesso pattern visto nell'[articolo 05](/blog/verificare/testing/05-network-mocking-avanzato/) e nell'[articolo 08](/blog/verificare/testing/08-authentication-testing/) per combinare autenticazione e mock.
+`mergeTests(pomTest, mockTest)` crea un nuovo test object che include sia le fixture POM (`homePage`, `cartPage`, `checkoutPage`) sia la fixture mock (`mockApi`). Il test ha accesso a entrambi i mondi. Questo è lo stesso pattern visto nell'[articolo 05](/blog/verificare/testing/05-network-mocking-avanzato/) e nell'[articolo 08](/blog/verificare/testing/08-authentication-testing/) per combinare autenticazione e mock.
 
 ### Checkout con prodotti mockati
 
@@ -493,39 +493,39 @@ Il test controlla cosa mostra il backend (`mockApi.products()`, `mockApi.checkou
 });
 ```
 
-L'unica riga che usa `page` direttamente e' l'asserzione sul messaggio di errore (`page.getByText()`). Non e' un caso: il messaggio di errore e' un testo generico che non ha un `data-testid` dedicato e non e' un'azione utente -- e' un risultato da verificare. Usare `page.getByText()` per asserzioni su testi generici e' accettabile; il Page Object serve per azioni ripetute e selettori strutturali.
+L'unica riga che usa `page` direttamente è l'asserzione sul messaggio di errore (`page.getByText()`). Non è un caso: il messaggio di errore è un testo generico che non ha un `data-testid` dedicato e non è un'azione utente -- è un risultato da verificare. Usare `page.getByText()` per asserzioni su testi generici è accettabile; il Page Object serve per azioni ripetute e selettori strutturali.
 
 ---
 
 ## Quando NON usare il POM
 
-Il Page Object Model non e' sempre la scelta giusta. Come ogni pattern, ha un costo: una classe in piu', un livello di indirezione, tempo di setup iniziale. In certi contesti il costo supera il beneficio.
+Il Page Object Model non è sempre la scelta giusta. Come ogni pattern, ha un costo: una classe in più, un livello di indirezione, tempo di setup iniziale. In certi contesti il costo supera il beneficio.
 
 | Scenario | POM? | Motivazione |
 |----------|------|-------------|
-| Selettore usato in 1 solo test | No | Inline e' piu' semplice, nessun beneficio dalla centralizzazione |
+| Selettore usato in 1 solo test | No | Inline è più semplice, nessun beneficio dalla centralizzazione |
 | Flusso ripetuto in 3+ test | Si | Il costo di manutenzione cresce linearmente senza POM |
 | Test esplorativo / spike | No | Il POM aggiunge overhead su codice che potrebbe non sopravvivere |
 | Suite con 20+ test | Si | La manutenzione senza POM diventa insostenibile |
-| Pagina con 1-2 interazioni | No | Il Page Object avrebbe piu' boilerplate che logica |
-| Form complesso usato ovunque | Si | `fillShipping()` e' piu' leggibile di 6 righe di fill() |
+| Pagina con 1-2 interazioni | No | Il Page Object avrebbe più boilerplate che logica |
+| Form complesso usato ovunque | Si | `fillShipping()` è più leggibile di 6 righe di fill() |
 
-La regola pratica: se stai copiando lo stesso selettore in un terzo file, e' il momento di estrarre un Page Object. Se stai scrivendo un test singolo su una pagina che non tocchi altrove, il selettore inline va benissimo.
+La regola pratica: se stai copiando lo stesso selettore in un terzo file, è il momento di estrarre un Page Object. Se stai scrivendo un test singolo su una pagina che non tocchi altrove, il selettore inline va benissimo.
 
-Un antipattern comune e' creare Page Object per ogni pagina dell'applicazione al giorno zero. Questo produce classi che nessun test usa, metodi che nessuno chiama, e manutenzione su codice morto. Il Page Object emerge dal refactoring -- prima scrivi i test con selettori inline, poi estrai le classi quando la duplicazione diventa evidente. Il pattern nasce dalla necessita', non dalla pianificazione.
+Un antipattern comune è creare Page Object per ogni pagina dell'applicazione al giorno zero. Questo produce classi che nessun test usa, metodi che nessuno chiama, e manutenzione su codice morto. Il Page Object emerge dal refactoring -- prima scrivi i test con selettori inline, poi estrai le classi quando la duplicazione diventa evidente. Il pattern nasce dalla necessità, non dalla pianificazione.
 
 ---
 
 ## Riepilogo
 
-Il Page Object Model non aggiunge capacita' ai test -- aggiunge struttura. I test funzionano allo stesso modo, verificano le stesse cose, coprono gli stessi scenari. La differenza e' nella manutenzione: un cambio frontend si propaga in un punto invece che in N file.
+Il Page Object Model non aggiunge capacità ai test -- aggiunge struttura. I test funzionano allo stesso modo, verificano le stesse cose, coprono gli stessi scenari. La differenza è nella manutenzione: un cambio frontend si propaga in un punto invece che in N file.
 
 I concetti chiave di questo articolo:
 
-1. **Page Object** -- una classe per pagina con locator come proprieta' e azioni utente come metodi. Il test non vede selettori.
+1. **Page Object** -- una classe per pagina con locator come proprietà e azioni utente come metodi. Il test non vede selettori.
 2. **Fixture POM** -- `test.extend()` per fornire Page Object come parametri del test. Creazione lazy, un singolo punto di istanziazione.
 3. **Composizione** -- `mergeTests()` per combinare fixture POM e fixture mock nello stesso test. Navigazione con Page Object, risposte con mock.
-4. **Regola pratica** -- il Page Object non fa asserzioni, non e' per ogni pagina, e nasce dal refactoring quando la duplicazione emerge.
+4. **Regola pratica** -- il Page Object non fa asserzioni, non è per ogni pagina, e nasce dal refactoring quando la duplicazione emerge.
 
 ### La serie completa
 
@@ -539,4 +539,4 @@ I concetti chiave di questo articolo:
 8. [Authentication testing con storageState e Keycloak](/blog/verificare/testing/08-authentication-testing/) -- login una volta, test sempre autenticati
 9. Page Object Model per test manutenibili -- questo articolo
 
-Il codice completo e' nel repository [MockMart](https://github.com/monte97/MockMart), nella directory `tests/e2e/`.
+Il codice completo è nel repository [MockMart](https://github.com/monte97/MockMart), nella directory `tests/e2e/`.

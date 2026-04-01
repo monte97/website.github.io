@@ -17,9 +17,9 @@ seriesOrder: 60
 reproducibility: true
 ---
 
-Il test funzionale passa: il bottone esiste, il testo e' corretto, il redirect funziona. Ma il layout e' rotto. Un CSS override ha spostato il bottone fuori dallo schermo, un `z-index` sbagliato nasconde il messaggio di errore sotto un altro elemento, un font non caricato rende il testo illeggibile. I test funzionali non vedono questi problemi -- verificano la struttura del DOM, non il rendering. Un `toBeVisible()` controlla che l'elemento non abbia `display: none`, non che sia effettivamente leggibile a schermo.
+Il test funzionale passa: il bottone esiste, il testo è corretto, il redirect funziona. Ma il layout è rotto. Un CSS override ha spostato il bottone fuori dallo schermo, un `z-index` sbagliato nasconde il messaggio di errore sotto un altro elemento, un font non caricato rende il testo illeggibile. I test funzionali non vedono questi problemi -- verificano la struttura del DOM, non il rendering. Un `toBeVisible()` controlla che l'elemento non abbia `display: none`, non che sia effettivamente leggibile a schermo.
 
-Il visual regression testing risolve questo gap: cattura screenshot della pagina e li confronta con una baseline approvata. Se qualcosa cambia visivamente -- un margine, un colore, un allineamento -- il test fallisce con un'immagine diff che evidenzia le differenze pixel per pixel. Non sostituisce i test funzionali: li complementa, coprendo una categoria di bug che nessuna asserzione sul DOM puo' intercettare.
+Il visual regression testing risolve questo gap: cattura screenshot della pagina e li confronta con una baseline approvata. Se qualcosa cambia visivamente -- un margine, un colore, un allineamento -- il test fallisce con un'immagine diff che evidenzia le differenze pixel per pixel. Non sostituisce i test funzionali: li complementa, coprendo una categoria di bug che nessuna asserzione sul DOM può intercettare.
 
 Questo articolo copre cinque pattern di visual testing con Playwright, partendo dal confronto base fino alla configurazione per CI cross-browser. Il codice usa [MockMart](https://github.com/monte97/MockMart), lo stesso ambiente degli articoli precedenti su [network mocking](/blog/verificare/testing/04-network-mocking/) e [fixture riusabili](/blog/verificare/testing/05-network-mocking-avanzato/). Per il setup iniziale e la configurazione di Playwright, fai riferimento alla [guida introduttiva](/blog/verificare/testing/01-guida-completa-e2e/).
 
@@ -27,7 +27,7 @@ Questo articolo copre cinque pattern di visual testing con Playwright, partendo 
 
 ## toHaveScreenshot() in 30 secondi
 
-Playwright include il visual testing nativamente, senza librerie esterne. Il pattern base e' una singola riga:
+Playwright include il visual testing nativamente, senza librerie esterne. Il pattern base è una singola riga:
 
 ```typescript
 test('should match homepage baseline', async ({ page }) => {
@@ -38,7 +38,7 @@ test('should match homepage baseline', async ({ page }) => {
 });
 ```
 
-Alla **prima esecuzione** il test non ha una baseline con cui confrontare. Playwright genera automaticamente lo screenshot e lo salva nella cartella `__snapshots__` accanto al file di test. Il test fallisce con un messaggio che indica che la baseline e' stata creata e che serve rieseguire il test per il confronto.
+Alla **prima esecuzione** il test non ha una baseline con cui confrontare. Playwright genera automaticamente lo screenshot e lo salva nella cartella `__snapshots__` accanto al file di test. Il test fallisce con un messaggio che indica che la baseline è stata creata e che serve rieseguire il test per il confronto.
 
 Alla **seconda esecuzione** Playwright cattura un nuovo screenshot e lo confronta pixel per pixel con la baseline salvata. Se le due immagini sono identiche, il test passa. Se ci sono differenze, il test fallisce e genera tre file nella cartella `test-results/`: lo screenshot attuale, la baseline attesa, e un'immagine diff che evidenzia i pixel diversi.
 
@@ -63,15 +63,15 @@ npx playwright test --update-snapshots
 
 Questo comando riesegue tutti i test e sostituisce le baseline con i nuovi screenshot. Le baseline aggiornate vanno committate nel repository: sono l'approvazione visiva dello stato corrente dell'applicazione.
 
-> **Attenzione al waitFor()**: lo screenshot viene catturato nell'istante in cui `toHaveScreenshot()` viene chiamato. Se la pagina sta ancora caricando dati o renderizzando componenti, lo screenshot catturera' uno stato intermedio. Usa sempre `waitFor()` o un'asserzione Playwright (che ha auto-waiting) prima di catturare lo screenshot.
+> **Attenzione al waitFor()**: lo screenshot viene catturato nell'istante in cui `toHaveScreenshot()` viene chiamato. Se la pagina sta ancora caricando dati o renderizzando componenti, lo screenshot catturerà uno stato intermedio. Usa sempre `waitFor()` o un'asserzione Playwright (che ha auto-waiting) prima di catturare lo screenshot.
 
 ---
 
 ## Mascherare elementi dinamici
 
-Il primo ostacolo pratico: elementi che cambiano a ogni esecuzione. Un timestamp mostra l'ora corrente, un session ID e' diverso per ogni visita, un contatore mostra valori che variano. Questi elementi generano diff a ogni run, anche se il layout e' identico. Sono falsi positivi -- il test fallisce per un motivo irrilevante.
+Il primo ostacolo pratico: elementi che cambiano a ogni esecuzione. Un timestamp mostra l'ora corrente, un session ID è diverso per ogni visita, un contatore mostra valori che variano. Questi elementi generano diff a ogni run, anche se il layout è identico. Sono falsi positivi -- il test fallisce per un motivo irrilevante.
 
-La soluzione e' il parametro `mask`: un array di locator che Playwright copre con un blocco colorato prima di catturare lo screenshot.
+La soluzione è il parametro `mask`: un array di locator che Playwright copre con un blocco colorato prima di catturare lo screenshot.
 
 ```typescript
 test('should mask timestamps and session IDs in cart', async ({ page }) => {
@@ -108,7 +108,7 @@ test('should disable animations for consistent screenshots', async ({ page }) =>
 
 Con `animations: 'disabled'`, Playwright forza tutte le animazioni CSS al frame finale prima di catturare lo screenshot. Transizioni, keyframe, `transition-duration` -- tutto viene completato istantaneamente.
 
-> **Mascherare troppo vanifica il test**. Se si mascherano 10 elementi su una pagina con 12, si sta testando solo il background e la navbar. La regola: mascherare solo cio' che e' genuinamente dinamico e non controllabile (timestamp, ID di sessione, contatori real-time). Se un valore cambia perche' i dati cambiano, la soluzione e' mockare i dati, non mascherare il rendering.
+> **Mascherare troppo vanifica il test**. Se si mascherano 10 elementi su una pagina con 12, si sta testando solo il background e la navbar. La regola: mascherare solo ciò che è genuinamente dinamico e non controllabile (timestamp, ID di sessione, contatori real-time). Se un valore cambia perché i dati cambiano, la soluzione è mockare i dati, non mascherare il rendering.
 
 ---
 
@@ -144,7 +144,7 @@ test('should capture empty product list', async ({ page, mockApi }) => {
 });
 ```
 
-Lo stato vuoto e' spesso trascurato nel design. Un test funzionale verifica che il messaggio "Nessun prodotto" esista nel DOM. Un test visual verifica che sia centrato, leggibile, con il giusto padding e senza elementi sovrapposti.
+Lo stato vuoto è spesso trascurato nel design. Un test funzionale verifica che il messaggio "Nessun prodotto" esista nel DOM. Un test visual verifica che sia centrato, leggibile, con il giusto padding e senza elementi sovrapposti.
 
 ### Stato di caricamento
 
@@ -159,7 +159,7 @@ test('should capture loading state with delayed response', async ({ page, mockAp
 });
 ```
 
-Il delay di 3 secondi crea la finestra temporale per catturare lo spinner o lo skeleton in azione. Senza il mock del delay, l'API risponde in millisecondi e lo stato di caricamento non e' mai visibile abbastanza a lungo per uno screenshot.
+Il delay di 3 secondi crea la finestra temporale per catturare lo spinner o lo skeleton in azione. Senza il mock del delay, l'API risponde in millisecondi e lo stato di caricamento non è mai visibile abbastanza a lungo per uno screenshot.
 
 ### Layout con dati controllati
 
@@ -199,7 +199,7 @@ test('should match single product card', async ({ page, mockApi }) => {
 });
 ```
 
-La differenza chiave: `expect(card)` invece di `expect(page)`. Playwright cattura solo il bounding box del locator, non l'intera viewport. Il risultato e' uno screenshot piu' piccolo, focalizzato sul componente.
+La differenza chiave: `expect(card)` invece di `expect(page)`. Playwright cattura solo il bounding box del locator, non l'intera viewport. Il risultato è uno screenshot più piccolo, focalizzato sul componente.
 
 Lo stesso pattern per un elemento del carrello, combinando screenshot di componente e masking:
 
@@ -221,18 +221,18 @@ test('should match cart item component', async ({ page }) => {
 
 I vantaggi degli screenshot di componente rispetto alla pagina intera:
 
-- **Stabilita'**: meno area catturata significa meno probabilita' di diff irrilevanti. Un cambiamento nella navbar non rompe il test della product card.
-- **Leggibilita'**: le diff sono piu' facili da interpretare. Un diff su una card 300x200 e' immediatamente comprensibile. Un diff su una pagina 1920x5000 richiede zoom e analisi.
-- **Velocita' di review**: quando il test fallisce, si capisce subito cosa e' cambiato guardando l'immagine diff del componente.
+- **Stabilità**: meno area catturata significa meno probabilità di diff irrilevanti. Un cambiamento nella navbar non rompe il test della product card.
+- **Leggibilità**: le diff sono più facili da interpretare. Un diff su una card 300x200 è immediatamente comprensibile. Un diff su una pagina 1920x5000 richiede zoom e analisi.
+- **Velocità di review**: quando il test fallisce, si capisce subito cosa è cambiato guardando l'immagine diff del componente.
 - **Design system**: per team che mantengono una libreria di componenti, gli screenshot di componente funzionano come test di regressione visiva del design system.
 
-Il trade-off: servono piu' test per coprire l'intera pagina. Ma nella pratica, gli screenshot di componente coprono il 90% dei casi d'uso con una frazione della fragilita'.
+Il trade-off: servono più test per coprire l'intera pagina. Ma nella pratica, gli screenshot di componente coprono il 90% dei casi d'uso con una frazione della fragilità.
 
 ---
 
 ## Cross-browser visual testing
 
-Il rendering CSS non e' identico tra i browser engine. Un `flexbox` con `gap` puo' avere un pixel di differenza tra Chromium e Firefox. Un `border-radius` puo' essere anti-aliased diversamente in WebKit. Un font puo' avere metriche leggermente diverse.
+Il rendering CSS non è identico tra i browser engine. Un `flexbox` con `gap` può avere un pixel di differenza tra Chromium e Firefox. Un `border-radius` può essere anti-aliased diversamente in WebKit. Un font può avere metriche leggermente diverse.
 
 Playwright gestisce questo generando **baseline separate per ogni progetto**. Nel `playwright.config.ts`, ogni progetto produce i propri screenshot nella cartella `__snapshots__`, organizzati per nome del progetto:
 
@@ -258,17 +258,17 @@ Con questa configurazione, il test `toHaveScreenshot('homepage.png')` produce tr
 
 **Quando serve**: applicazioni rivolte al pubblico dove gli utenti usano browser diversi. Differenze di rendering in `grid`, `flexbox`, font fallback, `backdrop-filter` possono creare bug visivi significativi su un browser ma non sugli altri.
 
-**Quando e' overkill**: applicazioni interne dove il browser target e' noto (es. Chrome aziendale). In questo caso, un singolo progetto Chromium e' sufficiente e dimezza il tempo di esecuzione e la manutenzione delle baseline.
+**Quando è overkill**: applicazioni interne dove il browser target è noto (es. Chrome aziendale). In questo caso, un singolo progetto Chromium è sufficiente e dimezza il tempo di esecuzione e la manutenzione delle baseline.
 
-> Il costo del cross-browser visual testing e' lineare: 3 browser = 3x baseline da mantenere, 3x tempo di esecuzione, 3x screenshot da revisionare quando un test fallisce. Valuta se il beneficio giustifica il costo per il tuo caso d'uso.
+> Il costo del cross-browser visual testing è lineare: 3 browser = 3x baseline da mantenere, 3x tempo di esecuzione, 3x screenshot da revisionare quando un test fallisce. Valuta se il beneficio giustifica il costo per il tuo caso d'uso.
 
 ---
 
 ## Visual testing in CI
 
-Il problema piu' comune con il visual testing in CI: le baseline generate sulla macchina di sviluppo non corrispondono a quelle generate nel runner CI. Lo stesso font ha rendering diverso tra macOS e Linux. L'antialiasing varia tra schede grafiche. La risoluzione di default puo' essere diversa. Il risultato: test che passano localmente e falliscono in CI, o viceversa.
+Il problema più comune con il visual testing in CI: le baseline generate sulla macchina di sviluppo non corrispondono a quelle generate nel runner CI. Lo stesso font ha rendering diverso tra macOS e Linux. L'antialiasing varia tra schede grafiche. La risoluzione di default può essere diversa. Il risultato: test che passano localmente e falliscono in CI, o viceversa.
 
-La soluzione e' semplice nel principio: **generare le baseline nello stesso ambiente in cui i test vengono eseguiti**. In pratica, questo significa usare il container Docker ufficiale di Playwright:
+La soluzione è semplice nel principio: **generare le baseline nello stesso ambiente in cui i test vengono eseguiti**. In pratica, questo significa usare il container Docker ufficiale di Playwright:
 
 ```yaml
 # .github/workflows/visual-tests.yml
@@ -313,15 +313,15 @@ Quando un test visual fallisce in CI, le immagini diff sono fondamentali per il 
           retention-days: 7
 ```
 
-La cartella `test-results/` contiene, per ogni test fallito, tre file: `*-actual.png` (lo screenshot catturato), `*-expected.png` (la baseline), `*-diff.png` (le differenze evidenziate). Chi revisiona la PR puo' scaricare l'artifact e capire immediatamente cosa e' cambiato.
+La cartella `test-results/` contiene, per ogni test fallito, tre file: `*-actual.png` (lo screenshot catturato), `*-expected.png` (la baseline), `*-diff.png` (le differenze evidenziate). Chi revisiona la PR può scaricare l'artifact e capire immediatamente cosa è cambiato.
 
-> **Non committare baseline generate sul laptop**. Anche se il test passa localmente, la baseline di macOS non corrisponde a quella di Linux e generera' falsi positivi in CI. Il workflow corretto e': scrivere il test localmente, pushare senza baseline, lasciare che il job CI generi le baseline, scaricare e committare quelle.
+> **Non committare baseline generate sul laptop**. Anche se il test passa localmente, la baseline di macOS non corrisponde a quella di Linux e genererà falsi positivi in CI. Il workflow corretto è: scrivere il test localmente, pushare senza baseline, lasciare che il job CI generi le baseline, scaricare e committare quelle.
 
 ---
 
 ## Limiti e trade-off
 
-Il visual testing non e' adatto a tutti i contesti. Come ogni strumento di testing, ha un costo di manutenzione che va bilanciato con il valore che fornisce.
+Il visual testing non è adatto a tutti i contesti. Come ogni strumento di testing, ha un costo di manutenzione che va bilanciato con il valore che fornisce.
 
 | Limite | Mitigazione |
 |--------|-------------|
@@ -345,8 +345,8 @@ test('should pass with relaxed threshold', async ({ page }) => {
 });
 ```
 
-- **`threshold`** (0-1): sensibilita' per singolo pixel. Un valore di 0.3 tollera variazioni minime di colore dovute all'antialiasing. Il default e' 0.2.
-- **`maxDiffPixelRatio`** (0-1): percentuale massima di pixel diversi sull'intera immagine. 0.01 significa che l'1% dei pixel puo' differire senza far fallire il test.
+- **`threshold`** (0-1): sensibilità per singolo pixel. Un valore di 0.3 tollera variazioni minime di colore dovute all'antialiasing. Il default è 0.2.
+- **`maxDiffPixelRatio`** (0-1): percentuale massima di pixel diversi sull'intera immagine. 0.01 significa che l'1% dei pixel può differire senza far fallire il test.
 
 Per scenari dove serve precisione assoluta -- un design system, un componente con specifiche pixel-perfect -- si possono stringere i parametri:
 
@@ -366,9 +366,9 @@ test('should compare with strict settings', async ({ page, mockApi }) => {
 });
 ```
 
-Qui `maxDiffPixelRatio: 0` non tollera nessun pixel diverso. E' utile con dati mockati e animazioni disattivate, dove ogni variazione e' un bug reale.
+Qui `maxDiffPixelRatio: 0` non tollera nessun pixel diverso. È utile con dati mockati e animazioni disattivate, dove ogni variazione è un bug reale.
 
-Il principio guida: il visual testing aggiunge valore quando il design e' stabile. In fase di prototipazione, ogni commit modifica il layout e ogni modifica genera diff. Il risultato e' rumore: il team inizia a ignorare i fallimenti visual, o peggio, aggiorna le baseline meccanicamente senza revisionarle. Introdurre il visual testing quando l'interfaccia ha raggiunto una maturita' sufficiente da giustificare la protezione contro le regressioni.
+Il principio guida: il visual testing aggiunge valore quando il design è stabile. In fase di prototipazione, ogni commit modifica il layout e ogni modifica genera diff. Il risultato è rumore: il team inizia a ignorare i fallimenti visual, o peggio, aggiorna le baseline meccanicamente senza revisionarle. Introdurre il visual testing quando l'interfaccia ha raggiunto una maturità sufficiente da giustificare la protezione contro le regressioni.
 
 ---
 
@@ -377,10 +377,10 @@ Il principio guida: il visual testing aggiunge valore quando il design e' stabil
 Cinque pattern di visual regression testing con Playwright:
 
 1. **Screenshot base** -- `toHaveScreenshot('name.png')` per catturare e confrontare la pagina con una baseline approvata. `fullPage: true` per l'intera pagina scrollabile.
-2. **Masking** -- `mask` per coprire elementi dinamici (timestamp, session ID) che generano falsi positivi. `animations: 'disabled'` per eliminare la variabilita' delle animazioni CSS.
+2. **Masking** -- `mask` per coprire elementi dinamici (timestamp, session ID) che generano falsi positivi. `animations: 'disabled'` per eliminare la variabilità delle animazioni CSS.
 3. **Stati mockati** -- combinare `MockApi` con `toHaveScreenshot()` per catturare baseline di ogni stato dell'applicazione: errore, vuoto, caricamento, dati controllati.
-4. **Screenshot di componente** -- `expect(locator).toHaveScreenshot()` per testare singoli elementi. Piu' stabile, piu' leggibile, piu' facile da mantenere.
-5. **Configurazione** -- `threshold` e `maxDiffPixelRatio` per bilanciare sensibilita' e stabilita'. Parametri stretti per design system, rilassati per pagine complesse.
+4. **Screenshot di componente** -- `expect(locator).toHaveScreenshot()` per testare singoli elementi. Più stabile, più leggibile, più facile da mantenere.
+5. **Configurazione** -- `threshold` e `maxDiffPixelRatio` per bilanciare sensibilità e stabilità. Parametri stretti per design system, rilassati per pagine complesse.
 
 Il visual testing non sostituisce i test funzionali -- copre un gap diverso. I test funzionali verificano che il bottone esista e funzioni. I test visual verificano che sia visibile, allineato, e non coperto da un altro elemento. Insieme, coprono sia la logica sia il rendering.
 
@@ -393,4 +393,4 @@ Articoli della serie Playwright:
 - [05 - Mock Fixture, HAR Replay e Composizione](/blog/verificare/testing/05-network-mocking-avanzato/)
 - 06 - Visual Regression Testing (questo articolo)
 
-Il codice completo e' nel repository [MockMart](https://github.com/monte97/MockMart). Con mock deterministici, masking degli elementi dinamici, e baseline generate in CI, il visual testing diventa una rete di sicurezza affidabile per il design della tua applicazione.
+Il codice completo è nel repository [MockMart](https://github.com/monte97/MockMart). Con mock deterministici, masking degli elementi dinamici, e baseline generate in CI, il visual testing diventa una rete di sicurezza affidabile per il design della tua applicazione.

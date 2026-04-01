@@ -8,6 +8,9 @@ import rehypeKatex from 'rehype-katex';
 export default defineConfig({
   site: 'https://montelli.dev',
   output: 'static',
+  redirects: {
+    '/blog/series/observability/': '/blog/verificare/observability/',
+  },
   integrations: [
     vue(),
     sitemap({

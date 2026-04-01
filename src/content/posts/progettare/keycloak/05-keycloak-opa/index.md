@@ -17,7 +17,7 @@ series: keycloak
 seriesOrder: 50
 ---
 
-Bloccare un utente dal checkout quando il claim JWT e' ancora valido fino alla scadenza del token. Aggiungere una regola di accesso e dover modificare Keycloak, il codice Express, e magari anche un mapper custom. Sono problemi comuni quando autenticazione e autorizzazione non sono separate.
+Bloccare un utente dal checkout quando il claim JWT è ancora valido fino alla scadenza del token. Aggiungere una regola di accesso e dover modificare Keycloak, il codice Express, e magari anche un mapper custom. Sono problemi comuni quando autenticazione e autorizzazione non sono separate.
 
 In un sistema che usa Keycloak per entrambe le responsabilità, le regole di accesso finiscono sparse tra claim JWT, mapper custom e logica applicativa. Funziona, ma crea un accoppiamento: modificare chi può fare cosa richiede toccare Keycloak, il codice, o entrambi.
 

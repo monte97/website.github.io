@@ -30,7 +30,7 @@ reproducibility: true
 
 Nel [tutorial precedente](https://montelli.dev/posts/otel-website-material/04-correlation/) abbiamo strumentato un e-commerce con OpenTelemetry e risolto tre scenari di debug: silent failure, latency spike, fan-out. Tutto funzionava: trace complete, errori visibili, latenza misurabile.
 
-C'è un dettaglio che però non abbiamo affrontato: ogni singola request generava una trace che viene salvata in modo indefinito all'interno del sistema. In sviluppo e' il comportamento accettabile ma in un contesto reale? E' un problema.
+C'è un dettaglio che però non abbiamo affrontato: ogni singola request generava una trace che viene salvata in modo indefinito all'interno del sistema. In sviluppo è il comportamento accettabile ma in un contesto reale? È un problema.
 
 **Struttura dell'articolo:**
 1. Il problema: volume e crescita infinita
