@@ -163,6 +163,46 @@ Nessuna predizione, nessuna funzione `predict_linear`, nessun trend: solo una so
 
 -----
 
+## Vediamolo in Azione: Demo Prometheus + Grafana
+
+La teoria fin qui è stata necessaria, ma vedere il comportamento dei due alert sulla stessa metrica in tempo reale chiarisce tutto in trenta secondi. Per questo articolo ho preparato un demo Docker Compose minimale che simula esattamente lo scenario descritto nella sezione 3 — una JVM con un memory leak lineare, e gli stessi due alert (uno reattivo, uno predittivo) che competono sulla stessa metrica. L'obiettivo è rendere concreto il gap di lead time che finora abbiamo discusso solo in formule.
+
+> 👉 [github.com/monte97/saturation-predittiva-demo](https://github.com/monte97/saturation-predittiva-demo)
+
+Lo stack è composto da tre container — un fake exporter Python che usa `prometheus_client` per esporre una gauge `jvm_heap_used_bytes` che cresce linearmente a 2 MB/s da 100 MB verso 1 GB, una istanza di **Prometheus** con entrambe le regole alert caricate, e una **Grafana** con la dashboard pre-provisionata. Niente registrazione, niente login: tre comandi e sei dentro. Il fake exporter è volutamente banale perché l'interesse non è simulare una JVM realistica ma osservare come le regole PromQL reagiscono a una curva lineare pulita.
+
+```bash
+git clone https://github.com/monte97/saturation-predittiva-demo
+cd saturation-predittiva-demo
+docker compose up --build
+```
+
+Dopo qualche secondo di build, i tre servizi sono live. Apri Grafana su `http://localhost:3000`, ingresso anonimo come admin, dashboard `Saturation — Predictive vs Reactive`. Da lì puoi seguire la timeline qui sotto in tempo reale.
+
+```text
+t=0:00   heap = 100 MB  | nessun alert
+t=2:00   heap = 340 MB  | predittiva inizia a valutare (serve 2min di storia)
+t=3:30   heap = 520 MB  | PREDITTIVA firing — proiezione a 5min sfonda 1GB
+t=6:50   heap = 920 MB  | REATTIVA firing — heap > 90%
+t=7:40   heap = 1 GB    | saturazione reale
+```
+
+La cosa interessante è il gap fra la riga `t=3:30` e la riga `t=6:50`. Sono **circa tre minuti di lead time** che l'alert predittivo regala — in uno scenario didattico compresso. In un sistema reale, dove il leak è dell'ordine di decine di MB/ora invece che 2 MB/sec, lo stesso identico pattern darebbe ore o giorni di anticipo. Il rapporto tra finestra di osservazione e velocità del leak determina il moltiplicatore.
+
+![Heap used vs predicted nella dashboard Grafana del demo](./grafana-heap-predicted-vs-actual.webp)
+
+> *La linea verde è l'heap effettivamente usato dalla JVM simulata, la linea rossa tratteggiata è il limite massimo (1 GiB), la linea arancione tratteggiata è la proiezione `predict_linear` a 5 minuti. La linea arancione incrocia la rossa intorno alle 12:20, mentre la verde la raggiunge solo verso le 12:26 — quei sei minuti di anticipo sono esattamente il lead time dell'alert predittivo.*
+
+Il primo pannello mostra le metriche grezze, ma il secondo è ancora più diretto: due step chart che indicano quando ciascun alert è in stato `firing`. Qui il gap temporale diventa visivamente impossibile da ignorare, e permette di leggere il vantaggio operativo senza dover interpretare la geometria delle curve.
+
+![Step chart degli alert firing — predittivo vs reattivo](./grafana-alerts-firing-timeline.webp)
+
+> *L'alert predittivo (arancione) entra in `firing` intorno alle 12:21:30, l'alert reattivo (rosa) intorno alle 12:25:30. Quattro minuti netti di anticipo nel demo compresso. In produzione, con un leak di 50 MB/ora invece di 2 MB/sec, lo stesso pattern darebbe oltre quattro ore di anticipo — abbastanza per un restart pianificato durante il giorno invece di una pagina notturna.*
+
+Se vuoi sperimentare con parametri diversi, il `docker-compose.yml` espone tre variabili d'ambiente — `START_HEAP_MB`, `MAX_HEAP_MB`, `GROWTH_MB_PER_SEC` — che permettono di rallentare il leak per simulare scenari più realistici, o di accelerarlo per catturare screenshot in trenta secondi. Le regole alert vivono in `prometheus/alerts.yml` e non richiedono rebuild: basta riavviare il container `prometheus` per ricaricarle.
+
+-----
+
 ## Le Trappole della Saturation Predittiva
 
 `predict_linear` è uno strumento potente, ma ha quattro modi tipici di tradirti quando lo porti in produzione. Vale la pena conoscerli prima di mettere una regola predittiva in pager, perché ciascuna di queste trappole si manifesta come rumore operativo difficile da diagnosticare a posteriori.
