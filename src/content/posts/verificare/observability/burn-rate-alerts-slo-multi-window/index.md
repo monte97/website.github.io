@@ -29,7 +29,7 @@ L'articolo precedente della serie ha mostrato come anticipare la saturazione di 
 
 Il resto dell'articolo percorre un itinerario preciso. Prima si fissano le definizioni operative di SLI, SLO ed error budget, perché senza quelle la discussione successiva è campata in aria. Poi si vede perché la soglia statica è lo strumento sbagliato, in che modo il SRE Workbook ha formalizzato il multi-window multi-burn-rate alerting come risposta, e quali sono le tre coppie canoniche da installare in produzione. Nelle sezioni successive (parte 6 in poi) si passa a una demo Docker Compose che mostra il comportamento delle tre coppie su un servizio con un errore iniettato, e si chiude con le trappole tipiche e una tabella di selezione pratica.
 
-## SLO, SLI, Error Budget: le Tre Definizioni che Contano
+## SLO, SLI, Error Budget: le Definizioni Operative
 
 Prima di parlare di alerting serve fissare tre definizioni operative, non filosofiche. Le fonti sono due: il **Google SRE Book, capitolo 4 "Service Level Objectives"** per SLO e SLI, e il **SRE Workbook, capitolo 5 "Alerting on SLOs"** per la parte burn-rate che viene dopo.
 
@@ -57,7 +57,9 @@ Il secondo fallimento è l'opposto ed è quello più insidioso, perché resta in
 
 Il punto chiave è che il threshold statico risponde alla domanda sbagliata. La soglia "fissa" presume che esista un valore di error rate oltre il quale qualcosa è "rotto", ma questa assunzione ignora la dimensione temporale dell'error budget. La domanda giusta, quella che il SRE Workbook formalizza, è molto diversa: **a che ritmo stiamo consumando il budget rispetto al ritmo sostenibile per l'intera finestra dello SLO?**.
 
-Da qui nasce il concetto di **burn rate**, che è un numero puro senza unità di misura. Si definisce come il rapporto tra il ritmo di consumo attuale del budget e il ritmo sostenibile che lo farebbe durare esattamente per l'intera finestra dello SLO. Per uno SLO del 99.9% su trenta giorni, il burn rate di riferimento 1× corrisponde a un error rate costante dello 0.1%, che brucia l'intero budget esattamente in trenta giorni (il ritmo massimo sostenibile per rispettare lo SLO al limite). Un burn rate di 2× corrisponde a un error rate dello 0.2%, che brucia l'intero budget in quindici giorni. Un burn rate di 14.4× corrisponde a un error rate dell'1.44%, che brucia il 2% del budget in una sola ora. La tabella 5-2 del SRE Workbook riporta questi valori canonici per diversi orizzonti di detection.
+Da qui nasce il concetto di **burn rate**, che è un numero puro senza unità di misura. Si definisce come il rapporto tra il ritmo di consumo attuale del budget e il ritmo sostenibile che lo farebbe durare esattamente per l'intera finestra dello SLO. Per uno SLO del 99.9% su trenta giorni, il burn rate di riferimento 1× corrisponde a un error rate costante dello 0.1%, che brucia l'intero budget esattamente in trenta giorni (il ritmo massimo sostenibile per rispettare lo SLO al limite).
+
+Un burn rate di 2× corrisponde a un error rate dello 0.2%, che brucia l'intero budget in quindici giorni. Un burn rate di 14.4× corrisponde a un error rate dell'1.44%, che brucia il 2% del budget in una sola ora. La tabella 5-2 del SRE Workbook riporta questi valori canonici per diversi orizzonti di detection.
 
 Ragionando in burn rate invece che in error rate assoluto, il numero diventa automaticamente confrontabile tra servizi con SLO diversi: 2× significa sempre "stiamo bruciando il doppio di quanto sostenibile", indipendentemente dal fatto che lo SLO sia 99.9% o 99.95%. E soprattutto diventa la base per alert che rispondono finalmente alla domanda giusta.
 
@@ -116,7 +118,7 @@ Sopra le recording rules si costruisce l'alert `ErrorBudgetBurnRateFast`, che im
 
 Il `for: 2m` è un buffer aggiuntivo che filtra micro-oscillazioni sul bordo della soglia. La label `severity: critical` è il gancio per il routing in Alertmanager: la fast burn va verso PagerDuty, non verso un canale Slack. Il resto della sezione è la generalizzazione di questo schema alle altre coppie di finestre.
 
-## Le Tre Coppie Canoniche: Tabella 5-8 Smontata
+## Le Tre Coppie Canoniche: Tabella 5-8 Riga per Riga
 
 Il SRE Workbook, nella sezione "Multiwindow, Multi-Burn-Rate Alerts" del capitolo 5, non si ferma a una singola coppia di finestre. Propone **tre coppie canoniche** per SLO mensili, ciascuna con una vocazione operativa specifica, e queste tre coppie vanno installate insieme in produzione, non scelte una contro l'altra. La tabella 5-8 del Workbook ("Recommended time windows and burn rates for alerts") è la fonte di riferimento, qui sotto ricostruita con le colonne rilevanti.
 
@@ -150,7 +152,7 @@ La fonte esatta per i valori di questa tabella è:
 
 Vedere queste tre coppie lavorare insieme su un servizio reale chiarisce meglio di qualsiasi tabella il modo in cui si comportano durante un incidente. La sezione successiva mostra un demo Docker Compose minimale con Prometheus e Grafana che simula un servizio HTTP con un errore iniettato, carica le tre coppie come regole di alert, e permette di osservare quale scatta per prima, quando si resetta ciascuna, e come il routing per severity le instrada su canali diversi.
 
-## La Demo: Fast Burn e Medium Burn in Azione
+## La Demo: Entrambi gli Alert Scattano a 37 Secondi
 
 Il repository [burn-rate-demo](https://github.com/monte97/burn-rate-demo) contiene uno stack Docker Compose minimale che permette di osservare le coppie canoniche in meno di cinque minuti di wall-clock. I servizi sono quattro: un servizio HTTP finto (`fake-http-service`, FastAPI + `prometheus_client`) che espone un endpoint `/` configurato per restituire uno status 500 con probabilità `ERROR_RATE`, un `load-generator` che fa `curl` al servizio a ritmo costante, un Prometheus con le quattro recording rules (`ratio_rate5m`, `ratio_rate30m`, `ratio_rate1h`, `ratio_rate6h`) e i due alert (`ErrorBudgetBurnRateFast`, `ErrorBudgetBurnRateMedium`), e una Grafana con una dashboard provisioned che visualizza i tassi e lo stato di firing.
 
