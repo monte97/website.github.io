@@ -53,7 +53,7 @@ Entrambi i framework usano la parola "saturation", ma la definiscono in modo sot
 
 La saturation USE è, letteralmente, la **coda di lavoro che la risorsa non riesce a smaltire adesso**. È una misura istantanea: lunghezza della run queue della CPU, pagine in swap, pacchetti in attesa nel buffer di rete. Il libro SRE, nel capitolo sui Golden Signals, usa invece una definizione che include esplicitamente la dimensione temporale futura:
 
-> "predictions of impending saturation, e.g., 'the database will fill its hard drive in 4 hours'"
+> "saturation is also concerned with predictions of impending saturation, such as 'It looks like your database will fill its hard drive in 4 hours.'"
 >
 > — fonte: sre.google/sre-book/monitoring-distributed-systems/
 
@@ -86,7 +86,7 @@ Entrambi gli alert hanno senso e rispondono a bisogni operativi diversi: il pred
 Prima di passare agli esempi, vale la pena guardare in faccia la funzione che faremo lavorare per noi. La firma in PromQL è questa:
 
 ```promql
-predict_linear(v range-vector, t scalar) float
+predict_linear(v range-vector, t scalar)
 ```
 
 Cosa fa, in una riga: calcola una **regressione lineare semplice** sulla finestra `v` passata come range-vector e proietta il risultato `t` secondi nel futuro, restituendo il valore stimato della metrica al tempo `now + t`. Un esempio concreto rende tutto più chiaro:
