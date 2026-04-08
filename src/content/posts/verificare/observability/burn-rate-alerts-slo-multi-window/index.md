@@ -116,9 +116,11 @@ Sopra le recording rules si costruisce l'alert `ErrorBudgetBurnRateFast`, che im
 
 Il `for: 2m` è un buffer aggiuntivo che filtra micro-oscillazioni sul bordo della soglia. La label `severity: critical` è il gancio per il routing in Alertmanager: la fast burn va verso PagerDuty, non verso un canale Slack. Il resto della sezione è la generalizzazione di questo schema alle altre coppie di finestre.
 
-## Le Tre Coppie Canoniche: Tabella 5-3 Smontata
+## Le Tre Coppie Canoniche: Tabella 5-8 Smontata
 
-Il SRE Workbook, nella sezione "Alerting on Burn Rate" del capitolo 5, non si ferma a una singola coppia di finestre. Propone **tre coppie canoniche** per SLO mensili, ciascuna con una vocazione operativa specifica, e queste tre coppie vanno installate insieme in produzione, non scelte una contro l'altra. La tabella 5-3 del Workbook è la fonte di riferimento, qui sotto ricostruita con le colonne rilevanti.
+Il SRE Workbook, nella sezione "Multiwindow, Multi-Burn-Rate Alerts" del capitolo 5, non si ferma a una singola coppia di finestre. Propone **tre coppie canoniche** per SLO mensili, ciascuna con una vocazione operativa specifica, e queste tre coppie vanno installate insieme in produzione, non scelte una contro l'altra. La tabella 5-8 del Workbook ("Recommended time windows and burn rates for alerts") è la fonte di riferimento, qui sotto ricostruita con le colonne rilevanti.
+
+> **Nota sulla terminologia**: le etichette "fast burn", "medium burn", "slow burn" non compaiono letteralmente nel Workbook, che parla solo di burn rate + severity (`Page` o `Ticket`). Sono convenzioni diffuse nella community (Sloth, grafana-mixins, post SRE pubblici) che associano un nome operativo a ciascuna riga della tabella. Qui vengono usate nello stesso senso.
 
 | Severity | Finestra lunga | Finestra corta | Burn rate soglia | Budget consumato al firing | Reset time | Vocazione operativa |
 |---|---|---|---|---|---|---|
@@ -142,7 +144,7 @@ L'insight chiave, che il Workbook ripete esplicitamente, è che le tre coppie so
 
 La fonte esatta per i valori di questa tabella è:
 
-> Google SRE Workbook, cap. 5 "Alerting on SLOs", sezione "Alert Response" e tabella 5-3.
+> Google SRE Workbook, cap. 5 "Alerting on SLOs", sezione "Multiwindow, Multi-Burn-Rate Alerts" e tabella 5-8.
 >
 > Fonte: sre.google/workbook/alerting-on-slos/
 
@@ -179,7 +181,7 @@ Per spegnere lo stack: `docker compose down`. Nessun volume persistente, tutto r
 
 ## Quello che la Demo non Mostra: la Slow Burn
 
-La tabella 5-3 prevede **tre** coppie canoniche, ma la demo ne implementa solo due. La slow burn (`3d + 6h`, burn rate `1×`) è stata esclusa per una ragione molto concreta: con una finestra lunga di tre giorni, la recording rule `rate(http_requests_total[3d])` ha bisogno di tre giorni di dati reali per restituire un valore stabile. In una demo Docker Compose che parte da zero non c'è modo di osservarla in tempi utili, e forzare il firing con `ERROR_RATE=0.50` produrrebbe solo un risultato inutile (il rate satura la finestra in pochi secondi e l'alert scatta immediatamente, senza fornire informazione sul comportamento "slow").
+La tabella 5-8 prevede **tre** coppie canoniche, ma la demo ne implementa solo due. La slow burn (`3d + 6h`, burn rate `1×`) è stata esclusa per una ragione molto concreta: con una finestra lunga di tre giorni, la recording rule `rate(http_requests_total[3d])` ha bisogno di tre giorni di dati reali per restituire un valore stabile. In una demo Docker Compose che parte da zero non c'è modo di osservarla in tempi utili, e forzare il firing con `ERROR_RATE=0.50` produrrebbe solo un risultato inutile (il rate satura la finestra in pochi secondi e l'alert scatta immediatamente, senza fornire informazione sul comportamento "slow").
 
 In produzione la slow burn si installa comunque, insieme alle altre due, con la stessa formula del Workbook:
 
@@ -208,7 +210,7 @@ Il primo errore è **copia-incollare solo la fast burn** e dimenticare medium e 
 
 Il secondo errore è **calcolare il rate sulla metrica sbagliata**. Lo SLI deve misurare la qualità del servizio dal punto di vista dell'utente, non dal punto di vista dell'infrastruttura. Un rate calcolato su `http_requests_total{job="my-service"}` va bene, ma un rate calcolato su `container_cpu_usage_seconds_total` o `nginx_upstream_errors_total` sta misurando una componente interna e non rispecchia l'esperienza utente. Se un errore infrastrutturale viene mascherato dai retry del client, l'utente non lo vede e il burn-rate alert non dovrebbe considerarlo.
 
-Il terzo errore è **sbagliare la finestra di riferimento dello SLO** nella formula del budget consumato. La tabella 5-3 è costruita per uno SLO mensile (720 ore). Se lo SLO è trimestrale (2160 ore) o settimanale (168 ore), le percentuali di budget consumato al firing cambiano e i burn rate soglia andrebbero ricalcolati proporzionalmente. Applicare i valori della tabella a uno SLO settimanale senza riscalare è un errore concettuale che porta ad alert troppo rumorosi (fast burn che scatta per episodi che consumano il 30% del budget settimanale in un'ora, non il 2% del mensile).
+Il terzo errore è **sbagliare la finestra di riferimento dello SLO** nella formula del budget consumato. La tabella 5-8 è costruita per uno SLO mensile (720 ore). Se lo SLO è trimestrale (2160 ore) o settimanale (168 ore), le percentuali di budget consumato al firing cambiano e i burn rate soglia andrebbero ricalcolati proporzionalmente. Applicare i valori della tabella a uno SLO settimanale senza riscalare è un errore concettuale che porta ad alert troppo rumorosi (fast burn che scatta per episodi che consumano il 30% del budget settimanale in un'ora, non il 2% del mensile).
 
 Il quarto errore è **usare il multi-window per metriche non-SLO**. Il burn-rate ha senso per metriche di qualità del servizio come viste dall'utente (availability, latency p99, error ratio end-to-end). Applicarlo a metriche di saturation fisica (CPU, memoria, disco) è un misuso: per quelle la domanda giusta è "quando si esaurirà la risorsa", e lo strumento corretto è la proiezione (`predict_linear`), come visto nell'articolo precedente della serie. Le due tecniche sono complementari ma rispondono a domande diverse e operano su domini diversi.
 
@@ -238,7 +240,7 @@ Il terzo articolo della serie affronterà il problema complementare: **come fore
 ## Riferimenti
 
 - **Google SRE Book**, cap. 4 "Service Level Objectives": [sre.google/sre-book/service-level-objectives/](https://sre.google/sre-book/service-level-objectives/)
-- **Google SRE Workbook**, cap. 5 "Alerting on SLOs", sezione "Multiwindow, Multi-Burn-Rate Alerts" e tabella 5-3: [sre.google/workbook/alerting-on-slos/](https://sre.google/workbook/alerting-on-slos/)
+- **Google SRE Workbook**, cap. 5 "Alerting on SLOs", sezione "Multiwindow, Multi-Burn-Rate Alerts" e tabella 5-8: [sre.google/workbook/alerting-on-slos/](https://sre.google/workbook/alerting-on-slos/)
 - **Prometheus recording rules**: [prometheus.io/docs/prometheus/latest/configuration/recording_rules/](https://prometheus.io/docs/prometheus/latest/configuration/recording_rules/)
 - **Repository demo**: [github.com/monte97/burn-rate-demo](https://github.com/monte97/burn-rate-demo)
 - **Articolo precedente della serie**: [Prometheus predict\_linear: alert predittivi sulla saturation](../prometheus-predict-linear-alert-predittivi/)
