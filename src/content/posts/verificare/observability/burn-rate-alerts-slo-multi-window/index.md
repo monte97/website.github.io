@@ -1,7 +1,7 @@
 ---
 title: "Burn-rate alerts: quando l'error budget brucia più veloce del previsto"
 date: 2026-04-22T09:00:00.000Z
-description: "Multi-window multi-burn-rate alerting: come alertare quando l'error budget sta bruciando troppo in fretta, non quando è già finito. Basato sul SRE Workbook cap. 5."
+description: "Multi-window multi-burn-rate alerting da SRE Workbook cap. 5: alertare sul ritmo di consumo dell'error budget, non sulla soglia statica."
 pillar: verificare
 category: observability
 tags:
@@ -51,13 +51,13 @@ Il takeaway operativo di questa sezione è uno solo, ed è il cardine di tutto q
 
 La domanda operativa diventa: perché un alert della forma `error_rate[5m] > X` non è sufficiente, qualunque sia `X`? La risposta è che ci sono due modalità di fallimento speculari, ognuna delle quali emerge scegliendo `X` da un lato o dall'altro dello spettro, e che nessun valore intermedio di `X` risolve davvero entrambe.
 
-Il primo fallimento riguarda le soglie aggressive. Una regola tipo `error_rate[5m] > 0.001` (0.1%, esattamente il limite dello SLO) scatta ad ogni burst transiente di errori. Un job batch che fallisce dieci richieste su mille in trenta secondi fa scattare l'alert, l'oncall viene paginato, indaga, non trova nulla di sistemico, l'alert viene silenziato in fretta. Dopo qualche settimana di questo pattern l'alert entra nella blacklist mentale del team e viene ignorato anche quando segnalerebbe qualcosa di reale. Alert fatigue certa, con la conseguenza di avere un canale di segnalazione rumoroso che non comunica più informazione utile.
+Il primo fallimento riguarda le soglie aggressive. Una regola tipo `error_rate[5m] > 0.001` (0.1%, esattamente il limite dello SLO) scatta ad ogni burst transiente di errori. Un job batch che fallisce dieci richieste su mille in trenta secondi fa scattare l'alert, l'oncall viene paginato, indaga, non trova nulla di sistemico, l'alert viene silenziato in fretta. Dopo qualche settimana di questo pattern l'alert viene progressivamente disatteso dal team e ignorato anche quando segnalerebbe qualcosa di reale. Alert fatigue certa, con la conseguenza di avere un canale di segnalazione rumoroso che non comunica più informazione utile.
 
 Il secondo fallimento è l'opposto ed è quello più insidioso, perché resta invisibile finché non è troppo tardi. Una regola tipo `error_rate[5m] > 0.01` (1%, dieci volte lo SLO) è molto più permissiva e non scatta quasi mai, se non quando il servizio è visibilmente rotto e qualcun altro se n'è già accorto per altre vie. Nel frattempo, un errore sostenuto dello 0.5% per un'ora ha già bruciato circa il 30% dell'error budget mensile, e nessuno lo sa finché non arriva la review di fine mese e il grafico mostra che il servizio non ha rispettato il suo SLO.
 
 Il punto chiave è che il threshold statico risponde alla domanda sbagliata. La soglia "fissa" presume che esista un valore di error rate oltre il quale qualcosa è "rotto", ma questa assunzione ignora la dimensione temporale dell'error budget. La domanda giusta, quella che il SRE Workbook formalizza, è molto diversa: **a che ritmo stiamo consumando il budget rispetto al ritmo sostenibile per l'intera finestra dello SLO?**.
 
-Da qui nasce il concetto di **burn rate**, che è un numero puro senza unità di misura. Si definisce come il rapporto tra il ritmo di consumo attuale del budget e il ritmo sostenibile che lo farebbe durare esattamente per l'intera finestra dello SLO. Per uno SLO del 99.9% su trenta giorni, il burn rate di riferimento 1× corrisponde a un error rate costante dello 0.1%, che brucia l'intero budget esattamente in trenta giorni (il ritmo massimo sostenibile per rispettare lo SLO pelo pelo). Un burn rate di 2× corrisponde a un error rate dello 0.2%, che brucia l'intero budget in quindici giorni. Un burn rate di 14.4× corrisponde a un error rate dell'1.44%, che brucia il 2% del budget in una sola ora. La tabella 5-2 del SRE Workbook riporta questi valori canonici per diversi orizzonti di detection.
+Da qui nasce il concetto di **burn rate**, che è un numero puro senza unità di misura. Si definisce come il rapporto tra il ritmo di consumo attuale del budget e il ritmo sostenibile che lo farebbe durare esattamente per l'intera finestra dello SLO. Per uno SLO del 99.9% su trenta giorni, il burn rate di riferimento 1× corrisponde a un error rate costante dello 0.1%, che brucia l'intero budget esattamente in trenta giorni (il ritmo massimo sostenibile per rispettare lo SLO al limite). Un burn rate di 2× corrisponde a un error rate dello 0.2%, che brucia l'intero budget in quindici giorni. Un burn rate di 14.4× corrisponde a un error rate dell'1.44%, che brucia il 2% del budget in una sola ora. La tabella 5-2 del SRE Workbook riporta questi valori canonici per diversi orizzonti di detection.
 
 Ragionando in burn rate invece che in error rate assoluto, il numero diventa automaticamente confrontabile tra servizi con SLO diversi: 2× significa sempre "stiamo bruciando il doppio di quanto sostenibile", indipendentemente dal fatto che lo SLO sia 99.9% o 99.95%. E soprattutto diventa la base per alert che rispondono finalmente alla domanda giusta.
 
@@ -175,7 +175,7 @@ Il pannello "Alerts firing" mostra lo stato di firing come step function: `0` qu
 
 ![Alerts firing: fast e medium in stato firing simultaneamente](./burn-rate-alerts-firing.webp)
 
-Per osservare il comportamento di **detection differenziata** (fast burn che scatta prima della medium burn) bisogna abbassare `ERROR_RATE` a un valore più modesto, per esempio `0.03` (3% di errori), e aspettare più tempo. In quel regime il rate sulla finestra 5m supera `0.0144` prima che il rate sulla finestra 30m superi `0.006`, perché la finestra più corta è più reattiva ai cambiamenti. Il pattern operativo da osservare è: la fast burn firera' per prima, paginando l'oncall; se l'incidente persiste abbastanza a lungo da saturare anche le finestre più lunghe, la medium burn firera' come conferma del regime sostenuto.
+Per osservare il comportamento di **detection differenziata** (fast burn che scatta prima della medium burn) bisogna abbassare `ERROR_RATE` a un valore più modesto, per esempio `0.03` (3% di errori), e aspettare più tempo. In quel regime il rate sulla finestra 5m supera `0.0144` prima che il rate sulla finestra 30m superi `0.006`, perché la finestra più corta è più reattiva ai cambiamenti. Il pattern operativo da osservare è: la fast burn firerà per prima, paginando l'oncall; se l'incidente persiste abbastanza a lungo da saturare anche le finestre più lunghe, la medium burn firerà come conferma del regime sostenuto.
 
 Per spegnere lo stack: `docker compose down`. Nessun volume persistente, tutto ricreabile da zero in meno di trenta secondi.
 
@@ -204,7 +204,7 @@ Il `for: 15m` è volutamente generoso, perché la slow burn non è un incidente:
 
 ## Trappole Tipiche nell'Adozione
 
-Durante l'adozione del burn-rate alerting tornano ricorrenti alcuni errori, che meritano di essere esplicitati perché compaiono anche in codebase con osservabilita' altrimenti curata.
+Durante l'adozione del burn-rate alerting tornano ricorrenti alcuni errori, che meritano di essere esplicitati perché compaiono anche in codebase con osservabilità altrimenti curata.
 
 Il primo errore è **copia-incollare solo la fast burn** e dimenticare medium e slow. È la trappola più comune: la fast burn è pedagogicamente la più facile da spiegare, scatta per prima durante le demo, e sembra coprire gli incidenti "importanti". Ma lascia scoperti tutti i regimi di errore sostenuti a bassa intensità (quelli che la medium burn cattura) e l'erosione silenziosa del margine (quella che la slow burn cattura). La raccomandazione del Workbook è installare **tutte e tre** le coppie insieme, con routing diverso per severity, non sceglierne una come "abbastanza buona".
 
