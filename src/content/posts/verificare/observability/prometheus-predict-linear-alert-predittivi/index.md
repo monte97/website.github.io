@@ -162,3 +162,93 @@ Nessuna predizione, nessuna funzione `predict_linear`, nessun trend: solo una so
 > **Regola di selezione**: usa `predict_linear` quando hai una soglia assoluta chiara (limite heap, quota mensile, scadenza certificato) e un orizzonte temporale di ore o giorni in cui agire. Usa `deriv` quando ti interessa il tasso di cambiamento indipendentemente dal valore assoluto. Usa una soglia statica reattiva quando la risorsa si satura in secondi e non c'è finestra di intervento da anticipare.
 
 -----
+
+## Le Trappole della Saturation Predittiva
+
+`predict_linear` è uno strumento potente, ma ha quattro modi tipici di tradirti quando lo porti in produzione. Vale la pena conoscerli prima di mettere una regola predittiva in pager, perché ciascuna di queste trappole si manifesta come rumore operativo difficile da diagnosticare a posteriori.
+
+### Crescita non lineare
+
+La funzione assume, per definizione, una retta. Ci sono almeno tre famiglie di casi reali in cui questa assunzione si rompe in modo sistematico. La prima è il memory leak che peggiora esponenzialmente, tipicamente un loop di riferimenti che accumula oggetti sempre più velocemente man mano che la struttura cresce. La seconda sono le allocazioni che rallentano avvicinandosi al limite, perché la pressione del garbage collector aumenta e ogni nuova allocation costa progressivamente di più. La terza è la crescita a scalini, come un cronjob che aggiunge cento megabyte ogni notte e resta piatto per le restanti ventitré ore del giorno.
+
+In tutti questi casi la regressione lineare sbaglia: in difetto se la curva è convessa, in eccesso se è concava. Il sintomo tipico è un alert che scatta troppo presto e diventa rumore ignorato, oppure troppo tardi e perde la sua ragione d'essere predittiva.
+
+### Finestra troppo corta
+
+Una query come `predict_linear(metric[5m], 4 * 3600)` reagisce in modo pesante al rumore della finestra. Cinque minuti di storia proiettati quattro ore in avanti amplificano ogni fluttuazione casuale, e la regressione diventa instabile al punto che oggi prevede saturazione fra trenta minuti, fra cinque minuti la prevede fra sei ore, e così via in un pattern che non serve a nessuno.
+
+La regola pratica empirica è che la finestra storica dovrebbe essere almeno **un quarto** dell'orizzonte di proiezione. Proiezione a quattro ore implica finestra di almeno un'ora; proiezione a ventiquattro ore implica finestra di almeno sei ore. Più la finestra è lunga rispetto all'orizzonte, più la regressione è stabile e meno reattiva al rumore istantaneo.
+
+### Pattern ciclici (false positive garantiti)
+
+L'esempio canonico è il disco di un application server che cresce durante il giorno per via dei log applicativi e viene svuotato di notte dalla log rotation. `predict_linear` applicato a una finestra catturata in piena mattinata vede una retta che sale e prevede serenamente "pieno entro stasera", ma la rotazione notturna resetterà tutto e l'alert sarà un falso positivo certo.
+
+Il workaround pragmatico è usare una finestra di almeno ventiquattro ore per qualsiasi metrica con pattern giornaliero, in modo che la regressione veda almeno un ciclo completo di rotazione. La soluzione più solida è passare al forecasting con Holt-Winters o Prophet, che modellano esplicitamente la stagionalità — argomento del terzo articolo della serie.
+
+### Soglia statica vs orario lavorativo
+
+"Pieno entro quattro ore" non equivale a "pieno entro quattro ore lavorative". Un alert predittivo che scatta alle due di notte con un lead time di quattro ore è operativamente inutile se nessuno sta presidiando il sistema fino alle nove del mattino, e il risultato è uno spreco di alert che probabilmente ha svegliato qualcuno per niente.
+
+Per gestire questo serve splittare il routing: alert predittivo verso un canale low-urgency (Slack del team, email) durante l'orario lavorativo, alert reattivo verso PagerDuty 24/7 come rete di sicurezza. Le recording rule che applicano la predizione solo durante le business hours tramite condizioni come `hour() >= 9 and hour() < 18` sono un altro strumento utile per ridurre i falsi positivi notturni senza rinunciare alla copertura reattiva.
+
+-----
+
+## Quando Usare Quale: Tabella Decisionale
+
+La teoria è interessante, ma in pratica serve sapere "per questa risorsa specifica, quale alert mi serve davvero?". La tabella sotto sintetizza dieci risorse comuni e indica quale tipo di alert ha senso in ciascun caso, tenendo conto del time-to-saturation tipico della risorsa e della scala temporale su cui il problema si manifesta. L'obiettivo non è essere esaustivi ma dare un punto di partenza concreto per ragionare sui casi reali.
+
+| Risorsa | Reattiva | Predittiva | Note |
+|---|---|---|---|
+| CPU run queue | Sì | No | Troppo volatile per regressione lineare |
+| Memory / JVM heap | Sì (OOM imminente) | Sì (leak progressivo) | Entrambi, finestre diverse |
+| Disk space | Marginale | **Sì** | Caso d'uso classico |
+| Connection pool | **Sì** | Marginale | Si satura in secondi |
+| Certificato TLS | No | **Sì** | Predittivo per natura |
+| Quota API mensile | No | **Sì** | Capacity planning |
+| Kafka consumer lag | **Sì** | Sì | `deriv` meglio di `predict_linear` |
+| Thread pool | **Sì** | Marginale | Comportamento simile al connection pool |
+| Log retention | No | **Sì** | Settimane/mesi |
+| Database row count | No | **Sì** | Orizzonte lungo |
+
+> **Regola euristica**: usa la versione predittiva quando il time-to-saturation è nell'ordine di ore o giorni e puoi agire prima dell'impatto utente. Per tutto ciò che si satura in secondi o minuti, la versione reattiva è l'unica scelta sensata. Predictive-ificare per default è un anti-pattern — ogni alert predittivo va giustificato dal lead time effettivo che ti regala rispetto alla sua controparte reattiva.
+
+-----
+
+## Conclusione e Prossimi Passi
+
+La distinzione USE/Golden Signals su saturation non è una sottigliezza accademica: cambia operativamente quando e a chi arriva la pagina, e in fondo è la differenza tra svegliarsi alle tre di notte con il servizio già degradato oppure aprire un ticket alle cinque del pomeriggio con il margine per intervenire con calma.
+
+- La distinzione USE/Golden Signals su saturation è esplicitata nei testi originali dei due framework, non è interpretazione personale, e cambia il tipo di domanda che gli alert dovrebbero rispondere
+- `predict_linear` è lo strumento base per gli alert predittivi in Prometheus, ma ha trappole concrete — crescita non lineare, finestre sbagliate, pattern ciclici, soglie non time-aware
+- La scelta tra reattiva e predittiva dipende dal time-to-saturation della risorsa, non dal framework che stai seguendo: usa entrambi quando hanno senso, non predictive-ificare per default
+
+> Nel prossimo articolo della serie vediamo come gli alert **burn-rate** applicati agli SLO portano questa logica un livello più in là: non più "quando si satura la risorsa" ma "quando bruciamo l'error budget di questa settimana". Nell'articolo successivo esploreremo il **forecasting avanzato** con Holt-Winters e Prophet per metriche con pattern stagionali, dove `predict_linear` smette di funzionare.
+
+Se ti stai domandando come queste regole si traducono nel tuo stack di observability concreto, il **DevOps Health Check** è un assessment di due settimane che parte proprio dal tuo `alerts.yml` e dalle metriche che stai già raccogliendo, per capire dove vale la pena intervenire per primo.
+
+-----
+
+## Risorse
+
+Le fonti primarie a cui rimanda questo articolo, più qualche approfondimento utile per scendere nei dettagli che qui sono stati solo accennati.
+
+**Definizioni primarie**
+
+- [Google SRE Book — Monitoring Distributed Systems](https://sre.google/sre-book/monitoring-distributed-systems/) — il capitolo 6 che introduce i Four Golden Signals
+- [Brendan Gregg — The USE Method](https://www.brendangregg.com/usemethod.html) — la definizione canonica di saturation reattiva
+- [Tom Wilkie — The RED Method](https://www.slideshare.net/weaveworks/monitoring-microservices) — perché RED non include saturation
+
+**PromQL e implementazione**
+
+- [Prometheus — `predict_linear()` documentation](https://prometheus.io/docs/prometheus/latest/querying/functions/#predict_linear)
+- [Prometheus — Alerting best practices](https://prometheus.io/docs/practices/alerting/)
+- [Robust Perception blog](https://www.robustperception.io/blog) — esempi pratici e trappole di `predict_linear`
+
+**Approfondimenti SRE**
+
+- Alex Hidalgo, *Implementing Service Level Objectives* (O'Reilly, 2020)
+- Niall Murphy et al., *The Site Reliability Workbook* (O'Reilly, 2018) — capitolo 5 su alerting basato su SLO
+
+**Demo repo**
+
+> 👉 [github.com/monte97/saturation-predittiva-demo](https://github.com/monte97/saturation-predittiva-demo)
