@@ -15,7 +15,7 @@ tags:
   - Grafana
   - PromQL
 lang: it
-reviewed: false
+reviewed: machine
 series: saturation-alerting
 seriesOrder: 10
 reproducibility: true
