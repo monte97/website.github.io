@@ -123,11 +123,11 @@ Questo è il caso predittivo per eccellenza, ma notate una cosa: **non c'è `pre
 ### 5.2 — Memory Leak Progressivo nella JVM
 
 ```promql
-predict_linear(jvm_heap_used_bytes{area="heap"}[6h], 2 * 3600)
-  > on(instance) jvm_heap_max_bytes{area="heap"}
+predict_linear(jvm_memory_used_bytes{area="heap"}[6h], 2 * 3600)
+  > on(instance) jvm_memory_max_bytes{area="heap"}
 ```
 
-La finestra è lunga (sei ore di storia) deliberatamente, per filtrare il rumore dei cicli di garbage collection che fanno "respirare" l'heap su e giù con oscillazioni anche notevoli. Una finestra corta verrebbe dominata da quelle oscillazioni e produrrebbe una pendenza molto rumorosa; sei ore catturano il trend di fondo, che è quello che ci interessa davvero per individuare un leak progressivo. La proiezione a due ore dà tempo sufficiente a un oncall in turno diurno di aprire un ticket, coordinare un restart pianificato, e intervenire senza drammi prima che la JVM finisca in OOM. La join `on(instance)` è critica: accoppia ogni `jvm_heap_used_bytes` con il `jvm_heap_max_bytes` della stessa istanza, senza la quale Prometheus rifiuta l'operazione perché i due vettori hanno label set diversi. Nota importante: questa è la versione "production realistica". Il demo di accompagnamento nel repository usa una finestra molto più corta per essere osservabile in pochi minuti anziché ore.
+I nomi `jvm_memory_used_bytes` e `jvm_memory_max_bytes` con label `area="heap"` sono quelli esposti da Micrometer (Spring Boot Actuator) ed equivalenti, ed è il pattern più comune in produzione su stack JVM moderni. La finestra è lunga (sei ore di storia) deliberatamente, per filtrare il rumore dei cicli di garbage collection che fanno "respirare" l'heap su e giù con oscillazioni anche notevoli. Una finestra corta verrebbe dominata da quelle oscillazioni e produrrebbe una pendenza molto rumorosa; sei ore catturano il trend di fondo, che è quello che ci interessa davvero per individuare un leak progressivo. La proiezione a due ore dà tempo sufficiente a un oncall in turno diurno di aprire un ticket, coordinare un restart pianificato, e intervenire senza drammi prima che la JVM finisca in OOM. La join `on(instance)` è critica: accoppia ogni `jvm_memory_used_bytes` con il `jvm_memory_max_bytes` della stessa istanza, senza la quale Prometheus rifiuta l'operazione perché i due vettori hanno label set diversi. Nota importante: questa è la versione "production realistica". Il demo di accompagnamento nel repository usa una metrica custom `jvm_heap_used_bytes` (senza label `area`) e una finestra molto più corta per essere osservabile in pochi minuti anziché ore.
 
 ### 5.3 — Quota API Mensile
 
