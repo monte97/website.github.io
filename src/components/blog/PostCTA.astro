@@ -1,57 +1,120 @@
 ---
+type Variant = 'generic' | 'observability' | 'architecture';
+
 interface Props {
   lang?: 'it' | 'en';
-  pillar?: 'progettare' | 'verificare' | 'automatizzare' | null;
+  category?: string;
 }
-const { lang = 'it', pillar } = Astro.props;
 
-const t = lang === 'it'
-  ? { question: 'Ti è piaciuto questo articolo?', linkedin: 'Seguimi su LinkedIn', email: 'Scrivimi', learnMore: 'Scopri il servizio' }
-  : { question: 'Did you enjoy this article?', linkedin: 'Follow me on LinkedIn', email: 'Write me', learnMore: 'Learn more' };
+const { lang = 'it', category } = Astro.props;
 
-const pillarCTA: Record<string, Record<string, { text: string; href: string }>> = {
+const observabilityCategories = new Set(['observability', 'testing', 'openfga']);
+const architectureCategories = new Set([
+  'kafka',
+  'kubernetes',
+  'system-design',
+  'keycloak',
+  'devops',
+  'docker',
+]);
+
+function pickVariant(cat?: string): Variant {
+  if (!cat) return 'generic';
+  if (observabilityCategories.has(cat)) return 'observability';
+  if (architectureCategories.has(cat)) return 'architecture';
+  return 'generic';
+}
+
+const variant = pickVariant(category);
+const prefix = lang === 'en' ? '/en' : '';
+
+const calLink = 'https://cal.eu/monte97/30min';
+const mailLink = 'mailto:francesco@montelli.dev';
+const servicesLink = `${prefix}/servizi/`;
+
+type Copy = {
+  title: string;
+  body: string;
+  primary: { label: string; href: string };
+  secondary: { label: string; href: string };
+};
+
+const copy: Record<'it' | 'en', Record<Variant, Copy>> = {
   it: {
-    progettare: { text: 'Hai bisogno di una revisione architetturale?', href: '/servizi/#architecture' },
-    verificare: { text: "Vuoi migliorare l'observability del tuo sistema?", href: '/servizi/#observability-security' },
-    automatizzare: { text: 'Vuoi automatizzare il tuo workflow?', href: '/servizi/#pipeline-automation' },
+    generic: {
+      title: 'Stai affrontando qualcosa di simile in produzione?',
+      body: 'Lavoro con team in crescita su architettura, observability e automazione. Se vuoi capire dove intervenire nel tuo sistema, partiamo da una call di 15 minuti.',
+      primary: { label: 'Prenota una call gratuita', href: calLink },
+      secondary: { label: 'oppure scrivimi', href: mailLink },
+    },
+    observability: {
+      title: 'Stai implementando questo nel tuo stack?',
+      body: 'Se il tuo sistema non ti dà ancora visibilità su cosa succede in produzione, posso aiutarti a capire da dove partire. Un Health Check tecnico è il modo più rapido per avere un quadro chiaro.',
+      primary: { label: 'Richiedi un Health Check', href: servicesLink },
+      secondary: { label: 'o prenota una call', href: calLink },
+    },
+    architecture: {
+      title: 'Stai affrontando una decisione architetturale simile?',
+      body: 'Queste decisioni sono le più costose da cambiare in corsa. Se hai dubbi su come strutturare il sistema o vuoi un secondo parere prima di procedere, parliamone.',
+      primary: { label: 'Prenota una call', href: calLink },
+      secondary: { label: 'o scrivimi direttamente', href: mailLink },
+    },
   },
   en: {
-    progettare: { text: 'Need an architectural review?', href: '/en/services/#architecture' },
-    verificare: { text: 'Want to improve your system observability?', href: '/en/services/#observability-security' },
-    automatizzare: { text: 'Want to automate your workflow?', href: '/en/services/#pipeline-automation' },
+    generic: {
+      title: 'Facing something similar in production?',
+      body: 'I work with growing teams on architecture, observability and automation. If you want to figure out where to intervene in your system, let\'s start with a 15-minute call.',
+      primary: { label: 'Book a free call', href: calLink },
+      secondary: { label: 'or write me', href: mailLink },
+    },
+    observability: {
+      title: 'Rolling this out in your stack?',
+      body: 'If your system still does not give you visibility into what is happening in production, I can help you figure out where to start. A technical Health Check is the fastest way to get a clear picture.',
+      primary: { label: 'Request a Health Check', href: servicesLink },
+      secondary: { label: 'or book a call', href: calLink },
+    },
+    architecture: {
+      title: 'Facing a similar architectural decision?',
+      body: 'These decisions are the most expensive ones to change later. If you have doubts on how to structure the system or want a second opinion before moving forward, let\'s talk.',
+      primary: { label: 'Book a call', href: calLink },
+      secondary: { label: 'or write me directly', href: mailLink },
+    },
   },
 };
 
-const ctaInfo = pillar ? pillarCTA[lang]?.[pillar] : null;
+const c = copy[lang][variant];
+const primaryIsExternal = c.primary.href.startsWith('http');
+const secondaryIsExternal = c.secondary.href.startsWith('http');
 ---
 
-<div class="border-t border-border dark:border-border-dark mt-12 pt-8 text-center">
-  {ctaInfo && (
-    <div class="mb-6">
-      <p class="text-lg font-medium mb-3">{ctaInfo.text}</p>
+<aside
+  class="mt-12 pt-8 border-t border-border dark:border-border-dark"
+  data-cta-variant={variant}
+>
+  <div class="rounded-xl border border-border/70 dark:border-border-dark/70 border-l-[3px] border-l-accent bg-white dark:bg-surface-dark p-8 md:p-10 max-w-3xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-text-dark dark:text-text-light mb-3">
+      {c.title}
+    </h2>
+    <p class="text-text-muted text-base md:text-lg leading-relaxed mb-6">
+      {c.body}
+    </p>
+    <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-5">
       <a
-        href={ctaInfo.href}
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-accent text-white text-sm font-medium hover:bg-accent-hover transition-colors"
+        href={c.primary.href}
+        target={primaryIsExternal ? '_blank' : undefined}
+        rel={primaryIsExternal ? 'noopener noreferrer' : undefined}
+        class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-accent text-white text-sm font-semibold hover:bg-accent-hover transition-colors"
       >
-        {t.learnMore} &rarr;
+        {c.primary.label} <span aria-hidden="true">→</span>
+      </a>
+      <a
+        href={c.secondary.href}
+        target={secondaryIsExternal ? '_blank' : undefined}
+        rel={secondaryIsExternal ? 'noopener noreferrer' : undefined}
+        class="text-sm text-text-muted hover:text-accent transition-colors"
+      >
+        {c.secondary.label}
       </a>
     </div>
-  )}
-  <p class="text-lg font-medium mb-4">{t.question}</p>
-  <div class="flex items-center justify-center gap-4">
-    <a
-      href="https://linkedin.com/in/francesco-montelli"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0077b5] text-white text-sm font-medium hover:bg-[#006399] transition-colors"
-    >
-      {t.linkedin}
-    </a>
-    <a
-      href="mailto:francesco@montelli.dev"
-      class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-text-muted/20 text-sm font-medium hover:bg-text-muted/30 transition-colors"
-    >
-      {t.email}
-    </a>
   </div>
-</div>
+</aside>

@@ -21,6 +21,7 @@ interface Props {
   description: string;
   date: Date;
   pillar: 'progettare' | 'verificare' | 'automatizzare' | null;
+  category?: string;
   tags: string[];
   headings: Heading[];
   lang?: 'it' | 'en';
@@ -38,6 +39,7 @@ const {
   description,
   date,
   pillar,
+  category,
   tags,
   headings,
   lang = 'it',
@@ -176,7 +178,7 @@ const relatedPosts = pillar
     </div>
 
     <!-- CTA -->
-    <PostCTA lang={lang} pillar={pillar} />
+    <PostCTA lang={lang} category={category} />
 
     <!-- Related posts -->
     {relatedPosts.length > 0 && (
