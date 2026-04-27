@@ -62,6 +62,17 @@ const pillarOrder: Array<{
   },
 ];
 
+const allProjects = (await getCollection('projects')).filter(
+  (p) => p.data.type === 'project',
+);
+const projectById = new Map(allProjects.map((p) => [p.id, p]));
+
+const caseStudyIdsByPillar: Record<Pillar, string[]> = {
+  progettare: ['order-processing-platform'],
+  verificare: ['observability-as-a-service', 'keycloak-dotnet-adoption'],
+  automatizzare: ['pipeline-cicd-proxmox'],
+};
+
 const allPosts = (await getCollection('posts'))
   .filter((p) => !p.data.draft && p.data.lang === lang)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
@@ -99,6 +110,7 @@ const t = lang === 'en'
       heroTitle: 'How I can help',
       heroSubtitle: 'Three pillars that multiply — not three services that add up. The order is not negotiable.',
       heroCta: 'Book a discovery call',
+      caseStudyLabel: 'Case study',
       discoveryEyebrow: 'Starting point',
       discoveryTitle: 'Discovery call',
       discoveryLead: "A 30-minute call. Free, no strings attached. The fastest way to find out whether we can work together — and whether you actually need someone like me.",
@@ -137,6 +149,7 @@ const t = lang === 'en'
       heroTitle: 'Come posso aiutarti',
       heroSubtitle: "Tre pilastri che si moltiplicano, non tre servizi che si sommano. L'ordine non è negoziabile.",
       heroCta: 'Prenota una discovery call',
+      caseStudyLabel: 'Case study',
       discoveryEyebrow: 'Punto di partenza',
       discoveryTitle: 'Discovery call',
       discoveryLead: 'Una chiamata di 30 minuti. Gratuita, senza impegno. Il modo più rapido per capire se possiamo lavorare insieme — e se serve davvero qualcuno come me.',
@@ -256,6 +269,11 @@ const t = lang === 'en'
       const styles = pillarStyles[pillar];
       const label = pillarLabels[pillar][lang];
       const relatedPosts = postsByPillar[pillar] || [];
+      const ids = caseStudyIdsByPillar[pillar] || [];
+      const caseStudies = ids.flatMap((id) => {
+        const p = projectById.get(id);
+        return p ? [p] : [];
+      });
       const Content = entry.Content;
 
       return (
@@ -282,6 +300,29 @@ const t = lang === 'en'
           <div class="prose dark:prose-invert max-w-none text-text-muted">
             <Content />
           </div>
+
+          {caseStudies.length > 0 && (
+            <div class="mt-6 pt-4 border-t border-border/30 dark:border-border-dark/30">
+              <p class="text-xs text-text-muted uppercase tracking-wide mb-3">{t.caseStudyLabel}</p>
+              <ul class="space-y-2">
+                {caseStudies.map((cs) => (
+                  <li>
+                    <a
+                      href={`${prefix}/progetti/${cs.id}/`}
+                      class="group inline-flex flex-col gap-0.5"
+                    >
+                      <span class={`text-sm font-semibold ${styles.text} group-hover:underline`}>
+                        {cs.data.title} <span aria-hidden="true">→</span>
+                      </span>
+                      <span class="text-xs text-text-muted line-clamp-1">
+                        {cs.data.problem || cs.data.description}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {relatedPosts.length > 0 && (
             <div class="mt-6 pt-4 border-t border-border/30 dark:border-border-dark/30">
