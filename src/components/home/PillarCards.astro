@@ -1,116 +1,112 @@
 ---
-import { getCollection } from 'astro:content';
+import { pillarStyles } from '@/data/pillar-styles';
 
 interface Props {
   lang?: 'it' | 'en';
 }
 
 const { lang = 'it' } = Astro.props;
+const prefix = lang === 'en' ? '/en' : '';
 
-const pillars = {
-  it: [
-    {
-      key: 'progettare',
-      title: 'Progettare',
-      tagline: 'Sistemi che reggono quando cresci.',
-      link: '/servizi/#architecture',
-    },
-    {
-      key: 'verificare',
-      title: 'Verificare',
-      tagline: 'Osserva, testa, proteggi.',
-      link: '/servizi/#observability-security',
-    },
-    {
-      key: 'automatizzare',
-      title: 'Automatizzare',
-      tagline: "Togli l'errore umano dal loop.",
-      link: '/servizi/#pipeline-automation',
-    },
-  ],
-  en: [
-    {
-      key: 'progettare',
-      title: 'Design',
-      tagline: 'Systems that hold up as you grow.',
-      link: '/servizi/#architecture',
-    },
-    {
-      key: 'verificare',
-      title: 'Verify',
-      tagline: 'Observe, test, protect.',
-      link: '/servizi/#observability-security',
-    },
-    {
-      key: 'automatizzare',
-      title: 'Automate',
-      tagline: 'Take the human error out of the loop.',
-      link: '/servizi/#pipeline-automation',
-    },
-  ],
+const text = {
+  it: {
+    eyebrow: 'Il metodo',
+    title: 'Tre pilastri in un ordine preciso. Si moltiplicano, non si sommano.',
+    intro: "Saltare uno step non fa risparmiare tempo: sposta solo il dolore più avanti.",
+    cards: [
+      {
+        key: 'progettare' as const,
+        order: '01',
+        title: 'Progettare',
+        body: 'Le decisioni architetturali sono le più costose da cambiare in corsa. Vengono prima di tutto.',
+      },
+      {
+        key: 'verificare' as const,
+        order: '02',
+        title: 'Verificare',
+        body: "Sapere che funziona davvero — sotto carico, sotto attacco, nel tempo. Senza questo, automatizzare amplifica solo i guasti.",
+      },
+      {
+        key: 'automatizzare' as const,
+        order: '03',
+        title: 'Automatizzare',
+        body: "Solo dopo aver progettato e verificato. L'automazione moltiplica ciò che ha a monte — errori compresi.",
+      },
+    ],
+    cta: 'Scopri il metodo nei servizi →',
+  },
+  en: {
+    eyebrow: 'The method',
+    title: 'Three pillars in a deliberate order. They multiply, they do not add up.',
+    intro: 'Skipping a step does not save time: it just postpones the pain.',
+    cards: [
+      {
+        key: 'progettare' as const,
+        order: '01',
+        title: 'Design',
+        body: 'Architectural decisions are the most expensive to change later. They come first.',
+      },
+      {
+        key: 'verificare' as const,
+        order: '02',
+        title: 'Verify',
+        body: 'Knowing it actually works — under load, under attack, over time. Without this, automating just amplifies failures.',
+      },
+      {
+        key: 'automatizzare' as const,
+        order: '03',
+        title: 'Automate',
+        body: 'Only after design and verification. Automation multiplies whatever is upstream of it — including the mistakes.',
+      },
+    ],
+    cta: 'See the method in services →',
+  },
 };
 
-import { pillarStyles } from '@/data/pillar-styles';
-const colors = pillarStyles;
-
-const cards = pillars[lang];
-
-// Count posts per pillar
-const allPosts = await getCollection('posts');
-const published = allPosts.filter((p) => p.data.lang === lang && !p.data.draft && p.data.pillar !== null);
-const pillarCounts: Record<string, number> = {};
-for (const post of published) {
-  const key = post.data.pillar!;
-  pillarCounts[key] = (pillarCounts[key] || 0) + 1;
-}
-
-const countLabel = lang === 'it' ? 'articoli' : 'articles';
+const t = text[lang];
 ---
 
-<section class="py-20 fade-in-section" aria-label={lang === 'en' ? 'Service pillars' : 'Pilastri dei servizi'}>
+<section class="py-20 fade-in-section" aria-label={t.eyebrow}>
   <div class="max-w-5xl mx-auto px-5">
+    <p class="text-xs text-accent font-semibold uppercase tracking-wide mb-3">
+      {t.eyebrow}
+    </p>
+    <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light mb-4 max-w-3xl">
+      {t.title}
+    </h2>
+    <p class="text-text-muted text-lg leading-relaxed mb-10 max-w-3xl">
+      {t.intro}
+    </p>
+
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 stagger-children">
-      {cards.map((card) => {
-        const c = colors[card.key];
-        const count = pillarCounts[card.key] || 0;
+      {t.cards.map((card) => {
+        const c = pillarStyles[card.key];
         return (
-          <a
-            href={card.link}
+          <div
             class:list={[
-              'group block rounded-xl border-l-[3px] p-6 transition-all duration-300',
-              c.border,
-              'bg-white dark:bg-surface-dark',
-              'border border-border/50 dark:border-border-dark/50',
-              'hover:shadow-md hover:border-border dark:hover:border-border-dark',
+              'rounded-xl border border-border/50 dark:border-border-dark/50 border-l-[3px] p-6 bg-white dark:bg-surface-dark',
+              c.borderLeft,
             ]}
-            style={`--pillar-color: ${c.hex}`}
-            data-pillar-hover
           >
-            <div class:list={['w-9 h-9 rounded-lg flex items-center justify-center mb-4', c.bgSubtle]}>
-              <span class:list={['text-lg font-bold', c.text]}>
-                {card.title.charAt(0)}
-              </span>
+            <div class="flex items-baseline gap-3 mb-3">
+              <span class={`text-sm font-mono ${c.text}`}>{card.order}</span>
+              <h3 class={`text-lg font-bold ${c.text}`}>{card.title}</h3>
             </div>
-            <h2 class="text-lg font-bold mb-1.5 text-text-dark dark:text-text-light group-hover:text-accent transition-colors">
-              {card.title}
-            </h2>
             <p class="text-text-muted text-sm leading-relaxed">
-              {card.tagline}
+              {card.body}
             </p>
-            {count > 0 && (
-              <p class="text-xs text-text-muted mt-2">
-                {count} {countLabel}
-              </p>
-            )}
-          </a>
+          </div>
         );
       })}
     </div>
+
+    <div class="mt-10">
+      <a
+        href={`${prefix}/servizi/`}
+        class="text-accent font-medium hover:underline inline-flex items-baseline gap-1"
+      >
+        {t.cta}
+      </a>
+    </div>
   </div>
 </section>
-
-<style>
-  [data-pillar-hover]:hover {
-    background-color: color-mix(in srgb, var(--pillar-color) 10%, transparent);
-  }
-</style>

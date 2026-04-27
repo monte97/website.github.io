@@ -1,0 +1,83 @@
+---
+interface Props {
+  lang?: 'it' | 'en';
+}
+
+const { lang = 'it' } = Astro.props;
+
+const text = {
+  it: {
+    eyebrow: 'Per chi è',
+    title: 'Team in crescita che iniziano a sentire qualcosa che scricchiola.',
+    intro: 'Startup e aziende di prodotto che hanno superato la fase iniziale e ora si trovano davanti a sintomi che prima non c\'erano.',
+    signals: [
+      {
+        title: 'Aggiornamenti che fanno paura',
+        body: 'Ogni deploy è un evento. Si rimanda al venerdì pomeriggio per evitare il weekend di guardia. Quando una release fallisce, recuperare costa ore — non minuti.',
+      },
+      {
+        title: 'Guasti difficili da interpretare',
+        body: 'Qualcosa non funziona, ma non sai dove guardare. I log dicono una cosa, le metriche un\'altra, gli utenti una terza. La diagnosi diventa archeologia.',
+      },
+      {
+        title: 'Nessuno sa di chi è quel pezzo',
+        body: 'Componenti senza owner chiaro. Pezzi di sistema che "funzionano e basta", finché non smettono. Conoscenza concentrata in poche teste — e quelle teste vanno in ferie.',
+      },
+    ],
+    closing: 'Se due di queste te le sei già sentite addosso, il momento giusto per intervenire è prima della terza.',
+  },
+  en: {
+    eyebrow: 'Who this is for',
+    title: 'Growing teams that start to hear something creaking.',
+    intro: 'Startups and product companies that have moved past the early phase and now face symptoms that were not there before.',
+    signals: [
+      {
+        title: 'Deploys that scare you',
+        body: 'Every deploy is an event. You push it to Friday afternoon to avoid the on-call weekend. When a release fails, recovery takes hours — not minutes.',
+      },
+      {
+        title: 'Failures hard to interpret',
+        body: 'Something is wrong, but you do not know where to look. Logs say one thing, metrics another, users a third. Diagnosis becomes archaeology.',
+      },
+      {
+        title: 'Nobody owns that piece',
+        body: 'Components without a clear owner. Parts of the system that "just work" until they do not. Knowledge concentrated in a few heads — and those heads go on vacation.',
+      },
+    ],
+    closing: 'If two of these already feel familiar, the right time to act is before the third one shows up.',
+  },
+};
+
+const t = text[lang];
+---
+
+<section class="py-20 border-t border-border/30 dark:border-border-dark/30 fade-in-section" aria-label={t.eyebrow}>
+  <div class="max-w-5xl mx-auto px-5">
+    <p class="text-xs text-accent font-semibold uppercase tracking-wide mb-3">
+      {t.eyebrow}
+    </p>
+    <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light mb-4 max-w-3xl">
+      {t.title}
+    </h2>
+    <p class="text-text-muted text-lg leading-relaxed mb-10 max-w-3xl">
+      {t.intro}
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 stagger-children">
+      {t.signals.map((s) => (
+        <div class="rounded-xl border border-border/70 dark:border-border-dark/70 border-l-[3px] border-l-accent p-6 bg-white dark:bg-surface-dark h-full">
+          <h3 class="font-semibold text-base text-text-dark dark:text-text-light mb-2">
+            {s.title}
+          </h3>
+          <p class="text-text-muted text-sm leading-relaxed">
+            {s.body}
+          </p>
+        </div>
+      ))}
+    </div>
+
+    <p class="text-text-dark dark:text-text-light text-base md:text-lg leading-relaxed mt-10 max-w-3xl border-l-2 border-l-accent pl-5 italic">
+      {t.closing}
+    </p>
+  </div>
+</section>

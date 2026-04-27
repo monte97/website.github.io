@@ -3,21 +3,21 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import Hero from '@/components/home/Hero.astro';
+import ForWho from '@/components/home/ForWho.astro';
 import StatsBar from '@/components/home/StatsBar.astro';
 import PillarCards from '@/components/home/PillarCards.astro';
-import FeaturedProjects from '@/components/home/FeaturedProjects.astro';
 import FilteredPosts from '@/components/home/FilteredPosts.astro';
 import ContactSection from '@/components/home/ContactSection.astro';
 ---
 
-<BaseLayout title="Progetto, verifico e automatizzo sistemi software">
+<BaseLayout title="Quando il sistema inizia a scricchiolare — Francesco Montelli">
   <Header lang="it" />
   <main>
     <Hero lang="it" />
-    <StatsBar lang="it" />
+    <ForWho lang="it" />
     <PillarCards lang="it" />
+    <StatsBar lang="it" />
     <FilteredPosts lang="it" />
-    <FeaturedProjects lang="it" />
     <ContactSection lang="it" />
   </main>
   <Footer lang="it" />

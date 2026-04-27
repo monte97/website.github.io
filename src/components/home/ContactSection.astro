@@ -12,9 +12,9 @@ const { lang = 'it' } = Astro.props;
 const text = {
   it: {
     heading: 'Parliamone.',
-    sub: 'Se il tuo team sta crescendo e vuoi capire dove intervenire, parti da qui.',
-    ctaPrimary: 'Scrivimi',
-    ctaSecondary: 'Health Check',
+    sub: 'Se il tuo team sta crescendo e vuoi capire dove intervenire, parti da una discovery call gratuita di 30 minuti.',
+    ctaPrimary: 'Richiedi un Health Check',
+    emailLabel: 'oppure scrivimi',
     articles: 'articoli',
     series: 'serie',
     years: 'anni di esperienza',
@@ -22,9 +22,9 @@ const text = {
   },
   en: {
     heading: "Let's talk.",
-    sub: "If your team is growing and you want to know where to improve, start here.",
-    ctaPrimary: 'Write me',
-    ctaSecondary: 'Health Check',
+    sub: 'If your team is growing and you want to know where to act, start with a free 30-minute discovery call.',
+    ctaPrimary: 'Request a Health Check',
+    emailLabel: 'or write me',
     articles: 'articles',
     series: 'series',
     years: 'years of experience',
@@ -59,13 +59,13 @@ const yrsExp = yearsExperience();
     <p class="text-text-muted text-base mb-8 leading-relaxed">
       {t.sub}
     </p>
-    <div class="flex flex-wrap justify-center gap-3 mb-8">
-      <Button href="mailto:francesco@montelli.dev" size="lg" data-umami-event="cta-contact-email">
+    <div class="flex flex-col items-center gap-3 mb-8">
+      <Button href="https://cal.eu/monte97/30min" size="lg" data-umami-event="cta-contact-healthcheck">
         {t.ctaPrimary} &rarr;
       </Button>
-      <Button href="/servizi/#health-check" variant="secondary" size="lg" data-umami-event="cta-contact-healthcheck">
-        {t.ctaSecondary}
-      </Button>
+      <a href="mailto:francesco@montelli.dev" class="text-sm text-text-muted hover:text-accent transition-colors" data-umami-event="click-email">
+        {t.emailLabel}
+      </a>
     </div>
 
     {/* Social proof stats */}
