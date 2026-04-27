@@ -1,0 +1,330 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import Button from '@/components/ui/Button.astro';
+import { pillarStyles } from '@/data/pillar-styles';
+import { pillarLabels, type Pillar } from '@/data/pillars';
+
+interface Props {
+  lang?: 'it' | 'en';
+}
+
+const { lang = 'it' } = Astro.props;
+const prefix = lang === 'en' ? '/en' : '';
+
+type Area = {
+  title: string;
+  description: string;
+  tags: string[];
+  link?: { href: string; label: string };
+};
+
+type PillarSection = {
+  pillar: Pillar;
+  intro: string;
+  areas: Area[];
+};
+
+const sections: PillarSection[] = lang === 'en'
+  ? [
+      {
+        pillar: 'progettare',
+        intro: 'The architectural decisions that are most expensive to change later. Where I focus before any line of code is written.',
+        areas: [
+          {
+            title: 'Event-driven architectures',
+            description: 'Asynchronous systems with explicit contracts, ordering and recovery strategies.',
+            tags: ['Kafka', 'RabbitMQ', 'Pekko', 'Schema Registry'],
+            link: { href: `${prefix}/blog/progettare/kafka/01-intro/`, label: 'Read the Kafka series' },
+          },
+          {
+            title: 'API design and service contracts',
+            description: 'Designing the seams between services so they can evolve without breaking each other.',
+            tags: ['REST', 'gRPC', 'OpenAPI', 'AsyncAPI'],
+          },
+          {
+            title: 'Distributed systems',
+            description: 'When a monolith is the right call, when microservices are not, sync vs async tradeoffs made explicit.',
+            tags: ['Modular monolith', 'Microservices', 'CQRS'],
+          },
+          {
+            title: 'Domain modeling and tradeoff-driven choices',
+            description: 'Technology decisions backed by the constraints they solve, not by hype.',
+            tags: ['DDD', 'Bounded contexts', 'State machines'],
+            link: { href: `${prefix}/blog/progettare/system-design/03-compilatore-state-machine/`, label: 'Modeling with state machines' },
+          },
+          {
+            title: 'Performance and scalability as design requirements',
+            description: 'Treated as constraints from day one, not as fixes bolted on after the fact.',
+            tags: ['Benchmarking', 'Load profiles', 'Capacity planning'],
+            link: { href: `${prefix}/blog/progettare/system-design/02-benchmark-net8/`, label: '.NET 8 benchmark study' },
+          },
+        ],
+      },
+      {
+        pillar: 'verificare',
+        intro: 'Knowing the system actually works — under load, under attack, and over time. Without this, automation just makes failures faster.',
+        areas: [
+          {
+            title: 'Observability',
+            description: 'Traces, metrics and logs you can correlate. SLOs, burn-rate alerts, signal that matters.',
+            tags: ['OpenTelemetry', 'Prometheus', 'Grafana', 'Tempo'],
+            link: { href: `${prefix}/blog/verificare/observability/burn-rate-alerts-slo-multi-window/`, label: 'Multi-window burn-rate alerts' },
+          },
+          {
+            title: 'End-to-end functional testing',
+            description: 'Tests that exercise the system the way users do, deterministic enough to run in CI.',
+            tags: ['Playwright', 'Page Object Model', 'Network mocking'],
+            link: { href: `${prefix}/blog/verificare/testing/01-guida-completa-e2e/`, label: 'Complete E2E guide' },
+          },
+          {
+            title: 'Performance testing',
+            description: 'Load profiles tied to real traffic, regressions caught before users do.',
+            tags: ['k6', 'Load testing', 'SLO validation'],
+          },
+          {
+            title: 'Authentication and authorization',
+            description: 'Identity and permissions designed once, enforced everywhere — including service-to-service.',
+            tags: ['Keycloak', 'OpenFGA', 'OAuth 2.0', 'OIDC'],
+            link: { href: `${prefix}/blog/verificare/openfga/01-zanzibar-concetti/`, label: 'Zanzibar/OpenFGA fundamentals' },
+          },
+          {
+            title: 'Security analysis',
+            description: 'Static and dynamic analysis, dependency scanning, threat modeling on the path that matters.',
+            tags: ['SAST', 'DAST', 'SCA', 'Threat modeling'],
+          },
+          {
+            title: 'Architectural consistency over time',
+            description: 'Guardrails so the system you designed is still the system you have a year later.',
+            tags: ['ADR', 'Fitness functions', 'Architecture tests'],
+          },
+        ],
+      },
+      {
+        pillar: 'automatizzare',
+        intro: 'Only after design and verification. Automation amplifies whatever is upstream of it — including the mistakes.',
+        areas: [
+          {
+            title: 'CI/CD',
+            description: 'Pipelines that fail loudly on the right things, ship safely on the others.',
+            tags: ['GitHub Actions', 'GitLab CI', 'Quality gates'],
+            link: { href: `${prefix}/blog/verificare/testing/03-cicd-strategie-avanzate/`, label: 'Advanced CI/CD strategies' },
+          },
+          {
+            title: 'Container orchestration',
+            description: 'Kubernetes when it earns its keep, with the platform abstractions to keep developers productive.',
+            tags: ['Kubernetes', 'Cluster API', 'Helm'],
+            link: { href: `${prefix}/blog/progettare/kubernetes/01-capi-part1-intro/`, label: 'Cluster API series' },
+          },
+          {
+            title: 'Infrastructure as Code',
+            description: 'Reviewable, reproducible infrastructure — including the recovery path.',
+            tags: ['Terraform', 'OpenTofu', 'Ansible'],
+          },
+          {
+            title: 'GitOps',
+            description: 'Git as the source of truth for deployment state, drift caught automatically.',
+            tags: ['Argo CD', 'Flux', 'Kustomize'],
+          },
+        ],
+      },
+    ]
+  : [
+      {
+        pillar: 'progettare',
+        intro: 'Le decisioni architetturali più costose da cambiare in corsa. Dove concentro l\'attenzione prima di scrivere codice.',
+        areas: [
+          {
+            title: 'Architetture event-driven',
+            description: 'Sistemi asincroni con contratti espliciti, gestione dell\'ordine e strategie di recovery.',
+            tags: ['Kafka', 'RabbitMQ', 'Pekko', 'Schema Registry'],
+            link: { href: `${prefix}/blog/progettare/kafka/01-intro/`, label: 'Leggi la serie su Kafka' },
+          },
+          {
+            title: 'API design e contratti tra servizi',
+            description: 'Progettare le interfacce tra servizi perché possano evolvere senza rompersi a vicenda.',
+            tags: ['REST', 'gRPC', 'OpenAPI', 'AsyncAPI'],
+          },
+          {
+            title: 'Sistemi distribuiti',
+            description: 'Quando un monolite è la scelta giusta, quando i microservizi non lo sono, sincrono vs async con i tradeoff sul tavolo.',
+            tags: ['Monolite modulare', 'Microservizi', 'CQRS'],
+          },
+          {
+            title: 'Domain modeling e scelte tecnologiche con tradeoff espliciti',
+            description: 'Decisioni tecnologiche giustificate dai vincoli che risolvono, non dall\'hype del momento.',
+            tags: ['DDD', 'Bounded context', 'State machine'],
+            link: { href: `${prefix}/blog/progettare/system-design/03-compilatore-state-machine/`, label: 'Modellare con macchine a stati' },
+          },
+          {
+            title: 'Performance e scalabilità come requisiti di design',
+            description: 'Trattate come vincoli dal giorno uno, non come ottimizzazioni a posteriori.',
+            tags: ['Benchmarking', 'Profili di carico', 'Capacity planning'],
+            link: { href: `${prefix}/blog/progettare/system-design/02-benchmark-net8/`, label: 'Benchmark .NET 8' },
+          },
+        ],
+      },
+      {
+        pillar: 'verificare',
+        intro: 'Sapere che il sistema funziona davvero — sotto carico, sotto attacco, nel tempo. Senza questo, l\'automazione amplifica solo i guasti.',
+        areas: [
+          {
+            title: 'Observability',
+            description: 'Trace, metriche e log correlabili. SLO, burn-rate alert, segnali che contano davvero.',
+            tags: ['OpenTelemetry', 'Prometheus', 'Grafana', 'Tempo'],
+            link: { href: `${prefix}/blog/verificare/observability/burn-rate-alerts-slo-multi-window/`, label: 'Burn-rate alert multi-window' },
+          },
+          {
+            title: 'Testing funzionale end-to-end',
+            description: 'Test che esercitano il sistema come gli utenti reali, abbastanza deterministici da girare in CI.',
+            tags: ['Playwright', 'Page Object Model', 'Network mocking'],
+            link: { href: `${prefix}/blog/verificare/testing/01-guida-completa-e2e/`, label: 'Guida completa al testing E2E' },
+          },
+          {
+            title: 'Performance testing',
+            description: 'Profili di carico legati al traffico reale, regressioni intercettate prima degli utenti.',
+            tags: ['k6', 'Load testing', 'Validazione SLO'],
+          },
+          {
+            title: 'Autenticazione e autorizzazione',
+            description: 'Identità e permessi progettati una volta, applicati ovunque — service-to-service incluso.',
+            tags: ['Keycloak', 'OpenFGA', 'OAuth 2.0', 'OIDC'],
+            link: { href: `${prefix}/blog/verificare/openfga/01-zanzibar-concetti/`, label: 'Concetti di Zanzibar/OpenFGA' },
+          },
+          {
+            title: 'Security analysis',
+            description: 'Analisi statica e dinamica, dependency scanning, threat modeling sui flussi che contano.',
+            tags: ['SAST', 'DAST', 'SCA', 'Threat modeling'],
+          },
+          {
+            title: 'Coerenza architetturale nel tempo',
+            description: 'Guardrail perché il sistema progettato sia ancora il sistema che hai un anno dopo.',
+            tags: ['ADR', 'Fitness function', 'Test architetturali'],
+          },
+        ],
+      },
+      {
+        pillar: 'automatizzare',
+        intro: 'Solo dopo aver progettato e verificato. L\'automazione amplifica ciò che ha a monte — errori compresi.',
+        areas: [
+          {
+            title: 'CI/CD',
+            description: 'Pipeline che falliscono rumorosamente sulle cose giuste, rilasciano in sicurezza sulle altre.',
+            tags: ['GitHub Actions', 'GitLab CI', 'Quality gate'],
+            link: { href: `${prefix}/blog/verificare/testing/03-cicd-strategie-avanzate/`, label: 'Strategie CI/CD avanzate' },
+          },
+          {
+            title: 'Container orchestration',
+            description: 'Kubernetes quando ne vale il costo, con le astrazioni di piattaforma per non bruciare i developer.',
+            tags: ['Kubernetes', 'Cluster API', 'Helm'],
+            link: { href: `${prefix}/blog/progettare/kubernetes/01-capi-part1-intro/`, label: 'Serie Cluster API' },
+          },
+          {
+            title: 'Infrastructure as Code',
+            description: 'Infrastruttura riproducibile e revisionabile — con il percorso di recovery incluso.',
+            tags: ['Terraform', 'OpenTofu', 'Ansible'],
+          },
+          {
+            title: 'GitOps',
+            description: 'Git come fonte di verità dello stato di deploy, drift intercettato automaticamente.',
+            tags: ['Argo CD', 'Flux', 'Kustomize'],
+          },
+        ],
+      },
+    ];
+
+const t = lang === 'en'
+  ? {
+      pageTitle: 'Skills',
+      heroTitle: 'Skills and stack',
+      heroSubtitle: 'Organized by method, not by logo wall.',
+      intro: 'This is not a list of technologies — it is what I do, grouped around the three pillars of the method. Technologies are secondary tags. Where a blog article makes the competence concrete, the link is right next to it.',
+      readMore: 'Read more',
+      cvLabel: 'Download full CV',
+      ctaTitle: 'Want to put this to work?',
+      ctaDesc: 'If something here matches what you are facing, the fastest way forward is a 30-minute discovery call.',
+      ctaPrimary: 'Book a call',
+      ctaSecondary: 'See services',
+    }
+  : {
+      pageTitle: 'Competenze',
+      heroTitle: 'Competenze e stack',
+      heroSubtitle: 'Organizzate per metodo, non come parata di loghi.',
+      intro: 'Non è una lista di tecnologie — è quello che faccio, raccolto attorno ai tre pilastri del metodo. Le tecnologie sono tag secondari. Dove un articolo del blog rende concreta la competenza, il link è lì accanto.',
+      readMore: 'Approfondisci',
+      cvLabel: 'Scarica il CV completo',
+      ctaTitle: 'Vuoi metterlo in pratica?',
+      ctaDesc: 'Se qualcosa qui sopra corrisponde a quello che stai affrontando, il modo più rapido per partire è una discovery call di 30 minuti.',
+      ctaPrimary: 'Prenota una call',
+      ctaSecondary: 'Vedi i servizi',
+    };
+---
+
+<PageLayout title={t.pageTitle} lang={lang}>
+  <PageHero title={t.heroTitle} subtitle={t.heroSubtitle} />
+
+  <section class="mb-16 fade-in-section">
+    <p class="text-text-muted text-lg leading-relaxed max-w-3xl">
+      {t.intro}
+    </p>
+  </section>
+
+  {sections.map((section) => {
+    const styles = pillarStyles[section.pillar];
+    const label = pillarLabels[section.pillar][lang];
+    return (
+      <section class="mb-20 fade-in-section">
+        <div class={`mb-8 pl-5 border-l-4 ${styles.borderLeft}`}>
+          <h2 class={`text-3xl font-bold ${styles.text}`}>{label}</h2>
+          <p class="text-text-muted mt-2 max-w-2xl">{section.intro}</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 stagger-children">
+          {section.areas.map((area) => (
+            <div class={`rounded-xl border border-border/70 dark:border-border-dark/70 border-l-[3px] ${styles.borderLeft} p-6 bg-white dark:bg-surface-dark h-full flex flex-col`}>
+              <h3 class="font-semibold text-base text-text-dark dark:text-text-light mb-2">
+                {area.title}
+              </h3>
+              <p class="text-text-muted text-sm leading-relaxed mb-4 grow">
+                {area.description}
+              </p>
+              <div class="flex flex-wrap gap-1.5 mb-3">
+                {area.tags.map((tag) => (
+                  <span class={`text-[11px] px-2 py-0.5 rounded-full font-medium ${styles.badge}`}>
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              {area.link && (
+                <a
+                  href={area.link.href}
+                  class={`text-sm font-medium ${styles.text} hover:underline inline-flex items-center gap-1`}
+                >
+                  {t.readMore}: {area.link.label} <span aria-hidden="true">→</span>
+                </a>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  })}
+
+  <section class="mb-16 fade-in-section text-center">
+    <Button href="/files/Francesco_Montelli_CV.pdf" variant="secondary" size="lg">
+      {t.cvLabel}
+    </Button>
+  </section>
+
+  <section class="text-center py-16 fade-in-section">
+    <h2 class="text-3xl font-bold mb-3">{t.ctaTitle}</h2>
+    <p class="text-text-muted text-lg mb-8 max-w-xl mx-auto">{t.ctaDesc}</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <Button href="https://cal.eu/monte97/30min" variant="primary" size="lg">
+        {t.ctaPrimary}
+      </Button>
+      <Button href={lang === 'en' ? '/en/services/' : '/servizi/'} variant="secondary" size="lg">
+        {t.ctaSecondary}
+      </Button>
+    </div>
+  </section>
+</PageLayout>
