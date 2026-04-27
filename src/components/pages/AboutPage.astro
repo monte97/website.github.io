@@ -3,14 +3,10 @@ import PageLayout from '@/layouts/PageLayout.astro';
 import PageHero from '@/components/ui/PageHero.astro';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
 import Button from '@/components/ui/Button.astro';
-import SkillGrid from '@/components/about/SkillGrid.astro';
-import Timeline from '@/components/about/Timeline.astro';
 import { author } from '@/data/author';
-import { experiences } from '@/data/experiences';
-import { degrees } from '@/data/education';
-import { yearsExperience } from '@/utils/blog';
 import { publications } from '@/data/publications';
-import { getCollection } from 'astro:content';
+import { pillarStyles } from '@/data/pillar-styles';
+import { pillarLabels, type Pillar } from '@/data/pillars';
 
 interface Props {
   lang?: 'it' | 'en';
@@ -21,197 +17,195 @@ const { lang = 'it' } = Astro.props;
 const bio = author.bio[lang];
 const prefix = lang === 'en' ? '/en' : '';
 
-const allPosts = await getCollection('posts');
-const articleCount = allPosts.filter((p) => p.data.lang === lang && !p.data.draft && p.data.pillar !== null).length;
-const yrsExp = yearsExperience();
+const calLink = 'https://cal.eu/monte97/30min';
+const mailLink = 'mailto:francesco@montelli.dev';
 
-// Split experiences into current (active) and past (ended)
-const currentRoles = experiences.flatMap((exp) =>
-  exp.positions
-    .filter((pos) => !pos.end)
-    .map((pos) => ({
-      title: pos.designation,
-      company: exp.company.name,
-      location: exp.company.location,
-      since: pos.start,
-      responsibilities: pos.responsibilities,
-    }))
-);
+type PillarBrief = { pillar: Pillar; description: string };
 
-const pastItems = experiences.flatMap((exp) =>
-  exp.positions
-    .filter((pos) => !!pos.end)
-    .map((pos) => ({
-      title: pos.designation,
-      subtitle: exp.company.name,
-      period: `${pos.start} - ${pos.end}`,
-      description: pos.responsibilities.join('. ') + '.',
-    }))
-);
-
-const educationItems = degrees.map((deg) => ({
-  title: deg.name,
-  subtitle: deg.institution.name,
-  period: deg.timeframe,
-  description: [
-    deg.grade ? `${lang === 'en' ? 'Grade' : 'Voto'}: ${deg.grade.achieved}` : null,
-    deg.thesis ? `${lang === 'en' ? 'Thesis' : 'Tesi'}: ${deg.thesis}` : null,
-  ].filter(Boolean).join(' — '),
-}));
+const pillarsBrief: PillarBrief[] = lang === 'en'
+  ? [
+      { pillar: 'progettare', description: 'The architectural decisions that are most expensive to change later. Where the work starts.' },
+      { pillar: 'verificare', description: 'Knowing the system actually works — under load, under attack, over time.' },
+      { pillar: 'automatizzare', description: 'Only after design and verification. Automation amplifies whatever is upstream of it.' },
+    ]
+  : [
+      { pillar: 'progettare', description: 'Le decisioni architetturali più costose da cambiare in corsa. È da qui che parte il lavoro.' },
+      { pillar: 'verificare', description: 'Sapere che il sistema funziona davvero — sotto carico, sotto attacco, nel tempo.' },
+      { pillar: 'automatizzare', description: "Solo dopo aver progettato e verificato. L'automazione amplifica ciò che ha a monte." },
+    ];
 
 const t = lang === 'en'
   ? {
       pageTitle: 'About',
       heroTitle: 'About me',
+      heroSubtitle: `${author.name} — Software Engineer, distributed systems`,
       cvLabel: 'Download CV',
-      yearsLabel: 'years experience',
-      articlesLabel: 'articles published',
-      stackTitle: 'Tech Stack',
-      currentTitle: 'What I do today',
-      sinceLabel: 'Since',
-      pastTitle: 'Background',
-      eduTitle: 'Education',
+      philosophyQuote: 'AI today writes code the way robots assemble cars: fast, at scale, tirelessly. But no one trusts a robot to design the chassis or sign off on the brakes. That part is still a human matter.',
+      whoTitle: 'Who I am',
+      orderTitle: 'Registered with the Order of Engineers',
+      orderBody: 'Member of the Order of Engineers of the Province of Ravenna. It is not just a registration number — it is professional liability. When I sign off on an architecture or a piece of infrastructure, I do it as a regulated professional, with the responsibilities that come with it.',
+      methodTitle: 'The method',
+      methodIntro: 'Three pillars that multiply, not three services that add up. The order is not negotiable.',
+      skillsLink: 'Want to see in detail what I work with?',
+      skillsLinkLabel: 'Skills and stack',
+      blogTitle: 'The blog as an extension of the method',
+      blogBody: 'I write the kind of articles I would have wanted to find before making a decision. They are not summaries of documentation — they are real cases, tradeoffs made explicit, things I learned by getting them wrong first. If you want to verify whether what I say matches what I do, the blog is the place.',
+      blogCta: 'Read the blog',
       pubTitle: 'Publications',
-      pubDesc: "Member of the Scientific Committee of Operai dell'Arte APS. I have supervised master's theses and co-authored peer-reviewed publications in geomatics and cultural heritage.",
-      ctaTitle: "Let's work together?",
-      ctaDesc: "I build infrastructure that scales. If your team is growing, let's talk.",
-      servicesLabel: 'View services',
-      emailCta: 'or write me at',
+      pubIntro: 'Member of the Scientific Committee of Operai dell\'Arte APS. Co-author of peer-reviewed publications in geomatics and cultural heritage.',
+      ctaTitle: 'Want to talk?',
+      ctaDesc: 'A 30-minute discovery call is the fastest way to figure out whether we can work together.',
+      ctaPrimary: 'Book a call',
+      ctaSecondary: 'or write me',
     }
   : {
       pageTitle: 'About',
       heroTitle: 'Chi sono',
-      cvLabel: 'Scarica CV',
-      yearsLabel: 'anni di esperienza',
-      articlesLabel: 'articoli pubblicati',
-      stackTitle: 'Stack tecnologico',
-      currentTitle: 'Cosa faccio oggi',
-      sinceLabel: 'Dal',
-      pastTitle: 'Percorso',
-      eduTitle: 'Istruzione',
+      heroSubtitle: `${author.name} — Software Engineer, sistemi distribuiti`,
+      cvLabel: 'Scarica il CV',
+      philosophyQuote: "La IA oggi scrive codice come i robot assemblano le automobili: veloce, in larga scala, senza stancarsi. Ma nessuno affida a un robot la progettazione di una carrozzeria o il collaudo dei freni. Quella parte è ancora una questione umana.",
+      whoTitle: 'Chi sono',
+      orderTitle: "Iscritto all'Ordine degli Ingegneri",
+      orderBody: "Iscritto all'Ordine degli Ingegneri della Provincia di Ravenna. Non è solo un numero di iscrizione — è responsabilità professionale. Quando firmo una scelta architetturale o un'infrastruttura, lo faccio come professionista regolamentato, con le responsabilità che ne derivano.",
+      methodTitle: 'Il metodo',
+      methodIntro: 'Tre pilastri che si moltiplicano, non tre servizi che si sommano. L\'ordine non è negoziabile.',
+      skillsLink: 'Vuoi vedere nel dettaglio con cosa lavoro?',
+      skillsLinkLabel: 'Competenze e stack',
+      blogTitle: 'Il blog come estensione del metodo',
+      blogBody: "Scrivo il tipo di articoli che mi sarebbe servito trovare prima di prendere una decisione. Non sono riassunti di documentazione: sono casi reali, tradeoff sul tavolo, cose che ho imparato sbagliandole prima. Se vuoi verificare se quello che racconto coincide con quello che faccio, il blog è il posto.",
+      blogCta: 'Vai al blog',
       pubTitle: 'Pubblicazioni',
-      pubDesc: "Membro del Comitato Tecnico-Scientifico di Operai dell'Arte APS. Ho supervisionato tesi di laurea e collaborato a pubblicazioni peer-reviewed in ambito geomatica e patrimonio culturale.",
-      ctaTitle: 'Lavoriamo insieme?',
-      ctaDesc: 'Costruisco infrastrutture che scalano. Se il tuo team sta crescendo, parliamone.',
-      servicesLabel: 'Vedi i servizi',
-      emailCta: 'oppure scrivimi a',
+      pubIntro: "Membro del Comitato Tecnico-Scientifico di Operai dell'Arte APS. Co-autore di pubblicazioni peer-reviewed in geomatica e patrimonio culturale.",
+      ctaTitle: 'Vogliamo parlarne?',
+      ctaDesc: 'Una discovery call di 30 minuti è il modo più rapido per capire se possiamo lavorare insieme.',
+      ctaPrimary: 'Prenota una call',
+      ctaSecondary: 'oppure scrivimi',
     };
 ---
 
 <PageLayout title={t.pageTitle} lang={lang}>
   <PageHero
     title={t.heroTitle}
-    subtitle={`${author.name} — Backend Engineer & DevOps Consultant`}
+    subtitle={t.heroSubtitle}
     image={{ src: author.image, alt: author.name }}
     cta={{ href: '/files/Francesco_Montelli_CV.pdf', label: t.cvLabel }}
   />
 
-  {/* Bio */}
+  {/* Apertura filosofica */}
   <section class="mb-20 fade-in-section">
-    <p class="text-text-muted text-lg leading-relaxed max-w-2xl">
+    <blockquote class="border-l-4 border-l-accent pl-6 max-w-3xl">
+      <p class="text-xl md:text-2xl leading-relaxed text-text-dark dark:text-text-light italic">
+        {t.philosophyQuote}
+      </p>
+    </blockquote>
+  </section>
+
+  {/* Chi sono */}
+  <section class="mb-20 fade-in-section">
+    <SectionHeading title={t.whoTitle} />
+    <p class="text-text-muted text-lg leading-relaxed max-w-3xl">
       {bio}
     </p>
-    <div class="flex gap-8 mt-6">
-      <div>
-        <span class="text-3xl font-bold text-accent">{yrsExp}+</span>
-        <p class="text-sm text-text-muted">{t.yearsLabel}</p>
-      </div>
-      <div>
-        <span class="text-3xl font-bold text-accent">{articleCount}</span>
-        <p class="text-sm text-text-muted">{t.articlesLabel}</p>
+  </section>
+
+  {/* Iscrizione Ordine — evidenziata */}
+  <section class="mb-20 fade-in-section">
+    <div class="rounded-xl border border-accent/30 bg-accent/5 p-8 md:p-10 max-w-3xl">
+      <div class="flex items-start gap-4">
+        <div class="shrink-0 w-12 h-12 rounded-full bg-accent/15 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-accent">
+            <path d="M12 2 4 6v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V6l-8-4z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-3">
+            {t.orderTitle}
+          </h2>
+          <p class="text-text-muted leading-relaxed">
+            {t.orderBody}
+          </p>
+        </div>
       </div>
     </div>
   </section>
 
-  {/* Tech Stack */}
-  <section class="mb-20 fade-in-section">
-    <SectionHeading title={t.stackTitle} />
-    <SkillGrid />
-  </section>
-
-  {/* Current roles */}
-  {currentRoles.length > 0 && (
-    <section class="mb-20 fade-in-section">
-      <SectionHeading title={t.currentTitle} />
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 stagger-children">
-        {currentRoles.map((role) => (
-          <div class="rounded-xl border border-border/70 dark:border-border-dark/70 border-l-[3px] border-l-accent p-6 bg-white dark:bg-surface-dark h-full flex flex-col">
-            <div class="flex items-start justify-between gap-3 mb-2">
-              <h3 class="font-semibold text-base text-text-dark dark:text-text-light">{role.title}</h3>
-              <span class="text-[11px] text-accent bg-accent/10 px-2 py-0.5 rounded-full font-medium whitespace-nowrap shrink-0">
-                {t.sinceLabel} {role.since}
-              </span>
+  {/* Il metodo */}
+  <section class="mb-12 fade-in-section">
+    <SectionHeading title={t.methodTitle} />
+    <p class="text-text-muted text-lg leading-relaxed max-w-3xl mb-8">
+      {t.methodIntro}
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 stagger-children">
+      {pillarsBrief.map((p, i) => {
+        const styles = pillarStyles[p.pillar];
+        const label = pillarLabels[p.pillar][lang];
+        return (
+          <div class={`rounded-xl border border-border/70 dark:border-border-dark/70 border-l-[3px] ${styles.borderLeft} p-6 bg-white dark:bg-surface-dark`}>
+            <div class="flex items-baseline gap-3 mb-2">
+              <span class={`text-sm font-mono ${styles.text}`}>0{i + 1}</span>
+              <h3 class={`font-semibold text-base ${styles.text}`}>{label}</h3>
             </div>
-            <p class="text-accent text-sm mb-3">{role.company} · {role.location}</p>
-            <ul class="space-y-1">
-              {role.responsibilities.slice(0, 3).map((r) => (
-                <li class="text-text-muted text-sm leading-relaxed flex gap-2">
-                  <span class="text-accent mt-1.5 shrink-0 w-1 h-1 rounded-full bg-accent" />
-                  {r}
-                </li>
-              ))}
-            </ul>
+            <p class="text-text-muted text-sm leading-relaxed">{p.description}</p>
           </div>
-        ))}
-      </div>
-    </section>
-  )}
-
-  {/* Past experience */}
-  {pastItems.length > 0 && (
-    <section class="mb-20 fade-in-section">
-      <SectionHeading title={t.pastTitle} />
-      <Timeline items={pastItems} />
-    </section>
-  )}
-
-  {/* Education */}
-  <section class="mb-20 fade-in-section">
-    <SectionHeading title={t.eduTitle} />
-    <Timeline items={educationItems} />
+        );
+      })}
+    </div>
   </section>
 
-  {/* Publications */}
+  {/* Link a /about/competenze */}
+  <section class="mb-20 fade-in-section">
+    <a
+      href={`${prefix}/about/competenze/`}
+      class="inline-flex items-baseline gap-2 text-accent hover:underline text-base font-medium"
+    >
+      {t.skillsLink} <span class="font-semibold">{t.skillsLinkLabel}</span> <span aria-hidden="true">→</span>
+    </a>
+  </section>
+
+  {/* Il blog come estensione del metodo */}
+  <section class="mb-20 fade-in-section">
+    <SectionHeading title={t.blogTitle} />
+    <p class="text-text-muted text-lg leading-relaxed max-w-3xl mb-6">
+      {t.blogBody}
+    </p>
+    <Button href={`${prefix}/blog/`} variant="secondary" size="md">
+      {t.blogCta}
+    </Button>
+  </section>
+
+  {/* Pubblicazioni — ridotta */}
   <section class="mb-20 fade-in-section">
     <SectionHeading title={t.pubTitle} />
-    <p class="text-text-muted mb-6 max-w-2xl">{t.pubDesc}</p>
-    <div class="space-y-6 stagger-children">
+    <p class="text-text-muted leading-relaxed max-w-3xl mb-5">{t.pubIntro}</p>
+    <ul class="space-y-2 max-w-3xl">
       {publications.map((pub) => (
-        <div class="border-l-2 border-accent pl-4">
+        <li>
           <a
             href={pub.paper.url}
             target="_blank"
             rel="noopener noreferrer"
-            class="text-lg font-semibold text-text-dark dark:text-text-light hover:text-accent transition-colors"
+            class="text-sm text-text-dark dark:text-text-light hover:text-accent transition-colors inline-flex items-baseline gap-2"
           >
-            {pub.title}
+            <span>{pub.title}</span>
+            <span class="text-text-muted shrink-0">— {pub.publishedIn.name}, {pub.publishedIn.date}</span>
           </a>
-          {pub.authors && (
-            <p class="text-sm text-text-muted mt-1">{pub.authors}</p>
-          )}
-          <p class="text-sm text-accent mt-1">
-            {pub.publishedIn.name} ({pub.publishedIn.date})
-          </p>
-          <p class="text-sm text-text-muted mt-2">{pub.paper.summary}</p>
-        </div>
+        </li>
       ))}
-    </div>
+    </ul>
   </section>
 
-  {/* CTA */}
+  {/* CTA finale */}
   <section class="text-center py-16 fade-in-section">
     <h2 class="text-3xl font-bold mb-3">{t.ctaTitle}</h2>
     <p class="text-text-muted text-lg mb-8 max-w-xl mx-auto">{t.ctaDesc}</p>
-    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <Button href={lang === 'en' ? '/en/services/' : '/servizi/'} variant="secondary" size="lg">
-        {t.servicesLabel}
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+      <Button href={calLink} variant="primary" size="lg">
+        {t.ctaPrimary}
       </Button>
-      <Button href="/files/Francesco_Montelli_CV.pdf" variant="primary" size="lg">
-        {t.cvLabel}
-      </Button>
+      <a href={mailLink} class="text-sm text-text-muted hover:text-accent transition-colors">
+        {t.ctaSecondary}
+      </a>
     </div>
-    <p class="mt-6 text-sm text-text-muted">
-      {t.emailCta} <a href="mailto:francesco@montelli.dev" class="text-accent hover:underline">francesco@montelli.dev</a>
-    </p>
   </section>
 </PageLayout>
