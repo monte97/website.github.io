@@ -39,7 +39,7 @@ const pillarOrder: Array<{
     order: '01',
     why: {
       it: 'Le decisioni architetturali sono le più costose da cambiare in corsa. Vengono prima di tutto: se la base è sbagliata, qualsiasi cosa ci costruisci sopra eredita il problema.',
-      en: 'Architectural decisions are the most expensive to change later. They come first: if the foundation is wrong, anything you build on top inherits the problem.',
+      en: 'Architectural decisions are the most expensive ones to change later. They come first: if the foundation is wrong, anything you build on top of it inherits the problem.',
     },
   },
   {
@@ -48,7 +48,7 @@ const pillarOrder: Array<{
     order: '02',
     why: {
       it: 'Una volta progettato, devi sapere che funziona davvero. Sotto carico, sotto attacco, nel tempo. Senza verifica, automatizzare significa solo amplificare i guasti.',
-      en: 'Once designed, you need to know it actually works. Under load, under attack, over time. Without verification, automating just means amplifying failures.',
+      en: "Once it's designed, you need to know it actually works. Under load, under attack, over time. Without verification, automating just means amplifying the failures.",
     },
   },
   {
@@ -57,7 +57,7 @@ const pillarOrder: Array<{
     order: '03',
     why: {
       it: "Solo dopo aver progettato e verificato. L'automazione moltiplica il valore di ciò che ha a monte — errori compresi. Per questo è l'ultimo step, non il primo.",
-      en: 'Only after design and verification. Automation multiplies whatever is upstream of it — including the mistakes. That is why it is the last step, not the first.',
+      en: "Only after designing and verifying. Automation multiplies whatever sits upstream of it — mistakes included. That's why it's the last step, not the first.",
     },
   },
 ];
@@ -81,10 +81,10 @@ const locale = lang === 'en' ? 'en-US' : 'it-IT';
 type Scenario = { scenario: string; problem: string };
 const scenarios: Scenario[] = lang === 'en'
   ? [
-      { scenario: 'Tests without CI/CD', problem: 'Run by hand, when someone remembers. Eventually they stop being run at all.' },
-      { scenario: 'CI/CD without observability', problem: 'You know the deploy succeeded. You do not know whether the system actually works.' },
-      { scenario: 'Observability without tests', problem: 'You see problems in production, but you cannot prevent them. Always reactive mode.' },
-      { scenario: 'All three together', problem: 'You design consciously → you verify automatically → you observe in production.' },
+      { scenario: 'Tests without CI/CD', problem: "Run by hand, when someone remembers. Eventually, nobody runs them at all." },
+      { scenario: 'CI/CD without observability', problem: "You know the deploy went through. You don't know whether the system actually works." },
+      { scenario: 'Observability without tests', problem: "You see the problems in production, but you can't prevent them. You're stuck in reactive mode." },
+      { scenario: 'All three together', problem: 'You design consciously → verify automatically → observe in production.' },
     ]
   : [
       { scenario: 'Test senza CI/CD', problem: 'Vengono eseguiti a mano, quando ci si ricorda. Con il tempo si smette.' },
@@ -97,22 +97,22 @@ const t = lang === 'en'
   ? {
       pageTitle: 'Services',
       heroTitle: 'How I can help',
-      heroSubtitle: 'Three pillars that multiply, not three services that add up. The order is not negotiable.',
+      heroSubtitle: 'Three pillars that multiply — not three services that add up. The order is not negotiable.',
       heroCta: 'Book a discovery call',
       discoveryEyebrow: 'Starting point',
       discoveryTitle: 'Discovery call',
-      discoveryLead: 'A 30-minute call. Free, no commitment. The fastest way to understand whether we can work together — and whether you actually need someone like me.',
+      discoveryLead: "A 30-minute call. Free, no strings attached. The fastest way to find out whether we can work together — and whether you actually need someone like me.",
       discoveryWhatTitle: 'What we cover',
       discoveryWhat: [
         'Where you are now: architecture, processes, the things that scare you in production',
-        'Where you want to go: the goal, the constraint, the deadline',
-        'The symptoms: what is hurting today and how often',
+        'Where you want to get to: the goal, the constraints, the deadline',
+        "The symptoms: what's hurting today, and how often",
       ],
       discoveryDeliverableTitle: 'What you walk away with',
       discoveryDeliverable: [
-        'A technical reading of the problem, not generic advice',
-        'A concrete next step — whether that involves me or not',
-        'An honest answer about whether this is something I can help with',
+        'A technical read on the problem, not generic advice',
+        'A concrete next step — whether it involves me or not',
+        "An honest answer about whether this is something I can actually help with",
       ],
       discoveryDurationLabel: 'Duration',
       discoveryDuration: '30 minutes',
@@ -120,7 +120,7 @@ const t = lang === 'en'
       discoveryCostFree: 'Free',
       discoveryCta: 'Book on Cal.com',
       methodTitle: 'The method',
-      methodIntro: 'Three pillars in a deliberate order. Each one builds on the previous. Skipping a step does not save time — it just postpones the pain.',
+      methodIntro: "Three pillars in a deliberate order. Each builds on the previous. Skipping a step doesn't save time — it just pushes the pain further down the line.",
       whyLabel: 'Why this order',
       blogLabel: 'From the blog',
       scenariosTitle: 'Why the order matters',
@@ -128,7 +128,7 @@ const t = lang === 'en'
       scenariosScenarioCol: 'Scenario',
       scenariosProblemCol: 'What goes wrong',
       ctaTitle: 'Want to talk?',
-      ctaDesc: 'Half an hour to figure out whether we can work together. No commitment, no slides.',
+      ctaDesc: "Half an hour to figure out whether we can work together. No commitment, no slides.",
       ctaPrimary: 'Book a call',
       ctaSecondary: 'or write me',
     }

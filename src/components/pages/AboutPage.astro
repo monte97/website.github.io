@@ -24,9 +24,9 @@ type PillarBrief = { pillar: Pillar; description: string };
 
 const pillarsBrief: PillarBrief[] = lang === 'en'
   ? [
-      { pillar: 'progettare', description: 'The architectural decisions that are most expensive to change later. Where the work starts.' },
-      { pillar: 'verificare', description: 'Knowing the system actually works — under load, under attack, over time.' },
-      { pillar: 'automatizzare', description: 'Only after design and verification. Automation amplifies whatever is upstream of it.' },
+      { pillar: 'progettare', description: 'The architectural decisions that cost the most to change later. This is where the work starts.' },
+      { pillar: 'verificare', description: 'Making sure the system actually works — under load, under attack, over time.' },
+      { pillar: 'automatizzare', description: 'Only after designing and verifying. Automation amplifies whatever is upstream of it.' },
     ]
   : [
       { pillar: 'progettare', description: 'Le decisioni architetturali più costose da cambiare in corsa. È da qui che parte il lavoro.' },
@@ -40,21 +40,21 @@ const t = lang === 'en'
       heroTitle: 'About me',
       heroSubtitle: `${author.name} — Software Engineer, distributed systems`,
       cvLabel: 'Download CV',
-      philosophyQuote: 'AI today writes code the way robots assemble cars: fast, at scale, tirelessly. But no one trusts a robot to design the chassis or sign off on the brakes. That part is still a human matter.',
+      philosophyQuote: "AI today writes code the way robots assemble cars: fast, at scale, tirelessly. But no one lets a robot design the chassis or sign off on the brakes. That part is still a human responsibility.",
       whoTitle: 'Who I am',
-      orderTitle: 'Registered with the Order of Engineers',
-      orderBody: 'Member of the Order of Engineers of the Province of Ravenna. It is not just a registration number — it is professional liability. When I sign off on an architecture or a piece of infrastructure, I do it as a regulated professional, with the responsibilities that come with it.',
+      orderTitle: 'Registered with the Italian Order of Engineers',
+      orderBody: "Member of the Italian Order of Engineers (Ordine degli Ingegneri della Provincia di Ravenna). It's not just a registration number — it carries professional liability. When I sign off on an architecture or a piece of infrastructure, I do it as a regulated professional, with the responsibilities that come with it.",
       methodTitle: 'The method',
-      methodIntro: 'Three pillars that multiply, not three services that add up. The order is not negotiable.',
+      methodIntro: 'Three pillars that multiply — not three services that add up. The order is not negotiable.',
       skillsLink: 'Want to see in detail what I work with?',
       skillsLinkLabel: 'Skills and stack',
       blogTitle: 'The blog as an extension of the method',
-      blogBody: 'I write the kind of articles I would have wanted to find before making a decision. They are not summaries of documentation — they are real cases, tradeoffs made explicit, things I learned by getting them wrong first. If you want to verify whether what I say matches what I do, the blog is the place.',
+      blogBody: "I write the kind of articles I would have wanted to find before making a decision. Not summaries of documentation — real cases, tradeoffs made explicit, things I learned by getting them wrong first. If you want to check whether what I claim matches what I do, the blog is the place.",
       blogCta: 'Read the blog',
       pubTitle: 'Publications',
-      pubIntro: 'Member of the Scientific Committee of Operai dell\'Arte APS. Co-author of peer-reviewed publications in geomatics and cultural heritage.',
+      pubIntro: "Member of the Scientific Committee of Operai dell'Arte APS. Co-author of peer-reviewed publications in geomatics and cultural heritage.",
       ctaTitle: 'Want to talk?',
-      ctaDesc: 'A 30-minute discovery call is the fastest way to figure out whether we can work together.',
+      ctaDesc: 'A 30-minute discovery call is the fastest way to find out whether we can work together.',
       ctaPrimary: 'Book a call',
       ctaSecondary: 'or write me',
     }
