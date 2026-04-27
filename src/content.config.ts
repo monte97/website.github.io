@@ -37,6 +37,12 @@ const projects = defineCollection({
     }).optional(),
     image: z.string().optional(),
     weight: z.number().default(10),
+    // Case study fields (optional — projects without them render legacy layout)
+    pillarApplied: z.enum(['progettare', 'verificare', 'automatizzare']).optional(),
+    problem: z.string().optional(),
+    context: z.string().optional(),
+    actions: z.array(z.string()).optional(),
+    result: z.union([z.string(), z.array(z.string())]).optional(),
   }),
 });
 
