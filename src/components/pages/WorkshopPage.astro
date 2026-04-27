@@ -1,0 +1,104 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '@/layouts/PageLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import Button from '@/components/ui/Button.astro';
+import { pillarStyles } from '@/data/pillar-styles';
+import { pillarLabels } from '@/data/pillars';
+
+interface Props {
+  lang?: 'it' | 'en';
+}
+
+const { lang = 'it' } = Astro.props;
+const prefix = lang === 'en' ? '/en' : '';
+
+const allProjects = await getCollection('projects');
+const workshops = allProjects
+  .filter((p) => p.data.type === 'workshop')
+  .sort((a, b) => a.data.weight - b.data.weight);
+
+const calLink = 'https://cal.eu/monte97/30min';
+const mailLink = 'mailto:francesco@montelli.dev';
+
+const t = lang === 'en'
+  ? {
+      pageTitle: 'Workshops',
+      pageDesc: 'Hands-on training on testing, security, and identity management',
+      heroTitle: 'Workshops & training',
+      heroSubtitle: 'Hands-on sessions designed for engineering teams that want to learn by doing — not by sitting through slides.',
+      intro: 'Workshops are not consulting. They are bounded, structured training sessions on a specific topic, run with the team that has to apply what they learn.',
+      ctaTitle: 'Need a tailored session for your team?',
+      ctaDesc: "Tell me where the team is now and what you want them to walk away with. We'll define scope and format together.",
+      ctaPrimary: 'Book a call',
+      ctaSecondary: 'or write me',
+      durationLabel: 'Duration',
+      audienceLabel: 'For',
+    }
+  : {
+      pageTitle: 'Workshop',
+      pageDesc: 'Formazione hands-on su testing, security e identity management',
+      heroTitle: 'Workshop e formazione',
+      heroSubtitle: 'Sessioni hands-on per team di sviluppo che vogliono imparare facendo — non guardando slide.',
+      intro: 'I workshop non sono consulenza. Sono sessioni formative strutturate, su un tema specifico, fatte con il team che dovrà applicare quello che impara.',
+      ctaTitle: 'Serve una sessione su misura per il tuo team?',
+      ctaDesc: "Raccontami dove sta il team ora e cosa vuoi che si porti a casa. Definiamo insieme scope e formato.",
+      ctaPrimary: 'Prenota una call',
+      ctaSecondary: 'oppure scrivimi',
+      durationLabel: 'Durata',
+      audienceLabel: 'Per',
+    };
+---
+
+<PageLayout title={t.pageTitle} description={t.pageDesc} lang={lang}>
+  <PageHero title={t.heroTitle} subtitle={t.heroSubtitle} />
+
+  <section class="mb-12 fade-in-section">
+    <p class="text-text-muted text-lg leading-relaxed max-w-3xl">{t.intro}</p>
+  </section>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-5 stagger-children mb-20">
+    {workshops.map((ws) => {
+      const styles = pillarStyles[ws.data.pillar];
+      return (
+        <a
+          href={`${prefix}/workshop/${ws.id}/`}
+          class:list={[
+            'group block rounded-xl border border-border/70 dark:border-border-dark/70 border-l-[3px] p-6 bg-white dark:bg-surface-dark hover:shadow-md hover:border-border dark:hover:border-border-dark transition-all duration-300',
+            styles.borderLeft,
+          ]}
+        >
+          <div class="flex items-start justify-between gap-3 mb-3">
+            <h2 class="text-base font-bold text-text-dark dark:text-text-light group-hover:text-accent transition-colors">
+              {ws.data.title}
+            </h2>
+            <span class={`text-[11px] font-medium px-2 py-0.5 rounded-full whitespace-nowrap shrink-0 ${styles.badge}`}>
+              {pillarLabels[ws.data.pillar][lang]}
+            </span>
+          </div>
+          <p class="text-text-muted text-sm leading-relaxed mb-4">{ws.data.description}</p>
+          {ws.data.tags.length > 0 && (
+            <div class="flex flex-wrap gap-1.5">
+              {ws.data.tags.slice(0, 5).map((tag) => (
+                <span class="text-[11px] text-text-muted/80 bg-text-muted/8 px-1.5 py-0.5 rounded">{tag}</span>
+              ))}
+            </div>
+          )}
+        </a>
+      );
+    })}
+  </div>
+
+  <section class="text-center py-16 fade-in-section">
+    <h2 class="text-3xl font-bold mb-3">{t.ctaTitle}</h2>
+    <p class="text-text-muted text-lg mb-8 max-w-xl mx-auto">{t.ctaDesc}</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+      <Button href={calLink} variant="primary" size="lg">
+        {t.ctaPrimary}
+      </Button>
+      <a href={mailLink} class="text-sm text-text-muted hover:text-accent transition-colors">
+        {t.ctaSecondary}
+      </a>
+    </div>
+  </section>
+</PageLayout>
