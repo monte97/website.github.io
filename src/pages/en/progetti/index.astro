@@ -1,5 +1,18 @@
 ---
-import ProjectsPage from '@/components/pages/ProjectsPage.astro';
+const target = '/en/services/';
 ---
 
-<ProjectsPage lang="en" />
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting — Services</title>
+    <link rel="canonical" href={target} />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <meta name="robots" content="noindex" />
+  </head>
+  <body>
+    <p>This page has moved. <a href={target}>Go to Services</a>.</p>
+    <script set:html={`window.location.replace(${JSON.stringify(target)});`} />
+  </body>
+</html>
