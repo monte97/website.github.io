@@ -36,8 +36,8 @@ HEADLINE (large, bold, two lines):
 "Imparare facendo,
 non guardando slide."
 
-SUBTEXT (medium, in monospace, with bullet separators):
-Playwright · k6 · Keycloak
+SUBTEXT (medium, in monospace):
+Workshop hands-on per team di sviluppo
 
 VISUAL CONCEPT
 A clear visual contrast between two halves of the canvas:
@@ -56,8 +56,8 @@ is part of the message — it's the gap between watching and doing.
 DO NOT INCLUDE
 - Faces of people (no instructor pictures)
 - Real laptops, real screens, real keyboards (avoid stock photo cliché)
-- Logos of any tech company including Playwright, k6, Keycloak (the
-  text mentions them, no need for icons)
+- Logos of any tech company or product (keep the image
+  topic-agnostic so it works for any workshop)
 - Classroom imagery (whiteboards, desks, chairs)
 - More than the two text strings listed
 - Multiple "active" symbols on the right (one is enough)
@@ -75,7 +75,7 @@ HEADLINE:
 not by watching slides."
 
 SUBTEXT:
-Playwright · k6 · Keycloak
+Hands-on workshops for engineering teams
 ```
 
 ---
@@ -91,7 +91,7 @@ L'immagine è OK quando:
 L'immagine è da rifare se:
 - ✗ Il contrasto non è chiaro (entrambi gli elementi sono troppo simili)
 - ✗ Compare un'aula, una lavagna, un docente
-- ✗ Compaiono loghi di Playwright/k6/Keycloak
+- ✗ Compaiono loghi di prodotti o aziende tech
 - ✗ L'elemento "hands-on" è troppo letterale (mani vere, ferri da lavoro reali)
 
 ---
