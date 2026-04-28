@@ -13,15 +13,17 @@ const text = {
   it: {
     greeting: 'Ciao, sono Monte.',
     headline: 'Quando il sistema inizia a scricchiolare,',
-    headlineAccent: "sono quello che arriva prima che diventi un'emergenza.",
-    subtitle: "Software Engineer freelance, sistemi distribuiti. Iscritto all'Ordine degli Ingegneri di Ravenna.",
+    headlineAccent: "arrivo prima che diventi un'emergenza.",
+    subtitle: 'Software Engineer freelance specializzato in sistemi distribuiti. Aiuto team in crescita a riconoscere i segnali prima che diventino guasti.',
+    credential: "Iscritto all'Ordine degli Ingegneri di Ravenna",
     cta: 'Richiedi un Health Check',
   },
   en: {
     greeting: "Hi, I'm Monte.",
     headline: 'When the system starts to creak,',
-    headlineAccent: "I'm the one who steps in before it turns into an emergency.",
-    subtitle: 'Freelance Software Engineer specialized in distributed systems. Registered with the Italian Order of Engineers (Ravenna).',
+    headlineAccent: 'I step in before it turns into an emergency.',
+    subtitle: 'Freelance Software Engineer specialized in distributed systems. I help growing teams catch the signals before they become outages.',
+    credential: 'Registered with the Italian Order of Engineers (Ravenna)',
     cta: 'Request a Health Check',
   },
 };
@@ -69,6 +71,9 @@ const t = text[lang];
         </h1>
         <p class="mt-5 text-base md:text-lg text-text-muted max-w-xl leading-relaxed">
           {t.subtitle}
+        </p>
+        <p class="mt-2 text-xs text-text-muted/70">
+          {t.credential}
         </p>
         <div class="mt-8">
           <Button href={calLink} size="lg" data-umami-event="cta-hero-healthcheck">
