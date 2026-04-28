@@ -1,7 +1,5 @@
 ---
-import { getCollection } from 'astro:content';
 import Button from '@/components/ui/Button.astro';
-import { yearsExperience } from '@/utils/blog';
 
 interface Props {
   lang?: 'it' | 'en';
@@ -15,40 +13,16 @@ const text = {
     sub: 'Se il tuo team sta crescendo e vuoi capire dove intervenire, parti da una discovery call gratuita di 30 minuti.',
     ctaPrimary: 'Richiedi un Health Check',
     emailLabel: 'oppure scrivimi',
-    articles: 'articoli',
-    series: 'serie',
-    years: 'anni di esperienza',
-    order: "Iscritto all'Ordine degli Ingegneri della provincia di Ravenna",
   },
   en: {
     heading: "Let's talk.",
-    sub: "If your team is growing and you want to figure out where to act, start with a free 30-minute discovery call.",
+    sub: 'If your team is growing and you want to figure out where to act, start with a free 30-minute discovery call.',
     ctaPrimary: 'Request a Health Check',
     emailLabel: 'or write me',
-    articles: 'articles',
-    series: 'series',
-    years: 'years of experience',
-    order: 'Registered engineer — Italian Order of Engineers, Ravenna',
   },
 };
 
 const t = text[lang];
-
-// Compute stats from content collection
-const allPosts = await getCollection('posts');
-const published = allPosts.filter((p) => p.data.lang === lang && !p.data.draft && p.data.pillar !== null);
-const articleCount = published.length;
-
-// Series = unique series slugs (posts with a series field or parent directory grouping)
-const seriesSlugs = new Set(
-  published.map((p) => p.id.split('/').slice(0, -1).join('/')).filter(Boolean)
-);
-const seriesCount = [...seriesSlugs].filter((slug) => {
-  const postsInSeries = published.filter((p) => p.id.startsWith(slug + '/'));
-  return postsInSeries.length >= 2;
-}).length;
-
-const yrsExp = yearsExperience();
 ---
 
 <section class="py-24 border-t border-border/30 dark:border-border-dark/30 fade-in-section" aria-label={t.heading}>
@@ -68,30 +42,7 @@ const yrsExp = yearsExperience();
       </a>
     </div>
 
-    {/* Social proof stats */}
-    <div class="flex justify-center gap-8 text-sm text-text-muted mb-6">
-      <div>
-        <span class="block text-lg font-bold text-text-dark dark:text-text-light">{articleCount}</span>
-        {t.articles}
-      </div>
-      <div>
-        <span class="block text-lg font-bold text-text-dark dark:text-text-light">{seriesCount}</span>
-        {t.series}
-      </div>
-      <div>
-        <span class="block text-lg font-bold text-text-dark dark:text-text-light">{yrsExp}+</span>
-        {t.years}
-      </div>
-    </div>
-
-    <p class="text-xs text-text-muted/70">
-      {t.order}
-    </p>
-
-    <div class="mt-6 flex justify-center gap-6 text-sm text-text-muted">
-      <a href="mailto:francesco@montelli.dev" class="hover:text-accent transition-colors" data-umami-event="click-email">
-        Email
-      </a>
+    <div class="flex justify-center text-sm text-text-muted">
       <a href="https://linkedin.com/in/francesco-montelli" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors" data-umami-event="click-social" data-umami-event-platform="linkedin">
         LinkedIn
       </a>
