@@ -1,75 +1,216 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
+
+const lastUpdate = 'April 28, 2026';
 ---
 
-<PageLayout title="Privacy Policy" description="Privacy Policy and Personal Data Notice" lang="en">
+<PageLayout title="Privacy Policy" description="Information on the processing of personal data under Regulation (EU) 2016/679" lang="en">
   <article class="prose dark:prose-invert max-w-none">
-    <h1>Privacy Policy and Personal Data Notice</h1>
+    <h1>Privacy Policy</h1>
+    <p class="text-text-muted">
+      Information on the processing of personal data under
+      Regulation (EU) 2016/679 (GDPR).
+    </p>
 
-    <h2>Privacy — Personal Data Management</h2>
-    <p>Francesco Montelli processes your data in compliance with European Regulation (EU) 2016/679 on the protection of natural persons with regard to the processing of personal data.</p>
-    <p>Under current European cookie regulations, all websites are required to inform users about the use of cookies on the site.</p>
+    <div class="not-prose rounded-xl border border-accent/30 bg-accent/5 p-6 my-8">
+      <h2 class="text-lg font-bold text-text-dark dark:text-text-light mb-3">In short</h2>
+      <p class="text-text-muted leading-relaxed mb-3">
+        This site is static and uses no cookies. There is no user database,
+        no account, no personal tracking.
+      </p>
+      <ul class="text-text-muted leading-relaxed space-y-1 list-disc pl-5">
+        <li>Traffic stats are collected by <strong>Umami</strong>, in aggregate form and without cookies.</li>
+        <li>If you email me, I keep your address only to reply to you.</li>
+        <li>If you book a call, you do it on <strong>Cal.com</strong> — they handle your booking data.</li>
+        <li>The site is hosted on <strong>GitHub Pages</strong> (Microsoft, USA), which sees the IPs of visitors.</li>
+        <li>To exercise your GDPR rights, email me at <a href="mailto:francesco@montelli.dev">francesco@montelli.dev</a>.</li>
+      </ul>
+    </div>
 
-    <h2>Data Controller</h2>
-    <p>The data controller for all data collected on this site is <strong>Francesco Montelli</strong>.</p>
+    <h2>1. Data Controller</h2>
+    <p>
+      The data controller for personal data collected via this site is
+      <strong>Francesco Montelli</strong>, VAT 02726990399.
+      For any request regarding your personal data — including the
+      GDPR rights described below — you can write to
+      <a href="mailto:francesco@montelli.dev">francesco@montelli.dev</a>.
+    </p>
 
-    <h2>Types of Data Processed</h2>
+    <h2>2. What data I collect and why</h2>
 
-    <h3>Navigation Data</h3>
-    <p>The computer systems and software procedures used to operate this site collect, in the course of their normal operation, certain data whose transmission is implicit in the use of Internet communication protocols. Francesco Montelli never collects such data in a form that allows users to be identified.</p>
-    <p>This category of data includes:</p>
+    <h3>2.1 Navigation data</h3>
+    <p>
+      The site is hosted on <strong>GitHub Pages</strong>, a Microsoft
+      service. When you visit the site, GitHub records technical data
+      relating to the connection (IP address, user agent, requested URL,
+      timestamp, response code) for security and service delivery
+      purposes. This data is processed by GitHub according to its own
+      privacy notice
+      (<a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener noreferrer">github.com/site-policy</a>),
+      to which I refer.
+    </p>
+
+    <h3>2.2 Analytics</h3>
+    <p>
+      To measure site traffic I use
+      <strong><a href="https://umami.is" target="_blank" rel="noopener noreferrer">Umami</a></strong>,
+      an analytics tool that <strong>does not use cookies</strong>,
+      <strong>does not collect personally identifiable data</strong>, and
+      <strong>does not perform cross-site tracking</strong>. The data
+      collected (page visited, referrer, device type, browser, country)
+      is aggregated and anonymous: it does not allow individual
+      visitors to be identified.
+    </p>
+
+    <h3>2.3 Email</h3>
+    <p>
+      If you write to me at the email address shown on the site, I
+      collect your email address and any other data you choose to
+      include in the message. This data is processed solely to reply to
+      you and to manage the conversation that follows.
+    </p>
+
+    <h3>2.4 Booking a call</h3>
+    <p>
+      To book a discovery call I use
+      <strong><a href="https://cal.com" target="_blank" rel="noopener noreferrer">Cal.com</a></strong>.
+      When you click the booking link you are redirected to Cal.com
+      servers, where you enter your name, email, and any other
+      information requested by the booking form. Cal.com acts as an
+      <strong>external data processor</strong> (subprocessor) and
+      processes the data according to its own privacy notice
+      (<a href="https://cal.com/privacy" target="_blank" rel="noopener noreferrer">cal.com/privacy</a>).
+      I receive from Cal.com the information you entered, solely to
+      prepare for the call and contact you.
+    </p>
+
+    <h3>2.5 Browser storage</h3>
+    <p>
+      The site does not use cookies. To store your theme preference
+      (light/dark) the browser's <strong>localStorage</strong> is used —
+      a strictly local technical mechanism that does not send data to
+      external servers and that you can clear at any time from your
+      browser settings.
+    </p>
+
+    <h2>3. Legal basis for processing</h2>
     <ul>
-      <li>IP addresses or domain names of the computers used by users connecting to the site</li>
-      <li>URI (Uniform Resource Identifier) addresses of the requested resources</li>
-      <li>The time of the request</li>
-      <li>The method used to submit the request to the server</li>
-      <li>The size of the file received in response</li>
-      <li>The numeric code indicating the status of the server's response (success, error, etc.)</li>
-      <li>Other parameters relating to the user's operating system and computing environment</li>
+      <li>
+        <strong>Navigation data and anonymous analytics</strong>:
+        legitimate interest of the controller in ensuring the proper
+        functioning of the site and measuring the effectiveness of
+        content in aggregate form (Art. 6.1.f GDPR).
+      </li>
+      <li>
+        <strong>Voluntarily sent emails</strong>: performance of
+        pre-contractual measures at the data subject's request, or
+        legitimate interest in replying to incoming communications
+        (Art. 6.1.b and 6.1.f GDPR).
+      </li>
+      <li>
+        <strong>Booking a call</strong>: performance of pre-contractual
+        measures at the data subject's request (Art. 6.1.b GDPR).
+      </li>
     </ul>
-    <p>This data is used exclusively in anonymous form and for statistical purposes related to site usage and proper functioning.</p>
 
-    <h3>Data Voluntarily Provided by the User</h3>
-    <p>Personal data may be collected voluntarily through:</p>
+    <h2>4. Retention period</h2>
     <ul>
-      <li>Sending email to the addresses listed on the site</li>
-      <li>Submitting electronic forms on the site</li>
+      <li>
+        <strong>GitHub Pages logs</strong>: managed by GitHub according
+        to its own terms.
+      </li>
+      <li>
+        <strong>Umami statistics</strong>: aggregate data retained for
+        the time necessary to analyse traffic, in any case no longer
+        than 24 months.
+      </li>
+      <li>
+        <strong>Email</strong>: retained for the time necessary to
+        manage the conversation and for the subsequent ordinary
+        limitation period, unless a specific deletion request is made.
+      </li>
+      <li>
+        <strong>Cal.com booking data</strong>: managed by Cal.com
+        according to its own terms; copy received via email retained as
+        in the point above.
+      </li>
     </ul>
-    <p>Sending an email involves the collection of the sender's email address, which is necessary to respond to the request, as well as any other personal data contained in the message. Personal data collected in this way will be used solely to reply to the received email and for any subsequent related communications.</p>
-    <p>Submitting information request forms involves the collection of information sent through those forms.</p>
 
-    <h2>General Information on Cookies</h2>
-    <p>When you access a website, it or related sites may set or read cookies and/or other types of identifiers on the browser and/or device you are using.</p>
-    <p>A cookie is a small text file stored on the computer of a website visitor in order to record certain information about the visit and to create a way to recognise the user at later times. Device identifiers, on the other hand, are generated by collecting and processing information such as IP address and/or user agent (browser version, type and version of operating system) or other device characteristics, also to associate certain information with a specific user.</p>
-    <p>A website can only set a cookie in a browser if the browser's configured preferences allow it. It is important to know that a browser will only allow a given website to access cookies set by that same site, not those set by other websites — there is no privacy risk in this regard.</p>
-
-    <h2>Use of Cookies</h2>
-    <p>This site uses cookies to make its services simple and efficient for users browsing its pages.</p>
-
-    <h3>Types of Cookies Used</h3>
-    <p>Below are the types of cookies used by this site according to their purpose:</p>
-
-    <h4>Technical Cookies</h4>
-    <p>This type of cookie enables the correct functioning of certain sections of the site. They fall into two categories:</p>
+    <h2>5. Transfers outside the EU</h2>
+    <p>
+      Some of the services used involve the transfer of data outside
+      the European Union, in particular to the United States:
+    </p>
     <ul>
-      <li><strong>Persistent</strong>: not destroyed when the browser is closed; they remain until a preset expiry date</li>
-      <li><strong>Session</strong>: destroyed every time the browser is closed</li>
+      <li>
+        <strong>GitHub Pages (Microsoft Corporation, USA)</strong>:
+        hosting of the static site.
+      </li>
+      <li>
+        <strong>Cal.com</strong>: management of call bookings.
+      </li>
     </ul>
-    <p>These cookies, always sent from our domain, are necessary for the site to display correctly and in relation to the technical services offered. They will therefore always be used and sent, unless the user modifies their browser settings (which may affect how site pages are displayed).</p>
+    <p>
+      Such transfers take place in compliance with the safeguards
+      provided by the GDPR, in particular through the
+      <strong>Standard Contractual Clauses (SCC)</strong> approved by
+      the European Commission and/or adherence to the
+      <strong>EU-US Data Privacy Framework</strong>, where applicable.
+      The respective providers declare compliance with these instruments
+      in their privacy notices, to which I refer for details.
+    </p>
 
-    <h4>Analytical Cookies</h4>
-    <p>Cookies in this category are used to collect information about site usage in the form of anonymous statistical analysis. This type of cookie collects data anonymously about user activity and how users arrived at the site. Analytical cookies are sent by the site itself.</p>
+    <h2>6. Your rights</h2>
+    <p>
+      Under articles 15-22 of the GDPR you have the right to:
+    </p>
+    <ul>
+      <li>
+        <strong>Access</strong> your personal data (Art. 15);
+      </li>
+      <li>
+        <strong>Rectification</strong> of inaccurate or incomplete data
+        (Art. 16);
+      </li>
+      <li>
+        <strong>Erasure</strong> of data concerning you ("right to be
+        forgotten", Art. 17);
+      </li>
+      <li>
+        <strong>Restriction</strong> of processing (Art. 18);
+      </li>
+      <li>
+        <strong>Portability</strong> of data in a structured,
+        machine-readable format (Art. 20);
+      </li>
+      <li>
+        <strong>Object</strong> to processing based on legitimate
+        interest (Art. 21).
+      </li>
+    </ul>
+    <p>
+      To exercise any of these rights, write to
+      <a href="mailto:francesco@montelli.dev">francesco@montelli.dev</a>.
+      I will respond within one month of the request as required by
+      the GDPR.
+    </p>
 
-    <h4>Traffic Analysis (cookie-free)</h4>
-    <p>This site uses <strong>Umami</strong> (<a href="https://umami.is" target="_blank" rel="noopener noreferrer">umami.is</a>) as a traffic analytics tool. Umami does not use cookies, does not collect personally identifiable data, and does not perform cross-site tracking. The data collected (pages visited, referrer, device type, browser, country of origin) is aggregated and anonymised: it does not allow individual visitors to be identified in any way.</p>
+    <h2>7. Complaint to the supervisory authority</h2>
+    <p>
+      If you believe that the processing of your personal data violates
+      the GDPR, you have the right to lodge a complaint with the Italian
+      <strong>Data Protection Authority</strong>
+      (<a href="https://www.garanteprivacy.it" target="_blank" rel="noopener noreferrer">garanteprivacy.it</a>)
+      or with the supervisory authority of the EU Member State where
+      you reside.
+    </p>
 
-    <h2>Cookie Consent</h2>
-    <p>Under current regulations, this site is not required to request consent for technical and analytical cookies.</p>
-    <p>For all other types of cookies, consent may be given by the user in one or more of the following ways:</p>
-    <ol>
-      <li>Through specific configurations of the browser being used or related software programs used to browse the pages of the site</li>
-      <li>By modifying settings when using third-party services</li>
-    </ol>
-    <p>Either of these solutions may prevent the user from using or viewing parts of the site.</p>
+    <h2>8. Updates</h2>
+    <p>
+      This privacy policy was last updated on <strong>{lastUpdate}</strong>
+      and may be subject to revision. Previous versions are not archived
+      online; to request a history, write to
+      <a href="mailto:francesco@montelli.dev">francesco@montelli.dev</a>.
+    </p>
   </article>
 </PageLayout>

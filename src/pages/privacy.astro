@@ -1,75 +1,215 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
+
+const lastUpdate = '28 aprile 2026';
 ---
 
-<PageLayout title="Privacy Policy" description="Informativa su Privacy e Dati Personali" lang="it">
+<PageLayout title="Privacy Policy" description="Informativa sul trattamento dei dati personali ai sensi del Regolamento (UE) 2016/679" lang="it">
   <article class="prose dark:prose-invert max-w-none">
-    <h1>Informativa su Privacy e Dati Personali</h1>
+    <h1>Privacy Policy</h1>
+    <p class="text-text-muted">
+      Informativa sul trattamento dei dati personali ai sensi del
+      Regolamento (UE) 2016/679 (GDPR).
+    </p>
 
-    <h2>Privacy - Gestione dei Dati Personali</h2>
-    <p>Montelli Francesco effettua il trattamento dei tuoi dati in ottemperanza al Regolamento europeo (UE) 2016/679 relativo alla protezione delle persone fisiche con riguardo al trattamento dei dati personali.</p>
-    <p>Secondo la vigente normativa europea in materia di Cookies, tutti i siti sono tenuti a informare l'utente riguardo l'utilizzo dei Cookie presenti nel sito stesso.</p>
+    <div class="not-prose rounded-xl border border-accent/30 bg-accent/5 p-6 my-8">
+      <h2 class="text-lg font-bold text-text-dark dark:text-text-light mb-3">In sintesi</h2>
+      <p class="text-text-muted leading-relaxed mb-3">
+        Questo sito è statico e non usa cookie. Non c'è un database
+        utenti, non c'è un account, non c'è tracciamento personale.
+      </p>
+      <ul class="text-text-muted leading-relaxed space-y-1 list-disc pl-5">
+        <li>Le statistiche di traffico vengono raccolte da <strong>Umami</strong>, in forma aggregata e senza cookie.</li>
+        <li>Se mi scrivi una mail, conservo il tuo indirizzo solo per risponderti.</li>
+        <li>Se prenoti una call, lo fai su <strong>Cal.com</strong> — è loro che gestiscono i tuoi dati per quella prenotazione.</li>
+        <li>Il sito è ospitato su <strong>GitHub Pages</strong> (Microsoft, USA), che vede gli IP di chi naviga.</li>
+        <li>Per esercitare i tuoi diritti GDPR, scrivimi a <a href="mailto:francesco@montelli.dev">francesco@montelli.dev</a>.</li>
+      </ul>
+    </div>
 
-    <h2>Titolare e Responsabile del Trattamento dei Dati</h2>
-    <p>Il titolare e il responsabile del trattamento dei dati raccolti su questo sito è <strong>Montelli Francesco</strong>.</p>
+    <h2>1. Titolare del trattamento</h2>
+    <p>
+      Il titolare del trattamento dei dati raccolti tramite questo sito è
+      <strong>Francesco Montelli</strong>, P.IVA 02726990399.
+      Per qualsiasi richiesta relativa ai tuoi dati personali — inclusi
+      i diritti GDPR descritti più sotto — puoi scrivere a
+      <a href="mailto:francesco@montelli.dev">francesco@montelli.dev</a>.
+    </p>
 
-    <h2>Tipi di Dati Trattati</h2>
+    <h2>2. Quali dati raccolgo e perché</h2>
 
-    <h3>Dati di Navigazione</h3>
-    <p>I sistemi informatici e le procedure software preposte al funzionamento del sito acquisiscono, nel corso del loro normale esercizio, alcuni dati la cui trasmissione è implicita nell'uso dei protocolli di comunicazione di Internet. Montelli Francesco non raccoglie mai tali dati in forma che consenta di identificare gli utenti.</p>
-    <p>In questa categoria di dati rientrano:</p>
+    <h3>2.1 Dati di navigazione</h3>
+    <p>
+      Il sito è ospitato su <strong>GitHub Pages</strong>, servizio di
+      Microsoft. Quando visiti il sito, GitHub registra dati tecnici
+      relativi alla connessione (indirizzo IP, user agent, URL richiesto,
+      orario, codice di risposta) ai fini della sicurezza e
+      dell'erogazione del servizio. Questi dati sono trattati da GitHub
+      secondo la propria informativa privacy
+      (<a href="https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener noreferrer">github.com/site-policy</a>),
+      a cui rimando.
+    </p>
+
+    <h3>2.2 Analytics</h3>
+    <p>
+      Per misurare il traffico del sito utilizzo
+      <strong><a href="https://umami.is" target="_blank" rel="noopener noreferrer">Umami</a></strong>,
+      uno strumento di analytics che <strong>non utilizza cookie</strong>,
+      <strong>non raccoglie dati personali identificabili</strong> e
+      <strong>non effettua tracciamento cross-site</strong>. I dati
+      raccolti (pagina visitata, referrer, tipo di dispositivo, browser,
+      paese) sono aggregati e anonimi: non consentono di identificare i
+      singoli visitatori.
+    </p>
+
+    <h3>2.3 Email</h3>
+    <p>
+      Se mi scrivi un'email all'indirizzo riportato sul sito, raccolgo
+      il tuo indirizzo email e qualsiasi altro dato che decidi di
+      includere nel messaggio. Questi dati sono trattati al solo fine di
+      risponderti e gestire la conversazione che ne consegue.
+    </p>
+
+    <h3>2.4 Prenotazione di una call</h3>
+    <p>
+      Per prenotare una discovery call utilizzo il servizio
+      <strong><a href="https://cal.com" target="_blank" rel="noopener noreferrer">Cal.com</a></strong>.
+      Cliccando sul link di prenotazione vieni reindirizzato sui server
+      di Cal.com, dove inserisci nome, email ed eventuali altre
+      informazioni richieste dal modulo di prenotazione. Cal.com agisce
+      come <strong>responsabile esterno del trattamento</strong>
+      (subprocessor) e tratta i dati secondo la propria informativa
+      privacy (<a href="https://cal.com/privacy" target="_blank" rel="noopener noreferrer">cal.com/privacy</a>).
+      Io ricevo da Cal.com le informazioni che hai inserito al solo fine
+      di prepararmi alla call e contattarti.
+    </p>
+
+    <h3>2.5 Storage del browser</h3>
+    <p>
+      Il sito non utilizza cookie. Per memorizzare la tua preferenza di
+      tema (chiaro/scuro) viene utilizzato il <strong>localStorage</strong>
+      del browser, un meccanismo strettamente locale e tecnico che non
+      invia dati a server esterni e che puoi cancellare in qualsiasi
+      momento dalle impostazioni del browser.
+    </p>
+
+    <h2>3. Base giuridica del trattamento</h2>
     <ul>
-      <li>Gli indirizzi IP o i nomi a dominio dei computer utilizzati dagli utenti che si connettono al sito</li>
-      <li>Gli indirizzi in notazione URI (Uniform Resource Identifier) delle risorse richieste</li>
-      <li>L'orario della richiesta</li>
-      <li>Il metodo utilizzato nel sottoporre la richiesta al server</li>
-      <li>La dimensione del file ottenuto in risposta</li>
-      <li>Il codice numerico indicante lo stato della risposta data dal server (buon fine, errore, ecc.)</li>
-      <li>Altri parametri relativi al sistema operativo e all'ambiente informatico dell'utente</li>
+      <li>
+        <strong>Dati di navigazione e analytics anonimi</strong>:
+        legittimo interesse del titolare a garantire il corretto
+        funzionamento del sito e a misurare in forma aggregata
+        l'efficacia dei contenuti (art. 6.1.f GDPR).
+      </li>
+      <li>
+        <strong>Email inviate volontariamente</strong>: esecuzione di
+        misure precontrattuali su richiesta dell'interessato, oppure
+        legittimo interesse a rispondere alle comunicazioni ricevute
+        (art. 6.1.b e 6.1.f GDPR).
+      </li>
+      <li>
+        <strong>Prenotazione di una call</strong>: esecuzione di misure
+        precontrattuali su richiesta dell'interessato (art. 6.1.b GDPR).
+      </li>
     </ul>
-    <p>Questi dati vengono utilizzati esclusivamente in forma anonima e per finalità statistiche connesse all'uso del sito e al suo corretto funzionamento.</p>
 
-    <h3>Dati Forniti Volontariamente dall'Utente</h3>
-    <p>La raccolta di dati personali degli utenti può avvenire in maniera volontaria, attraverso:</p>
+    <h2>4. Periodo di conservazione</h2>
     <ul>
-      <li>L'invio di posta elettronica agli indirizzi riportati sul sito</li>
-      <li>La spedizione dei moduli elettronici presenti sullo stesso da parte degli utenti</li>
+      <li>
+        <strong>Log di GitHub Pages</strong>: gestiti da GitHub secondo
+        i propri termini.
+      </li>
+      <li>
+        <strong>Statistiche Umami</strong>: dati aggregati conservati
+        per il tempo necessario all'analisi del traffico, comunque non
+        oltre 24 mesi.
+      </li>
+      <li>
+        <strong>Email</strong>: conservate per il tempo necessario alla
+        gestione della conversazione e per il successivo periodo di
+        prescrizione ordinaria, salvo specifica richiesta di
+        cancellazione.
+      </li>
+      <li>
+        <strong>Dati di prenotazione Cal.com</strong>: gestiti da
+        Cal.com secondo i propri termini; copia ricevuta via email
+        conservata come al punto precedente.
+      </li>
     </ul>
-    <p>L'invio di posta elettronica comporta la raccolta, da parte del Titolare, dell'indirizzo email del mittente, necessario per rispondere alla richiesta, nonché degli eventuali altri dati personali contenuti nella comunicazione. I dati personali raccolti attraverso questa modalità verranno utilizzati dal Titolare al solo fine di rispondere al messaggio di posta elettronica ricevuto e per eventuali successive comunicazioni correlate.</p>
-    <p>La spedizione di moduli per la richiesta informazioni comporta la raccolta di informazioni inviate tramite i moduli.</p>
 
-    <h2>Informazioni Generali sui Cookie</h2>
-    <p>Quando accedi a un sito, esso o siti ad esso correlati potrebbero impostare o leggere cookie e/o altri tipi di identificatori circa il browser e/o il dispositivo che stai utilizzando.</p>
-    <p>Un cookie è un piccolo file di testo che viene memorizzato sul computer di chi visualizza un sito web allo scopo di registrare alcune informazioni relative alla visita nonché di creare un sistema per riconoscere l'utente anche in momenti successivi. Gli identificatori dei dispositivi, invece, vengono generati raccogliendo ed elaborando alcune informazioni come l'indirizzo IP e/o lo user agent (versione del browser, tipo e versione del sistema operativo) o altre caratteristiche del dispositivo, sempre al fine di ricollegare talune informazioni ad un utente specifico.</p>
-    <p>Un sito Web può impostare un cookie sul browser solo se le preferenze configurate per quest'ultimo lo consentono. È importante sapere che un browser può consentire a un determinato sito Web di accedere solo ed esclusivamente ai cookie da esso impostati e non a quelli impostati da altri siti Web: non vi è alcun rischio per la vostra privacy in tal senso.</p>
-
-    <h2>Uso dei Cookie</h2>
-    <p>Questo sito utilizza i Cookie per rendere i propri servizi semplici e efficienti per l'utenza che visiona le pagine.</p>
-
-    <h3>Tipologie di Cookie Utilizzati</h3>
-    <p>A seguire i vari tipi di cookie utilizzati da questo sito in funzione delle finalità d'uso:</p>
-
-    <h4>Cookie Tecnici</h4>
-    <p>Questa tipologia di cookie permette il corretto funzionamento di alcune sezioni del sito. Sono di due categorie:</p>
+    <h2>5. Trasferimenti extra-UE</h2>
+    <p>
+      Alcuni dei servizi utilizzati comportano il trasferimento di dati
+      al di fuori dell'Unione Europea, in particolare verso gli
+      Stati Uniti:
+    </p>
     <ul>
-      <li><strong>Persistenti</strong>: una volta chiuso il browser non vengono distrutti ma rimangono fino ad una data di scadenza preimpostata</li>
-      <li><strong>Di sessione</strong>: vengono distrutti ogni volta che il browser viene chiuso</li>
+      <li>
+        <strong>GitHub Pages (Microsoft Corporation, USA)</strong>:
+        hosting del sito statico.
+      </li>
+      <li>
+        <strong>Cal.com</strong>: gestione della prenotazione delle
+        call.
+      </li>
     </ul>
-    <p>Questi cookie, inviati sempre dal nostro dominio, sono necessari a visualizzare correttamente il sito e in relazione ai servizi tecnici offerti, verranno quindi sempre utilizzati e inviati, a meno che l'utenza non modifichi le impostazioni nel proprio browser (inficiando così la visualizzazione delle pagine del sito).</p>
+    <p>
+      Tali trasferimenti avvengono nel rispetto delle garanzie previste
+      dal GDPR, in particolare attraverso le
+      <strong>Standard Contractual Clauses (SCC)</strong> approvate
+      dalla Commissione Europea e/o l'adesione al
+      <strong>Data Privacy Framework UE-USA</strong>, ove applicabile.
+      I rispettivi fornitori dichiarano la conformità a tali strumenti
+      nelle loro informative privacy, a cui rimando per il dettaglio.
+    </p>
 
-    <h4>Cookie Analitici</h4>
-    <p>I cookie in questa categoria vengono utilizzati per collezionare informazioni sull'uso del sito. Si tratta di informazioni in merito ad analisi statistiche anonime. Questa tipologia di cookie raccoglie dati in forma anonima sull'attività dell'utenza e su come è arrivata sul sito. I cookie analitici sono inviati dal sito stesso.</p>
+    <h2>6. I tuoi diritti</h2>
+    <p>
+      Ai sensi degli articoli 15-22 del GDPR hai il diritto di:
+    </p>
+    <ul>
+      <li>
+        <strong>Accesso</strong> ai tuoi dati personali (art. 15);
+      </li>
+      <li>
+        <strong>Rettifica</strong> di dati inesatti o incompleti (art. 16);
+      </li>
+      <li>
+        <strong>Cancellazione</strong> dei dati che ti riguardano
+        ("diritto all'oblio", art. 17);
+      </li>
+      <li>
+        <strong>Limitazione</strong> del trattamento (art. 18);
+      </li>
+      <li>
+        <strong>Portabilità</strong> dei dati in un formato strutturato e
+        leggibile da dispositivo automatico (art. 20);
+      </li>
+      <li>
+        <strong>Opposizione</strong> al trattamento basato sul legittimo
+        interesse (art. 21).
+      </li>
+    </ul>
+    <p>
+      Per esercitare uno qualsiasi di questi diritti, scrivi a
+      <a href="mailto:francesco@montelli.dev">francesco@montelli.dev</a>.
+      Ti risponderò entro un mese dalla richiesta come previsto dal GDPR.
+    </p>
 
-    <h4>Analisi del traffico (senza cookie)</h4>
-    <p>Questo sito utilizza <strong>Umami</strong> (<a href="https://umami.is" target="_blank" rel="noopener noreferrer">umami.is</a>) come strumento di analisi del traffico. Umami non utilizza cookie, non raccoglie dati personali identificabili e non effettua tracciamento cross-site. I dati raccolti (pagine visitate, referrer, tipo di dispositivo, browser, paese di provenienza) sono aggregati e anonimizzati: non consentono in alcun modo di identificare i singoli visitatori.</p>
+    <h2>7. Reclamo all'autorità di controllo</h2>
+    <p>
+      Se ritieni che il trattamento dei tuoi dati personali violi il
+      GDPR hai il diritto di proporre reclamo al
+      <strong>Garante per la protezione dei dati personali</strong>
+      (<a href="https://www.garanteprivacy.it" target="_blank" rel="noopener noreferrer">garanteprivacy.it</a>).
+    </p>
 
-    <h2>Consenso ai Cookie</h2>
-    <p>Questo sito, secondo la normativa vigente, non è tenuto a chiedere consenso per i cookie tecnici e analitici.</p>
-    <p>Per tutte le altre tipologie di cookie il consenso può essere espresso dall'Utente con una o più di una delle seguenti modalità:</p>
-    <ol>
-      <li>Mediante specifiche configurazioni del browser utilizzato o dei relativi programmi informatici utilizzati per navigare le pagine che compongono il sito</li>
-      <li>Mediante modifica delle impostazioni nell'uso dei servizi di terze parti</li>
-    </ol>
-    <p>Entrambe queste soluzioni potrebbero impedire all'utente di utilizzare o visualizzare parti del sito.</p>
+    <h2>8. Aggiornamenti</h2>
+    <p>
+      Questa privacy policy è stata aggiornata il <strong>{lastUpdate}</strong>
+      e potrebbe essere soggetta a revisione. Le versioni precedenti non
+      vengono archiviate online; per richiedere uno storico scrivi a
+      <a href="mailto:francesco@montelli.dev">francesco@montelli.dev</a>.
+    </p>
   </article>
 </PageLayout>
