@@ -37,6 +37,7 @@ const pillarsBrief: PillarBrief[] = lang === 'en'
 const t = lang === 'en'
   ? {
       pageTitle: 'About',
+      pageDesc: 'Francesco Montelli, freelance Software Engineer registered with the Italian Order of Engineers of Ravenna. Philosophy, method and why I sign everything personally.',
       heroTitle: 'About me',
       heroSubtitle: `${author.name} — Software Engineer, distributed systems`,
       cvLabel: 'Download CV',
@@ -60,6 +61,7 @@ const t = lang === 'en'
     }
   : {
       pageTitle: 'About',
+      pageDesc: "Francesco Montelli, Software Engineer freelance e ingegnere iscritto all'Ordine di Ravenna. Filosofia, metodo e perché firmo tutto in prima persona.",
       heroTitle: 'Chi sono',
       heroSubtitle: `${author.name} — Software Engineer, sistemi distribuiti`,
       cvLabel: 'Scarica il CV',
@@ -83,7 +85,7 @@ const t = lang === 'en'
     };
 ---
 
-<PageLayout title={t.pageTitle} lang={lang}>
+<PageLayout title={t.pageTitle} description={t.pageDesc} lang={lang}>
   <PageHero
     title={t.heroTitle}
     subtitle={t.heroSubtitle}

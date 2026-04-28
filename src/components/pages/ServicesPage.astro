@@ -107,6 +107,7 @@ const scenarios: Scenario[] = lang === 'en'
 const t = lang === 'en'
   ? {
       pageTitle: 'Services',
+      pageDesc: 'Architecture, observability, automation: three pillars in a deliberate order. Free 30-minute discovery call to figure out where to act.',
       heroTitle: 'The method, applied.',
       heroSubtitle: 'Three pillars that multiply — not three services that add up. The order is not negotiable.',
       heroCta: 'Book a discovery call',
@@ -146,6 +147,7 @@ const t = lang === 'en'
     }
   : {
       pageTitle: 'Servizi',
+      pageDesc: 'Architettura, observability, automazione: tre pilastri in un ordine preciso. Discovery call gratuita di 30 minuti per capire dove intervenire.',
       heroTitle: 'Il metodo, applicato.',
       heroSubtitle: "Tre pilastri che si moltiplicano, non tre servizi che si sommano. L'ordine non è negoziabile.",
       heroCta: 'Prenota una discovery call',
@@ -185,7 +187,7 @@ const t = lang === 'en'
     };
 ---
 
-<PageLayout title={t.pageTitle} lang={lang}>
+<PageLayout title={t.pageTitle} description={t.pageDesc} lang={lang}>
   <PageHero
     title={t.heroTitle}
     subtitle={t.heroSubtitle}

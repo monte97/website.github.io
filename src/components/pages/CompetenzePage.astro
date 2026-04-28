@@ -236,6 +236,7 @@ const sections: PillarSection[] = lang === 'en'
 const t = lang === 'en'
   ? {
       pageTitle: 'Skills',
+      pageDesc: 'Technical skills organized around the three pillars of the method: design, verify, automate. Technologies as secondary tags, real cases in the blog.',
       heroTitle: 'Skills and stack',
       heroSubtitle: 'Organized by method, not by logo wall.',
       intro: "This isn't a list of technologies — it's what I actually do, grouped around the three pillars of the method. Technologies are secondary tags. Where a blog article makes the competence concrete, the link sits right next to it.",
@@ -248,6 +249,7 @@ const t = lang === 'en'
     }
   : {
       pageTitle: 'Competenze',
+      pageDesc: 'Le competenze tecniche organizzate per i tre pilastri del metodo: progettare, verificare, automatizzare. Tecnologie come tag secondari, casi reali nel blog.',
       heroTitle: 'Competenze e stack',
       heroSubtitle: 'Organizzate per metodo, non come parata di loghi.',
       intro: 'Non è una lista di tecnologie — è quello che faccio, raccolto attorno ai tre pilastri del metodo. Le tecnologie sono tag secondari. Dove un articolo del blog rende concreta la competenza, il link è lì accanto.',
@@ -260,7 +262,7 @@ const t = lang === 'en'
     };
 ---
 
-<PageLayout title={t.pageTitle} lang={lang}>
+<PageLayout title={t.pageTitle} description={t.pageDesc} lang={lang}>
   <PageHero title={t.heroTitle} subtitle={t.heroSubtitle} />
 
   <section class="mb-16 fade-in-section">
