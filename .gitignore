@@ -25,3 +25,4 @@ docker-compose.lhci.yml
 lighthouserc.json
 org.md
 style.md
+prompt/
