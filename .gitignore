@@ -3,6 +3,7 @@ node_modules/*
 public/*
 !public/images/
 !public/files/
+!public/og/
 !public/favicon.ico
 !public/robots.txt
 !public/site.webmanifest
