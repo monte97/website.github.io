@@ -1,0 +1,5 @@
+- about: non mi piace la firma
+- competenze: bello ma non mi piacciono le pil vuote, la gente potrebbe non capire il senso
+- home: mi pice, fix nel testo
+- servizi: ottimo
+- workshop: forse più generico? ne prevederò altri
