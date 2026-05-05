@@ -1,0 +1,123 @@
+---
+import { getCollection } from 'astro:content';
+import PageLayout from '@/layouts/PageLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import Button from '@/components/ui/Button.astro';
+import { pillarStyles } from '@/data/pillar-styles';
+import { pillarLabels } from '@/data/pillars';
+
+interface Props {
+  lang?: 'it' | 'en';
+}
+
+const { lang = 'it' } = Astro.props;
+const prefix = lang === 'en' ? '/en' : '';
+const servicesPath = lang === 'en' ? '/en/services/' : '/servizi/';
+
+const allProjects = await getCollection('projects');
+const caseStudies = allProjects
+  .filter((p) => p.data.type === 'project')
+  .sort((a, b) => a.data.weight - b.data.weight);
+
+const pillars: Array<'progettare' | 'verificare' | 'automatizzare'> = [
+  'progettare',
+  'verificare',
+  'automatizzare',
+];
+
+const grouped = pillars.map((pillar) => ({
+  pillar,
+  items: caseStudies.filter((p) => p.data.pillar === pillar),
+}));
+
+const calLink = 'https://cal.eu/monte97/30min';
+const mailLink = 'mailto:francesco@montelli.dev';
+
+const t = lang === 'en'
+  ? {
+      pageTitle: 'Case studies',
+      pageDesc: 'Real projects I worked on, organized by pillar — the problem, the context, what was done, the outcome.',
+      heroTitle: 'Case studies',
+      heroSubtitle: 'Real projects organized by pillar — what was the problem, what got done, what changed.',
+      intro: 'These are not portfolio screenshots. They are short narratives of the work itself — what was broken, what got built, and what was measurable after.',
+      backToServices: '← Back to Services',
+      ctaTitle: 'Want to talk about a similar problem?',
+      ctaDesc: '30 free minutes to understand if there is a fit. No slides, no commitment.',
+      ctaPrimary: 'Book a call',
+      ctaSecondary: 'or write me',
+    }
+  : {
+      pageTitle: 'Case study',
+      pageDesc: 'Progetti reali su cui ho lavorato, organizzati per pilastro — il problema, il contesto, cosa è stato fatto, il risultato.',
+      heroTitle: 'Case study',
+      heroSubtitle: 'Progetti reali organizzati per pilastro — qual era il problema, cosa è stato fatto, cosa è cambiato dopo.',
+      intro: 'Non sono screenshot da portfolio. Sono brevi racconti del lavoro: cosa non funzionava, cosa è stato costruito, e cosa era misurabile alla fine.',
+      backToServices: '← Torna a Servizi',
+      ctaTitle: 'Vuoi parlare di un problema simile?',
+      ctaDesc: '30 minuti gratuiti per capire se c\'è un fit. Niente slide, nessun impegno.',
+      ctaPrimary: 'Prenota una call',
+      ctaSecondary: 'oppure scrivimi',
+    };
+---
+
+<PageLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/progetti.webp" lang={lang}>
+  <PageHero title={t.heroTitle} subtitle={t.heroSubtitle} />
+
+  <section class="mb-12 fade-in-section">
+    <p class="text-text-muted text-lg leading-relaxed max-w-3xl">{t.intro}</p>
+    <a href={servicesPath} class="inline-block mt-4 text-sm text-text-muted hover:text-accent transition-colors">
+      {t.backToServices}
+    </a>
+  </section>
+
+  {grouped.map(({ pillar, items }) => {
+    if (items.length === 0) return null;
+    const styles = pillarStyles[pillar];
+    return (
+      <section class="mb-16 fade-in-section">
+        <div class="flex items-center gap-3 mb-6">
+          <span class={`text-xs font-medium px-2.5 py-1 rounded-full ${styles.badge}`}>
+            {pillarLabels[pillar][lang]}
+          </span>
+          <div class="h-px flex-1 bg-border/40 dark:bg-border-dark/40"></div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 stagger-children">
+          {items.map((p) => (
+            <a
+              href={`${prefix}/progetti/${p.id}/`}
+              class:list={[
+                'group block rounded-xl border border-border/70 dark:border-border-dark/70 border-l-[3px] p-6 bg-white dark:bg-surface-dark hover:shadow-md hover:border-border dark:hover:border-border-dark transition-all duration-300',
+                styles.borderLeft,
+              ]}
+            >
+              <h2 class="text-base font-bold text-text-dark dark:text-text-light group-hover:text-accent transition-colors mb-3">
+                {p.data.title}
+              </h2>
+              <p class="text-text-muted text-sm leading-relaxed mb-4">{p.data.description}</p>
+              {p.data.tags.length > 0 && (
+                <div class="flex flex-wrap gap-1.5">
+                  {p.data.tags.slice(0, 5).map((tag) => (
+                    <span class="text-[11px] text-text-muted/80 bg-text-muted/8 px-1.5 py-0.5 rounded">{tag}</span>
+                  ))}
+                </div>
+              )}
+            </a>
+          ))}
+        </div>
+      </section>
+    );
+  })}
+
+  <section class="text-center py-16 fade-in-section">
+    <h2 class="text-3xl font-bold mb-3">{t.ctaTitle}</h2>
+    <p class="text-text-muted text-lg mb-8 max-w-xl mx-auto">{t.ctaDesc}</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+      <Button href={calLink} variant="primary" size="lg">
+        {t.ctaPrimary}
+      </Button>
+      <a href={mailLink} class="text-sm text-text-muted hover:text-accent transition-colors">
+        {t.ctaSecondary}
+      </a>
+    </div>
+  </section>
+</PageLayout>
