@@ -33,7 +33,7 @@ const result = project.data.result;
 const resultItems = Array.isArray(result) ? result : result ? [result] : [];
 ---
 
-<BaseLayout title={project.data.title} description={project.data.description} lang="en">
+<BaseLayout title={project.data.title} description={project.data.description} ogImage="/og/progetti.webp" lang="en">
   <Header lang="en" />
 
   <main class="max-w-5xl mx-auto px-5 py-8">
@@ -41,7 +41,7 @@ const resultItems = Array.isArray(result) ? result : result ? [result] : [];
       <ol class="flex items-center gap-1.5">
         <li><a href="/en/" class="hover:text-accent transition-colors">Home</a></li>
         <li aria-hidden="true" class="opacity-40">/</li>
-        <li><a href="/en/services/" class="hover:text-accent transition-colors">Services</a></li>
+        <li><a href="/en/progetti/" class="hover:text-accent transition-colors">Case studies</a></li>
         <li aria-hidden="true" class="opacity-40">/</li>
         <li class="truncate max-w-[200px] text-text-dark dark:text-text-light" title={project.data.title}>{project.data.title}</li>
       </ol>
