@@ -3,6 +3,12 @@ import PageLayout from '@/layouts/PageLayout.astro';
 import Button from '@/components/ui/Button.astro';
 ---
 
+<script>
+  if (window.location.pathname.startsWith('/qr/')) {
+    window.location.replace('/qr/');
+  }
+</script>
+
 <PageLayout title="Pagina non trovata">
   <div class="flex flex-col items-center justify-center text-center py-20">
     <h1 class="text-8xl font-bold text-accent mb-6">404</h1>
