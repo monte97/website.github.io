@@ -14,6 +14,7 @@ export default defineConfig({
   integrations: [
     vue(),
     sitemap({
+      filter: (page) => !page.includes('/qr/'),
       i18n: {
         defaultLocale: 'it',
         locales: {
