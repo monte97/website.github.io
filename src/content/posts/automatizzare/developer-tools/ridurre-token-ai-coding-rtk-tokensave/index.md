@@ -1,7 +1,7 @@
 ---
 title: "RTK e tokensave: ridurre i costi dei token nell'AI coding"
 date: 2026-05-27T09:00:00.000Z
-description: "RTK comprime l'output verboso dei comandi CLI prima che entri nel contesto del modello. tokensave sostituisce l'esplorazione del codebase con un knowledge graph locale. Due tool Rust, due problemi ortogonali."
+description: "RTK comprime l'output verboso dei comandi CLI prima che entri nel contesto. tokensave sostituisce gli agenti Explore con un knowledge graph locale. Due tool Rust ortogonali."
 pillar: automatizzare
 category: developer-tools
 tags: [Claude Code, MCP, Rust, Developer Tools, AI, RTK, tokensave]
@@ -9,23 +9,23 @@ lang: it
 draft: true
 ---
 
-In un workflow di AI coding a regime, la maggior parte dei token non viene consumata dai prompt. Due sorgenti strutturali operano in silenzio: l'output verboso dei comandi CLI che il modello legge grezzi, e l'esplorazione del codebase che gli agenti fanno prima di ogni task.
+Claude Code funziona. I task vengono completati, il codice prodotto è corretto. C'è un dettaglio che emerge solo guardando i contatori: i token consumati crescono in modo non lineare rispetto alla complessità dei task. Le sessioni lunghe costano molto più del previsto.
 
-Esistono due tool open source, scritti in Rust, che attaccano questi due problemi in modo ortogonale: **RTK** e **tokensave**. Installati insieme, coprono le due principali fonti di token waste strutturale.
+La causa non sono i prompt. Sono due sorgenti strutturali che operano in silenzio, indipendentemente da come si usa il tool.
 
-## Il problema: due sorgenti di token non visibili
+## Il 90% dei token non viene dai prompt
 
-### Output CLI non filtrato
+### 200 token per sapere che il push è andato bene
 
-Ogni volta che Claude Code esegue un comando shell, l'output grezzo entra nel contesto del modello. Un `git push` standard produce circa 200 token di boilerplate ("Enumerating objects", "Counting objects", "Delta compression..."). Il modello ha bisogno solo dell'esito: `ok main`. Gli altri 190 token sono rumore che accumula contesto senza aggiungere informazione.
+Ogni volta che Claude Code esegue un comando shell, l'output grezzo entra nel contesto del modello. Un `git push` standard produce circa 200 token di boilerplate ("Enumerating objects", "Counting objects", "Delta compression..."). Il modello ha bisogno solo dell'esito: `ok main`. Gli altri 190 token sono rumore che accumula contesto senza aggiungere informazione. Moltiplicato per decine di operazioni a sessione, il costo diventa rilevante.
 
-### Esplorazione del codebase prima di ogni task
+### Ogni task inizia con una scansione cieca del codebase
 
-Prima di ogni task complesso, Claude Code spawna agenti Explore che usano `grep`, `glob` e `Read` per orientarsi nel progetto. Su un codebase medio, questo si traduce in decine di tool call e migliaia di token - solo per individuare i file rilevanti.
+Prima di ogni task complesso, Claude Code spawna agenti Explore che usano `grep`, `glob` e `Read` per orientarsi nel progetto. Su un codebase medio, questo si traduce in decine di tool call e migliaia di token - solo per individuare i file rilevanti. Il codebase non cambia tra un task e l'altro, ma la scansione ricomincia da zero ogni volta.
 
-I due problemi hanno natura diversa e richiedono soluzioni diverse.
+I due problemi hanno natura diversa. La soluzione per uno non risolve l'altro. Nelle sezioni seguenti: **RTK** per la compressione dell'output CLI, **tokensave** per la navigazione del codebase.
 
-## RTK: compressione dell'output CLI
+## RTK: da 200 token di boilerplate a uno
 
 RTK è un proxy CLI che intercetta i comandi shell prima che il loro output raggiunga il modello e applica quattro strategie di compressione:
 
@@ -34,7 +34,7 @@ RTK è un proxy CLI che intercetta i comandi shell prima che il loro output ragg
 - **Truncation** - mantiene il contesto rilevante, taglia la ridondanza
 - **Deduplication** - collassa log ripetuti con un contatore
 
-Il risparmio su una sessione Claude Code da 30 minuti su un progetto TypeScript/Rust medio:
+Stime indicative su una sessione Claude Code da 30 minuti su un progetto TypeScript/Rust medio. Il risparmio reale varia per progetto e si può misurare con `rtk gain`:
 
 | Operazione | Standard | RTK | Risparmio |
 |---|---|---|---|
@@ -130,12 +130,12 @@ rtk gain --graph               # grafico ASCII (ultimi 30 giorni)
 rtk gain --history             # storico comandi recenti
 rtk gain --daily               # breakdown giornaliero
 rtk gain --all --format json   # export JSON
-rtk discover                   # opportunita' non sfruttate
+rtk discover                   # opportunità non sfruttate
 ```
 
 ### Configurazione avanzata RTK
 
-`~/.config/rtk/config.toml`:
+`~/.config/rtk/config.toml` (Linux) o `~/Library/Application Support/rtk/config.toml` (macOS):
 
 ```toml
 [hooks]
@@ -148,13 +148,13 @@ mode = "failures"    # "failures" | "always" | "never"
 
 Quando un comando fallisce, RTK salva l'output completo non filtrato in `~/.local/share/rtk/tee/` in modo che il modello possa leggerlo senza rieseguire il comando.
 
-La telemetria e' disabilitata per default e richiede consenso esplicito durante `rtk init`.
+La telemetria è disabilitata per default e richiede consenso esplicito durante `rtk init`.
 
 ---
 
-## tokensave: knowledge graph del codebase
+## tokensave: il codebase viene indicizzato una volta, non ri-scansionato ogni task
 
-tokensave e' un MCP server che costruisce un knowledge graph semantico del progetto tramite Tree-sitter, indicizzato localmente. Invece di lasciare che Claude Code spawni agenti Explore che scansionano file con `grep` e `glob`, il modello interroga il grafo precompilato.
+tokensave è un MCP server che costruisce un knowledge graph semantico del progetto tramite Tree-sitter, indicizzato localmente. Invece di lasciare che Claude Code spawni agenti Explore che scansionano file con `grep` e `glob`, il modello interroga il grafo precompilato.
 
 Il funzionamento si basa su tre layer:
 
@@ -206,7 +206,7 @@ tokensave install
 # riavvia Claude Code
 ```
 
-Scrive in `~/.claude/settings.json`: il server MCP, il PreToolUse hook, i permessi per i tool MCP, le regole in `~/.claude/CLAUDE.md`. Il comando e' idempotente.
+Scrive in `~/.claude/settings.json`: il server MCP, il PreToolUse hook, i permessi per i tool MCP, le regole in `~/.claude/CLAUDE.md`. Il comando è idempotente.
 
 ### Inizializzazione per progetto
 
@@ -238,9 +238,9 @@ tokensave daemon --enable-autostart
 tokensave install --git-hook
 ```
 
-Il hook e' un no-op nei repo non inizializzati con tokensave.
+Il hook è un no-op nei repo non inizializzati con tokensave.
 
-Con la modalita' **branch-aware** (daemon attivo), ogni branch mantiene il proprio indice. Cambiando branch, il grafo riflette esattamente il codice corrente senza risultati stale.
+Con la modalità **branch-aware** (daemon attivo), ogni branch mantiene il proprio indice. Cambiando branch, il grafo riflette esattamente il codice corrente senza risultati stale.
 
 ### Tool MCP esposti al modello
 
@@ -267,7 +267,7 @@ La versione corrente espone 48 tool in totale. Di seguito i principali:
 | `tokensave_changelog` | Diff semantico tra due git ref |
 | `tokensave_status` | Stato indice, statistiche, token risparmiati |
 
-Dalla CLI e' possibile usare direttamente alcuni di questi:
+Dalla CLI è possibile usare direttamente alcuni di questi:
 
 ```bash
 tokensave query <simbolo>
@@ -282,7 +282,7 @@ tokensave status --show-flags
 
 ### Privacy
 
-tokensave e' **100% locale**: il codice non lascia mai la macchina. Fa due chiamate di rete opzionali:
+tokensave è **100% locale**: il codice non lascia mai la macchina. Fa due chiamate di rete opzionali:
 
 - **Counter mondiale** - invia solo il numero di token risparmiati (nessun codice, nessun nome file) a un worker Cloudflare anonimo. Disabilitabile con `tokensave disable-upload-counter`.
 - **Version check** - controlla nuove release su GitHub. Timeout di 1 secondo, fallisce silenziosamente.
@@ -324,28 +324,6 @@ Verificare che il linguaggio sia supportato e il file non sia escluso da `.gitig
 | **Licenza** | Apache 2.0 | MIT |
 
 RTK agisce sull'output dei comandi che il modello esegue. tokensave agisce su come il modello naviga il codice. I due problemi sono ortogonali: uno strumento non sostituisce l'altro.
-
-## Setup completo su Linux
-
-```bash
-# RTK
-curl -fsSL https://raw.githubusercontent.com/rtk-ai/rtk/refs/heads/master/install.sh | sh
-echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-source ~/.bashrc
-rtk init -g
-
-# tokensave
-curl -LO https://github.com/aovestdipaperino/tokensave/releases/download/v6.1.1/tokensave-v6.1.1-x86_64-linux.tar.gz
-tar xzf tokensave-v6.1.1-x86_64-linux.tar.gz
-sudo mv tokensave /usr/local/bin/
-tokensave install
-
-# Per ogni progetto
-cd /path/to/your/project
-tokensave init
-
-# Riavvia Claude Code
-```
 
 ## Risorse
 
