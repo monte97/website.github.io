@@ -6,7 +6,7 @@ pillar: automatizzare
 category: developer-tools
 tags: [Claude Code, MCP, Rust, Developer Tools, AI, RTK, tokensave]
 lang: en
-draft: true
+draft: false
 ---
 
 In a steady-state AI coding workflow, most tokens are not consumed by prompts. Two structural sources operate silently: verbose CLI output that the model reads raw, and the codebase exploration that agents perform before every task.

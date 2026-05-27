@@ -6,7 +6,7 @@ pillar: automatizzare
 category: developer-tools
 tags: [Claude Code, MCP, Rust, Developer Tools, AI, RTK, tokensave]
 lang: it
-draft: true
+draft: false
 ---
 
 Claude Code funziona. I task vengono completati, il codice prodotto è corretto. C'è un dettaglio che emerge solo guardando i contatori: i token consumati crescono in modo non lineare rispetto alla complessità dei task. Le sessioni lunghe costano molto più del previsto.
