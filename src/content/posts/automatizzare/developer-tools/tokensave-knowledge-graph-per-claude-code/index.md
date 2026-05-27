@@ -1,7 +1,7 @@
 ---
-title: "tokensave: il knowledge graph semantico che trasforma Claude Code"
+title: "tokensave: knowledge graph semantico locale per Claude Code"
 date: 2026-05-27T09:00:00.000Z
-description: "tokensave è un MCP server scritto in Rust che costruisce un knowledge graph locale del codebase. Invece di agenti Explore che scansionano file con grep e glob, Claude Code interroga il grafo — meno chiamate, meno token, più contesto."
+description: "MCP server Rust che costruisce un knowledge graph locale del codebase. Claude Code interroga il grafo invece di lanciare agenti Explore — meno token, più contesto."
 pillar: automatizzare
 category: developer-tools
 tags: [Claude Code, MCP, Rust, Developer Tools, AI]
@@ -9,25 +9,25 @@ lang: it
 draft: true
 ---
 
-Quando lavori su un progetto grande con Claude Code, prima o poi ti accorgi di un pattern: il modello spawna agenti Explore che girano per il codebase con `grep` e `glob` alla ricerca di simboli, dipendenze, file collegati. Funziona, ma è lento e costoso. Ogni scan consuma token, ogni agente apre file che magari non servono.
+Lavorando su progetti grandi con Claude Code, emerge un pattern ricorrente: il modello spawna agenti Explore che girano per il codebase con `grep` e `glob` alla ricerca di simboli, dipendenze, file collegati. Funziona, ma è lento e costoso in termini di token. Ogni scan apre file che spesso non servono.
 
-**tokensave** risolve questo problema alla radice: costruisce un knowledge graph semantico del tuo codebase, lo mantiene aggiornato localmente, e lo espone a Claude Code tramite tool MCP. Il modello smette di esplorare e inizia a interrogare.
+**tokensave** risolve questo alla radice: costruisce un knowledge graph semantico del codebase, lo mantiene aggiornato localmente, e lo espone tramite tool MCP. Il modello smette di esplorare e inizia a interrogare.
 
-## Come funziona
+## Da grep distribuiti a una query sul grafo
 
 tokensave è un MCP server scritto in Rust. All'avvio indicizza il progetto e produce un grafo di dipendenze semantiche: funzioni, classi, tipi, import, call graph. Il grafo è persistito localmente in `.tokensave/` — nessuna chiamata di rete, nessun dato che esce dalla macchina.
 
 Quando Claude Code deve trovare dove viene usata una funzione, invece di aprire tutti i file con `grep`, chiama `tokensave_callers`. Invece di esplorare l'intera directory `src/`, chiama `tokensave_context` con il task corrente. Il risultato è lo stesso, ma con un'unica chiamata MCP invece di decine di letture su file.
 
-Il risparmio medio dichiarato dal progetto è tra il 60 e il 90% dei token su operazioni di sviluppo tipiche.
+Il risparmio medio dichiarato dal progetto è del 93% dei token su operazioni di sviluppo tipiche, con un range dal 44 al 99% a seconda del tipo di task.
 
 ## Installazione
 
 ### Linux (x86_64)
 
 ```bash
-curl -LO https://github.com/aovestdipaperino/tokensave/releases/download/v1.4.2/tokensave-v1.4.2-x86_64-linux.tar.gz
-tar xzf tokensave-v1.4.2-x86_64-linux.tar.gz
+curl -LO https://github.com/aovestdipaperino/tokensave/releases/download/v6.1.1/tokensave-v6.1.1-x86_64-linux.tar.gz
+tar xzf tokensave-v6.1.1-x86_64-linux.tar.gz
 sudo mv tokensave /usr/local/bin/
 ```
 
@@ -42,7 +42,7 @@ brew install aovestdipaperino/tap/tokensave
 ### Windows
 
 ```bash
-scoop bucket add tokensave https://github.com/aovestdipaperino/scoop-aovestdipaperino
+scoop bucket add tokensave https://github.com/aovestdipaperino/scoop-bucket
 scoop install tokensave
 ```
 
@@ -52,16 +52,16 @@ scoop install tokensave
 cargo install tokensave
 ```
 
-Dopo l'installazione, verifica che tutto funzioni:
+Dopo l'installazione, è possibile verificare che tutto funzioni:
 
 ```bash
 tokensave --version
 tokensave doctor
 ```
 
-`doctor` controlla il binary, il database locale, la configurazione utente e l'integrazione con Claude Code. Se qualcosa non torna, ti dice cosa fare.
+`doctor` controlla il binary, il database locale, la configurazione utente e l'integrazione con Claude Code. In caso di problemi, segnala l'anomalia con indicazioni su come risolverla.
 
-## Configurazione con Claude Code
+## Integrazione con Claude Code: un comando unico
 
 L'integrazione si fa con un unico comando:
 
@@ -75,7 +75,7 @@ Questo scrive in `~/.claude/settings.json`:
 - I permessi per tutti i tool MCP
 - Le regole in `~/.claude/CLAUDE.md` per preferire i tool tokensave alle letture dirette
 
-Il comando è idempotente — puoi eseguirlo più volte senza problemi. Dopo, riavvia Claude Code: la configurazione viene letta solo all'avvio.
+Il comando è idempotente: è possibile eseguirlo più volte senza effetti collaterali. La configurazione viene letta solo all'avvio di Claude Code, quindi è necessario riavviarlo dopo la prima installazione.
 
 ## Inizializzazione per progetto
 
@@ -92,17 +92,17 @@ Per forzare una re-indicizzazione completa:
 tokensave sync --force
 ```
 
-## Mantieni il grafo aggiornato
+## Tre strategie di aggiornamento del grafo
 
 Tre opzioni, in ordine di praticità:
 
-**Daemon** — la soluzione più comoda. Osserva i file in background e sincronizza ad ogni modifica:
+**Daemon** - la soluzione con meno overhead operativo. Osserva i file in background e sincronizza ad ogni modifica:
 
 ```bash
 tokensave daemon --enable-autostart
 ```
 
-**Sync manuale** — quando vuoi controllo totale:
+**Sync manuale** - per chi preferisce controllo totale:
 
 ```bash
 tokensave sync
@@ -110,20 +110,17 @@ tokensave sync
 
 Aggiornamento incrementale: reindicizza solo i file modificati dall'ultimo sync.
 
-**Git hook** — alternativa al daemon, si attiva ad ogni commit:
+**Git hook** — alternativa al daemon, si attiva ad ogni commit. Il modo più semplice è tramite il comando dedicato:
 
 ```bash
-git config --global core.hooksPath ~/.git-hooks
-mkdir -p ~/.git-hooks
-cp scripts/post-commit ~/.git-hooks/post-commit
-chmod +x ~/.git-hooks/post-commit
+tokensave install --git-hook
 ```
 
 Il hook è un no-op nei repo non inizializzati con tokensave: non interferisce con altri progetti.
 
-## I tool MCP disponibili
+## I tool MCP esposti al modello
 
-Questi tool vengono usati da Claude Code in automatico, ma puoi anche chiedere esplicitamente di usarli:
+Questi tool vengono usati da Claude Code in automatico, ma è possibile anche chiedergli esplicitamente di usarli. Di seguito i principali (la versione corrente ne espone 48 in totale):
 
 | Tool | A cosa serve |
 |------|-------------|
@@ -146,7 +143,7 @@ Questi tool vengono usati da Claude Code in automatico, ma puoi anche chiedere e
 | `tokensave_changelog` | Diff semantico tra due git ref |
 | `tokensave_status` | Stato indice e statistiche |
 
-Dalla CLI puoi usare direttamente alcuni di questi:
+Dalla CLI è possibile usare direttamente alcuni di questi:
 
 ```bash
 tokensave query <simbolo>                              # cerca nel grafo
@@ -163,11 +160,11 @@ tokensave status --show-flags                          # statistiche
 | Auto-sync | on | off | Set and forget |
 | Branch-aware | on | on | Progetti multi-branch |
 
-Con la modalità **branch-aware**, ogni branch mantiene il proprio indice. Quando cambi branch non ottieni risultati stale dal branch precedente — il grafo riflette esattamente il codice che stai leggendo.
+Con la modalità **branch-aware**, ogni branch mantiene il proprio indice. Cambiando branch, il grafo riflette esattamente il codice corrente, senza risultati stale dalla sessione precedente.
 
 ## Linguaggi supportati
 
-Rust, Go, Java, Scala, TypeScript, JavaScript, Python, C, C++, Kotlin, Dart, C#, Pascal, PHP, Ruby — 15 linguaggi dalla v1.4.2.
+34 linguaggi dalla v6.1.1, organizzati in tre tier: **Lite** (11 linguaggi), **Medium** (20), **Full** (34). Tra i supportati: Rust, Go, Java, Scala, TypeScript, JavaScript, Python, C, C++, Kotlin, Dart, C#, Pascal, PHP, Ruby e altri.
 
 ## Privacy
 
@@ -193,6 +190,6 @@ tokensave init
 
 ---
 
-tokensave risolve un problema reale che emerge lavorando quotidianamente con Claude Code su codebase di dimensioni non banali. L'approccio — costruire un indice semantico locale invece di lasciare che il modello esplori i file ogni volta — è concettualmente semplice ma praticamente efficace. Se già usi Claude Code in modo intensivo, vale la pena provarlo.
+tokensave risolve un problema strutturale nel flusso di lavoro con Claude Code su codebase di medie e grandi dimensioni. L'approccio - costruire un indice semantico locale invece di fare esplorare i file al modello ad ogni sessione - elimina una categoria intera di operazioni costose in termini di token. Il repository è disponibile su GitHub con istruzioni di installazione per tutte le piattaforme.
 
 **Repository**: [github.com/aovestdipaperino/tokensave](https://github.com/aovestdipaperino/tokensave)
