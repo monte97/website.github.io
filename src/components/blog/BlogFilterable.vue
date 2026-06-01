@@ -352,7 +352,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted } from 'vue';
+import { computed, ref, watch, onMounted, onUnmounted } from 'vue';
 import { pillarStyles } from '@/data/pillar-styles';
 import { pillarLabels } from '@/data/pillars';
 import { categoryLabels } from '@/data/blog-labels';
@@ -471,6 +471,27 @@ function clearAllFilters() {
   activeTags.value = new Set();
 }
 
+// ── URL sync ──
+
+function syncUrl() {
+  const params = new URLSearchParams();
+  if (searchQuery.value.trim()) params.set('q', searchQuery.value.trim());
+  if (activePillar.value) params.set('pillar', activePillar.value);
+  if (activeCategory.value) params.set('category', activeCategory.value);
+  for (const tag of activeTags.value) params.append('tag', tag);
+  const qs = params.toString();
+  history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname);
+}
+
+let searchDebounce: ReturnType<typeof setTimeout> | null = null;
+
+watch(searchQuery, () => {
+  if (searchDebounce) clearTimeout(searchDebounce);
+  searchDebounce = setTimeout(syncUrl, 200);
+});
+
+watch([activePillar, activeCategory, activeTags], syncUrl, { deep: true });
+
 // ── Outside click for dropdown ──
 
 function onDocumentClick(e: MouseEvent) {
@@ -480,6 +501,18 @@ function onDocumentClick(e: MouseEvent) {
 }
 
 onMounted(() => {
+  const params = new URLSearchParams(window.location.search);
+  const q = params.get('q');
+  if (q) searchQuery.value = q;
+  const p = params.get('pillar');
+  if (p && (pillars as readonly string[]).includes(p)) {
+    activePillar.value = p as typeof activePillar.value;
+  }
+  const cat = params.get('category');
+  if (cat) activeCategory.value = cat;
+  const tags = params.getAll('tag');
+  if (tags.length) activeTags.value = new Set(tags);
+
   document.addEventListener('click', onDocumentClick);
 });
 
