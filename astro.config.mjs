@@ -11,6 +11,8 @@ export default defineConfig({
   redirects: {
     '/blog/series/observability/': '/blog/verificare/observability/',
     '/cv': '/files/Francesco_Montelli_CV.pdf',
+    '/cv-europass': '/files/Francesco_Montelli_CV_Europass.pdf',
+    '/cv-eu': '/files/Francesco_Montelli_CV_Europass.pdf',
   },
   integrations: [
     vue(),
