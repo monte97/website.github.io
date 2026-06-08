@@ -10,6 +10,7 @@ export default defineConfig({
   output: 'static',
   redirects: {
     '/blog/series/observability/': '/blog/verificare/observability/',
+    '/cv': '/files/Francesco_Montelli_CV.pdf',
   },
   integrations: [
     vue(),
