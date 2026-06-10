@@ -25,12 +25,12 @@ PRESENT=(
   "/servizi/|Discovery call"
   "/servizi/|Health Check"
   "/servizi/|Affiancamento"
-  "/servizi/|1.800"
+  "/servizi/|1.500"
   "/servizi/|cal.com/francesco-montelli"
   "/en/services/|Discovery call"
   "/en/services/|Health Check"
   "/en/services/|Ongoing engagement"
-  "/en/services/|1,800"
+  "/en/services/|1,500"
   "/en/services/|cal.com/francesco-montelli"
 )
 
