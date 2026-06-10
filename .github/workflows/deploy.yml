@@ -41,6 +41,14 @@ jobs:
       - uses: actions/deploy-pages@v4
         id: deployment
 
+  smoke:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Smoke test contenuto in produzione
+        run: bash scripts/smoke.sh https://montelli.dev
+
   lighthouse:
     needs: deploy
     runs-on: ubuntu-latest
