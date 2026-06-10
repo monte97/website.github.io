@@ -2,7 +2,7 @@
 title: "Playwright: Testing E2E Moderno e Affidabile"
 date: 2025-11-17T09:00:00.000Z
 description: Guida completa a Playwright per test end-to-end affidabili e veloci. Architettura, pattern avanzati e integrazione CI/CD
-pillar: automatizzare
+pillar: verificare
 category: testing
 tags:
   - Playwright

@@ -2,7 +2,7 @@
 title: "Playwright: Page Object Model per Test Manutenibili"
 date: 2026-03-05T09:00:00.000Z
 description: "Come organizzare i test E2E con il Page Object Model: classi riusabili, fixture Playwright, composizione con mock e refactoring guidato"
-pillar: automatizzare
+pillar: verificare
 category: testing
 tags:
   - Playwright

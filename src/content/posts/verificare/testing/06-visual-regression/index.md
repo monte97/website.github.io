@@ -2,7 +2,7 @@
 title: "Playwright: Visual Regression Testing per Catturare Bug Invisibili"
 date: 2026-03-04T09:00:00.000Z
 description: "Come usare toHaveScreenshot() per catturare bug visivi che i test funzionali non vedono: masking, stati mockati, cross-browser e CI"
-pillar: automatizzare
+pillar: verificare
 category: testing
 tags:
   - Playwright

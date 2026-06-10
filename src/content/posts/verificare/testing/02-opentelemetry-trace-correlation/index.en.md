@@ -2,7 +2,7 @@
 title: "From E2E test failure to backend root cause: Playwright + OpenTelemetry"
 date: 2026-02-07T09:00:00.000Z
 description: "How to correlate Playwright E2E tests with OpenTelemetry traces to identify the guilty microservice when a test fails"
-pillar: automatizzare
+pillar: verificare
 category: testing
 tags:
   - Playwright

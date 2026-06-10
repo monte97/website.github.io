@@ -2,7 +2,7 @@
 title: "Playwright: Diagnosticare e Risolvere Test Flaky"
 date: 2026-03-04T09:00:00.000Z
 description: "Come identificare le cause dei test flaky e risolverle: trace viewer, retry strategico, pattern anti-flaky e checklist diagnostica"
-pillar: automatizzare
+pillar: verificare
 category: testing
 tags:
   - Playwright

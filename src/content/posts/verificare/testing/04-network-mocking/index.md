@@ -2,7 +2,7 @@
 title: "Playwright: Network Mocking e API Interception per Test Affidabili"
 date: 2026-03-04T09:00:00.000Z
 description: "Come usare page.route() per mockare API, simulare errori e testare edge case senza dipendere dai servizi reali"
-pillar: automatizzare
+pillar: verificare
 category: testing
 tags:
   - Playwright

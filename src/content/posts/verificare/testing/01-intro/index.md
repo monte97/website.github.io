@@ -2,7 +2,7 @@
 title: "Introduzione all'analisi delle performance: dalla teoria alla pratica"
 date: 2025-07-26T08:00:00.000Z
 description: "Fondamenta teoriche e pratiche del performance testing: dalle metriche RED ai percentili, una guida completa per iniziare"
-pillar: automatizzare
+pillar: verificare
 category: testing
 tags:
   - Performance Testing

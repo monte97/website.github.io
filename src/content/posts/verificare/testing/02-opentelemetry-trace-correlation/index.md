@@ -2,7 +2,7 @@
 title: "Dal test E2E al debug del backend: Playwright + OpenTelemetry"
 date: 2026-02-07T09:00:00.000Z
 description: Come correlare test E2E Playwright con trace OpenTelemetry per identificare il microservizio colpevole quando un test fallisce
-pillar: automatizzare
+pillar: verificare
 category: testing
 tags:
   - Playwright

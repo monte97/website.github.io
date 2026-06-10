@@ -2,7 +2,7 @@
 title: "Playwright: Diagnosing and Fixing Flaky Tests"
 date: 2026-03-04T09:00:00.000Z
 description: "How to identify the root causes of flaky tests and fix them: Trace Viewer, strategic retry, anti-flaky patterns, and a diagnostic checklist"
-pillar: automatizzare
+pillar: verificare
 category: testing
 tags:
   - Playwright

@@ -2,7 +2,7 @@
 title: "Playwright in CI/CD: Sharding, Mobile Testing e Automazione Agent-Driven"
 date: 2025-01-24T09:00:00.000Z
 description: Come integrare Playwright nella pipeline CI/CD con sharding, emulazione mobile e API testing per suite E2E veloci, affidabili e pronte per l'automazione agent-driven
-pillar: automatizzare
+pillar: verificare
 category: testing
 tags:
   - Playwright

@@ -2,7 +2,7 @@
 title: "Playwright: Mock Fixtures, HAR Replay, and Composition for Scalable Tests"
 date: 2026-03-04T09:00:00.000Z
 description: "How to scale network mocking with reusable fixtures, HAR replay, and composition of complex scenarios"
-pillar: automatizzare
+pillar: verificare
 category: testing
 tags:
   - Playwright
