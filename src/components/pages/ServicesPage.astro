@@ -108,7 +108,7 @@ const t = lang === 'en'
       pageTitle: 'Services',
       pageDesc: 'Free discovery call, Health Check in 1–2 weeks with a report and roadmap, ongoing engagement with defined objectives. Three pillars, one deliberate order.',
       heroTitle: 'We work together, one step at a time.',
-      heroSubtitle: 'From the first call to ongoing engagement. No leaps in the dark.',
+      heroSubtitle: 'From the first call to ongoing engagement. No leap of faith required.',
       heroStepperLabel: 'The three steps of the path',
       caseStudyLabel: 'Case study',
       // ── Funnel section ──
@@ -160,7 +160,7 @@ const t = lang === 'en'
       step3Body1: 'A defined monthly commitment (agreed days, not “unlimited requests”) with objectives written down and reviewed every quarter. I don’t sell satisfaction by feel: I sell measurable results, agreed before we start.',
       step3Body2: 'The engagement includes hands-on work, not just advice: new features, integrations, pieces of platform. The difference is that everything I build comes with the system included: tests that actually catch things, observability on what gets touched, documented decisions the team can read back.',
       step3Body3: 'The typical scope covers the three pillars: architectural decisions guided, verification systems the team can maintain, automation that reduces manual work instead of hiding it. For teams without internal technical leadership, the engagement can take the form of external technical direction: roadmap, vendor and tooling decisions, support for technical hiring.',
-      step3Body4: "The end goal of every engagement is to make myself unnecessary: the system and the team shouldn’t depend on me to function. Over time the engagement tends to shrink, and that’s a success, not a problem.",
+      step3Body4: "The end goal of every engagement is to make myself unnecessary: the system and the team shouldn’t depend on me to function. It’s built to shrink over time, and that’s a success, not a problem.",
       step3DurationLabel: 'Commitment',
       step3Duration: 'days and objectives defined in writing, reviewed each quarter',
       step3CostLabel: 'Cost',
@@ -168,7 +168,7 @@ const t = lang === 'en'
       step3Closing: 'You get here by going through the Health Check.',
       // ── Method ──
       methodTitle: 'The method',
-      methodIntro: "Everything I do inside a Health Check or an ongoing engagement follows the same method. Three pillars in a deliberate order. Each builds on the previous. The order is not a detail: it’s the difference between building and rebuilding.",
+      methodIntro: "Everything I do inside a Health Check or an ongoing engagement follows the same method: three pillars that multiply, not three services that add up. Each builds on the previous. The order is not a detail: it’s the difference between building and rebuilding.",
       whyLabel: 'Why this order',
       blogLabel: 'From the blog',
       scenariosTitle: 'Why the order matters',
@@ -236,7 +236,7 @@ const t = lang === 'en'
       step3Body1: "Un impegno mensile definito (giornate concordate, non “richieste illimitate”) con obiettivi formalizzati per iscritto e rivisti ogni trimestre. Non vendo soddisfazione a sensazione: vendo risultati misurabili, decisi insieme prima di iniziare.",
       step3Body2: "L’affiancamento include le mani, non solo i consigli: nuove funzionalità, integrazioni, pezzi di piattaforma. La differenza è che tutto quello che costruisco arriva con il sistema incluso: test che verificano davvero, osservabilità su ciò che viene toccato, decisioni documentate che il team sa rileggere.",
       step3Body3: "Il perimetro tipico copre i tre pilastri: decisioni architetturali accompagnate, sistemi di verifica che il team sa mantenere, automazione che riduce il lavoro manuale invece di nasconderlo. Per chi non ha una guida tecnica interna, l’affiancamento può assumere la forma di una direzione tecnica esterna: roadmap, scelte di fornitori e strumenti, supporto alle assunzioni tecniche.",
-      step3Body4: "L’obiettivo finale di ogni affiancamento è rendermi inutile: il sistema e il team non devono dipendere da me per vivere. Col tempo questo percorso tende a ridursi, ed è un successo, non un problema.",
+      step3Body4: "L’obiettivo finale di ogni affiancamento è rendermi inutile: il sistema e il team non devono dipendere da me per vivere. È un percorso fatto per ridursi nel tempo, ed è un successo, non un problema.",
       step3DurationLabel: 'Impegno',
       step3Duration: 'giornate e obiettivi definiti per iscritto, rivisti ogni trimestre',
       step3CostLabel: 'Costo',
@@ -244,7 +244,7 @@ const t = lang === 'en'
       step3Closing: "Si arriva qui passando dall’Health Check.",
       // ── Metodo ──
       methodTitle: 'Il metodo',
-      methodIntro: "Tutto quello che faccio dentro un Health Check o un affiancamento segue lo stesso metodo. Tre pilastri in un ordine preciso. Ognuno si appoggia al precedente. L’ordine non è un dettaglio: è la differenza tra costruire e ricostruire.",
+      methodIntro: "Tutto quello che faccio dentro un Health Check o un affiancamento segue lo stesso metodo: tre pilastri che si moltiplicano, non tre servizi che si sommano. Ognuno si appoggia al precedente. L’ordine non è un dettaglio: è la differenza tra costruire e ricostruire.",
       whyLabel: "Perché in quest’ordine",
       blogLabel: 'Dal blog',
       scenariosTitle: "Perché l’ordine conta",
@@ -273,12 +273,12 @@ const t = lang === 'en'
         <span class="flex items-center justify-center w-7 h-7 rounded-full bg-accent text-white text-sm font-bold shrink-0">1</span>
         <span class="font-semibold text-text-dark dark:text-text-light group-hover:text-accent transition-colors">{t.discoveryTitle}</span>
       </a>
-      <span class="text-text-muted" aria-hidden="true">→</span>
+      <span class="text-text-muted hidden sm:inline" aria-hidden="true">→</span>
       <a href="#health-check" class="group inline-flex items-center gap-2">
         <span class="flex items-center justify-center w-7 h-7 rounded-full border border-border dark:border-border-dark text-text-muted text-sm font-bold shrink-0">2</span>
         <span class="font-semibold text-text-dark dark:text-text-light group-hover:text-accent transition-colors">{t.step2Title}</span>
       </a>
-      <span class="text-text-muted" aria-hidden="true">→</span>
+      <span class="text-text-muted hidden sm:inline" aria-hidden="true">→</span>
       <a href="#affiancamento" class="group inline-flex items-center gap-2">
         <span class="flex items-center justify-center w-7 h-7 rounded-full border border-border dark:border-border-dark text-text-muted text-sm font-bold shrink-0">3</span>
         <span class="font-semibold text-text-dark dark:text-text-light group-hover:text-accent transition-colors">{t.step3Title}</span>
@@ -295,18 +295,18 @@ const t = lang === 'en'
         <span class="text-xs text-accent font-semibold uppercase tracking-wide">
           {t.step1Eyebrow}
         </span>
-        <h3 class="text-3xl md:text-4xl font-bold text-text-dark dark:text-text-light mt-2 mb-4">
+        <h2 class="text-3xl md:text-4xl font-bold text-text-dark dark:text-text-light mt-2 mb-4">
           {t.discoveryTitle}
-        </h3>
+        </h2>
         <p class="text-text-muted text-lg leading-relaxed mb-8 max-w-3xl">
           {t.discoveryLead}
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div>
-            <h4 class="text-sm font-semibold uppercase tracking-wide text-text-dark dark:text-text-light mb-3">
+            <h3 class="text-sm font-semibold uppercase tracking-wide text-text-dark dark:text-text-light mb-3">
               {t.discoveryWhatTitle}
-            </h4>
+            </h3>
             <ul class="space-y-2">
               {t.discoveryWhat.map((item) => (
                 <li class="text-text-muted text-sm leading-relaxed flex gap-2">
@@ -317,9 +317,9 @@ const t = lang === 'en'
             </ul>
           </div>
           <div>
-            <h4 class="text-sm font-semibold uppercase tracking-wide text-text-dark dark:text-text-light mb-3">
+            <h3 class="text-sm font-semibold uppercase tracking-wide text-text-dark dark:text-text-light mb-3">
               {t.discoveryDeliverableTitle}
-            </h4>
+            </h3>
             <ul class="space-y-2">
               {t.discoveryDeliverable.map((item) => (
                 <li class="text-text-muted text-sm leading-relaxed flex gap-2">
@@ -356,9 +356,9 @@ const t = lang === 'en'
         <span class="text-xs text-text-muted font-semibold uppercase tracking-wide">
           {t.step2Eyebrow}
         </span>
-        <h3 class="text-3xl md:text-4xl font-bold text-text-dark dark:text-text-light mt-2 mb-2">
+        <h2 class="text-3xl md:text-4xl font-bold text-text-dark dark:text-text-light mt-2 mb-2">
           {t.step2Title}
-        </h3>
+        </h2>
         <p class="text-text-muted text-lg leading-relaxed mb-6 max-w-3xl font-medium">
           {t.step2Subtitle}
         </p>
@@ -409,9 +409,9 @@ const t = lang === 'en'
         <span class="text-xs text-text-muted font-semibold uppercase tracking-wide">
           {t.step3Eyebrow}
         </span>
-        <h3 class="text-3xl md:text-4xl font-bold text-text-dark dark:text-text-light mt-2 mb-2">
+        <h2 class="text-3xl md:text-4xl font-bold text-text-dark dark:text-text-light mt-2 mb-2">
           {t.step3Title}
-        </h3>
+        </h2>
         <p class="text-text-muted text-lg leading-relaxed mb-6 max-w-3xl font-medium">
           {t.step3Subtitle}
         </p>
