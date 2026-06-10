@@ -91,12 +91,14 @@ const locale = lang === 'en' ? 'en-US' : 'it-IT';
 type Scenario = { scenario: string; problem: string };
 const scenarios: Scenario[] = lang === 'en'
   ? [
+      { scenario: 'Design without verification', problem: "Good intentions with no proof. The system works as long as nothing changes." },
       { scenario: 'Tests without CI/CD', problem: "Run by hand, when someone remembers. Eventually, nobody runs them at all." },
       { scenario: 'CI/CD without observability', problem: "You know the deploy went through. You don't know whether the system actually works." },
       { scenario: 'Observability without tests', problem: "You see the problems in production, but you can't prevent them. You're stuck in reactive mode." },
       { scenario: 'All three together', problem: 'You design consciously → verify automatically → observe in production.' },
     ]
   : [
+      { scenario: 'Design senza verifica', problem: 'Buone intenzioni senza prove. Il sistema funziona finché non cambia niente.' },
       { scenario: 'Test senza CI/CD', problem: 'Vengono eseguiti a mano, quando ci si ricorda. Con il tempo si smette.' },
       { scenario: 'CI/CD senza observability', problem: 'Sai che il deploy è andato a buon fine. Non sai se il sistema funziona davvero.' },
       { scenario: 'Observability senza test', problem: 'Vedi i problemi in produzione, ma non puoi prevenirli. Sei sempre in modalità reattiva.' },
