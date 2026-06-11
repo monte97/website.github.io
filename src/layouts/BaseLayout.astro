@@ -152,7 +152,7 @@ const websiteJsonLd = {
             observer.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.08 });
+      }, { threshold: 0.02 });
       document.querySelectorAll('.fade-in-section, .stagger-children').forEach(function(el) {
         observer.observe(el);
       });
