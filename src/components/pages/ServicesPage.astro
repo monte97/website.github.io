@@ -111,8 +111,8 @@ const t = lang === 'en'
   ? {
       pageTitle: 'Services',
       pageDesc: 'Free discovery call, a focused one-week Health Check with a report and concrete moves, ongoing engagement with written objectives. Three pillars, one deliberate order.',
-      heroTitle: 'We work together, one step at a time.',
-      heroSubtitle: 'From the first call to ongoing engagement. No leap of faith required.',
+      heroTitle: 'Friday-night manual deploys, a production you can’t see into, tests that miss real bugs.',
+      heroSubtitle: 'Sound familiar? We work together one step at a time: from the first call to ongoing engagement. No leap of faith required.',
       heroStepperLabel: 'The three steps of the path',
       caseStudyLabel: 'Case study',
       discoveryPriceMain: 'Free',
@@ -149,7 +149,7 @@ const t = lang === 'en'
       step2Eyebrow: 'Step 2 · The diagnosis',
       step2Title: 'Health Check',
       step2Subtitle: 'One week on a single area, the one that hurts most. Low cost, low risk: you find out quickly whether it’s worth going further.',
-      step2Body1: "In the discovery call we pick the area to start from. For one week I go deep there: I talk to the people who work on it, look at the code and tooling, and find what's actually holding you back.",
+      step2Body1: "In the discovery call we pick the area to start from: observability, testing, deploy pipelines, access management, or architecture. For one week I go deep there: I talk to the people who work on it, look at the code and tooling, and find what's actually holding you back.",
       step2DeliverableTitle: 'What you walk away with:',
       step2Deliverables: [
         'A clear read of that area: what holds, what creaks, what’s missing',
@@ -177,7 +177,7 @@ const t = lang === 'en'
       step3Duration: 'one active project at a time · written objectives, reviewed each quarter',
       step3CostLabel: 'Cost',
       step3Cost: 'from €2,500/month (€6,750/quarter)',
-      step3Closing: 'You get here by going through the Health Check.',
+      step3Closing: 'Most engagements start with a Health Check. If the problem is already clear, the discovery call is enough.',
       // ── Method ──
       methodTitle: 'The method',
       methodIntro: "Everything I do inside a Health Check or an ongoing engagement follows the same method: three pillars that multiply, not three services that add up. Each builds on the previous. The order is not a detail: it’s the difference between building and rebuilding.",
@@ -195,8 +195,8 @@ const t = lang === 'en'
   : {
       pageTitle: 'Servizi',
       pageDesc: 'Discovery call gratuita, un Health Check mirato di una settimana con report e mosse concrete, affiancamento con obiettivi scritti. Tre pilastri, un ordine preciso.',
-      heroTitle: 'Lavoriamo insieme, un passo alla volta.',
-      heroSubtitle: "Dalla prima call all’affiancamento continuativo. Niente salti nel vuoto.",
+      heroTitle: 'Deploy manuali il venerdì sera, produzione al buio, test che non si accorgono dei bug.',
+      heroSubtitle: "Se ti riconosci, lavoriamo insieme un passo alla volta: dalla prima call all’affiancamento continuativo. Niente salti nel vuoto.",
       heroStepperLabel: 'I tre passi del percorso',
       caseStudyLabel: 'Case study',
       discoveryPriceMain: 'Gratis',
@@ -233,7 +233,7 @@ const t = lang === 'en'
       step2Eyebrow: 'Passo 2 · La diagnosi',
       step2Title: 'Health Check',
       step2Subtitle: 'Una settimana su un’area sola, quella che fa più male. Bassa spesa, basso rischio: vedi presto se vale la pena andare avanti.',
-      step2Body1: "In discovery scegliamo l’area da cui partire. Per una settimana entro lì in profondità: parlo con chi ci lavora, guardo codice e strumenti, e individuo cosa frena davvero.",
+      step2Body1: "In discovery scegliamo l’area da cui partire: observability, test, pipeline di deploy, gestione degli accessi o architettura. Per una settimana entro lì in profondità: parlo con chi ci lavora, guardo codice e strumenti, e individuo cosa frena davvero.",
       step2DeliverableTitle: 'Cosa ti porti a casa:',
       step2Deliverables: [
         'Una lettura chiara di quell’area: cosa regge, cosa scricchiola, cosa manca',
@@ -261,7 +261,7 @@ const t = lang === 'en'
       step3Duration: 'un progetto attivo per volta · obiettivi scritti, rivisti ogni trimestre',
       step3CostLabel: 'Costo',
       step3Cost: "a partire da €2.500/mese (€6.750/trimestre)",
-      step3Closing: "Si arriva qui passando dall’Health Check.",
+      step3Closing: "Di solito si parte dall’Health Check. Se il problema è già chiaro, basta la discovery call.",
       // ── Metodo ──
       methodTitle: 'Il metodo',
       methodIntro: "Tutto quello che faccio dentro un Health Check o un affiancamento segue lo stesso metodo: tre pilastri che si moltiplicano, non tre servizi che si sommano. Ognuno si appoggia al precedente. L’ordine non è un dettaglio: è la differenza tra costruire e ricostruire.",
@@ -285,7 +285,7 @@ const t = lang === 'en'
   {/* BANDA 1 — Hero: ingresso al percorso con stepper */}
   <section class="bg-accent-subtle border-b border-border/40 dark:border-border-dark/40">
     <div class="max-w-5xl mx-auto px-5 py-16 md:py-24 fade-in-section">
-    <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-text-dark dark:text-text-light">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text-dark dark:text-text-light max-w-4xl">
       {t.heroTitle}
     </h1>
     <p class="mt-3 text-base md:text-lg text-text-muted max-w-2xl leading-relaxed">
