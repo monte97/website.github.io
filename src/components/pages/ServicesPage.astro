@@ -115,6 +115,12 @@ const t = lang === 'en'
       heroSubtitle: 'From the first call to ongoing engagement. No leap of faith required.',
       heroStepperLabel: 'The three steps of the path',
       caseStudyLabel: 'Case study',
+      discoveryPriceMain: 'Free',
+      discoveryPriceSub: '30 minutes, no strings',
+      step2PriceMain: '€700',
+      step2PriceSub: '1 week · fixed price',
+      step3PriceMain: 'from €2,500/mo',
+      step3PriceSub: '€2,000/mo on a quarterly plan',
       // ── Funnel section ──
       // Step 1 — Discovery call
       step1Eyebrow: 'Step 1 · Free',
@@ -193,6 +199,12 @@ const t = lang === 'en'
       heroSubtitle: "Dalla prima call all’affiancamento continuativo. Niente salti nel vuoto.",
       heroStepperLabel: 'I tre passi del percorso',
       caseStudyLabel: 'Case study',
+      discoveryPriceMain: 'Gratis',
+      discoveryPriceSub: '30 minuti, senza impegno',
+      step2PriceMain: '€700',
+      step2PriceSub: '1 settimana · prezzo fisso',
+      step3PriceMain: 'da €2.500/mese',
+      step3PriceSub: '€2.000/mese sul trimestre',
       // ── Sezione funnel ──
       // Gradino 1 — Discovery call
       step1Eyebrow: 'Passo 1 · Gratuito',
@@ -346,15 +358,9 @@ const t = lang === 'en'
           </div>
         </div>
 
-        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mb-6 text-sm rounded-lg border border-border/60 dark:border-border-dark/60 bg-base-light/60 dark:bg-base-dark/20 px-4 py-3">
-          <div>
-            <span class="text-text-muted">{t.discoveryDurationLabel}:</span>
-            <span class="text-text-dark dark:text-text-light font-semibold ml-2">{t.discoveryDuration}</span>
-          </div>
-          <div>
-            <span class="text-text-muted">{t.discoveryCostLabel}:</span>
-            <span class="text-accent font-semibold ml-2">{t.discoveryCostFree}</span>
-          </div>
+        <div class="mb-6 inline-flex items-baseline gap-x-3 gap-y-1 flex-wrap rounded-xl border border-border/60 dark:border-border-dark/60 bg-base-light/70 dark:bg-base-dark/20 px-5 py-3">
+          <span class="text-2xl md:text-3xl font-bold text-accent">{t.discoveryPriceMain}</span>
+          <span class="text-sm text-text-muted">{t.discoveryPriceSub}</span>
         </div>
 
         <Button href={calLink} variant="primary" size="lg">
@@ -401,15 +407,9 @@ const t = lang === 'en'
           {t.step2Body2}
         </p>
 
-        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mb-6 text-sm rounded-lg border border-border/60 dark:border-border-dark/60 bg-base-light/60 dark:bg-base-dark/20 px-4 py-3">
-          <div>
-            <span class="text-text-muted">{t.step2DurationLabel}:</span>
-            <span class="text-text-dark dark:text-text-light font-semibold ml-2">{t.step2Duration}</span>
-          </div>
-          <div>
-            <span class="text-text-muted">{t.step2CostLabel}:</span>
-            <span class="text-text-dark dark:text-text-light font-bold ml-2">{t.step2Cost}</span>
-          </div>
+        <div class="mb-6 inline-flex items-baseline gap-x-3 gap-y-1 flex-wrap rounded-xl border border-border/60 dark:border-border-dark/60 bg-base-light/70 dark:bg-base-dark/20 px-5 py-3">
+          <span class="text-2xl md:text-3xl font-bold text-accent">{t.step2PriceMain}</span>
+          <span class="text-sm text-text-muted">{t.step2PriceSub}</span>
         </div>
 
         <Button href={calLink} variant="secondary" size="lg">
@@ -441,15 +441,9 @@ const t = lang === 'en'
         </ul>
         <p class="text-text-muted text-base leading-relaxed mb-8 max-w-3xl">{t.step3Outro}</p>
 
-        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mb-6 text-sm rounded-lg border border-border/60 dark:border-border-dark/60 bg-base-light/60 dark:bg-base-dark/20 px-4 py-3">
-          <div>
-            <span class="text-text-muted">{t.step3DurationLabel}:</span>
-            <span class="text-text-dark dark:text-text-light font-semibold ml-2">{t.step3Duration}</span>
-          </div>
-          <div>
-            <span class="text-text-muted">{t.step3CostLabel}:</span>
-            <span class="text-text-dark dark:text-text-light font-semibold ml-2">{t.step3Cost}</span>
-          </div>
+        <div class="mb-6 inline-flex items-baseline gap-x-3 gap-y-1 flex-wrap rounded-xl border border-border/60 dark:border-border-dark/60 bg-base-light/70 dark:bg-base-dark/20 px-5 py-3">
+          <span class="text-2xl md:text-3xl font-bold text-accent">{t.step3PriceMain}</span>
+          <span class="text-sm text-text-muted">{t.step3PriceSub}</span>
         </div>
 
         <p class="text-text-muted text-sm leading-relaxed italic">
