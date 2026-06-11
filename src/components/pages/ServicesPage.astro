@@ -110,7 +110,7 @@ const scenarios: Scenario[] = lang === 'en'
 const t = lang === 'en'
   ? {
       pageTitle: 'Services',
-      pageDesc: 'Free discovery call, Health Check in 1–2 weeks with a report and roadmap, ongoing engagement with written objectives. Three pillars, one deliberate order.',
+      pageDesc: 'Free discovery call, a focused one-week Health Check with a report and concrete moves, ongoing engagement with written objectives. Three pillars, one deliberate order.',
       heroTitle: 'We work together, one step at a time.',
       heroSubtitle: 'From the first call to ongoing engagement. No leap of faith required.',
       heroStepperLabel: 'The three steps of the path',
@@ -142,33 +142,35 @@ const t = lang === 'en'
       // Step 2 — Health Check
       step2Eyebrow: 'Step 2 · The diagnosis',
       step2Title: 'Health Check',
-      step2Subtitle: 'An honest picture of where you are, before deciding where to act.',
-      step2Body1: "Over one or two weeks, I analyse your system across the three pillars: how it's designed, how it's verified, what's automated and what isn't. I talk to the people who work on it every day: developers included, not just the managers. And I look at pipelines, tests, monitoring, and access management.",
+      step2Subtitle: 'One week on a single area, the one that hurts most. Low cost, low risk: you find out quickly whether it’s worth going further.',
+      step2Body1: "In the discovery call we pick the area to start from. For one week I go deep there: I talk to the people who work on it, look at the code and tooling, and find what's actually holding you back.",
       step2DeliverableTitle: 'What you walk away with:',
       step2Deliverables: [
-        'A report with a maturity assessment across each pillar: what holds, what creaks, what’s missing',
-        'A prioritised roadmap: fast wins (weeks) and structural improvements (months), ordered by cost-to-risk ratio',
-        'A readout session with your team, to go through the picture without filters',
+        'A clear read of that area: what holds, what creaks, what’s missing',
+        'The concrete moves to make, ordered by cost-to-risk ratio',
+        'Where possible, a first fix already done: a result to build on, not just a document',
       ],
       step2Body2: "The report is yours: use it with me, with your team, or with anyone else. No lock-in.",
-      step2Body3: "If your team has been producing a lot with AI tools lately, the analysis includes the real quality of your verification layer: I measure how well your tests actually catch bugs, beyond coverage numbers.",
       step2DurationLabel: 'Duration',
-      step2Duration: '1–2 weeks',
+      step2Duration: '1 week',
       step2CostLabel: 'Cost',
-      step2Cost: '€1,500, fixed price',
+      step2Cost: '€700, fixed price',
       step2Cta: 'Start with the discovery call',
       // Step 3 — Ongoing engagement
       step3Eyebrow: 'Step 3 · Ongoing',
       step3Title: 'Ongoing engagement',
       step3Subtitle: 'The path to close what the Health Check opened.',
-      step3Body1: 'A defined monthly commitment (agreed days, not “unlimited requests”) with objectives written down and reviewed every quarter. I don’t sell satisfaction by feel: I sell measurable results, agreed before we start.',
-      step3Body2: 'The engagement includes hands-on work, not just advice: new features, integrations, pieces of platform. The difference is that everything I build comes with the system included: tests that actually catch things, observability on what gets touched, documented decisions the team can read back.',
-      step3Body3: 'The typical scope covers the three pillars: architectural decisions guided, verification systems the team can maintain, automation that reduces manual work instead of hiding it. For teams without internal technical leadership, the engagement can take the form of external technical direction: roadmap, vendor and tooling decisions, support for technical hiring.',
-      step3Body4: "The end goal of every engagement is to make myself unnecessary: the system and the team shouldn’t depend on me to function. It’s built to shrink over time, and that’s a success, not a problem.",
+      step3Lead: "One active goal at a time, measurable and agreed before we start. We close it, the next one begins: no shopping list, no twenty half-finished things.",
+      step3Items: [
+        'Hands-on, not just advice: development, integrations, pieces of platform',
+        'Everything with the system included: tests that actually catch things, observability, documented decisions',
+        'Without internal technical leadership, I also act as external direction: roadmap, tooling choices, hiring support',
+      ],
+      step3Outro: "The end goal is to make myself unnecessary: the system and the team shouldn’t depend on me. It’s built to shrink over time, and that’s a success.",
       step3DurationLabel: 'Commitment',
-      step3Duration: 'days and objectives defined in writing, reviewed each quarter',
+      step3Duration: 'one active project at a time · written objectives, reviewed each quarter',
       step3CostLabel: 'Cost',
-      step3Cost: 'based on scope, defined after the Health Check',
+      step3Cost: 'from €2,500/month (€6,750/quarter)',
       step3Closing: 'You get here by going through the Health Check.',
       // ── Method ──
       methodTitle: 'The method',
@@ -186,7 +188,7 @@ const t = lang === 'en'
     }
   : {
       pageTitle: 'Servizi',
-      pageDesc: 'Discovery call gratuita, Health Check in 1–2 settimane con report e roadmap, affiancamento con obiettivi scritti. Tre pilastri, un ordine preciso.',
+      pageDesc: 'Discovery call gratuita, un Health Check mirato di una settimana con report e mosse concrete, affiancamento con obiettivi scritti. Tre pilastri, un ordine preciso.',
       heroTitle: 'Lavoriamo insieme, un passo alla volta.',
       heroSubtitle: "Dalla prima call all’affiancamento continuativo. Niente salti nel vuoto.",
       heroStepperLabel: 'I tre passi del percorso',
@@ -218,33 +220,35 @@ const t = lang === 'en'
       // Gradino 2 — Health Check
       step2Eyebrow: 'Passo 2 · La diagnosi',
       step2Title: 'Health Check',
-      step2Subtitle: 'Una fotografia onesta di dove sei, prima di decidere dove intervenire.',
-      step2Body1: "Nell’arco di una o due settimane analizzo il tuo sistema lungo i tre pilastri: come è progettato, come viene verificato, cosa è automatizzato e cosa no. Parlo con chi ci lavora ogni giorno: sviluppatori inclusi, non solo i responsabili. E guardo pipeline, test, monitoring e gestione degli accessi.",
+      step2Subtitle: 'Una settimana su un’area sola, quella che fa più male. Bassa spesa, basso rischio: vedi presto se vale la pena andare avanti.',
+      step2Body1: "In discovery scegliamo l’area da cui partire. Per una settimana entro lì in profondità: parlo con chi ci lavora, guardo codice e strumenti, e individuo cosa frena davvero.",
       step2DeliverableTitle: 'Cosa ti porti a casa:',
       step2Deliverables: [
-        'Un report con la valutazione di maturità su ciascun pilastro: cosa regge, cosa scricchiola, cosa manca',
-        'Una roadmap prioritizzata: interventi rapidi (settimane) e strutturali (mesi), in ordine di rapporto costo/rischio',
-        'Una sessione di restituzione con il team, per discutere il quadro senza filtri',
+        'Una lettura chiara di quell’area: cosa regge, cosa scricchiola, cosa manca',
+        'Le mosse concrete da fare, in ordine di rapporto costo/rischio',
+        'Dove possibile, un primo intervento già fatto: un risultato su cui ripartire, non solo un documento',
       ],
       step2Body2: 'Il report è tuo: puoi usarlo con me, con il tuo team, o con chiunque altro. Nessun lock-in.',
-      step2Body3: "Se il team ha prodotto molto con strumenti AI negli ultimi anni, l’analisi include anche la qualità reale delle verifiche: misuro quanto i test si accorgono davvero dei bug, oltre la coverage.",
       step2DurationLabel: 'Durata',
-      step2Duration: '1–2 settimane',
+      step2Duration: '1 settimana',
       step2CostLabel: 'Costo',
-      step2Cost: '€1.500, prezzo fisso',
+      step2Cost: '€700, prezzo fisso',
       step2Cta: 'Parti dalla discovery call',
       // Gradino 3 — Affiancamento
       step3Eyebrow: 'Passo 3 · Continuativo',
       step3Title: 'Affiancamento',
       step3Subtitle: "Il percorso per chiudere quello che l’Health Check ha aperto.",
-      step3Body1: "Un impegno mensile definito (giornate concordate, non “richieste illimitate”) con obiettivi formalizzati per iscritto e rivisti ogni trimestre. Non vendo soddisfazione a sensazione: vendo risultati misurabili, decisi insieme prima di iniziare.",
-      step3Body2: "L’affiancamento include le mani, non solo i consigli: nuove funzionalità, integrazioni, pezzi di piattaforma. La differenza è che tutto quello che costruisco arriva con il sistema incluso: test che verificano davvero, osservabilità su ciò che viene toccato, decisioni documentate che il team sa rileggere.",
-      step3Body3: "Il perimetro tipico copre i tre pilastri: decisioni architetturali accompagnate, sistemi di verifica che il team sa mantenere, automazione che riduce il lavoro manuale invece di nasconderlo. Per chi non ha una guida tecnica interna, l’affiancamento può assumere la forma di una direzione tecnica esterna: roadmap, scelte di fornitori e strumenti, supporto alle assunzioni tecniche.",
-      step3Body4: "L’obiettivo finale di ogni affiancamento è rendermi inutile: il sistema e il team non devono dipendere da me per vivere. È un percorso fatto per ridursi nel tempo, ed è un successo, non un problema.",
+      step3Lead: "Un obiettivo attivo alla volta, misurabile e deciso insieme prima di partire. Lo chiudiamo, parte il prossimo: niente lista della spesa, niente venti cose a metà.",
+      step3Items: [
+        'Le mani, non solo i consigli: sviluppo, integrazioni, pezzi di piattaforma',
+        'Tutto col sistema incluso: test che verificano davvero, osservabilità, decisioni documentate',
+        'Senza una guida tecnica interna, faccio anche da direzione esterna: roadmap, scelta degli strumenti, supporto alle assunzioni',
+      ],
+      step3Outro: "L’obiettivo finale è rendermi inutile: il sistema e il team non devono dipendere da me. È fatto per ridursi nel tempo, ed è un successo.",
       step3DurationLabel: 'Impegno',
-      step3Duration: 'giornate e obiettivi definiti per iscritto, rivisti ogni trimestre',
+      step3Duration: 'un progetto attivo per volta · obiettivi scritti, rivisti ogni trimestre',
       step3CostLabel: 'Costo',
-      step3Cost: "in base al perimetro, definito dopo l’Health Check",
+      step3Cost: "a partire da €2.500/mese (€6.750/trimestre)",
       step3Closing: "Si arriva qui passando dall’Health Check.",
       // ── Metodo ──
       methodTitle: 'Il metodo',
@@ -301,11 +305,12 @@ const t = lang === 'en'
     <div class="space-y-6">
 
       {/* Gradino 1 — Discovery call */}
-      <div id="discovery-call" class="rounded-xl border border-accent/30 bg-accent/5 p-8 md:p-10 scroll-mt-20">
-        <span class="text-xs text-accent font-semibold uppercase tracking-wide">
-          {t.step1Eyebrow}
-        </span>
-        <h2 class="text-3xl md:text-4xl font-bold text-text-dark dark:text-text-light mt-2 mb-4">
+      <div id="discovery-call" class="rounded-xl border border-accent/30 bg-accent/5 p-8 md:p-10 scroll-mt-20 shadow-sm">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="flex items-center justify-center w-9 h-9 rounded-full bg-accent text-white text-base font-bold shrink-0">1</span>
+          <span class="text-xs text-accent font-semibold uppercase tracking-wide">{t.step1Eyebrow}</span>
+        </div>
+        <h2 class="text-3xl md:text-4xl font-bold text-text-dark dark:text-text-light mb-4">
           {t.discoveryTitle}
         </h2>
         <p class="text-text-muted text-lg leading-relaxed mb-8 max-w-3xl">
@@ -320,7 +325,7 @@ const t = lang === 'en'
             <ul class="space-y-2">
               {t.discoveryWhat.map((item) => (
                 <li class="text-text-muted text-sm leading-relaxed flex gap-2">
-                  <span class="text-accent mt-2 shrink-0 w-1 h-1 rounded-full bg-accent" />
+                  <svg class="w-4 h-4 text-accent mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                   <span>{item}</span>
                 </li>
               ))}
@@ -333,7 +338,7 @@ const t = lang === 'en'
             <ul class="space-y-2">
               {t.discoveryDeliverable.map((item) => (
                 <li class="text-text-muted text-sm leading-relaxed flex gap-2">
-                  <span class="text-accent mt-2 shrink-0 w-1 h-1 rounded-full bg-accent" />
+                  <svg class="w-4 h-4 text-accent mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                   <span>{item}</span>
                 </li>
               ))}
@@ -341,7 +346,7 @@ const t = lang === 'en'
           </div>
         </div>
 
-        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mb-6 text-sm">
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mb-6 text-sm rounded-lg border border-border/60 dark:border-border-dark/60 bg-base-light/60 dark:bg-base-dark/20 px-4 py-3">
           <div>
             <span class="text-text-muted">{t.discoveryDurationLabel}:</span>
             <span class="text-text-dark dark:text-text-light font-semibold ml-2">{t.discoveryDuration}</span>
@@ -362,11 +367,12 @@ const t = lang === 'en'
       </div>
 
       {/* Gradino 2 — Health Check */}
-      <div id="health-check" class="rounded-xl border border-border/50 dark:border-border-dark/50 bg-white dark:bg-surface-dark p-8 md:p-10 scroll-mt-20">
-        <span class="text-xs text-text-muted font-semibold uppercase tracking-wide">
-          {t.step2Eyebrow}
-        </span>
-        <h2 class="text-3xl md:text-4xl font-bold text-text-dark dark:text-text-light mt-2 mb-2">
+      <div id="health-check" class="rounded-xl border border-border/50 dark:border-border-dark/50 bg-white dark:bg-surface-dark p-8 md:p-10 scroll-mt-20 shadow-sm">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="flex items-center justify-center w-9 h-9 rounded-full border border-border dark:border-border-dark text-text-muted text-base font-bold shrink-0">2</span>
+          <span class="text-xs text-text-muted font-semibold uppercase tracking-wide">{t.step2Eyebrow}</span>
+        </div>
+        <h2 class="text-3xl md:text-4xl font-bold text-text-dark dark:text-text-light mb-2">
           {t.step2Title}
         </h2>
         <p class="text-text-muted text-lg leading-relaxed mb-6 max-w-3xl font-medium">
@@ -384,28 +390,25 @@ const t = lang === 'en'
           <ul class="space-y-2">
             {t.step2Deliverables.map((item) => (
               <li class="text-text-muted text-sm leading-relaxed flex gap-2">
-                <span class="mt-2 shrink-0 w-1 h-1 rounded-full bg-text-muted" />
+                <svg class="w-4 h-4 text-accent mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                 <span>{item}</span>
               </li>
             ))}
           </ul>
         </div>
 
-        <p class="text-text-muted text-base leading-relaxed mb-4 max-w-3xl">
+        <p class="text-text-muted text-base leading-relaxed mb-8 max-w-3xl">
           {t.step2Body2}
         </p>
-        <p class="text-text-muted text-base leading-relaxed mb-8 max-w-3xl">
-          {t.step2Body3}
-        </p>
 
-        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mb-6 text-sm">
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mb-6 text-sm rounded-lg border border-border/60 dark:border-border-dark/60 bg-base-light/60 dark:bg-base-dark/20 px-4 py-3">
           <div>
             <span class="text-text-muted">{t.step2DurationLabel}:</span>
             <span class="text-text-dark dark:text-text-light font-semibold ml-2">{t.step2Duration}</span>
           </div>
           <div>
             <span class="text-text-muted">{t.step2CostLabel}:</span>
-            <span class="text-text-muted ml-2">{t.step2Cost}</span>
+            <span class="text-text-dark dark:text-text-light font-bold ml-2">{t.step2Cost}</span>
           </div>
         </div>
 
@@ -415,25 +418,30 @@ const t = lang === 'en'
       </div>
 
       {/* Gradino 3 — Affiancamento */}
-      <div id="affiancamento" class="rounded-xl border border-border/50 dark:border-border-dark/50 bg-white dark:bg-surface-dark p-8 md:p-10 scroll-mt-20">
-        <span class="text-xs text-text-muted font-semibold uppercase tracking-wide">
-          {t.step3Eyebrow}
-        </span>
-        <h2 class="text-3xl md:text-4xl font-bold text-text-dark dark:text-text-light mt-2 mb-2">
+      <div id="affiancamento" class="rounded-xl border border-border/50 dark:border-border-dark/50 bg-white dark:bg-surface-dark p-8 md:p-10 scroll-mt-20 shadow-sm">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="flex items-center justify-center w-9 h-9 rounded-full border border-border dark:border-border-dark text-text-muted text-base font-bold shrink-0">3</span>
+          <span class="text-xs text-text-muted font-semibold uppercase tracking-wide">{t.step3Eyebrow}</span>
+        </div>
+        <h2 class="text-3xl md:text-4xl font-bold text-text-dark dark:text-text-light mb-2">
           {t.step3Title}
         </h2>
         <p class="text-text-muted text-lg leading-relaxed mb-6 max-w-3xl font-medium">
           {t.step3Subtitle}
         </p>
 
-        <div class="space-y-4 mb-8 max-w-3xl">
-          <p class="text-text-muted text-base leading-relaxed">{t.step3Body1}</p>
-          <p class="text-text-muted text-base leading-relaxed">{t.step3Body2}</p>
-          <p class="text-text-muted text-base leading-relaxed">{t.step3Body3}</p>
-          <p class="text-text-muted text-base leading-relaxed">{t.step3Body4}</p>
-        </div>
+        <p class="text-text-muted text-base leading-relaxed mb-6 max-w-3xl">{t.step3Lead}</p>
+        <ul class="space-y-2 mb-6 max-w-3xl">
+          {t.step3Items.map((item) => (
+            <li class="text-text-muted text-sm leading-relaxed flex gap-2">
+              <svg class="w-4 h-4 text-accent mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="text-text-muted text-base leading-relaxed mb-8 max-w-3xl">{t.step3Outro}</p>
 
-        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mb-6 text-sm">
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mb-6 text-sm rounded-lg border border-border/60 dark:border-border-dark/60 bg-base-light/60 dark:bg-base-dark/20 px-4 py-3">
           <div>
             <span class="text-text-muted">{t.step3DurationLabel}:</span>
             <span class="text-text-dark dark:text-text-light font-semibold ml-2">{t.step3Duration}</span>
