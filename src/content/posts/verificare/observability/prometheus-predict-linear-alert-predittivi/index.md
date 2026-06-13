@@ -246,7 +246,7 @@ La distinzione USE/Golden Signals su saturation non è una sottigliezza accademi
 
 > Nel prossimo articolo della serie si vedrà come gli alert **burn-rate** applicati agli SLO portano questa logica un livello più in là: non più "quando si satura la risorsa" ma "quando l'error budget della settimana è in esaurimento". L'articolo successivo esplorerà il **forecasting avanzato** con Holt-Winters e Prophet per metriche con pattern stagionali, dove `predict_linear` smette di funzionare.
 
-Per chi vuole capire come queste regole si traducono in uno stack di observability concreto, il **DevOps Health Check** è un assessment di due settimane che parte proprio dall'`alerts.yml` esistente e dalle metriche già raccolte, per individuare dove conviene intervenire per primo.
+Per chi vuole capire come queste regole si traducono in uno stack di observability concreto, un **affondo mirato** è un intervento di due settimane che parte proprio dall'`alerts.yml` esistente e dalle metriche già raccolte: porta un primo miglioramento concreto e lascia la mappa di dove conviene intervenire dopo.
 
 ## Risorse
 
