@@ -179,6 +179,29 @@ const t = lang === 'en'
       step3Cost: 'from €2,500/month',
       step3Closing: 'Most engagements start with a targeted intervention. If the problem is already clear, the discovery call is enough.',
       // ── Method ──
+      tailoredIntro: 'Or tailored, if you already know what you need.',
+      aprogEyebrow: 'Tailored · By project',
+      aprogTitle: 'By project',
+      aprogPriceMain: 'Custom quote',
+      aprogPriceSub: 'fixed price, agreed scope, milestone-based',
+      aprogBullets: [
+        'A conversation on architecture and approach before we start',
+        'Milestone payments tied to visible results',
+        'Documentation on delivery + 30 days of support',
+      ],
+      aprogExamples: 'E.g. a new service, tested from day one · an integration between two systems · external access under control · observability on a system running blind.',
+      aprogCta: 'Tell me about your project',
+      formEyebrow: 'Tailored · Training',
+      formTitle: 'Training for your team',
+      formPriceMain: 'Tailored',
+      formPriceSub: 'format and length agreed',
+      formBullets: [
+        'Hands-on on observability, testing and DevSecOps',
+        'Exercises on your real codebase',
+        'Material the team keeps afterwards',
+      ],
+      formDetail: 'Half a day, a full day, or a cycle across several sessions.',
+      formCta: 'See the workshops',
       methodTitle: 'The method',
       methodIntro: "Everything I do inside a targeted intervention or an ongoing engagement follows the same method: three pillars that multiply, not three services that add up. Each builds on the previous. The order is not a detail: it’s the difference between building and rebuilding.",
       whyLabel: 'Why this order',
@@ -263,6 +286,29 @@ const t = lang === 'en'
       step3Cost: "a partire da €2.500/mese",
       step3Closing: "Di solito si parte da un affondo. Se il problema è già chiaro, basta la discovery call.",
       // ── Metodo ──
+      tailoredIntro: 'Oppure, su misura, se sai già cosa ti serve.',
+      aprogEyebrow: 'Su misura · A progetto',
+      aprogTitle: 'A Progetto',
+      aprogPriceMain: 'Su preventivo',
+      aprogPriceSub: 'prezzo fisso e perimetro concordato, a milestone',
+      aprogBullets: [
+        'Confronto su architettura e approccio prima di partire',
+        'Pagamenti a milestone legati a risultati visibili',
+        'Documentazione alla consegna + 30 giorni di supporto',
+      ],
+      aprogExamples: "Es. un servizio nuovo, testato dal giorno uno · un'integrazione tra due sistemi · accessi esterni sotto controllo · observability su un sistema al buio.",
+      aprogCta: 'Parlami del progetto',
+      formEyebrow: 'Su misura · Formazione',
+      formTitle: 'Formazione per il team',
+      formPriceMain: 'Su misura',
+      formPriceSub: 'formato e durata concordati',
+      formBullets: [
+        'Hands-on su observability, testing e DevSecOps',
+        'Esercizi sul vostro codice reale',
+        'Materiale che resta al team dopo i workshop',
+      ],
+      formDetail: 'Mezza giornata, giornata intera o ciclo su più sessioni.',
+      formCta: 'Vedi i workshop',
       methodTitle: 'Il metodo',
       methodIntro: "Tutto quello che faccio dentro un affondo o un affiancamento segue lo stesso metodo: tre pilastri che si moltiplicano, non tre servizi che si sommano. Ognuno si appoggia al precedente. L’ordine non è un dettaglio: è la differenza tra costruire e ricostruire.",
       whyLabel: "Perché in quest’ordine",
@@ -452,6 +498,58 @@ const t = lang === 'en'
       </div>
 
     </div>
+    </div>
+  </section>
+
+  {/* BANDA 2.5 — Su misura: A Progetto + Formazione (binari paralleli al funnel) */}
+  <section class="bg-accent-subtle/40 border-b border-border/40 dark:border-border-dark/40">
+    <div class="max-w-5xl mx-auto px-5 py-14 md:py-16">
+      <p class="text-center text-base text-text-muted mb-8">{t.tailoredIntro}</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 items-stretch">
+
+        <article class="flex flex-col rounded-2xl border border-accent/30 bg-white dark:bg-surface-dark p-6 md:p-8 shadow-sm">
+          <div class="flex items-center justify-between mb-5">
+            <span class="flex items-center justify-center w-11 h-11 rounded-xl border border-accent/30 text-accent shrink-0">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg>
+            </span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-accent">{t.aprogEyebrow}</span>
+          </div>
+          <h2 class="text-xl md:text-2xl font-bold text-accent mb-3">{t.aprogTitle}</h2>
+          <div class="mb-5">
+            <p class="text-2xl md:text-3xl font-bold text-text-dark dark:text-text-light leading-none">{t.aprogPriceMain}</p>
+            <p class="mt-1.5 text-sm text-text-muted">{t.aprogPriceSub}</p>
+          </div>
+          <ul class="space-y-3 mb-5">
+            {t.aprogBullets.map((b) => (
+              <li class="flex gap-3 items-start"><span class="mt-[7px] w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span><span class="text-[15px] leading-snug text-text-dark dark:text-text-light">{b}</span></li>
+            ))}
+          </ul>
+          <p class="text-sm text-text-muted leading-relaxed mb-5 border-t border-border/40 dark:border-border-dark/40 pt-4">{t.aprogExamples}</p>
+          <Button href={calLink} variant="primary" size="md" class="mt-auto w-full">{t.aprogCta}</Button>
+        </article>
+
+        <article class="flex flex-col rounded-2xl border border-accent/30 bg-white dark:bg-surface-dark p-6 md:p-8 shadow-sm">
+          <div class="flex items-center justify-between mb-5">
+            <span class="flex items-center justify-center w-11 h-11 rounded-xl border border-accent/30 text-accent shrink-0">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.3c-1.9-1.2-4.2-1.5-6.3-1v11.4c2.1-0.5 4.4-0.2 6.3 1 1.9-1.2 4.2-1.5 6.3-1V5.3c-2.1-0.5-4.4-0.2-6.3 1Zm0 0V18" /></svg>
+            </span>
+            <span class="text-xs font-semibold uppercase tracking-wider text-accent">{t.formEyebrow}</span>
+          </div>
+          <h2 class="text-xl md:text-2xl font-bold text-accent mb-3">{t.formTitle}</h2>
+          <div class="mb-5">
+            <p class="text-2xl md:text-3xl font-bold text-text-dark dark:text-text-light leading-none">{t.formPriceMain}</p>
+            <p class="mt-1.5 text-sm text-text-muted">{t.formPriceSub}</p>
+          </div>
+          <ul class="space-y-3 mb-5">
+            {t.formBullets.map((b) => (
+              <li class="flex gap-3 items-start"><span class="mt-[7px] w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span><span class="text-[15px] leading-snug text-text-dark dark:text-text-light">{b}</span></li>
+            ))}
+          </ul>
+          <p class="text-sm text-text-muted leading-relaxed mb-5 border-t border-border/40 dark:border-border-dark/40 pt-4">{t.formDetail}</p>
+          <Button href={`${prefix}/workshop/`} variant="primary" size="md" class="mt-auto w-full">{t.formCta}</Button>
+        </article>
+
+      </div>
     </div>
   </section>
 
