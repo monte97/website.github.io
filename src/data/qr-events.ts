@@ -9,4 +9,12 @@ export type QrEvent = {
   links: QrEventLink[];
 };
 
-export const qrEvents: QrEvent[] = [];
+export const qrEvents: QrEvent[] = [
+  {
+    slug: 'working-software-2026',
+    title: 'Working Software Conference 2026',
+    links: [
+      { label: 'Slide e materiale del talk', href: 'https://github.com/monte97/mutation-testing-ws2026-slides' },
+    ],
+  },
+];
