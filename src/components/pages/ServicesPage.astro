@@ -4,7 +4,6 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import Button from '@/components/ui/Button.astro';
-import { postHref } from '@/utils/blog';
 import { pillarStyles } from '@/data/pillar-styles';
 import { pillarLabels, type Pillar } from '@/data/pillars';
 
@@ -74,22 +73,6 @@ const caseStudyIdsByPillar: Record<Pillar, string[]> = {
   automatizzare: ['pipeline-cicd-proxmox'],
 };
 
-const allPosts = (await getCollection('posts'))
-  .filter((p) => !p.data.draft && p.data.lang === lang)
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-
-const postsByPillar: Record<string, typeof allPosts> = {};
-for (const post of allPosts) {
-  if (post.data.pillar) {
-    if (!postsByPillar[post.data.pillar]) postsByPillar[post.data.pillar] = [];
-    if (postsByPillar[post.data.pillar].length < 2) {
-      postsByPillar[post.data.pillar].push(post);
-    }
-  }
-}
-
-const locale = lang === 'en' ? 'en-US' : 'it-IT';
-
 type Scenario = { scenario: string; problem: string };
 const scenarios: Scenario[] = lang === 'en'
   ? [
@@ -106,6 +89,10 @@ const scenarios: Scenario[] = lang === 'en'
       { scenario: 'Observability senza test', problem: 'Vedi i problemi in produzione, ma non puoi prevenirli. Sei sempre in modalità reattiva.' },
       { scenario: 'Tutti e tre insieme', problem: 'Progetti consapevolmente → verifichi automaticamente → osservi in produzione.' },
     ];
+
+// Slot PROVA — riempire con un caso reale quando disponibile (follow-up #1).
+// Finché è null, la banda 3 non viene renderizzata (niente prove finte).
+const proof: { headline: string; body: string } | null = null;
 
 const t = lang === 'en'
   ? {
@@ -202,397 +189,168 @@ const t = lang === 'en'
   <Header lang={lang} />
   <main>
 
-  {/* BANDA 1 — Hero: ingresso al percorso con stepper */}
+  {/* BANDA 1 — Hero: cosa faccio, per chi, una CTA */}
   <section class="bg-accent-subtle border-b border-border/40 dark:border-border-dark/40">
     <div class="max-w-5xl mx-auto px-5 py-16 md:py-24 fade-in-section">
-    <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text-dark dark:text-text-light max-w-4xl">
-      {t.heroTitle}
-    </h1>
-    <p class="mt-3 text-base md:text-lg text-text-muted max-w-2xl leading-relaxed">
-      {t.heroSubtitle}
-    </p>
-
-    <nav class="mt-7 flex flex-wrap items-center gap-x-3 gap-y-3 text-sm" aria-label={t.heroStepperLabel}>
-      <a href="#discovery-call" class="group inline-flex items-center gap-2">
-        <span class="flex items-center justify-center w-7 h-7 rounded-full bg-accent text-white text-sm font-bold shrink-0">1</span>
-        <span class="font-semibold text-text-dark dark:text-text-light group-hover:text-accent transition-colors">{t.discoveryTitle}</span>
-      </a>
-      <span class="text-text-muted hidden sm:inline" aria-hidden="true">→</span>
-      <a href="#affondo" class="group inline-flex items-center gap-2">
-        <span class="flex items-center justify-center w-7 h-7 rounded-full border border-border dark:border-border-dark text-text-muted text-sm font-bold shrink-0">2</span>
-        <span class="font-semibold text-text-dark dark:text-text-light group-hover:text-accent transition-colors">{t.step2Title}</span>
-      </a>
-      <span class="text-text-muted hidden sm:inline" aria-hidden="true">→</span>
-      <a href="#affiancamento" class="group inline-flex items-center gap-2">
-        <span class="flex items-center justify-center w-7 h-7 rounded-full border border-border dark:border-border-dark text-text-muted text-sm font-bold shrink-0">3</span>
-        <span class="font-semibold text-text-dark dark:text-text-light group-hover:text-accent transition-colors">{t.step3Title}</span>
-      </a>
-    </nav>
+      <p class="text-sm text-accent font-semibold mb-4">{t.heroHook}</p>
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text-dark dark:text-text-light max-w-4xl leading-[1.15]">
+        {t.heroTitle}
+      </h1>
+      <p class="mt-4 text-base md:text-lg text-text-muted max-w-2xl leading-relaxed">
+        {t.heroForWho}
+      </p>
+      {t.heroAvailability && (
+        <p class="mt-2 text-sm text-text-muted/80">{t.heroAvailability}</p>
+      )}
+      <div class="mt-8">
+        <Button href={calLink} variant="primary" size="lg" data-umami-event="cta-servizi-hero">
+          {t.heroCta} &rarr;
+        </Button>
+      </div>
     </div>
   </section>
 
-  {/* BANDA 2 — I tre gradini del funnel */}
+  {/* BANDA 2 — Per chi è / i segnali */}
   <section>
     <div class="max-w-5xl mx-auto px-5 py-16 md:py-20 fade-in-section">
-    <div class="space-y-6">
-
-      {/* Gradino 1 — Discovery call */}
-      <div id="discovery-call" class="rounded-xl border border-accent/30 bg-accent/5 p-8 md:p-10 scroll-mt-20 shadow-sm">
-        <div class="flex items-center gap-3 mb-3">
-          <span class="flex items-center justify-center w-9 h-9 rounded-full bg-accent text-white text-base font-bold shrink-0">1</span>
-          <span class="text-xs text-accent font-semibold uppercase tracking-wide">{t.step1Eyebrow}</span>
-        </div>
-        <h2 class="text-3xl md:text-4xl font-bold text-text-dark dark:text-text-light mb-4">
-          {t.discoveryTitle}
-        </h2>
-        <p class="text-text-muted text-lg leading-relaxed mb-8 max-w-3xl">
-          {t.discoveryLead}
-        </p>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div>
-            <h3 class="text-sm font-semibold uppercase tracking-wide text-text-dark dark:text-text-light mb-3">
-              {t.discoveryWhatTitle}
-            </h3>
-            <ul class="space-y-2">
-              {t.discoveryWhat.map((item) => (
-                <li class="text-text-dark dark:text-text-light text-[15px] leading-relaxed flex gap-3 items-start">
-                  <span class="flex items-center justify-center w-5 h-5 rounded-full bg-accent/15 text-accent mt-0.5 shrink-0"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg></span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+      <p class="text-xs text-accent font-semibold uppercase tracking-wide mb-3">{t.signalsEyebrow}</p>
+      <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light mb-4 max-w-3xl">
+        {t.signalsTitle}
+      </h2>
+      <p class="text-text-muted text-lg leading-relaxed mb-10 max-w-3xl">{t.signalsIntro}</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 stagger-children">
+        {t.signals.map((s) => (
+          <div class="rounded-xl border border-border/70 dark:border-border-dark/70 border-l-[3px] border-l-accent p-6 bg-white dark:bg-surface-dark h-full">
+            <h3 class="font-semibold text-base text-text-dark dark:text-text-light mb-2">{s.title}</h3>
+            <p class="text-text-muted text-sm leading-relaxed">{s.body}</p>
           </div>
-          <div>
-            <h3 class="text-sm font-semibold uppercase tracking-wide text-text-dark dark:text-text-light mb-3">
-              {t.discoveryDeliverableTitle}
-            </h3>
-            <ul class="space-y-2">
-              {t.discoveryDeliverable.map((item) => (
-                <li class="text-text-dark dark:text-text-light text-[15px] leading-relaxed flex gap-3 items-start">
-                  <span class="flex items-center justify-center w-5 h-5 rounded-full bg-accent/15 text-accent mt-0.5 shrink-0"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg></span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div class="mb-6 inline-flex items-baseline gap-x-3 gap-y-1 flex-wrap rounded-xl border border-border/60 dark:border-border-dark/60 bg-base-light/70 dark:bg-base-dark/20 px-5 py-3">
-          <span class="text-2xl md:text-3xl font-bold text-accent">{t.discoveryPriceMain}</span>
-          <span class="text-sm text-text-muted">{t.discoveryPriceSub}</span>
-        </div>
-
-        <Button href={calLink} variant="primary" size="lg">
-          {t.discoveryCta} →
-        </Button>
-
-        <p class="mt-6 text-text-muted text-sm leading-relaxed max-w-2xl italic">
-          {t.step1Closing}
-        </p>
+        ))}
       </div>
-
-      {/* Gradino 2 — Affondo mirato */}
-      <div id="affondo" class="rounded-xl border border-border/50 dark:border-border-dark/50 bg-white dark:bg-surface-dark p-8 md:p-10 scroll-mt-20 shadow-sm">
-        <div class="flex items-center gap-3 mb-3">
-          <span class="flex items-center justify-center w-9 h-9 rounded-full border border-border dark:border-border-dark text-text-muted text-base font-bold shrink-0">2</span>
-          <span class="text-xs text-text-muted font-semibold uppercase tracking-wide">{t.step2Eyebrow}</span>
-        </div>
-        <h2 class="text-3xl md:text-4xl font-bold text-text-dark dark:text-text-light mb-2">
-          {t.step2Title}
-        </h2>
-        <p class="text-text-muted text-lg leading-relaxed mb-6 max-w-3xl font-medium">
-          {t.step2Subtitle}
-        </p>
-
-        <p class="text-text-muted text-base leading-relaxed mb-6 max-w-3xl">
-          {t.step2Body1}
-        </p>
-
-        <div class="mb-6">
-          <p class="text-sm font-semibold text-text-dark dark:text-text-light mb-3">
-            {t.step2DeliverableTitle}
-          </p>
-          <ul class="space-y-2">
-            {t.step2Deliverables.map((item) => (
-              <li class="text-text-dark dark:text-text-light text-[15px] leading-relaxed flex gap-3 items-start">
-                <span class="flex items-center justify-center w-5 h-5 rounded-full bg-accent/15 text-accent mt-0.5 shrink-0"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg></span>
-                <span>{item}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <p class="text-text-muted text-base leading-relaxed mb-8 max-w-3xl">
-          {t.step2Body2}
-        </p>
-
-        <div class="mb-6 inline-flex items-baseline gap-x-3 gap-y-1 flex-wrap rounded-xl border border-border/60 dark:border-border-dark/60 bg-base-light/70 dark:bg-base-dark/20 px-5 py-3">
-          <span class="text-2xl md:text-3xl font-bold text-accent">{t.step2PriceMain}</span>
-          <span class="text-sm text-text-muted">{t.step2PriceSub}</span>
-        </div>
-
-        <Button href={calLink} variant="secondary" size="lg">
-          {t.step2Cta} →
-        </Button>
-      </div>
-
-      {/* Gradino 3 — Affiancamento */}
-      <div id="affiancamento" class="rounded-xl border border-border/50 dark:border-border-dark/50 bg-white dark:bg-surface-dark p-8 md:p-10 scroll-mt-20 shadow-sm">
-        <div class="flex items-center gap-3 mb-3">
-          <span class="flex items-center justify-center w-9 h-9 rounded-full border border-border dark:border-border-dark text-text-muted text-base font-bold shrink-0">3</span>
-          <span class="text-xs text-text-muted font-semibold uppercase tracking-wide">{t.step3Eyebrow}</span>
-        </div>
-        <h2 class="text-3xl md:text-4xl font-bold text-text-dark dark:text-text-light mb-2">
-          {t.step3Title}
-        </h2>
-        <p class="text-text-muted text-lg leading-relaxed mb-6 max-w-3xl font-medium">
-          {t.step3Subtitle}
-        </p>
-
-        <p class="text-text-muted text-base leading-relaxed mb-6 max-w-3xl">{t.step3Lead}</p>
-        <ul class="space-y-2 mb-6 max-w-3xl">
-          {t.step3Items.map((item) => (
-            <li class="text-text-dark dark:text-text-light text-[15px] leading-relaxed flex gap-3 items-start">
-              <span class="flex items-center justify-center w-5 h-5 rounded-full bg-accent/15 text-accent mt-0.5 shrink-0"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg></span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-        <p class="text-text-muted text-base leading-relaxed mb-8 max-w-3xl">{t.step3Outro}</p>
-
-        <div class="mb-6 inline-flex items-baseline gap-x-3 gap-y-1 flex-wrap rounded-xl border border-border/60 dark:border-border-dark/60 bg-base-light/70 dark:bg-base-dark/20 px-5 py-3">
-          <span class="text-2xl md:text-3xl font-bold text-accent">{t.step3PriceMain}</span>
-          <span class="text-sm text-text-muted">{t.step3PriceSub}</span>
-        </div>
-
-        <p class="text-text-muted text-sm leading-relaxed italic">
-          {t.step3Closing}
-        </p>
-      </div>
-
-    </div>
+      <p class="text-text-dark dark:text-text-light text-base md:text-lg leading-relaxed mt-10 max-w-3xl border-l-2 border-l-accent pl-5 italic">
+        {t.signalsClosing}
+      </p>
     </div>
   </section>
 
-  {/* BANDA 2.5 — Su misura: A Progetto + Formazione (binari paralleli al funnel) */}
-  <section class="bg-accent-subtle/40 border-b border-border/40 dark:border-border-dark/40">
-    <div class="max-w-5xl mx-auto px-5 py-14 md:py-16">
-      <p class="text-center text-base text-text-muted mb-8">{t.tailoredIntro}</p>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 items-stretch">
-
-        <article class="flex flex-col rounded-2xl border border-accent/30 bg-white dark:bg-surface-dark p-6 md:p-8 shadow-sm">
-          <div class="flex items-center justify-between mb-5">
-            <span class="flex items-center justify-center w-11 h-11 rounded-xl border border-accent/30 text-accent shrink-0">
-              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg>
-            </span>
-            <span class="text-xs font-semibold uppercase tracking-wider text-accent">{t.aprogEyebrow}</span>
-          </div>
-          <h2 class="text-xl md:text-2xl font-bold text-accent mb-3">{t.aprogTitle}</h2>
-          <div class="mb-5">
-            <p class="text-2xl md:text-3xl font-bold text-text-dark dark:text-text-light leading-none">{t.aprogPriceMain}</p>
-            <p class="mt-1.5 text-sm text-text-muted">{t.aprogPriceSub}</p>
-          </div>
-          <ul class="space-y-3 mb-5">
-            {t.aprogBullets.map((b) => (
-              <li class="flex gap-3 items-start"><span class="mt-[7px] w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span><span class="text-[15px] leading-snug text-text-dark dark:text-text-light">{b}</span></li>
-            ))}
-          </ul>
-          <p class="text-sm text-text-muted leading-relaxed mb-5 border-t border-border/40 dark:border-border-dark/40 pt-4">{t.aprogExamples}</p>
-          <Button href={calLink} variant="primary" size="md" class="mt-auto w-full">{t.aprogCta}</Button>
-        </article>
-
-        <article class="flex flex-col rounded-2xl border border-accent/30 bg-white dark:bg-surface-dark p-6 md:p-8 shadow-sm">
-          <div class="flex items-center justify-between mb-5">
-            <span class="flex items-center justify-center w-11 h-11 rounded-xl border border-accent/30 text-accent shrink-0">
-              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.3c-1.9-1.2-4.2-1.5-6.3-1v11.4c2.1-0.5 4.4-0.2 6.3 1 1.9-1.2 4.2-1.5 6.3-1V5.3c-2.1-0.5-4.4-0.2-6.3 1Zm0 0V18" /></svg>
-            </span>
-            <span class="text-xs font-semibold uppercase tracking-wider text-accent">{t.formEyebrow}</span>
-          </div>
-          <h2 class="text-xl md:text-2xl font-bold text-accent mb-3">{t.formTitle}</h2>
-          <div class="mb-5">
-            <p class="text-2xl md:text-3xl font-bold text-text-dark dark:text-text-light leading-none">{t.formPriceMain}</p>
-            <p class="mt-1.5 text-sm text-text-muted">{t.formPriceSub}</p>
-          </div>
-          <ul class="space-y-3 mb-5">
-            {t.formBullets.map((b) => (
-              <li class="flex gap-3 items-start"><span class="mt-[7px] w-1.5 h-1.5 rounded-full bg-accent shrink-0"></span><span class="text-[15px] leading-snug text-text-dark dark:text-text-light">{b}</span></li>
-            ))}
-          </ul>
-          <p class="text-sm text-text-muted leading-relaxed mb-5 border-t border-border/40 dark:border-border-dark/40 pt-4">{t.formDetail}</p>
-          <Button href={`${prefix}/workshop/`} variant="primary" size="md" class="mt-auto w-full">{t.formCta}</Button>
-        </article>
-
+  {/* BANDA 3 — PROVA (slot predisposto, non renderizzato finché proof === null) */}
+  {proof && (
+    <section class="bg-surface dark:bg-surface-dark/40 border-y border-border/40 dark:border-border-dark/40">
+      <div class="max-w-5xl mx-auto px-5 py-14 md:py-16 fade-in-section">
+        <p class="text-xs text-accent font-semibold uppercase tracking-wide mb-3">{t.caseStudyLabel}</p>
+        <p class="text-xl md:text-2xl font-semibold text-text-dark dark:text-text-light max-w-3xl leading-snug">
+          {proof.headline}
+        </p>
+        <p class="mt-3 text-text-muted text-base leading-relaxed max-w-3xl">{proof.body}</p>
       </div>
-    </div>
-  </section>
+    </section>
+  )}
 
-  {/* BANDA 3 — Metodo, pilastri e scenari (banda calda) */}
+  {/* BANDA 4 — Il metodo (sostanza, sfrondata; nessun link in uscita) */}
   <section class="bg-surface dark:bg-surface-dark/40 border-b border-border/40 dark:border-border-dark/40">
     <div class="max-w-5xl mx-auto px-5 py-16 md:py-20">
+      <div class="mb-12 fade-in-section">
+        <h2 class="text-3xl font-bold text-text-dark dark:text-text-light mb-4">{t.methodTitle}</h2>
+        <p class="text-text-muted text-lg leading-relaxed max-w-3xl">{t.methodIntro}</p>
+      </div>
 
-  {/* Il metodo — intro */}
-  <div class="mb-12 fade-in-section">
-    <h2 class="text-3xl font-bold text-text-dark dark:text-text-light mb-4">
-      {t.methodTitle}
-    </h2>
-    <p class="text-text-muted text-lg leading-relaxed max-w-3xl">
-      {t.methodIntro}
-    </p>
-  </div>
+      <div class="space-y-8 mb-16">
+        {pillarOrder.map(({ pillar, anchor, order, why }) => {
+          const entry = byPillar(pillar);
+          if (!entry) return null;
+          const styles = pillarStyles[pillar];
+          const label = pillarLabels[pillar][lang];
+          const Content = entry.Content;
+          return (
+            <section id={anchor} class:list={['rounded-xl border bg-white dark:bg-surface-dark border-border/50 dark:border-border-dark/50 border-l-[3px] p-6 md:p-8 scroll-mt-20 fade-in-section', styles.borderLeft]}>
+              <div class="flex items-baseline gap-3 mb-3">
+                <span class={`text-sm font-mono ${styles.text}`}>{order}</span>
+                <h3 class={`text-2xl font-bold ${styles.text}`}>{label}</h3>
+                <span class="text-text-muted text-sm">— {entry.service.data.title}</span>
+              </div>
+              <div class={`mb-5 pl-3 border-l-2 ${styles.borderLeft}`}>
+                <p class="text-xs uppercase tracking-wide text-text-muted mb-1">{t.whyLabel}</p>
+                <p class="text-text-dark dark:text-text-light text-base leading-relaxed">{why[lang]}</p>
+              </div>
+              <div class="prose dark:prose-invert max-w-none text-text-muted">
+                <Content />
+              </div>
+            </section>
+          );
+        })}
+      </div>
 
-  {/* Tre pilastri come sequenza */}
-  <div class="space-y-8 mb-20">
-    {pillarOrder.map(({ pillar, anchor, order, why }) => {
-      const entry = byPillar(pillar);
-      if (!entry) return null;
-      const styles = pillarStyles[pillar];
-      const label = pillarLabels[pillar][lang];
-      const relatedPosts = postsByPillar[pillar] || [];
-      const ids = caseStudyIdsByPillar[pillar] || [];
-      const caseStudies = ids.flatMap((id) => {
-        const p = projectById.get(id);
-        return p ? [p] : [];
-      });
-      const Content = entry.Content;
-
-      return (
-        <section
-          id={anchor}
-          class:list={[
-            'rounded-xl border bg-white dark:bg-surface-dark border-border/50 dark:border-border-dark/50 border-l-[3px] p-6 md:p-8 scroll-mt-20 fade-in-section',
-            styles.borderLeft,
-          ]}
-        >
-          <div class="flex items-baseline gap-3 mb-3">
-            <span class={`text-sm font-mono ${styles.text}`}>{order}</span>
-            <h3 class={`text-2xl font-bold ${styles.text}`}>{label}</h3>
-            <span class="text-text-muted text-sm">— {entry.service.data.title}</span>
-          </div>
-
-          <div class={`mb-5 pl-3 border-l-2 ${styles.borderLeft}`}>
-            <p class="text-xs uppercase tracking-wide text-text-muted mb-1">{t.whyLabel}</p>
-            <p class="text-text-dark dark:text-text-light text-base leading-relaxed">
-              {why[lang]}
-            </p>
-          </div>
-
-          <div class="prose dark:prose-invert max-w-none text-text-muted">
-            <Content />
-          </div>
-
-          {caseStudies.length > 0 && (
-            <div class="mt-6 pt-4 border-t border-border/30 dark:border-border-dark/30">
-              <p class="text-xs text-text-muted uppercase tracking-wide mb-3">{t.caseStudyLabel}</p>
-              <ul class="space-y-2">
-                {caseStudies.map((cs) => (
-                  <li>
-                    <a
-                      href={`${prefix}/progetti/${cs.id}/`}
-                      class="group inline-flex flex-col gap-0.5"
-                    >
-                      <span class={`text-sm font-semibold ${styles.text} group-hover:underline`}>
-                        {cs.data.title} <span aria-hidden="true">→</span>
-                      </span>
-                      <span class="text-xs text-text-muted line-clamp-1">
-                        {cs.data.problem || cs.data.description}
-                      </span>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {relatedPosts.length > 0 && (
-            <div class="mt-6 pt-4 border-t border-border/30 dark:border-border-dark/30">
-              <p class="text-xs text-text-muted uppercase tracking-wide mb-2">{t.blogLabel}</p>
-              <ul class="space-y-1">
-                {relatedPosts.map((post) => (
-                  <li class="flex items-baseline gap-2 text-sm">
-                    <a
-                      href={postHref(post.id, lang)}
-                      class="text-text-dark dark:text-text-light hover:text-accent transition-colors line-clamp-1"
-                    >
-                      {post.data.title}
-                    </a>
-                    <span class="text-text-muted text-xs whitespace-nowrap">
-                      {post.data.date.toLocaleDateString(locale, { day: 'numeric', month: 'short', year: 'numeric' })}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </section>
-      );
-    })}
-  </div>
-
-  {/* Scenari — perché l'ordine conta */}
-  <section class="mb-20 fade-in-section">
-    <h2 class="text-3xl font-bold text-text-dark dark:text-text-light mb-3">
-      {t.scenariosTitle}
-    </h2>
-    <p class="text-text-muted text-lg leading-relaxed max-w-3xl mb-6">
-      {t.scenariosIntro}
-    </p>
-    <div class="overflow-x-auto rounded-xl border border-border/70 dark:border-border-dark/70">
-      <table class="w-full text-left">
-        <thead class="bg-accent/5">
-          <tr>
-            <th scope="col" class="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-text-dark dark:text-text-light w-1/3">
-              {t.scenariosScenarioCol}
-            </th>
-            <th scope="col" class="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-text-dark dark:text-text-light">
-              {t.scenariosProblemCol}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {scenarios.map((row, i) => {
-            const isLast = i === scenarios.length - 1;
-            return (
-              <tr class:list={[
-                'border-t border-border/50 dark:border-border-dark/50',
-                isLast && 'bg-accent/5',
-              ]}>
-                <td class:list={[
-                  'px-5 py-4 align-top text-sm font-semibold',
-                  isLast ? 'text-accent' : 'text-text-dark dark:text-text-light',
-                ]}>
-                  {row.scenario}
-                </td>
-                <td class="px-5 py-4 align-top text-sm text-text-muted leading-relaxed">
-                  {row.problem}
-                </td>
+      {/* Scenari — perché l'ordine conta */}
+      <section class="fade-in-section">
+        <h2 class="text-3xl font-bold text-text-dark dark:text-text-light mb-3">{t.scenariosTitle}</h2>
+        <p class="text-text-muted text-lg leading-relaxed max-w-3xl mb-6">{t.scenariosIntro}</p>
+        <div class="overflow-x-auto rounded-xl border border-border/70 dark:border-border-dark/70">
+          <table class="w-full text-left">
+            <thead class="bg-accent/5">
+              <tr>
+                <th scope="col" class="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-text-dark dark:text-text-light w-1/3">{t.scenariosScenarioCol}</th>
+                <th scope="col" class="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-text-dark dark:text-text-light">{t.scenariosProblemCol}</th>
               </tr>
-            );
-          })}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {scenarios.map((row, i) => {
+                const isLast = i === scenarios.length - 1;
+                return (
+                  <tr class:list={['border-t border-border/50 dark:border-border-dark/50', isLast && 'bg-accent/5']}>
+                    <td class:list={['px-5 py-4 align-top text-sm font-semibold', isLast ? 'text-accent' : 'text-text-dark dark:text-text-light']}>{row.scenario}</td>
+                    <td class="px-5 py-4 align-top text-sm text-text-muted leading-relaxed">{row.problem}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
     </div>
   </section>
 
+  {/* BANDA 5 — Come si lavora dopo la call (prezzi collassati, nessun pulsante concorrente) */}
+  <section class="border-b border-border/40 dark:border-border-dark/40">
+    <div class="max-w-5xl mx-auto px-5 py-16 md:py-20 fade-in-section">
+      <p class="text-xs text-text-muted font-semibold uppercase tracking-wide mb-3">{t.pricingEyebrow}</p>
+      <h2 class="text-2xl md:text-3xl font-bold text-text-dark dark:text-text-light mb-4">{t.pricingTitle}</h2>
+      <p class="text-text-muted text-lg leading-relaxed max-w-3xl mb-6">{t.pricingLead}</p>
+
+      <div class="rounded-xl border border-accent/30 bg-accent/5 p-6 md:p-8 max-w-3xl">
+        <div class="flex items-baseline gap-x-3 gap-y-1 flex-wrap mb-2">
+          <span class="text-2xl md:text-3xl font-bold text-accent">{t.pricingStepMain}</span>
+          <span class="text-sm text-text-muted">{t.pricingStepSub}</span>
+        </div>
+        <p class="text-xs uppercase tracking-wide text-accent font-semibold mt-4">Affondo mirato</p>
+      </div>
+
+      <details class="mt-6 max-w-3xl group">
+        <summary class="cursor-pointer text-sm font-semibold text-text-dark dark:text-text-light hover:text-accent transition-colors list-none flex items-center gap-2">
+          <span class="text-accent transition-transform group-open:rotate-90" aria-hidden="true">&rsaquo;</span>
+          {t.pricingContinueLabel}
+        </summary>
+        <div class="mt-4 pl-5 border-l-2 border-accent/30 space-y-3">
+          <p class="text-xs uppercase tracking-wide text-text-muted font-semibold">Affiancamento</p>
+          <p class="text-text-muted text-base leading-relaxed">{t.pricingContinueBody}</p>
+          <p class="text-text-muted text-sm leading-relaxed italic">{t.pricingUnnecessary}</p>
+        </div>
+      </details>
     </div>
   </section>
 
-  {/* BANDA 4 — CTA finale (banda accent piena) */}
+  {/* BANDA 6 — CTA finale (una sola azione + link secondari piccoli) */}
   <section class="bg-accent text-white">
     <div class="max-w-5xl mx-auto px-5 py-20 text-center fade-in-section">
       <h2 class="text-3xl md:text-4xl font-bold mb-3">{t.ctaTitle}</h2>
       <p class="text-white/85 text-lg mb-8 max-w-xl mx-auto">{t.ctaDesc}</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-        <a
-          href={calLink}
-          class="inline-flex items-center justify-center font-medium rounded-lg px-7 py-3 text-base bg-white text-accent hover:bg-white/90 shadow-sm active:scale-[0.98] transition-all"
-        >
+        <a href={calLink} class="inline-flex items-center justify-center font-medium rounded-lg px-7 py-3 text-base bg-white text-accent hover:bg-white/90 shadow-sm active:scale-[0.98] transition-all" data-umami-event="cta-servizi-final">
           {t.ctaPrimary}
         </a>
-        <a href={mailLink} class="text-sm text-white/80 hover:text-white underline underline-offset-4 transition-colors">
-          {t.ctaSecondary}
-        </a>
+        <a href={mailLink} class="text-sm text-white/80 hover:text-white underline underline-offset-4 transition-colors">{t.ctaSecondary}</a>
       </div>
+      <p class="mt-6">
+        <a href={`${prefix}/progetti/`} class="text-sm text-white/70 hover:text-white underline underline-offset-4 transition-colors">{t.caseStudiesLink} &rarr;</a>
+      </p>
     </div>
   </section>
 
