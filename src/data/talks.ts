@@ -41,8 +41,8 @@ export const talks: Talk[] = [
     location: 'Faenza, IT',
     status: 'delivered',
     abstract: {
-      it: "93% di coverage e tutti i test verdi su codice scritto dall'LLM, ma un mutation score del 65%: un terzo dei test non verificava niente. La coverage conta le righe eseguite, non i difetti trovati; col mutation testing si vede la differenza, ed è la competenza che conta ora che gli LLM producono codice e test a valanga.",
-      en: 'Coverage at 93% and all-green tests on LLM-written code, but a 65% mutation score: a third of the tests verified nothing. Coverage counts executed lines, not caught defects; mutation testing shows the gap, and it is the skill that matters now that LLMs churn out code and tests by the ton.',
+      it: "La coverage dice che il codice gira, non che i test lo verificano: col mutation testing scopri quali test passano senza controllare niente. E, in chiusura, un excursus sul futuro: la mutazione guidata da un LLM invece che da un motore a regole come Stryker, e cosa cambia quando sono gli LLM a scrivere codice e test.",
+      en: 'Coverage tells you the code runs, not that the tests verify it: mutation testing reveals which tests pass without checking anything. And, to close, a look ahead: mutation guided by an LLM instead of a rule engine like Stryker, and what changes when LLMs write the code and the tests.',
     },
     links: {
       repo: 'https://github.com/monte97/il-tuo-collega-piu-produttivo',
