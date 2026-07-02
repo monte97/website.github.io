@@ -10,9 +10,10 @@ import { pillarLabels, type Pillar } from '@/data/pillars';
 interface Props {
   lang?: 'it' | 'en';
   methodVariant?: 'full' | 'slim' | 'link' | 'none';
+  heroVariant?: 'current' | 'a' | 'b' | 'c';
 }
 
-const { lang = 'it', methodVariant = 'full' } = Astro.props;
+const { lang = 'it', methodVariant = 'full', heroVariant = 'current' } = Astro.props;
 const prefix = lang === 'en' ? '/en' : '';
 
 const calLink = 'https://cal.com/francesco-montelli-4hfojq/30min';
@@ -106,7 +107,7 @@ const t = lang === 'en'
       signalsClosing: 'If two of these already feel familiar, the right time to act is before the third one shows up.',
       // Method
       methodTitle: 'How I work',
-      methodIntro: 'Everything I do follows the same order: design, then verify, then automate. The order matters: automate a broken process and you multiply the mistakes instead of removing them.',
+      methodIntro: 'Everything I do follows the same order: design, then verify, then automate.',
       whyLabel: 'Why this order',
       caseStudyLabel: 'Case study',
       scenariosTitle: 'Why the order matters',
@@ -120,15 +121,16 @@ const t = lang === 'en'
       pricingStepMain: '€1,200',
       pricingStepSub: 'fixed price · targeted intervention, delivered in 2 weeks · refunded if you are not satisfied, no questions · the work stays yours either way',
       pricingContinueLabel: 'How it continues',
-      pricingContinueBody: 'If the problem is bigger than one intervention, we move to an ongoing engagement: from €2,500/month, month to month, one active goal at a time. Everything with the system included: tests that actually catch things, observability, documented decisions.',
+      pricingContinueBody: 'If the problem is bigger than one intervention, we move to an ongoing engagement. From €2,500/month, month to month. One active goal at a time. Everything with the system included: tests that actually catch things, observability, documented decisions.',
       pricingUnnecessary: 'The goal is to make myself unnecessary: every engagement ends with a handover doc, runbooks and an internal owner I train. The system should not depend on me to keep working.',
-      caseStudiesLink: 'See the case studies',
+      caseStudiesLink: 'Technical projects and experiments',
       methodMoreLink: 'The method in detail',
       // Final CTA
       ctaTitle: "Let's talk.",
       ctaDesc: '30 minutes, free, to figure out whether we can work together. No commitment, no slides.',
       ctaPrimary: 'Book a discovery call',
       ctaSecondary: 'or write me',
+      credential: "I'm a registered engineer (Order of Ravenna): I'm personally accountable for what I deliver.",
     }
   : {
       pageTitle: 'Servizi',
@@ -151,7 +153,7 @@ const t = lang === 'en'
       signalsClosing: 'Se due di queste te le sei già sentite addosso, il momento giusto per intervenire è prima della terza.',
       // Metodo
       methodTitle: 'Come lavoro',
-      methodIntro: 'Tutto quello che faccio segue lo stesso ordine: prima progettare, poi verificare, poi automatizzare. L’ordine conta: se automatizzi un processo rotto, moltiplichi gli errori invece di toglierli.',
+      methodIntro: 'Tutto quello che faccio segue lo stesso ordine: prima progettare, poi verificare, poi automatizzare.',
       whyLabel: 'Perché in quest’ordine',
       caseStudyLabel: 'Case study',
       scenariosTitle: 'Perché l’ordine conta',
@@ -165,16 +167,33 @@ const t = lang === 'en'
       pricingStepMain: '€1.200',
       pricingStepSub: 'prezzo fisso · affondo mirato, consegna in 2 settimane · rimborsato se non sei soddisfatto, senza domande · il lavoro fatto resta comunque tuo',
       pricingContinueLabel: 'Come prosegue',
-      pricingContinueBody: 'Se il problema è più grande di un singolo affondo, si passa a un affiancamento: da €2.500/mese, mese per mese, un obiettivo attivo alla volta. Tutto col sistema incluso: test che verificano davvero, observability, decisioni documentate.',
+      pricingContinueBody: 'Se il problema è più grande di un affondo, si passa a un affiancamento. Da €2.500/mese, mese per mese. Un obiettivo attivo alla volta. Tutto col sistema incluso: test che verificano davvero, observability, decisioni documentate.',
       pricingUnnecessary: 'L’obiettivo è rendermi inutile: ogni ingaggio finisce con handover doc, runbook e un owner interno che formo. Il sistema non deve dipendere da me per funzionare.',
-      caseStudiesLink: 'Vedi i case study',
+      caseStudiesLink: 'Progetti ed esperimenti tecnici',
       methodMoreLink: 'Il metodo in dettaglio',
       // CTA finale
       ctaTitle: 'Parliamone.',
       ctaDesc: '30 minuti, gratuiti, per capire se possiamo lavorare insieme. Senza impegno, senza slide.',
       ctaPrimary: 'Prenota una discovery call',
       ctaSecondary: 'oppure scrivimi',
+      credential: 'Sono ingegnere iscritto all\'Ordine di Ravenna: di quello che consegno rispondo io.',
     };
+
+const heroVariants: Record<'a'|'b'|'c', Record<'it'|'en', { h1: string; sub: string }>> = {
+  a: {
+    it: { h1: 'In produzione hai paura a toccare qualsiasi cosa, e ogni funzione nuova costa il doppio.', sub: 'Modernizzo sistemi di prodotto datati: container, CI/CD, test, observability e sicurezza dove non c\'erano. E lascio il team capace di tenerli così.' },
+    en: { h1: 'You are afraid to touch anything in production, and every new feature costs double.', sub: 'I modernize aging product systems: containers, CI/CD, testing, observability and security where they were missing. And I leave the team able to keep them that way.' },
+  },
+  b: {
+    it: { h1: 'Il tuo prodotto è cresciuto più in fretta dei suoi sistemi.', sub: 'Aggiungere una funzione costa una fatica enorme e ogni deploy si fa col fiato sospeso. Rimetto in ordine container, CI/CD, test, observability e sicurezza, e lascio il team capace di andare avanti da solo.' },
+    en: { h1: 'Your product grew faster than its systems.', sub: 'Adding a feature takes enormous effort and every deploy is held-breath. I put containers, CI/CD, testing, observability and security back in order, and leave the team able to go on without me.' },
+  },
+  c: {
+    it: { h1: 'Torna facile e sicuro cambiare un prodotto che si è irrigidito nel tempo.', sub: 'Container, CI/CD, test, observability e sicurezza messi dove non c\'erano, così aggiungere funzioni non fa più paura. E il team resta capace di tenerli così.' },
+    en: { h1: 'Make an aged, rigid product fast and safe to change again.', sub: 'Containers, CI/CD, testing, observability and security put where they were missing, so shipping features stops being scary. And the team stays able to keep them that way.' },
+  },
+};
+const hv = heroVariant !== 'current' ? heroVariants[heroVariant][lang] : null;
 ---
 
 <BaseLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/servizi.webp" lang={lang}>
@@ -184,13 +203,26 @@ const t = lang === 'en'
   {/* BANDA 1 — Hero: cosa faccio, per chi, una CTA */}
   <section class="bg-accent-subtle border-b border-border/40 dark:border-border-dark/40">
     <div class="max-w-5xl mx-auto px-5 py-16 md:py-24 fade-in-section">
-      <p class="text-sm text-accent font-semibold mb-4">{t.heroHook}</p>
-      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text-dark dark:text-text-light max-w-4xl leading-[1.15]">
-        {t.heroTitle}
-      </h1>
-      <p class="mt-4 text-base md:text-lg text-text-muted max-w-2xl leading-relaxed">
-        {t.heroForWho}
-      </p>
+      {hv ? (
+        <>
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text-dark dark:text-text-light max-w-4xl leading-[1.15]">
+            {hv.h1}
+          </h1>
+          <p class="mt-4 text-base md:text-lg text-text-muted max-w-2xl leading-relaxed">
+            {hv.sub}
+          </p>
+        </>
+      ) : (
+        <>
+          <p class="text-sm text-accent font-semibold mb-4">{t.heroHook}</p>
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text-dark dark:text-text-light max-w-4xl leading-[1.15]">
+            {t.heroTitle}
+          </h1>
+          <p class="mt-4 text-base md:text-lg text-text-muted max-w-2xl leading-relaxed">
+            {t.heroForWho}
+          </p>
+        </>
+      )}
       {t.heroAvailability && (
         <p class="mt-2 text-sm text-text-muted/80">{t.heroAvailability}</p>
       )}
@@ -343,6 +375,7 @@ const t = lang === 'en'
         </div>
         <p class="text-xs uppercase tracking-wide text-accent font-semibold mt-4">Affondo mirato</p>
       </div>
+      <p class="mt-4 text-text-muted text-sm leading-relaxed max-w-3xl italic">{t.pricingUnnecessary}</p>
 
       <details class="mt-6 max-w-3xl group">
         <summary class="cursor-pointer text-sm font-semibold text-text-dark dark:text-text-light hover:text-accent transition-colors list-none flex items-center gap-2">
@@ -352,7 +385,6 @@ const t = lang === 'en'
         <div class="mt-4 pl-5 border-l-2 border-accent/30 space-y-3">
           <p class="text-xs uppercase tracking-wide text-text-muted font-semibold">Affiancamento</p>
           <p class="text-text-muted text-base leading-relaxed">{t.pricingContinueBody}</p>
-          <p class="text-text-muted text-sm leading-relaxed italic">{t.pricingUnnecessary}</p>
         </div>
       </details>
     </div>
@@ -372,6 +404,7 @@ const t = lang === 'en'
       <p class="mt-6">
         <a href={`${prefix}/progetti/`} class="text-sm text-white/70 hover:text-white underline underline-offset-4 transition-colors">{t.caseStudiesLink} &rarr;</a>
       </p>
+      <p class="mt-6 text-sm text-white/70 max-w-xl mx-auto">{t.credential}</p>
     </div>
   </section>
 
