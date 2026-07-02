@@ -1,26 +1,22 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
 import { talks } from '@/data/talks';
+import { talkImagesFrom } from '@/utils/talks';
 
 interface Props {
   lang?: 'it' | 'en';
 }
 
 const { lang = 'it' } = Astro.props;
+const prefix = lang === 'en' ? '/en' : '';
 
-// Foto talk: glob eager su src/assets, risolto per slug (qualsiasi estensione).
+// Foto talk: glob eager su src/assets/talks/<slug>/*, risolto per slug tramite talkImagesFrom.
 // import.meta.glob deve stare nel file consumante (static analysis di Vite).
-const talkImages = import.meta.glob<{ default: { src: string } }>(
-  '/src/assets/talks/*.{webp,jpg,jpeg,png}',
+const allTalkImages = import.meta.glob<{ default: { src: string } }>(
+  '/src/assets/talks/*/*.{webp,jpg,jpeg,png}',
   { eager: true },
 );
-const imageBySlug: Record<string, string> = {};
-for (const [path, mod] of Object.entries(talkImages)) {
-  const file = path.split('/').pop() ?? '';
-  const slug = file.replace(/\.(webp|jpe?g|png)$/, '');
-  imageBySlug[slug] = mod.default.src;
-}
-const imageFor = (slug: string): string | null => imageBySlug[slug] ?? null;
+const coverFor = (slug: string): string | null => talkImagesFrom(allTalkImages, slug)[0] ?? null;
 
 const upcoming = talks
   .filter((tk) => tk.status === 'upcoming')
@@ -40,11 +36,6 @@ const t = lang === 'en'
       heroTitle: 'Conferences & Speaking',
       upcomingTitle: 'Upcoming',
       pastTitle: 'Past talks',
-      linkRepo: 'Slides & material',
-      linkSlides: 'Slides',
-      linkRecording: 'Recording',
-      linkLinkedin: 'LinkedIn',
-      linkConference: 'Conference',
     }
   : {
       pageTitle: 'Talks',
@@ -52,22 +43,7 @@ const t = lang === 'en'
       heroTitle: 'Conferenze & Speaking',
       upcomingTitle: 'Prossimi',
       pastTitle: 'Talk passati',
-      linkRepo: 'Slide e materiale',
-      linkSlides: 'Slide',
-      linkRecording: 'Registrazione',
-      linkLinkedin: 'LinkedIn',
-      linkConference: 'Conferenza',
     };
-
-type LinkKey = 'repo' | 'slides' | 'recording' | 'linkedin' | 'conference';
-const linkOrder: LinkKey[] = ['repo', 'slides', 'recording', 'linkedin', 'conference'];
-const linkLabel: Record<LinkKey, string> = {
-  repo: t.linkRepo,
-  slides: t.linkSlides,
-  recording: t.linkRecording,
-  linkedin: t.linkLinkedin,
-  conference: t.linkConference,
-};
 ---
 
 <PageLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/about.webp" lang={lang}>
@@ -82,14 +58,11 @@ const linkLabel: Record<LinkKey, string> = {
       <h2 class="text-xs font-semibold uppercase tracking-wide text-accent mb-4">{t.upcomingTitle}</h2>
       <div class="space-y-4">
         {upcoming.map((talk) => (
-          <div class="rounded-xl border border-accent/30 bg-accent/5 p-6">
+          <a href={`${prefix}/talks/${talk.slug}/`} class="block rounded-xl border border-accent/30 bg-accent/5 p-6 hover:border-accent/50 transition-colors">
             <p class="text-sm text-accent font-semibold">{talk.event} · {fmtDate(talk.date)} · {talk.location}</p>
             <h3 class="text-xl font-bold text-text-dark dark:text-text-light mt-1">{talk.title}</h3>
             <p class="text-text-muted mt-2 leading-relaxed">{talk.abstract[lang]}</p>
-            {talk.links?.conference && (
-              <a href={talk.links.conference} target="_blank" rel="noopener noreferrer" class="inline-block mt-3 text-sm text-accent hover:underline">{t.linkConference} &rarr;</a>
-            )}
-          </div>
+          </a>
         ))}
       </div>
     </section>
@@ -100,25 +73,18 @@ const linkLabel: Record<LinkKey, string> = {
       <h2 class="text-xs font-semibold uppercase tracking-wide text-text-muted mb-4">{t.pastTitle}</h2>
       <div class="space-y-8">
         {past.map((talk) => {
-          const img = imageFor(talk.slug);
+          const img = coverFor(talk.slug);
           return (
-            <article class="rounded-xl border border-border/60 dark:border-border-dark/60 bg-white dark:bg-surface-dark overflow-hidden md:flex">
+            <a href={`${prefix}/talks/${talk.slug}/`} class="group rounded-xl border border-border/60 dark:border-border-dark/60 bg-white dark:bg-surface-dark overflow-hidden md:flex">
               {img && (
                 <img src={img} alt={talk.title} class="w-full h-48 md:h-auto md:w-64 object-cover shrink-0" loading="lazy" />
               )}
               <div class="p-6 flex-1">
-                <p class="text-sm text-text-muted">{talk.event} · {fmtDate(talk.date)} · {talk.location}</p>
-                <h3 class="text-xl font-bold text-text-dark dark:text-text-light mt-1">{talk.title}</h3>
+                <p class="text-sm text-text-muted">{talk.event} &middot; {fmtDate(talk.date)} &middot; {talk.location}</p>
+                <h3 class="text-xl font-bold text-text-dark dark:text-text-light mt-1 group-hover:text-accent transition-colors">{talk.title}</h3>
                 <p class="text-text-muted mt-2 leading-relaxed">{talk.abstract[lang]}</p>
-                <div class="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
-                  {linkOrder.map((key) => (
-                    talk.links?.[key] && (
-                      <a href={talk.links[key]} target="_blank" rel="noopener noreferrer" class="text-accent hover:underline">{linkLabel[key]} &rarr;</a>
-                    )
-                  ))}
-                </div>
               </div>
-            </article>
+            </a>
           );
         })}
       </div>

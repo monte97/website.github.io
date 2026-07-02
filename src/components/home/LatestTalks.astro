@@ -1,5 +1,6 @@
 ---
 import { talks } from '@/data/talks';
+import { talkImagesFrom } from '@/utils/talks';
 
 interface Props {
   lang?: 'it' | 'en';
@@ -8,16 +9,12 @@ interface Props {
 const { lang = 'it' } = Astro.props;
 const prefix = lang === 'en' ? '/en' : '';
 
-// Foto talk (glob eager, risolto per slug). Deve stare nel file consumante.
-const talkImages = import.meta.glob<{ default: { src: string } }>(
-  '/src/assets/talks/*.{webp,jpg,jpeg,png}',
+// Foto talk: glob eager su src/assets/talks/<slug>/*, risolto per slug tramite talkImagesFrom.
+// import.meta.glob deve stare nel file consumante (static analysis di Vite).
+const allTalkImages = import.meta.glob<{ default: { src: string } }>(
+  '/src/assets/talks/*/*.{webp,jpg,jpeg,png}',
   { eager: true },
 );
-const imageBySlug: Record<string, string> = {};
-for (const [path, mod] of Object.entries(talkImages)) {
-  const slug = (path.split('/').pop() ?? '').replace(/\.(webp|jpe?g|png)$/, '');
-  imageBySlug[slug] = mod.default.src;
-}
 
 const upcoming = talks
   .filter((tk) => tk.status === 'upcoming')
@@ -53,10 +50,10 @@ const t = lang === 'en'
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5 stagger-children">
         {recent.map((talk) => {
-          const img = imageBySlug[talk.slug];
+          const img = talkImagesFrom(allTalkImages, talk.slug)[0];
           return (
             <a
-              href={`${prefix}/talks/`}
+              href={`${prefix}/talks/${talk.slug}/`}
               class="group rounded-xl border border-border/70 dark:border-border-dark/70 bg-white dark:bg-surface-dark overflow-hidden flex flex-col h-full"
             >
               {img ? (
