@@ -305,12 +305,12 @@ const t = lang === 'en'
 
         {methodVariant === 'slim' && (
           <div class="space-y-3 fade-in-section">
-            {pillarOrder.map(({ pillar, order }) => {
+            {pillarOrder.map(({ pillar, order, anchor }) => {
               const entry = byPillar(pillar);
               if (!entry) return null;
               const label = pillarLabels[pillar][lang];
               return (
-                <div class="flex items-baseline gap-3 py-2 border-b border-border/30 dark:border-border-dark/30">
+                <div id={anchor} class="flex items-baseline gap-3 py-2 border-b border-border/30 dark:border-border-dark/30 scroll-mt-24">
                   <span class="text-sm font-mono text-accent">{order}</span>
                   <span class="font-semibold text-text-dark dark:text-text-light">{label}</span>
                   <span class="text-text-muted text-sm">· {entry.service.data.title}</span>
