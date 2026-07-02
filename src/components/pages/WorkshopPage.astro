@@ -4,6 +4,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import Button from '@/components/ui/Button.astro';
+import FinalCta from '@/components/ui/FinalCta.astro';
 import { pillarStyles } from '@/data/pillar-styles';
 import { pillarLabels } from '@/data/pillars';
 
@@ -137,20 +138,7 @@ const t = lang === 'en'
     </section>
 
     {/* CTA */}
-    <section class="border-t border-border/40 dark:border-border-dark/40">
-      <div class="max-w-5xl mx-auto px-5 text-center py-16 fade-in-section">
-        <h2 class="text-3xl font-bold mb-3">{t.ctaTitle}</h2>
-        <p class="text-text-muted text-lg mb-8 max-w-xl mx-auto">{t.ctaDesc}</p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button href={calLink} variant="primary" size="lg">
-            {t.ctaPrimary}
-          </Button>
-          <a href={mailLink} class="text-sm text-text-muted hover:text-accent transition-colors">
-            {t.ctaSecondary}
-          </a>
-        </div>
-      </div>
-    </section>
+    <FinalCta title={t.ctaTitle} desc={t.ctaDesc} ctaLabel={t.ctaPrimary} secondaryLabel={t.ctaSecondary} secondaryHref={mailLink} umamiEvent="cta-workshop-final" fullBleed />
 
   </main>
   <Footer lang={lang} />
