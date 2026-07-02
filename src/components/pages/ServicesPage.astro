@@ -62,17 +62,6 @@ const pillarOrder: Array<{
   },
 ];
 
-const allProjects = (await getCollection('projects')).filter(
-  (p) => p.data.type === 'project',
-);
-const projectById = new Map(allProjects.map((p) => [p.id, p]));
-
-const caseStudyIdsByPillar: Record<Pillar, string[]> = {
-  progettare: ['order-processing-platform'],
-  verificare: ['observability-as-a-service', 'keycloak-dotnet-adoption'],
-  automatizzare: ['pipeline-cicd-proxmox'],
-};
-
 type Scenario = { scenario: string; problem: string };
 const scenarios: Scenario[] = lang === 'en'
   ? [
