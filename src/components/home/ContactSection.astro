@@ -6,6 +6,7 @@ interface Props {
 }
 
 const { lang = 'it' } = Astro.props;
+const prefix = lang === 'en' ? '/en' : '';
 
 const text = {
   it: {
@@ -13,12 +14,14 @@ const text = {
     sub: '30 minuti, gratuiti, per capire se possiamo lavorare insieme.',
     ctaPrimary: 'Prenota una discovery call',
     emailLabel: 'oppure scrivimi',
+    talksLabel: 'Talks',
   },
   en: {
     heading: "Let's talk.",
     sub: '30 minutes, free, to figure out if we can work together.',
     ctaPrimary: 'Book a discovery call',
     emailLabel: 'or write me',
+    talksLabel: 'Talks',
   },
 };
 
@@ -42,9 +45,12 @@ const t = text[lang];
       </a>
     </div>
 
-    <div class="flex justify-center text-sm text-text-muted">
+    <div class="flex justify-center gap-5 text-sm text-text-muted">
       <a href="https://linkedin.com/in/francesco-montelli" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors" data-umami-event="click-social" data-umami-event-platform="linkedin">
         LinkedIn
+      </a>
+      <a href={`${prefix}/talks/`} class="hover:text-accent transition-colors">
+        {t.talksLabel}
       </a>
     </div>
   </div>

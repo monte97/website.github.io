@@ -118,6 +118,7 @@ const t = lang === 'en'
       pricingContinueBody: 'If the problem is bigger than one intervention, we move to an ongoing engagement. From €2,500/month, month to month. One active goal at a time. Everything with the system included: tests that actually catch things, observability, documented decisions.',
       pricingUnnecessary: 'The goal is to make myself unnecessary: every engagement ends with a handover doc, runbooks and an internal owner I train. The system should not depend on me to keep working.',
       caseStudiesLink: 'Technical projects and experiments',
+      talksLink: 'I speak about this at conferences',
       methodMoreLink: 'The method in detail',
       // Final CTA
       ctaTitle: "Let's talk.",
@@ -158,6 +159,7 @@ const t = lang === 'en'
       pricingContinueBody: 'Se il problema è più grande di un affondo, si passa a un affiancamento. Da €2.500/mese, mese per mese. Un obiettivo attivo alla volta. Tutto col sistema incluso: test che verificano davvero, observability, decisioni documentate.',
       pricingUnnecessary: 'L’obiettivo è rendermi inutile: ogni ingaggio finisce con handover doc, runbook e un owner interno che formo. Il sistema non deve dipendere da me per funzionare.',
       caseStudiesLink: 'Progetti ed esperimenti tecnici',
+      talksLink: 'Ne parlo alle conferenze',
       methodMoreLink: 'Il metodo in dettaglio',
       // CTA finale
       ctaTitle: 'Parliamone.',
@@ -360,7 +362,8 @@ const t = lang === 'en'
         </a>
         <a href={mailLink} class="text-sm text-white/80 hover:text-white underline underline-offset-4 transition-colors">{t.ctaSecondary}</a>
       </div>
-      <p class="mt-6">
+      <p class="mt-6 flex flex-wrap gap-x-6 gap-y-2 justify-center">
+        <a href={`${prefix}/talks/`} class="text-sm text-white/70 hover:text-white underline underline-offset-4 transition-colors">{t.talksLink} &rarr;</a>
         <a href={`${prefix}/progetti/`} class="text-sm text-white/70 hover:text-white underline underline-offset-4 transition-colors">{t.caseStudiesLink} &rarr;</a>
       </p>
       <p class="mt-6 text-sm text-white/70 max-w-xl mx-auto">{t.credential}</p>
