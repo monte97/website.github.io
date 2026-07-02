@@ -10,7 +10,7 @@ import { pillarLabels, type Pillar } from '@/data/pillars';
 interface Props {
   lang?: 'it' | 'en';
   methodVariant?: 'full' | 'slim' | 'link' | 'none';
-  heroVariant?: 'current' | 'a' | 'b' | 'c';
+  heroVariant?: 'current' | 'a' | 'b' | 'c' | 'd';
 }
 
 const { lang = 'it', methodVariant = 'full', heroVariant = 'current' } = Astro.props;
@@ -179,7 +179,7 @@ const t = lang === 'en'
       credential: 'Sono ingegnere iscritto all\'Ordine di Ravenna: di quello che consegno rispondo io.',
     };
 
-const heroVariants: Record<'a'|'b'|'c', Record<'it'|'en', { h1: string; sub: string }>> = {
+const heroVariants: Record<'a'|'b'|'c'|'d', Record<'it'|'en', { h1: string; sub: string }>> = {
   a: {
     it: { h1: 'In produzione hai paura a toccare qualsiasi cosa, e ogni funzione nuova costa il doppio.', sub: 'Modernizzo sistemi di prodotto datati: container, CI/CD, test, observability e sicurezza dove non c\'erano. E lascio il team capace di tenerli così.' },
     en: { h1: 'You are afraid to touch anything in production, and every new feature costs double.', sub: 'I modernize aging product systems: containers, CI/CD, testing, observability and security where they were missing. And I leave the team able to keep them that way.' },
@@ -191,6 +191,10 @@ const heroVariants: Record<'a'|'b'|'c', Record<'it'|'en', { h1: string; sub: str
   c: {
     it: { h1: 'Torna facile e sicuro cambiare un prodotto che si è irrigidito nel tempo.', sub: 'Container, CI/CD, test, observability e sicurezza messi dove non c\'erano, così aggiungere funzioni non fa più paura. E il team resta capace di tenerli così.' },
     en: { h1: 'Make an aged, rigid product fast and safe to change again.', sub: 'Containers, CI/CD, testing, observability and security put where they were missing, so shipping features stops being scary. And the team stays able to keep them that way.' },
+  },
+  d: {
+    it: { h1: 'Progetto, sviluppo e automatizzo il software del tuo prodotto.', sub: 'Dall\'analisi e le scelte di architettura alla realizzazione, fino ai processi automatici che ne tengono alta la qualità: test, CI/CD, observability, sicurezza. Che parta da zero o da un sistema irrigidito nel tempo, alla fine il team resta capace di andare avanti da solo.' },
+    en: { h1: 'I design, build and automate the software behind your product.', sub: 'From analysis and architecture choices to the actual build, all the way to the automated processes that keep quality high: testing, CI/CD, observability, security. Whether it starts from scratch or from a system that has grown rigid over time, the team is left able to go on without me.' },
   },
 };
 const hv = heroVariant !== 'current' ? heroVariants[heroVariant][lang] : null;
