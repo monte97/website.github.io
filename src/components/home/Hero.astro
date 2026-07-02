@@ -15,7 +15,6 @@ const text = {
     headline: 'Progetto, sviluppo e automatizzo il software del tuo prodotto.',
     headlineAccent: 'Da zero, o su un sistema che si è irrigidito nel tempo.',
     subtitle: 'Dall\'analisi e l\'architettura alla realizzazione, fino ai processi che ne tengono alta la qualità: test, CI/CD, observability, sicurezza. E il team resta capace di andare avanti da solo.',
-    credential: "Iscritto all'Ordine degli Ingegneri di Ravenna",
     cta: 'Prenota una discovery call',
   },
   en: {
@@ -23,7 +22,6 @@ const text = {
     headline: 'I design, build and automate the software behind your product.',
     headlineAccent: 'From scratch, or on a system grown rigid over time.',
     subtitle: "From analysis and architecture to the build, to the processes that keep quality high: testing, CI/CD, observability, security. And the team stays able to carry on without me.",
-    credential: 'Registered with the Italian Order of Engineers (Ravenna)',
     cta: 'Book a discovery call',
   },
 };
@@ -71,9 +69,6 @@ const t = text[lang];
         </h1>
         <p class="mt-5 text-base md:text-lg text-text-muted max-w-xl leading-relaxed">
           {t.subtitle}
-        </p>
-        <p class="mt-2 text-xs text-text-muted/70">
-          {t.credential}
         </p>
         <div class="mt-8">
           <Button href={calLink} size="lg" data-umami-event="cta-hero-healthcheck">

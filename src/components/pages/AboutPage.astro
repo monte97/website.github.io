@@ -20,7 +20,7 @@ const cvHref = '/files/Francesco_Montelli_CV.pdf';
 const t = lang === 'en'
   ? {
       pageTitle: 'About',
-      pageDesc: 'Francesco Montelli, freelance Software Engineer registered with the Italian Order of Engineers of Ravenna. Philosophy, method and why I sign everything personally.',
+      pageDesc: 'Francesco Montelli, freelance Software Engineer. Philosophy, method and how I work.',
       heroTitle: author.name,
       heroSubtitle: 'Software Engineer · product systems',
       philosophyQuote: "AI today writes code the way robots assemble cars: fast, at scale, tirelessly. But no one lets a robot design the chassis or sign off on the brakes. That part is still a human responsibility.",
@@ -29,8 +29,6 @@ const t = lang === 'en'
         "I started working in 2016 while still studying. I learned almost everything on my own and, over time, developed a precise idea of how software should be built. Not an idea about technologies: those change. An idea about method: what comes first, what comes after, and why the order is not negotiable.",
         "I work with product companies: sometimes from scratch, sometimes on a system grown rigid over time that now fights every change. My ultimate goal is to make myself unnecessary: the system shouldn't depend on me to keep working.",
       ],
-      orderTitle: 'Registered with the Italian Order of Engineers (Ravenna)',
-      orderBody: "When I sign off, I'm the one accountable. No company behind me.",
       blogTitle: 'The blog as an extension of the method',
       blogBody: "I write the kind of articles I would have wanted to find before making a decision. Not summaries of documentation: real cases, tradeoffs made explicit, things I learned by getting them wrong first. If you want to check whether what I claim matches what I do, the blog is the place.",
       blogCta: 'Read the blog',
@@ -45,7 +43,7 @@ const t = lang === 'en'
     }
   : {
       pageTitle: 'About',
-      pageDesc: "Francesco Montelli, Software Engineer freelance e ingegnere iscritto all'Ordine di Ravenna. Filosofia, metodo e perché firmo tutto in prima persona.",
+      pageDesc: 'Francesco Montelli, Software Engineer freelance. Filosofia, metodo e come lavoro.',
       heroTitle: author.name,
       heroSubtitle: 'Software Engineer · sistemi di prodotto',
       philosophyQuote: "La IA oggi scrive codice come i robot assemblano le automobili: veloce, in larga scala, senza stancarsi. Ma nessuno affida a un robot la progettazione di una carrozzeria o il collaudo dei freni. Quella parte è ancora una questione umana.",
@@ -54,8 +52,6 @@ const t = lang === 'en'
         "Ho iniziato a lavorare nel 2016 mentre ancora studiavo, ho imparato quasi tutto da solo e ho sviluppato nel tempo un'idea precisa su come il software dovrebbe essere costruito. Non un'idea sulle tecnologie: quelle cambiano. Un'idea sul metodo: cosa viene prima, cosa viene dopo, e perché l'ordine non è negoziabile.",
         "Lavoro con aziende di prodotto: a volte parto da zero, a volte da un sistema irrigidito nel tempo che ora combatte ogni modifica. Il mio obiettivo finale è rendermi inutile: il sistema non deve dipendere da me per funzionare.",
       ],
-      orderTitle: "Iscritto all'Ordine degli Ingegneri di Ravenna",
-      orderBody: "Quando firmo, sono io che ne rispondo. Non un'azienda dietro di me.",
       blogTitle: 'Il blog come estensione del metodo',
       blogBody: "Scrivo il tipo di articoli che mi sarebbe servito trovare prima di prendere una decisione. Non sono riassunti di documentazione: sono casi reali, tradeoff sul tavolo, cose che ho imparato sbagliandole prima. Se vuoi verificare se quello che racconto coincide con quello che faccio, il blog è il posto.",
       blogCta: 'Vai al blog',
@@ -93,28 +89,6 @@ const t = lang === 'en'
       {t.whoBody.map((p) => (
         <p class="text-text-muted text-lg leading-relaxed">{p}</p>
       ))}
-    </div>
-  </section>
-
-  {/* Iscrizione Ordine — evidenziata */}
-  <section class="mb-20 fade-in-section">
-    <div class="rounded-xl border border-accent/30 bg-accent/5 p-8 md:p-10 max-w-3xl">
-      <div class="flex items-start gap-4">
-        <div class="shrink-0 w-12 h-12 rounded-full bg-accent/15 flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-accent">
-            <path d="M12 2 4 6v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V6l-8-4z"/>
-            <path d="m9 12 2 2 4-4"/>
-          </svg>
-        </div>
-        <div>
-          <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-3">
-            {t.orderTitle}
-          </h2>
-          <p class="text-text-muted leading-relaxed">
-            {t.orderBody}
-          </p>
-        </div>
-      </div>
     </div>
   </section>
 
