@@ -3,7 +3,7 @@ export const author = {
   nickname: 'Monte',
   image: '/images/author/monte.webp',
   bio: {
-    it: "Software Engineer freelance. Aiuto aziende di prodotto a modernizzare sistemi irrigiditi nel tempo: container, CI/CD, test, observability e sicurezza, messi dove non c'erano. Iscritto all'Ordine degli Ingegneri della Provincia di Ravenna.",
-    en: 'Freelance Software Engineer. I help product companies modernize systems that stiffened over time: containers, CI/CD, testing, observability and security, put where they were missing. Registered with the Order of Engineers of the Province of Ravenna.',
+    it: "Software Engineer freelance. Progetto, sviluppo e automatizzo il software di prodotto: dall'architettura alla realizzazione, fino ai processi che ne garantiscono la qualità nel tempo. Da zero o su sistemi irrigiditi. Iscritto all'Ordine degli Ingegneri di Ravenna.",
+    en: "Freelance Software Engineer. I design, build and automate product software: from architecture to the build, to the processes that keep quality high over time. From scratch or on systems grown rigid over time. Registered with the Italian Order of Engineers (Ravenna).",
   },
 } as const;
