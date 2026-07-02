@@ -34,6 +34,9 @@ const t = lang === 'en'
       blogTitle: 'The blog as an extension of the method',
       blogBody: "I write the kind of articles I would have wanted to find before making a decision. Not summaries of documentation: real cases, tradeoffs made explicit, things I learned by getting them wrong first. If you want to check whether what I claim matches what I do, the blog is the place.",
       blogCta: 'Read the blog',
+      talksTitle: 'Conferences & speaking',
+      talksBody: 'What I write about on the blog, I also bring to the stage. I am starting to speak at conferences on design, testing and automation.',
+      talksCta: 'See all talks',
       ctaTitle: 'Want to talk?',
       ctaDesc: '30 minutes, free, to figure out if we can work together.',
       ctaPrimary: 'Book a discovery call',
@@ -56,6 +59,9 @@ const t = lang === 'en'
       blogTitle: 'Il blog come estensione del metodo',
       blogBody: "Scrivo il tipo di articoli che mi sarebbe servito trovare prima di prendere una decisione. Non sono riassunti di documentazione: sono casi reali, tradeoff sul tavolo, cose che ho imparato sbagliandole prima. Se vuoi verificare se quello che racconto coincide con quello che faccio, il blog è il posto.",
       blogCta: 'Vai al blog',
+      talksTitle: 'Conferenze & speaking',
+      talksBody: 'Quello che scrivo sul blog lo porto anche sul palco. Ho iniziato a parlare alle conferenze di progettazione, testing e automazione.',
+      talksCta: 'Vedi tutti i talk',
       ctaTitle: 'Vogliamo parlarne?',
       ctaDesc: '30 minuti, gratuiti, per capire se possiamo lavorare insieme.',
       ctaPrimary: 'Prenota una discovery call',
@@ -120,6 +126,17 @@ const t = lang === 'en'
     </p>
     <Button href={`${prefix}/blog/`} variant="secondary" size="md">
       {t.blogCta}
+    </Button>
+  </section>
+
+  {/* Teaser talk */}
+  <section class="mb-20 fade-in-section">
+    <SectionHeading title={t.talksTitle} />
+    <p class="text-text-muted text-lg leading-relaxed max-w-3xl mb-6">
+      {t.talksBody}
+    </p>
+    <Button href={`${prefix}/talks/`} variant="secondary" size="md">
+      {t.talksCta} &rarr;
     </Button>
   </section>
 
