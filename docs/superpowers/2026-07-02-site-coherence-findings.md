@@ -1,6 +1,14 @@
 # Coerenza comunicazione tra le pagine — trovamenti (audit 2026-07-02)
 
-> **Stato:** solo appuntati, NON applicati. Da decidere/eseguire in un secondo momento.
+> **Stato:** P0 risolto (via A, minima disruption) · **P1 APPLICATO** (commit 08e3bd1) · **P2 APPLICATO** (commit 4b131a0) · P3 non applicato (vedi sotto).
+>
+> **Aggiornamento esecuzione 2026-07-02:**
+> - P1 fatto: home Hero riscritto, `pageDesc` servizi, `author.ts`, meta home IT+EN, About whoBody (con greenfield + "unnecessary"), PostCTA generic — tutti sulla storia *progetta/sviluppa/automatizza, da zero o su sistema irrigidito*.
+> - P2 fatto: etichetta CTA unica "Prenota una discovery call"/"Book a discovery call" (10 occorrenze, 9 file); credenziale Ordine uniforme (AboutPage orderTitle + ServicesPage credential).
+> - P3 NON fatto (nessun impatto live): pagine scratch `servizi-2/3/4`,`home-2/3` sono **untracked** → non deployate. File `src/i18n/it.ts`+`en.ts` con `home.headline`/`subtitle` vecchi sono **codice morto** (nessun import) → mai renderizzati. `methodVariant` full/link/none rami morti. Tutti cancellabili in un cleanup separato, a scelta.
+> - Rimasto DERIVATO ma non toccato (trade-off): ForWho 3° segnale (redundancy vs coerenza — richiede estrazione a sorgente unico) e About philosophyQuote (metafora AI orfana ma accettabile).
+
+
 > Fonte: giro di 3 auditor avversariali (coerenza messaggio, percorso visitatore, voce/terminologia) sul branch `feat/servizi-riposizionamento` dopo il redesign di `/servizi`.
 
 ## Quadro
