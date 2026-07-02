@@ -4,6 +4,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import Button from '@/components/ui/Button.astro';
+import FinalCta from '@/components/ui/FinalCta.astro';
 import { pillarStyles } from '@/data/pillar-styles';
 import { pillarLabels, type Pillar } from '@/data/pillars';
 import { signals as sharedSignals } from '@/data/signals';
@@ -350,22 +351,12 @@ const t = lang === 'en'
   </section>
 
   {/* BANDA 6 — CTA finale (una sola azione + link secondari piccoli) */}
-  <section class="bg-accent text-white">
-    <div class="max-w-5xl mx-auto px-5 py-20 text-center fade-in-section">
-      <h2 class="text-3xl md:text-4xl font-bold mb-3">{t.ctaTitle}</h2>
-      <p class="text-white/85 text-lg mb-8 max-w-xl mx-auto">{t.ctaDesc}</p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-        <a href={calLink} class="inline-flex items-center justify-center font-medium rounded-lg px-7 py-3 text-base bg-white text-accent hover:bg-white/90 shadow-sm active:scale-[0.98] transition-all" data-umami-event="cta-servizi-final">
-          {t.ctaPrimary}
-        </a>
-        <a href={mailLink} class="text-sm text-white/80 hover:text-white underline underline-offset-4 transition-colors">{t.ctaSecondary}</a>
-      </div>
-      <p class="mt-6 flex flex-wrap gap-x-6 gap-y-2 justify-center">
-        <a href={`${prefix}/talks/`} class="text-sm text-white/70 hover:text-white underline underline-offset-4 transition-colors">{t.talksLink} &rarr;</a>
-        <a href={`${prefix}/progetti/`} class="text-sm text-white/70 hover:text-white underline underline-offset-4 transition-colors">{t.caseStudiesLink} &rarr;</a>
-      </p>
-    </div>
-  </section>
+  <FinalCta title={t.ctaTitle} desc={t.ctaDesc} ctaLabel={t.ctaPrimary} secondaryLabel={t.ctaSecondary} secondaryHref={mailLink} umamiEvent="cta-servizi-final" fullBleed>
+    <p class="mt-6 flex flex-wrap gap-x-6 gap-y-2 justify-center">
+      <a href={`${prefix}/talks/`} class="text-sm text-white/70 hover:text-white underline underline-offset-4 transition-colors">{t.talksLink} &rarr;</a>
+      <a href={`${prefix}/progetti/`} class="text-sm text-white/70 hover:text-white underline underline-offset-4 transition-colors">{t.caseStudiesLink} &rarr;</a>
+    </p>
+  </FinalCta>
 
   </main>
   <Footer lang={lang} />

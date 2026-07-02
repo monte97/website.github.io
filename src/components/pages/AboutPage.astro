@@ -3,6 +3,7 @@ import PageLayout from '@/layouts/PageLayout.astro';
 import PageHero from '@/components/ui/PageHero.astro';
 import SectionHeading from '@/components/ui/SectionHeading.astro';
 import Button from '@/components/ui/Button.astro';
+import FinalCta from '@/components/ui/FinalCta.astro';
 import { author } from '@/data/author';
 
 interface Props {
@@ -115,21 +116,9 @@ const t = lang === 'en'
   </section>
 
   {/* CTA finale */}
-  <section class="text-center py-16 fade-in-section">
-    <h2 class="text-3xl font-bold mb-3">{t.ctaTitle}</h2>
-    <p class="text-text-muted text-lg mb-8 max-w-xl mx-auto">{t.ctaDesc}</p>
-    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-      <Button href={calLink} variant="primary" size="lg">
-        {t.ctaPrimary}
-      </Button>
-      <a href={mailLink} class="text-sm text-text-muted hover:text-accent transition-colors">
-        {t.ctaSecondary}
-      </a>
-    </div>
-    <div class="mt-10">
-      <a href={cvHref} class="text-sm text-text-muted hover:text-accent transition-colors underline underline-offset-4">
-        {t.cvLabel}
-      </a>
-    </div>
-  </section>
+  <FinalCta title={t.ctaTitle} desc={t.ctaDesc} ctaLabel={t.ctaPrimary} secondaryLabel={t.ctaSecondary} secondaryHref={mailLink}>
+    <p class="mt-8">
+      <a href={cvHref} class="text-sm text-white/70 hover:text-white underline underline-offset-4 transition-colors">{t.cvLabel} &rarr;</a>
+    </p>
+  </FinalCta>
 </PageLayout>

@@ -1,0 +1,48 @@
+---
+interface Props {
+  title: string;
+  desc: string;
+  ctaLabel: string;
+  ctaHref?: string;
+  secondaryLabel?: string;
+  secondaryHref?: string;
+  umamiEvent?: string;
+  /** true su pagine a tutta larghezza (banda edge-to-edge); false dentro un container (card arrotondata). */
+  fullBleed?: boolean;
+}
+
+const calLink = 'https://cal.com/francesco-montelli-4hfojq/30min';
+
+const {
+  title,
+  desc,
+  ctaLabel,
+  ctaHref = calLink,
+  secondaryLabel,
+  secondaryHref,
+  umamiEvent,
+  fullBleed = false,
+} = Astro.props;
+---
+
+<section class:list={['bg-accent text-white', fullBleed ? '' : 'rounded-2xl']}>
+  <div class:list={['text-center fade-in-section', fullBleed ? 'max-w-5xl mx-auto px-5 py-20' : 'px-6 py-16']}>
+    <h2 class="text-3xl md:text-4xl font-bold mb-3">{title}</h2>
+    <p class="text-white/85 text-lg mb-8 max-w-xl mx-auto">{desc}</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+      <a
+        href={ctaHref}
+        class="inline-flex items-center justify-center font-medium rounded-lg px-7 py-3 text-base bg-white text-accent hover:bg-white/90 shadow-sm active:scale-[0.98] transition-all"
+        data-umami-event={umamiEvent}
+      >
+        {ctaLabel}
+      </a>
+      {secondaryLabel && secondaryHref && (
+        <a href={secondaryHref} class="text-sm text-white/80 hover:text-white underline underline-offset-4 transition-colors">
+          {secondaryLabel}
+        </a>
+      )}
+    </div>
+    <slot />
+  </div>
+</section>
