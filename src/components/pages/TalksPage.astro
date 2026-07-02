@@ -38,7 +38,6 @@ const t = lang === 'en'
       pageTitle: 'Talks',
       pageDesc: 'Conferences and talks by Francesco Montelli: slides, material and recordings.',
       heroTitle: 'Conferences & Speaking',
-      heroSubtitle: 'What I write about on the blog, I also bring to the stage: where I speak, on what, and to whom.',
       upcomingTitle: 'Upcoming',
       pastTitle: 'Past talks',
       linkRepo: 'Slides & material',
@@ -51,7 +50,6 @@ const t = lang === 'en'
       pageTitle: 'Talks',
       pageDesc: 'Conferenze e talk di Francesco Montelli: slide, materiale e registrazioni.',
       heroTitle: 'Conferenze & Speaking',
-      heroSubtitle: 'Quello che scrivo sul blog lo porto anche sul palco: dove parlo, di cosa, e a chi.',
       upcomingTitle: 'Prossimi',
       pastTitle: 'Talk passati',
       linkRepo: 'Slide e materiale',
@@ -77,9 +75,6 @@ const linkLabel: Record<LinkKey, string> = {
     <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-text-dark dark:text-text-light">
       {t.heroTitle}
     </h1>
-    <p class="mt-3 text-base md:text-lg text-text-muted max-w-2xl leading-relaxed">
-      {t.heroSubtitle}
-    </p>
   </header>
 
   {upcoming.length > 0 && (
