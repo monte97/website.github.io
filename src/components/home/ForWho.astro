@@ -1,4 +1,6 @@
 ---
+import { signals as sharedSignals } from '@/data/signals';
+
 interface Props {
   lang?: 'it' | 'en';
 }
@@ -10,40 +12,12 @@ const text = {
     eyebrow: 'Per chi è',
     title: 'Aziende di prodotto i cui sistemi sono cresciuti più piano di quanto servisse.',
     intro: 'Prodotti che hanno superato la fase iniziale e ora si trovano davanti ad attriti che prima non c\'erano.',
-    signals: [
-      {
-        title: 'Deploy che fanno paura',
-        body: 'Ogni deploy è un evento. Si rimanda al venerdì pomeriggio per evitare il weekend di guardia. Quando una release fallisce, recuperare costa ore, non minuti.',
-      },
-      {
-        title: 'Guasti difficili da interpretare',
-        body: 'Qualcosa non funziona, ma non sai dove guardare. I log dicono una cosa, le metriche un\'altra, gli utenti una terza. La diagnosi diventa archeologia.',
-      },
-      {
-        title: 'Nessuno sa di chi è quel pezzo',
-        body: 'Componenti senza owner chiaro. Pezzi di sistema che "funzionano e basta", finché non smettono. Conoscenza concentrata in poche teste, e quelle teste vanno in ferie.',
-      },
-    ],
     closing: 'Se due di queste te le sei già sentite addosso, il momento giusto per intervenire è prima della terza.',
   },
   en: {
     eyebrow: 'Who this is for',
     title: 'Product companies whose systems grew slower than the business needed.',
     intro: 'Products past the early-stage phase, now hitting friction that was not there before.',
-    signals: [
-      {
-        title: 'Deploys you dread',
-        body: "Every release is an event. You push it to Friday afternoon to dodge the on-call weekend. When something breaks, recovery takes hours, not minutes.",
-      },
-      {
-        title: 'Failures you can\'t read',
-        body: "Something is wrong, but you don't know where to look. Logs say one thing, metrics another, users a third. Diagnosis turns into archaeology.",
-      },
-      {
-        title: 'Nobody owns that piece',
-        body: "Components without a clear owner. Parts of the system that \"just work\" until they don't. Knowledge stuck in a few heads, and those heads take vacations.",
-      },
-    ],
     closing: 'If two of these already feel familiar, the right time to act is before the third one shows up.',
   },
 };
@@ -64,7 +38,7 @@ const t = text[lang];
     </p>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 stagger-children">
-      {t.signals.map((s) => (
+      {sharedSignals[lang].map((s) => (
         <div class="rounded-xl border border-border/70 dark:border-border-dark/70 border-l-[3px] border-l-accent p-6 bg-white dark:bg-surface-dark h-full">
           <h3 class="font-semibold text-base text-text-dark dark:text-text-light mb-2">
             {s.title}
