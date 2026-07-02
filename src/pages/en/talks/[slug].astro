@@ -1,0 +1,12 @@
+---
+import TalkDetailPage from '@/components/pages/TalkDetailPage.astro';
+import { talks } from '@/data/talks';
+
+export function getStaticPaths() {
+  return talks.map((tk) => ({ params: { slug: tk.slug } }));
+}
+
+const { slug } = Astro.params;
+---
+
+<TalkDetailPage slug={slug!} lang="en" />
