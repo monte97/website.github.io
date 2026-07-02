@@ -10,10 +10,9 @@ import { pillarLabels, type Pillar } from '@/data/pillars';
 interface Props {
   lang?: 'it' | 'en';
   methodVariant?: 'full' | 'slim' | 'link' | 'none';
-  heroVariant?: 'current' | 'a' | 'b' | 'c' | 'd';
 }
 
-const { lang = 'it', methodVariant = 'full', heroVariant = 'current' } = Astro.props;
+const { lang = 'it', methodVariant = 'full' } = Astro.props;
 const prefix = lang === 'en' ? '/en' : '';
 
 const calLink = 'https://cal.com/francesco-montelli-4hfojq/30min';
@@ -90,9 +89,8 @@ const t = lang === 'en'
       pageTitle: 'Services',
       pageDesc: 'I modernize product systems that have stiffened over time: containers, CI/CD, testing, observability and security, put where they were missing. Free 30-minute discovery call.',
       // Hero
-      heroTitle: 'I modernize product systems that stiffened over time: containers, CI/CD, testing, observability and security, put in where they were missing.',
-      heroForWho: 'For product companies whose systems grew slower than the business needed them to.',
-      heroHook: 'The part of software that is still human, designing well and actually testing, is the part I do.',
+      heroTitle: 'I design, build and automate the software behind your product.',
+      heroForWho: 'From analysis and architecture choices to the actual build, all the way to the automated processes that keep quality high: testing, CI/CD, observability, security. Whether it starts from scratch or from a system that has grown rigid over time, the team is left able to go on without me.',
       heroAvailability: '',
       heroCta: 'Book a discovery call',
       // Signals
@@ -102,7 +100,7 @@ const t = lang === 'en'
       signals: [
         { title: 'Deploys you dread', body: 'Every release is an event. You push it to Friday afternoon to dodge the on-call weekend. When something breaks, recovery takes hours, not minutes.' },
         { title: 'Tech stuck in place', body: 'Adding a new feature costs an enormous effort. The stack is old, and every change fights the ones before it. You are falling behind, and you can feel it.' },
-        { title: 'No one owns the infra', body: 'CI/CD, deploy, security: nobody inside really presides over them. Knowledge is stuck in a few heads, and those heads take vacations.' },
+        { title: 'You are about to build something new', body: 'A service, an integration, an important feature. This is when architecture choices matter most: they are the most expensive to change later.' },
       ],
       signalsClosing: 'If two of these already feel familiar, the right time to act is before the third one shows up.',
       // Method
@@ -136,9 +134,8 @@ const t = lang === 'en'
       pageTitle: 'Servizi',
       pageDesc: 'Modernizzo sistemi di prodotto irrigiditi nel tempo: container, CI/CD, test, observability e sicurezza, messi dove non c’erano. Discovery call gratuita di 30 minuti.',
       // Hero
-      heroTitle: 'Modernizzo sistemi di prodotto irrigiditi nel tempo: container, CI/CD, test, observability e sicurezza, messi dove non c’erano.',
-      heroForWho: 'Per aziende di prodotto i cui sistemi sono cresciuti più piano di quanto servisse al business.',
-      heroHook: 'La parte del software ancora umana, progettare bene e collaudare sul serio, è quella di cui mi occupo io.',
+      heroTitle: 'Progetto, sviluppo e automatizzo il software del tuo prodotto.',
+      heroForWho: 'Dall\'analisi e le scelte di architettura alla realizzazione, fino ai processi automatici che ne tengono alta la qualità: test, CI/CD, observability, sicurezza. Che parta da zero o da un sistema irrigidito nel tempo, alla fine il team resta capace di andare avanti da solo.',
       heroAvailability: '',
       heroCta: 'Prenota una discovery call',
       // Segnali
@@ -148,7 +145,7 @@ const t = lang === 'en'
       signals: [
         { title: 'Deploy che fanno paura', body: 'Ogni rilascio è un evento. Lo rimandi al venerdì pomeriggio per evitare il weekend di guardia. Quando qualcosa si rompe, recuperare costa ore, non minuti.' },
         { title: 'Tecnologia ferma al palo', body: 'Aggiungere una funzione nuova costa una fatica enorme. Lo stack è vecchio e ogni modifica combatte con le precedenti. Stai restando indietro, e lo senti.' },
-        { title: 'Nessuno presidia l’infra', body: 'CI/CD, deploy, sicurezza: dentro non li presidia davvero nessuno. La conoscenza è concentrata in poche teste, e quelle teste vanno in ferie.' },
+        { title: 'Stai per costruire qualcosa di nuovo', body: 'Un servizio, un\'integrazione, una funzionalità importante. È il momento in cui le scelte di architettura contano di più: sono le più costose da cambiare dopo.' },
       ],
       signalsClosing: 'Se due di queste te le sei già sentite addosso, il momento giusto per intervenire è prima della terza.',
       // Metodo
@@ -179,25 +176,6 @@ const t = lang === 'en'
       credential: 'Sono ingegnere iscritto all\'Ordine di Ravenna: di quello che consegno rispondo io.',
     };
 
-const heroVariants: Record<'a'|'b'|'c'|'d', Record<'it'|'en', { h1: string; sub: string }>> = {
-  a: {
-    it: { h1: 'In produzione hai paura a toccare qualsiasi cosa, e ogni funzione nuova costa il doppio.', sub: 'Modernizzo sistemi di prodotto datati: container, CI/CD, test, observability e sicurezza dove non c\'erano. E lascio il team capace di tenerli così.' },
-    en: { h1: 'You are afraid to touch anything in production, and every new feature costs double.', sub: 'I modernize aging product systems: containers, CI/CD, testing, observability and security where they were missing. And I leave the team able to keep them that way.' },
-  },
-  b: {
-    it: { h1: 'Il tuo prodotto è cresciuto più in fretta dei suoi sistemi.', sub: 'Aggiungere una funzione costa una fatica enorme e ogni deploy si fa col fiato sospeso. Rimetto in ordine container, CI/CD, test, observability e sicurezza, e lascio il team capace di andare avanti da solo.' },
-    en: { h1: 'Your product grew faster than its systems.', sub: 'Adding a feature takes enormous effort and every deploy is held-breath. I put containers, CI/CD, testing, observability and security back in order, and leave the team able to go on without me.' },
-  },
-  c: {
-    it: { h1: 'Torna facile e sicuro cambiare un prodotto che si è irrigidito nel tempo.', sub: 'Container, CI/CD, test, observability e sicurezza messi dove non c\'erano, così aggiungere funzioni non fa più paura. E il team resta capace di tenerli così.' },
-    en: { h1: 'Make an aged, rigid product fast and safe to change again.', sub: 'Containers, CI/CD, testing, observability and security put where they were missing, so shipping features stops being scary. And the team stays able to keep them that way.' },
-  },
-  d: {
-    it: { h1: 'Progetto, sviluppo e automatizzo il software del tuo prodotto.', sub: 'Dall\'analisi e le scelte di architettura alla realizzazione, fino ai processi automatici che ne tengono alta la qualità: test, CI/CD, observability, sicurezza. Che parta da zero o da un sistema irrigidito nel tempo, alla fine il team resta capace di andare avanti da solo.' },
-    en: { h1: 'I design, build and automate the software behind your product.', sub: 'From analysis and architecture choices to the actual build, all the way to the automated processes that keep quality high: testing, CI/CD, observability, security. Whether it starts from scratch or from a system that has grown rigid over time, the team is left able to go on without me.' },
-  },
-};
-const hv = heroVariant !== 'current' ? heroVariants[heroVariant][lang] : null;
 ---
 
 <BaseLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/servizi.webp" lang={lang}>
@@ -207,26 +185,12 @@ const hv = heroVariant !== 'current' ? heroVariants[heroVariant][lang] : null;
   {/* BANDA 1 — Hero: cosa faccio, per chi, una CTA */}
   <section class="bg-accent-subtle border-b border-border/40 dark:border-border-dark/40">
     <div class="max-w-5xl mx-auto px-5 py-16 md:py-24 fade-in-section">
-      {hv ? (
-        <>
-          <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text-dark dark:text-text-light max-w-4xl leading-[1.15]">
-            {hv.h1}
-          </h1>
-          <p class="mt-4 text-base md:text-lg text-text-muted max-w-2xl leading-relaxed">
-            {hv.sub}
-          </p>
-        </>
-      ) : (
-        <>
-          <p class="text-sm text-accent font-semibold mb-4">{t.heroHook}</p>
-          <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text-dark dark:text-text-light max-w-4xl leading-[1.15]">
-            {t.heroTitle}
-          </h1>
-          <p class="mt-4 text-base md:text-lg text-text-muted max-w-2xl leading-relaxed">
-            {t.heroForWho}
-          </p>
-        </>
-      )}
+      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text-dark dark:text-text-light max-w-4xl leading-[1.15]">
+        {t.heroTitle}
+      </h1>
+      <p class="mt-4 text-base md:text-lg text-text-muted max-w-2xl leading-relaxed">
+        {t.heroForWho}
+      </p>
       {t.heroAvailability && (
         <p class="mt-2 text-sm text-text-muted/80">{t.heroAvailability}</p>
       )}
