@@ -1,6 +1,12 @@
 # Follow-up / TODO
 
-## Articolo blog dal talk "mutation testing" (Working Software 2026)
+## ✅ FATTO — Articolo blog dal talk "mutation testing" (Working Software 2026)
+
+Pubblicato: `src/content/posts/verificare/testing/mutation-testing-oltre-la-coverage/` (commit 359b9a3). Cross-link talk↔articolo (9a5731e). CTA servizi/call automatico via PostCTA.
+Residui: **hero mancante** (serve `hero.webp`; `copertina.png` c'è ma manca un converter webp in locale) · **versione EN** (opzionale) · **`draft` è `false`** (pubblicabile al merge; rimettere `true` se si vuole trattenere).
+
+<details><summary>Nota originale</summary>
+
 
 **Idea:** trasformare il lungo post LinkedIn sul mutation testing (talk WS2026) in un **articolo del blog** su montelli.dev, così diventa contenuto proprio (URL permanente, SEO) invece che vivere solo su LinkedIn.
 
@@ -14,6 +20,7 @@
 - Aggiungere un campo `article?` in `src/data/talks.ts` (TalkLink) e un pulsante "Leggi l'articolo" sulla pagina di dettaglio del talk WS2026 (`/talks/mutation-testing-working-software-2026/`).
 - L'articolo linka al talk (`/talks/...`) e al servizio Testing/verifica (`/servizi`).
 - Obiettivo: un talk, un articolo, un servizio che si rimandano — prova concreta che compensa l'assenza di case study pubblici.
+</details>
 
 ---
 
