@@ -4,6 +4,7 @@ export type TalkLink = {
   linkedin?: string;
   conference?: string;
   recording?: string;
+  article?: string;
 };
 
 export type Talk = {
@@ -62,6 +63,7 @@ export const talks: Talk[] = [
       en: 'A live demo on three .NET 8 services: coverage at 93% and green tests, yet Stryker.NET shows 35% of mutants survive. Guided by the report I rewrite the tests and the mutation score climbs to 92%. Coverage tells you the code runs; the mutation score tells you the tests work.',
     },
     links: {
+      article: '/blog/verificare/testing/mutation-testing-oltre-la-coverage/',
       repo: 'https://github.com/monte97/mutation-testing-ws2026-slides',
       linkedin: 'https://www.linkedin.com/feed/update/urn:li:activity:7476566629942759424/',
       conference: 'https://www.agilemovement.it/workingsoftware/',

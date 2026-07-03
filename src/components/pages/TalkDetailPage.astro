@@ -28,6 +28,7 @@ const t = lang === 'en'
       back: 'All talks',
       upcoming: 'Upcoming',
       gallery: 'Gallery',
+      linkArticle: 'Read the article',
       linkRepo: 'Slides & material',
       linkSlides: 'Slides',
       linkRecording: 'Recording',
@@ -38,6 +39,7 @@ const t = lang === 'en'
       back: 'Tutti i talk',
       upcoming: 'In arrivo',
       gallery: 'Galleria',
+      linkArticle: 'Leggi l\'articolo',
       linkRepo: 'Slide e materiale',
       linkSlides: 'Slide',
       linkRecording: 'Registrazione',
@@ -45,9 +47,10 @@ const t = lang === 'en'
       linkConference: 'Conferenza',
     };
 
-type LinkKey = 'repo' | 'slides' | 'recording' | 'linkedin' | 'conference';
-const linkOrder: LinkKey[] = ['repo', 'slides', 'recording', 'linkedin', 'conference'];
+type LinkKey = 'article' | 'repo' | 'slides' | 'recording' | 'linkedin' | 'conference';
+const linkOrder: LinkKey[] = ['article', 'repo', 'slides', 'recording', 'linkedin', 'conference'];
 const linkLabel: Record<LinkKey, string> = {
+  article: t.linkArticle,
   repo: t.linkRepo,
   slides: t.linkSlides,
   recording: t.linkRecording,
@@ -73,13 +76,16 @@ const linkLabel: Record<LinkKey, string> = {
 
   {talk.links && (
     <div class="flex flex-wrap gap-3 mb-12">
-      {linkOrder.map((key) => (
-        talk.links?.[key] && (
-          <a href={talk.links[key]} target="_blank" rel="noopener noreferrer" class="inline-flex items-center rounded-lg border border-accent/30 text-accent px-4 py-2 text-sm font-medium hover:bg-accent/5 transition-colors">
+      {linkOrder.map((key) => {
+        const href = talk.links?.[key];
+        if (!href) return null;
+        const external = href.startsWith('http');
+        return (
+          <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined} class="inline-flex items-center rounded-lg border border-accent/30 text-accent px-4 py-2 text-sm font-medium hover:bg-accent/5 transition-colors">
             {linkLabel[key]} &rarr;
           </a>
-        )
-      ))}
+        );
+      })}
     </div>
   )}
 
