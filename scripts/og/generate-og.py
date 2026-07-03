@@ -82,6 +82,34 @@ CARDS = [
         "tagline": "2 articoli",
         "url": "montelli.dev/blog",
     },
+    {
+        "file": "home",
+        "headline": "Progetto, sviluppo e automatizzo il software del tuo prodotto.",
+        "subtitle": "Software Engineer freelance, da zero o su sistemi irrigiditi nel tempo.",
+        "tagline": "Francesco Montelli",
+        "url": "montelli.dev",
+    },
+    {
+        "file": "about",
+        "headline": "Filosofia, metodo, come lavoro.",
+        "subtitle": "Francesco Montelli, Software Engineer freelance.",
+        "tagline": "About",
+        "url": "montelli.dev/about",
+    },
+    {
+        "file": "competenze",
+        "headline": "Competenze & stack",
+        "subtitle": "Organizzate per i tre pilastri: progettare, verificare, automatizzare.",
+        "tagline": "Skills",
+        "url": "montelli.dev/about/competenze",
+    },
+    {
+        "file": "workshop",
+        "headline": "Workshop & formazione hands-on",
+        "subtitle": "Sessioni mirate, fatte col team che deve applicarle.",
+        "tagline": "Per team di sviluppo",
+        "url": "montelli.dev/workshop",
+    },
 ]
 
 CSS = """
