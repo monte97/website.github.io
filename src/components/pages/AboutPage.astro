@@ -69,6 +69,7 @@ const t = lang === 'en'
 
 <PageLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/about.webp" lang={lang}>
   <PageHero
+    slot="hero"
     title={t.heroTitle}
     subtitle={t.heroSubtitle}
     image={{ src: author.image, alt: author.name }}

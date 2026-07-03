@@ -1,5 +1,6 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
+import PageHero from '@/components/ui/PageHero.astro';
 import { talks } from '@/data/talks';
 import { talkImagesFrom } from '@/utils/talks';
 
@@ -47,11 +48,7 @@ const t = lang === 'en'
 ---
 
 <PageLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/about.webp" lang={lang}>
-  <header class="mb-12 fade-in-section">
-    <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-text-dark dark:text-text-light">
-      {t.heroTitle}
-    </h1>
-  </header>
+  <PageHero slot="hero" title={t.heroTitle} />
 
   {upcoming.length > 0 && (
     <section class="mb-16 fade-in-section">

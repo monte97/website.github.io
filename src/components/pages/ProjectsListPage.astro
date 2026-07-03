@@ -61,7 +61,7 @@ const t = lang === 'en'
 ---
 
 <PageLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/progetti.webp" lang={lang}>
-  <PageHero title={t.heroTitle} subtitle={t.heroSubtitle} />
+  <PageHero slot="hero" title={t.heroTitle} subtitle={t.heroSubtitle} />
 
   <section class="mb-12 fade-in-section">
     <p class="text-text-muted text-lg leading-relaxed max-w-3xl">{t.intro}</p>
