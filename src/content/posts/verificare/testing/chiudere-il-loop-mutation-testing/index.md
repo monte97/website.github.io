@@ -17,9 +17,9 @@ series: mutation-testing-ai
 seriesOrder: 20
 ---
 
-Nel post precedente ho raccontato la storia: coverage al 93%, test tutti verdi, un bug in produzione per tre settimane perché nessun test distingueva `Sum` da `Max`. Buona parte di quei test li avevano scritti gli agenti AI — ed è lì che si apre la domanda che voglio affrontare qui: il problema non è chi scrive i test, umano o agente, ma se qualcuno li mette alla prova.
+Nel post precedente ho raccontato la storia: coverage al 93%, test tutti verdi, un bug in produzione per tre settimane perché nessun test distingueva `Sum` da `Max`. Buona parte di quei test li avevano scritti gli agenti AI — ed è lì che si apre la domanda che voglio affrontare qui: chiunque scriva i test, umano o agente, quello che conta è se qualcuno li mette alla prova.
 
-C'è una parte del talk che ho aggiunto per l'edizione estesa a [DevRomagna 2026](/talks/il-tuo-collega-piu-produttivo/), ed è quella che guarda avanti. Non "come mi sono accorto del buco", ma: gli stessi agenti che hanno moltiplicato il codice — e con esso i test che sembrano coprire ma non verificano — possono chiudere loro stessi il loop? Non è una domanda retorica. Ci sono già numeri di produzione, e sono più recenti di quanto pensassi quando ho preparato le slide.
+C'è una parte del talk che ho aggiunto per l'edizione estesa a [DevRomagna 2026](/talks/il-tuo-collega-piu-produttivo/), ed è quella che guarda avanti. La domanda è questa: gli stessi agenti che hanno moltiplicato il codice — e con esso i test che sembrano coprire ma non verificano — possono chiudere loro stessi il loop? Non è una domanda retorica: ci sono già numeri di produzione, e sono più recenti di quanto pensassi quando ho preparato le slide.
 
 ## Più codice, meno certezze
 
@@ -31,7 +31,7 @@ Il collo di bottiglia si è spostato. Prima era scrivere i test. Ora è **giudic
 
 Il ciclo classico è aperto: scrivete una spec, un agente genera test da quella spec, uno strumento di mutation testing (Stryker, PIT, mutmut) produce un report con i mutanti *survived* — i punti dove i test non si accorgono di nulla. Poi il report finisce in un tab del browser, e in pratica nessuno lo rilegge riga per riga.
 
-La chiusura del loop è semplice da descrivere: lo stesso agente che ha scritto i test legge anche il report dei survived, e li usa come prompt di ritorno per migliorarsi. Non è più "scrivi altri test", ma "copri esattamente questo caso, che il report ti ha appena indicato". È esattamente il workflow che Meta ha messo in produzione con il sistema **ACH (Automated Compliance Hardening)**.
+La chiusura del loop è semplice da descrivere: lo stesso agente che ha scritto i test legge anche il report dei survived, e li usa come prompt di ritorno per migliorarsi. Il prompt diventa preciso: "copri esattamente questo caso, che il report ti ha appena indicato". È esattamente il workflow che Meta ha messo in produzione con il sistema **ACH (Automated Compliance Hardening)**.
 
 ## Mutanti che sanno di cosa hanno paura
 
@@ -45,7 +45,7 @@ Tra ottobre e dicembre 2024 Meta ha fatto un trial su Facebook, Instagram, Whats
 
 C'è un limite teorico del mutation testing che non ho toccato nel post precedente: alcuni mutanti sono *equivalenti*. Cambiano la sintassi ma non il comportamento osservabile — nessun test potrà mai ucciderli, non perché la suite sia debole, ma perché non c'è niente da distinguere. Decidere se un mutante è equivalente è, in generale, indecidibile: si riduce all'halting problem.
 
-Per trent'anni questo è stato affrontato con euristiche grossolane (confronto del bytecode compilato, analisi statica), con falsi positivi alti. Un paper ISSTA 2024 mostra che un modello fine-tuned su embedding di codice migliora il rilevamento degli equivalenti del **35,7%** in F1-score medio rispetto alle tecniche precedenti ([arXiv 2408.01760](https://arxiv.org/abs/2408.01760)). Il detector di ACH, con preprocessing basato su analisi statica, arriva a **0,95 di precision e 0,96 di recall** — da 0,79/0,47 senza preprocessing. Non è la soluzione teorica del problema. È la prima volta che smette di essere un ostacolo pratico.
+Per trent'anni questo è stato affrontato con euristiche grossolane (confronto del bytecode compilato, analisi statica), con falsi positivi alti. Un paper ISSTA 2024 mostra che un modello fine-tuned su embedding di codice migliora il rilevamento degli equivalenti del **35,7%** in F1-score medio rispetto alle tecniche precedenti ([arXiv 2408.01760](https://arxiv.org/abs/2408.01760)). Il detector di ACH, con preprocessing basato su analisi statica, arriva a **0,95 di precision e 0,96 di recall** — da 0,79/0,47 senza preprocessing. Il problema teorico resta indecidibile. Quello che cambia è che, in pratica, smette di essere un ostacolo.
 
 ## Perché conviene fidarsi del mutation score
 
@@ -71,7 +71,7 @@ Ma il loop si chiude perché c'è un arbitro esterno, formale, indipendente da c
 
 Non serve l'infrastruttura di Meta per iniziare a chiudere il loop in piccolo. Lanciate il vostro strumento di mutation testing, prendete l'output dei survived (Stryker e PIT lo esportano anche in JSON) e passatelo a un LLM con un prompt strutturato: "questo mutante è equivalente o manca un test? Se manca, scrivilo." Non è ancora un prodotto maturo — sono workflow artigianali, cuciti a mano sopra tool che non hanno integrazione LLM nativa — ma iniziano a comparire progetti open source che provano a incollare questo layer sopra Stryker o PIT.
 
-Il punto non è avere il loop perfetto dal primo giorno. È smettere di trattare il report come l'ultimo passo di una pipeline, e iniziare a trattarlo come l'input del prossimo.
+Basta smettere di trattare il report come l'ultimo passo di una pipeline, e iniziare a trattarlo come l'input del prossimo. Il loop perfetto dal primo giorno non serve.
 
 ---
 

@@ -19,7 +19,7 @@ seriesOrder: 10
 
 La maggior parte di noi si fida della propria suite di test. I test sono verdi, la coverage è alta: si rilascia tranquilli. È un'equazione che diamo per scontata (*test passano → codice sano*), e quasi sempre funziona.
 
-Quasi. Perché "i test passano" e "il codice funziona" non sono la stessa cosa. E la differenza non è un dettaglio accademico: è esattamente lì che, un giorno, ti si rompe qualcosa in produzione su codice coperto, testato, verde. E nessun test se n'era accorto.
+Quasi. Perché "i test passano" e "il codice funziona" non sono la stessa cosa. E la differenza si paga: è esattamente lì che, un giorno, ti si rompe qualcosa in produzione su codice coperto, testato, verde. E nessun test se n'era accorto.
 
 È successo a me. Ne ho fatto [un talk a Working Software 2026](/talks/mutation-testing-working-software-2026/): come ci sono finito, come l'ho scoperto, e gli strumenti che oggi uso per non ripensarci più. Lo ripercorro qui.
 
@@ -43,7 +43,7 @@ Per renderlo concreto, uso lo stesso esempio del talk: un piccolo flusso di gest
 
 Niente di esotico: tre servizi, un input, un output. Tenete d'occhio quel subtotale: `Sum(UnitPrice × Quantity)`. È lì che, settimane dopo, si nascondeva il bug.
 
-## Il problema non era il codice. Erano i test.
+## Il codice era sbagliato, i test restavano verdi
 
 La coverage risponde a una domanda precisa: *questo codice viene eseguito?*
 
@@ -122,7 +122,7 @@ Lanciate Stryker (o mutmut per Python, pitest per Java, cargo-mutants per Rust).
 
 Con `--since:main` in CI muta solo il codice cambiato nella PR: il tempo di esecuzione rimane proporzionale alla modifica, non al progetto. Con una soglia (`break: 60`) blocchi le regressioni senza richiedere la perfezione.
 
-Il punto non è aggiungere strumenti. È costruire fiducia, strato dopo strato, con prove concrete. Così potete rilasciare senza la paura di rompere qualcosa. Anche di venerdì.
+L'obiettivo è costruire fiducia, strato dopo strato, con prove concrete. Così potete rilasciare senza la paura di rompere qualcosa. Anche di venerdì.
 
 ---
 
