@@ -13,6 +13,8 @@ tags:
   - CI/CD
 lang: it
 draft: false
+series: mutation-testing-ai
+seriesOrder: 10
 ---
 
 La maggior parte di noi si fida della propria suite di test. I test sono verdi, la coverage è alta: si rilascia tranquilli. È un'equazione che diamo per scontata (*test passano → codice sano*), e quasi sempre funziona.

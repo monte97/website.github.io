@@ -46,6 +46,7 @@ export const talks: Talk[] = [
       en: 'Coverage tells you the code runs, not that the tests verify it: mutation testing reveals which tests pass without checking anything. And, to close, a look ahead: mutation guided by an LLM instead of a rule engine like Stryker, and what changes when LLMs write the code and the tests.',
     },
     links: {
+      article: '/blog/verificare/testing/chiudere-il-loop-mutation-testing/',
       repo: 'https://github.com/monte97/il-tuo-collega-piu-produttivo',
       linkedin: 'https://www.linkedin.com/posts/francesco-montelli_settimana-scorsa-ho-tenuto-un-talk-con-devromagna-share-7463469974242664448-wSo8',
       conference: 'https://www.linkedin.com/posts/devromagna_devromagna-dotnet-testing-activity-7457761526087614464-FFpU',
