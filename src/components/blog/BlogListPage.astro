@@ -9,9 +9,10 @@ interface Props {
   title: string;
   description: string;
   lang?: 'it' | 'en';
+  ogImage?: string;
 }
 
-const { allPosts, title, description, lang = 'it' } = Astro.props;
+const { allPosts, title, description, lang = 'it', ogImage } = Astro.props;
 
 const totalCount = allPosts.length;
 
@@ -40,7 +41,7 @@ const serializedPosts = allPosts
   }));
 ---
 
-<PageLayout title={title} description={description} lang={lang}>
+<PageLayout title={title} description={description} lang={lang} ogImage={ogImage}>
   <PageHero
     slot="hero"
     title={title}
