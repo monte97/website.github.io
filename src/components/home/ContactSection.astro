@@ -1,11 +1,13 @@
 ---
-import Button from '@/components/ui/Button.astro';
+import FinalCta from '@/components/ui/FinalCta.astro';
 
 interface Props {
   lang?: 'it' | 'en';
 }
 
 const { lang = 'it' } = Astro.props;
+const prefix = lang === 'en' ? '/en' : '';
+const mailLink = 'mailto:francesco@montelli.dev';
 
 const text = {
   it: {
@@ -13,39 +15,42 @@ const text = {
     sub: '30 minuti, gratuiti, per capire se possiamo lavorare insieme.',
     ctaPrimary: 'Prenota una discovery call',
     emailLabel: 'oppure scrivimi',
+    talksLabel: 'Talks',
   },
   en: {
     heading: "Let's talk.",
     sub: '30 minutes, free, to figure out if we can work together.',
     ctaPrimary: 'Book a discovery call',
     emailLabel: 'or write me',
+    talksLabel: 'Talks',
   },
 };
 
 const t = text[lang];
 ---
 
-<section class="py-24 border-t border-border/30 dark:border-border-dark/30 fade-in-section" aria-label={t.heading}>
-  <div class="max-w-xl mx-auto px-5 text-center">
-    <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light mb-4">
-      {t.heading}
-    </h2>
-    <p class="text-text-muted text-base mb-8 leading-relaxed">
-      {t.sub}
-    </p>
-    <div class="flex flex-col items-center gap-3 mb-8">
-      <Button href="https://cal.com/francesco-montelli-4hfojq/30min" size="lg" data-umami-event="cta-contact-healthcheck">
-        {t.ctaPrimary} &rarr;
-      </Button>
-      <a href="mailto:francesco@montelli.dev" class="text-sm text-text-muted hover:text-accent transition-colors" data-umami-event="click-email">
-        {t.emailLabel}
-      </a>
-    </div>
-
-    <div class="flex justify-center text-sm text-text-muted">
-      <a href="https://linkedin.com/in/francesco-montelli" target="_blank" rel="noopener noreferrer" class="hover:text-accent transition-colors" data-umami-event="click-social" data-umami-event-platform="linkedin">
-        LinkedIn
-      </a>
-    </div>
+<FinalCta
+  title={t.heading}
+  desc={t.sub}
+  ctaLabel={t.ctaPrimary}
+  secondaryLabel={t.emailLabel}
+  secondaryHref={mailLink}
+  umamiEvent="cta-contact-healthcheck"
+  fullBleed
+>
+  <div class="mt-8 flex justify-center gap-5 text-sm">
+    <a
+      href="https://linkedin.com/in/francesco-montelli"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="text-white/70 hover:text-white transition-colors"
+      data-umami-event="click-social"
+      data-umami-event-platform="linkedin"
+    >
+      LinkedIn
+    </a>
+    <a href={`${prefix}/talks/`} class="text-white/70 hover:text-white transition-colors">
+      {t.talksLabel}
+    </a>
   </div>
-</section>
+</FinalCta>

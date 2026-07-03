@@ -1,0 +1,78 @@
+---
+import { talks } from '@/data/talks';
+import { talkImagesFrom } from '@/utils/talks';
+
+interface Props {
+  lang?: 'it' | 'en';
+}
+
+const { lang = 'it' } = Astro.props;
+const prefix = lang === 'en' ? '/en' : '';
+
+// Foto talk: glob eager su src/assets/talks/<slug>/*, risolto per slug tramite talkImagesFrom.
+// import.meta.glob deve stare nel file consumante (static analysis di Vite).
+const allTalkImages = import.meta.glob<{ default: { src: string } }>(
+  '/src/assets/talks/*/*.{webp,jpg,jpeg,png}',
+  { eager: true },
+);
+
+const upcoming = talks
+  .filter((tk) => tk.status === 'upcoming')
+  .sort((a, b) => a.date.localeCompare(b.date));
+const past = talks
+  .filter((tk) => tk.status === 'delivered')
+  .sort((a, b) => b.date.localeCompare(a.date));
+const recent = [...upcoming, ...past].slice(0, 3);
+
+const locale = lang === 'en' ? 'en-US' : 'it-IT';
+const fmtDate = (iso: string) =>
+  new Date(iso).toLocaleDateString(locale, { year: 'numeric', month: 'long' });
+
+const t = lang === 'en'
+  ? { eyebrow: 'Speaking', title: 'Latest conferences', cta: 'See all talks', upcoming: 'Upcoming' }
+  : { eyebrow: 'Speaking', title: 'Ultime conferenze', cta: 'Vedi tutti i talk', upcoming: 'In arrivo' };
+---
+
+{recent.length > 0 && (
+  <section class="py-20 border-t border-border/30 dark:border-border-dark/30 fade-in-section" aria-label={t.title}>
+    <div class="max-w-5xl mx-auto px-5">
+      <div class="flex items-end justify-between gap-4 mb-8">
+        <div>
+          <p class="text-xs text-accent font-semibold uppercase tracking-wide mb-3">{t.eyebrow}</p>
+          <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light">
+            {t.title}
+          </h2>
+        </div>
+        <a href={`${prefix}/talks/`} class="text-sm text-accent hover:underline whitespace-nowrap shrink-0">
+          {t.cta} &rarr;
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 stagger-children">
+        {recent.map((talk) => {
+          const img = talkImagesFrom(allTalkImages, talk.slug)[0];
+          return (
+            <a
+              href={`${prefix}/talks/${talk.slug}/`}
+              class="group rounded-xl border border-border/70 dark:border-border-dark/70 bg-white dark:bg-surface-dark overflow-hidden flex flex-col h-full"
+            >
+              {img ? (
+                <img src={img} alt={talk.title} class="w-full h-32 object-cover" loading="lazy" />
+              ) : (
+                <div class="w-full h-32 bg-accent/10 flex items-center justify-center">
+                  <span class="text-accent text-xs font-semibold uppercase tracking-wide">{t.upcoming}</span>
+                </div>
+              )}
+              <div class="p-5 flex-1">
+                <p class="text-xs text-text-muted">{talk.event} &middot; {fmtDate(talk.date)}</p>
+                <h3 class="text-base font-semibold text-text-dark dark:text-text-light mt-1 leading-snug line-clamp-3 group-hover:text-accent transition-colors">
+                  {talk.title}
+                </h3>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+)}

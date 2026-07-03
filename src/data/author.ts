@@ -3,7 +3,7 @@ export const author = {
   nickname: 'Monte',
   image: '/images/author/monte.webp',
   bio: {
-    it: "Software Engineer specializzato in sistemi distribuiti. Lavoro con team che crescono e li aiuto a costruire infrastrutture che scalano senza che il team impazzisca. Iscritto all'Ordine degli Ingegneri della Provincia di Ravenna.",
-    en: 'Software Engineer specialized in distributed systems. I work with growing teams and help them build infrastructure that scales without driving the team crazy. Registered with the Order of Engineers of the Province of Ravenna.',
+    it: "Software Engineer freelance. Progetto, sviluppo e automatizzo il software di prodotto: dall'architettura alla realizzazione, fino ai processi che ne garantiscono la qualità nel tempo. Da zero o su sistemi irrigiditi.",
+    en: "Freelance Software Engineer. I design, build and automate product software: from architecture to the build, to the processes that keep quality high over time. From scratch or on systems grown rigid over time.",
   },
 } as const;

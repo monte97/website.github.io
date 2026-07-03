@@ -12,18 +12,16 @@ const calLink = 'https://cal.com/francesco-montelli-4hfojq/30min';
 const text = {
   it: {
     greeting: 'Ciao, sono Monte.',
-    headline: 'Quando il sistema inizia a scricchiolare,',
-    headlineAccent: "arrivo prima che diventi un'emergenza.",
-    subtitle: 'Software Engineer freelance per sistemi distribuiti. Aiuto team in crescita a cogliere i segnali prima che diventino guasti, e a costruire la disciplina perché non tornino.',
-    credential: "Iscritto all'Ordine degli Ingegneri di Ravenna",
+    headline: 'Progetto, sviluppo e automatizzo il software del tuo prodotto.',
+    headlineAccent: 'Da zero, o su un sistema che si è irrigidito nel tempo.',
+    subtitle: 'Dall\'analisi e l\'architettura alla realizzazione, fino ai processi che ne tengono alta la qualità: test, CI/CD, observability, sicurezza. E il team resta capace di andare avanti da solo.',
     cta: 'Prenota una discovery call',
   },
   en: {
     greeting: "Hi, I'm Monte.",
-    headline: 'When the system starts to creak,',
-    headlineAccent: 'I step in before it turns into an emergency.',
-    subtitle: 'Freelance Software Engineer for distributed systems. I help growing teams catch the signals before they become outages, and build the discipline that keeps them from coming back.',
-    credential: 'Registered with the Italian Order of Engineers (Ravenna)',
+    headline: 'I design, build and automate the software behind your product.',
+    headlineAccent: 'From scratch, or on a system grown rigid over time.',
+    subtitle: "From analysis and architecture to the build, to the processes that keep quality high: testing, CI/CD, observability, security. And the team stays able to carry on without me.",
     cta: 'Book a discovery call',
   },
 };
@@ -71,9 +69,6 @@ const t = text[lang];
         </h1>
         <p class="mt-5 text-base md:text-lg text-text-muted max-w-xl leading-relaxed">
           {t.subtitle}
-        </p>
-        <p class="mt-2 text-xs text-text-muted/70">
-          {t.credential}
         </p>
         <div class="mt-8">
           <Button href={calLink} size="lg" data-umami-event="cta-hero-healthcheck">

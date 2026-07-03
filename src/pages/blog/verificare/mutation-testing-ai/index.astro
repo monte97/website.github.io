@@ -1,0 +1,237 @@
+---
+/**
+ * Landing page della serie Mutation testing e AI.
+ * URL canonico: /blog/verificare/mutation-testing-ai/
+ */
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import { postHref, estimateReadingTime } from '@/utils/blog';
+import { pillarStyles } from '@/data/pillar-styles';
+import { getPillarLabel } from '@/data/pillars';
+import { seriesMetadata } from '@/data/series';
+
+const series = 'mutation-testing-ai';
+const meta = seriesMetadata[series];
+
+const allPosts = await getCollection('posts');
+const articles = allPosts
+  .filter(p => p.data.series === series && p.data.lang === 'it')
+  .sort((a, b) => (a.data.seriesOrder ?? 0) - (b.data.seriesOrder ?? 0));
+
+const publishedArticles = articles.filter(p => !p.data.draft);
+const totalReadingTime = publishedArticles.reduce(
+  (acc, p) => acc + estimateReadingTime(p.body),
+  0
+);
+
+const styles = pillarStyles[meta.pillar];
+const pillarLabel = getPillarLabel(meta.pillar);
+---
+
+<BaseLayout
+  title={`${meta.title} · Serie completa`}
+  description={meta.subtitle}
+  lang="it"
+>
+  <Header lang="it" />
+
+  <main>
+    <!-- ── Hero ── -->
+    <section class="relative overflow-hidden border-b border-border dark:border-border-dark">
+      <div class={`absolute top-0 left-0 right-0 h-1 ${styles.bg}`} />
+
+      <div class="max-w-5xl mx-auto px-5 pt-16 pb-12">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center gap-2 text-sm text-text-muted mb-8" aria-label="Breadcrumb">
+          <a href="/blog/" class="hover:text-accent transition-colors">Blog</a>
+          <span>/</span>
+          <span class={`${styles.text}`}>{pillarLabel}</span>
+          <span>/</span>
+          <span class="text-text-dark dark:text-text-light font-medium">Observability</span>
+        </nav>
+
+        <div class="grid lg:grid-cols-[1fr_auto] gap-8 items-start">
+          <div>
+            <span class={`inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full mb-4 ${styles.badge}`}>
+              <span class={`w-1.5 h-1.5 rounded-full ${styles.bg}`} />
+              Serie · {publishedArticles.length} articoli
+            </span>
+
+            <h1 class="text-3xl sm:text-4xl font-bold text-text-dark dark:text-text-light leading-tight mb-3">
+              {meta.title}
+            </h1>
+            <p class={`text-lg font-medium mb-5 ${styles.text}`}>
+              {meta.subtitle}
+            </p>
+            <p class="text-text-muted leading-relaxed max-w-2xl">
+              {meta.description}
+            </p>
+          </div>
+
+          <!-- Stats card -->
+          <div class="lg:min-w-[200px] rounded-xl border border-border dark:border-border-dark bg-surface dark:bg-surface-dark p-5 space-y-4">
+            <div>
+              <div class="text-2xl font-bold text-text-dark dark:text-text-light">{publishedArticles.length}</div>
+              <div class="text-xs text-text-muted uppercase tracking-wide">Articoli pubblicati</div>
+            </div>
+            <div class="border-t border-border dark:border-border-dark" />
+            <div>
+              <div class="text-2xl font-bold text-text-dark dark:text-text-light">{totalReadingTime}</div>
+              <div class="text-xs text-text-muted uppercase tracking-wide">Minuti di lettura</div>
+            </div>
+            <div class="border-t border-border dark:border-border-dark" />
+            <div>
+              <div class={`text-sm font-semibold ${styles.text}`}>{meta.level}</div>
+              <div class="text-xs text-text-muted uppercase tracking-wide">Livello</div>
+            </div>
+            <div class="border-t border-border dark:border-border-dark" />
+            <div class="flex flex-wrap gap-1.5">
+              {meta.tags.map(tag => (
+                <span class="text-xs px-2 py-0.5 rounded-full bg-text-muted/10 text-text-muted">{tag}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="max-w-5xl mx-auto px-5 py-12 grid lg:grid-cols-[1fr_320px] gap-12 items-start">
+
+      <!-- ── Main column ── -->
+      <div>
+        <!-- Learning goals -->
+        <section class="mb-12">
+          <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-5">
+            Cosa imparerai
+          </h2>
+          <ul class="space-y-3">
+            {meta.learningGoals.map(goal => (
+              <li class="flex items-start gap-3">
+                <span class={`mt-1 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white ${styles.bg}`}>
+                  ✓
+                </span>
+                <span class="text-text-muted leading-relaxed">{goal}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <!-- Article list -->
+        <section>
+          <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-6">
+            Articoli della serie
+          </h2>
+
+          <ol class="space-y-4">
+            {articles.map((post, i) => {
+              const isDraft = post.data.draft;
+              const readTime = estimateReadingTime(post.body);
+              const href = postHref(post.id);
+              const num = String(i + 1).padStart(2, '0');
+
+              return (
+                <li>
+                  {isDraft ? (
+                    <div class="flex gap-4 p-5 rounded-xl border border-border dark:border-border-dark opacity-50 cursor-not-allowed">
+                      <div class="flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold bg-text-muted/20 text-text-muted">
+                        {num}
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1">
+                          <span class="text-base font-semibold text-text-muted">{post.data.title}</span>
+                          <span class="text-xs px-2 py-0.5 rounded-full bg-text-muted/15 text-text-muted">In arrivo</span>
+                        </div>
+                        <p class="text-sm text-text-muted line-clamp-2">{post.data.description}</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <a
+                      href={href}
+                      class={`group flex gap-4 p-5 rounded-xl border border-border dark:border-border-dark hover:border-pillar-verificare/40 dark:hover:border-pillar-verificare/40 bg-surface dark:bg-surface-dark hover:bg-pillar-verificare/5 transition-all`}
+                    >
+                      <div class={`flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold text-white ${styles.bg} group-hover:scale-105 transition-transform`}>
+                        {num}
+                      </div>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-start justify-between gap-2 mb-1">
+                          <span class={`text-base font-semibold text-text-dark dark:text-text-light group-hover:${styles.text} transition-colors leading-snug`}>
+                            {post.data.title}
+                          </span>
+                          <span class="flex-shrink-0 text-xs text-text-muted mt-0.5">{readTime} min</span>
+                        </div>
+                        <p class="text-sm text-text-muted leading-relaxed line-clamp-2">
+                          {post.data.description}
+                        </p>
+                      </div>
+                      <div class={`flex-shrink-0 self-center text-text-muted group-hover:${styles.text} transition-colors`}>
+                        →
+                      </div>
+                    </a>
+                  )}
+                </li>
+              );
+            })}
+          </ol>
+        </section>
+      </div>
+
+      <!-- ── Sidebar ── -->
+      <aside class="space-y-6 lg:sticky lg:top-6">
+
+        <!-- Service CTA -->
+        <div class={`rounded-xl border-2 ${styles.border} p-6`}>
+          <div class={`text-xs font-semibold uppercase tracking-widest mb-3 ${styles.text}`}>
+            Servizio
+          </div>
+          <h3 class="text-lg font-bold text-text-dark dark:text-text-light mb-3 leading-snug">
+            {meta.serviceCTA}
+          </h3>
+          <p class="text-sm text-text-muted leading-relaxed mb-5">
+            {meta.serviceDescription}
+          </p>
+          <a
+            href={meta.serviceHref}
+            class={`block w-full text-center px-4 py-2.5 rounded-lg text-white text-sm font-semibold transition-opacity hover:opacity-90 ${styles.bg}`}
+          >
+            Scopri il servizio →
+          </a>
+          <a
+            href="mailto:francesco@montelli.dev"
+            class="block w-full text-center mt-2 px-4 py-2.5 rounded-lg text-sm font-medium text-text-muted hover:text-accent transition-colors bg-text-muted/10 hover:bg-text-muted/15"
+          >
+            Scrivimi direttamente
+          </a>
+        </div>
+
+        <!-- Author -->
+        <div class="rounded-xl border border-border dark:border-border-dark p-5">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent font-bold text-lg">
+              F
+            </div>
+            <div>
+              <div class="text-sm font-semibold text-text-dark dark:text-text-light">Francesco Montelli</div>
+              <div class="text-xs text-text-muted">Backend Engineer & DevOps</div>
+            </div>
+          </div>
+          <p class="text-sm text-text-muted leading-relaxed mb-4">
+            Fullstack engineer e DevOps freelance. Aiuto team e PMI a progettare, verificare e automatizzare i loro sistemi.
+          </p>
+          <a
+            href="https://linkedin.com/in/francesco-montelli"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="block w-full text-center px-4 py-2 rounded-lg bg-[#0077b5] text-white text-sm font-medium hover:bg-[#006399] transition-colors"
+          >
+            Seguimi su LinkedIn
+          </a>
+        </div>
+
+      </aside>
+    </div>
+  </main>
+
+  <Footer lang="it" />
+</BaseLayout>

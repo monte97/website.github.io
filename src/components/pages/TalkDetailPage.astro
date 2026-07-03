@@ -1,0 +1,98 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import TalkGallery from '@/components/interactive/TalkGallery.vue';
+import { talks } from '@/data/talks';
+import { talkImagesFrom } from '@/utils/talks';
+
+interface Props {
+  slug: string;
+  lang?: 'it' | 'en';
+}
+
+const { slug, lang = 'it' } = Astro.props;
+const prefix = lang === 'en' ? '/en' : '';
+const talk = talks.find((tk) => tk.slug === slug)!;
+
+const allTalkImages = import.meta.glob<{ default: { src: string } }>(
+  '/src/assets/talks/*/*.{webp,jpg,jpeg,png}',
+  { eager: true },
+);
+const images = talkImagesFrom(allTalkImages, slug);
+
+const locale = lang === 'en' ? 'en-US' : 'it-IT';
+const fmtDate = (iso: string) =>
+  new Date(iso).toLocaleDateString(locale, { year: 'numeric', month: 'long' });
+
+const t = lang === 'en'
+  ? {
+      back: 'All talks',
+      upcoming: 'Upcoming',
+      gallery: 'Gallery',
+      linkArticle: 'Read the article',
+      linkRepo: 'Slides & material',
+      linkSlides: 'Slides',
+      linkRecording: 'Recording',
+      linkLinkedin: 'LinkedIn',
+      linkConference: 'Conference',
+    }
+  : {
+      back: 'Tutti i talk',
+      upcoming: 'In arrivo',
+      gallery: 'Galleria',
+      linkArticle: 'Leggi l\'articolo',
+      linkRepo: 'Slide e materiale',
+      linkSlides: 'Slide',
+      linkRecording: 'Registrazione',
+      linkLinkedin: 'LinkedIn',
+      linkConference: 'Conferenza',
+    };
+
+type LinkKey = 'article' | 'repo' | 'slides' | 'recording' | 'linkedin' | 'conference';
+const linkOrder: LinkKey[] = ['article', 'repo', 'slides', 'recording', 'linkedin', 'conference'];
+const linkLabel: Record<LinkKey, string> = {
+  article: t.linkArticle,
+  repo: t.linkRepo,
+  slides: t.linkSlides,
+  recording: t.linkRecording,
+  linkedin: t.linkLinkedin,
+  conference: t.linkConference,
+};
+---
+
+<PageLayout title={talk.title} description={talk.abstract[lang]} ogImage="/og/about.webp" lang={lang}>
+  <a href={`${prefix}/talks/`} class="inline-block text-sm text-accent hover:underline mb-8">&larr; {t.back}</a>
+
+  <header class="mb-6">
+    <p class="text-sm text-text-muted">
+      {talk.event} &middot; {fmtDate(talk.date)} &middot; {talk.location}
+      {talk.status === 'upcoming' && <span class="text-accent font-semibold"> &middot; {t.upcoming}</span>}
+    </p>
+    <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-text-dark dark:text-text-light mt-2">
+      {talk.title}
+    </h1>
+  </header>
+
+  <p class="text-text-muted text-lg leading-relaxed max-w-3xl mb-8">{talk.abstract[lang]}</p>
+
+  {talk.links && (
+    <div class="flex flex-wrap gap-3 mb-12">
+      {linkOrder.map((key) => {
+        const href = talk.links?.[key];
+        if (!href) return null;
+        const external = href.startsWith('http');
+        return (
+          <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined} class="inline-flex items-center rounded-lg border border-accent/30 text-accent px-4 py-2 text-sm font-medium hover:bg-accent/5 transition-colors">
+            {linkLabel[key]} &rarr;
+          </a>
+        );
+      })}
+    </div>
+  )}
+
+  {images.length > 0 && (
+    <section class="mb-8">
+      <h2 class="text-xs font-semibold uppercase tracking-wide text-text-muted mb-4">{t.gallery}</h2>
+      <TalkGallery client:load images={images} title={talk.title} />
+    </section>
+  )}
+</PageLayout>

@@ -36,32 +36,32 @@ const mailLink = 'mailto:francesco@montelli.dev';
 const t = lang === 'en'
   ? {
       pageTitle: 'Case studies',
-      pageDesc: 'Real projects I worked on, organized by pillar — the problem, the context, what was done, the outcome.',
+      pageDesc: 'Real projects I worked on, organized by pillar: the problem, the context, what was done, the outcome.',
       heroTitle: 'Case studies',
-      heroSubtitle: 'Real projects organized by pillar — what was the problem, what got done, what changed.',
-      intro: 'These are not portfolio screenshots. They are short narratives of the work itself — what was broken, what got built, and what was measurable after.',
+      heroSubtitle: 'Real projects organized by pillar: what was the problem, what got done, what changed.',
+      intro: 'These are not portfolio screenshots. They are short narratives of the work itself: what was broken, what got built, and what was measurable after.',
       backToServices: '← Back to Services',
       ctaTitle: 'Want to talk about a similar problem?',
       ctaDesc: '30 free minutes to understand if there is a fit. No slides, no commitment.',
-      ctaPrimary: 'Book a call',
+      ctaPrimary: 'Book a discovery call',
       ctaSecondary: 'or write me',
     }
   : {
       pageTitle: 'Case study',
-      pageDesc: 'Progetti reali su cui ho lavorato, organizzati per pilastro — il problema, il contesto, cosa è stato fatto, il risultato.',
+      pageDesc: 'Progetti reali su cui ho lavorato, organizzati per pilastro: il problema, il contesto, cosa è stato fatto, il risultato.',
       heroTitle: 'Case study',
-      heroSubtitle: 'Progetti reali organizzati per pilastro — qual era il problema, cosa è stato fatto, cosa è cambiato dopo.',
+      heroSubtitle: 'Progetti reali organizzati per pilastro: qual era il problema, cosa è stato fatto, cosa è cambiato dopo.',
       intro: 'Non sono screenshot da portfolio. Sono brevi racconti del lavoro: cosa non funzionava, cosa è stato costruito, e cosa era misurabile alla fine.',
       backToServices: '← Torna a Servizi',
       ctaTitle: 'Vuoi parlare di un problema simile?',
       ctaDesc: '30 minuti gratuiti per capire se c\'è un fit. Niente slide, nessun impegno.',
-      ctaPrimary: 'Prenota una call',
+      ctaPrimary: 'Prenota una discovery call',
       ctaSecondary: 'oppure scrivimi',
     };
 ---
 
 <PageLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/progetti.webp" lang={lang}>
-  <PageHero title={t.heroTitle} subtitle={t.heroSubtitle} />
+  <PageHero slot="hero" title={t.heroTitle} subtitle={t.heroSubtitle} />
 
   <section class="mb-12 fade-in-section">
     <p class="text-text-muted text-lg leading-relaxed max-w-3xl">{t.intro}</p>
