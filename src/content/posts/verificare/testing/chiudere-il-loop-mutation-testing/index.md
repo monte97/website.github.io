@@ -23,7 +23,7 @@ C'è una parte del talk che ho aggiunto per l'edizione estesa a [DevRomagna 2026
 
 ## Più codice, meno certezze
 
-Gli LLM hanno moltiplicato quanto codice scriviamo, e con esso quanti test "sembrano" coprirlo. Il problema è sempre lo stesso descritto nel post precedente, solo a un ordine di grandezza più grande: più test verdi non significa più garanzie. Significa più superficie da rileggere, e nessuno rilegge davvero migliaia di test generati in un pomeriggio.
+Gli LLM hanno moltiplicato quanto codice scriviamo, e con esso quanti test "sembrano" coprirlo. Il problema è sempre lo stesso descritto nel post precedente, solo a un ordine di grandezza più grande: più test verdi portano solo più superficie da rileggere, non più garanzie. E nessuno rilegge davvero migliaia di test generati in un pomeriggio.
 
 Il collo di bottiglia si è spostato. Prima era scrivere i test. Ora è **giudicarli**.
 
@@ -37,7 +37,7 @@ La chiusura del loop è semplice da descrivere: lo stesso agente che ha scritto 
 
 Uno Stryker "classico" muta a tappeto: `+` diventa `-`, `>` diventa `>=`, `Sum` diventa `Max`. Sono mutazioni generiche, cieche rispetto al dominio.
 
-ACH fa un passo diverso: un ingegnere descrive in linguaggio naturale un'area di rischio — privacy, sicurezza, compliance — e un LLM genera mutanti *specifici per quell'area*: `log(user.email)`, `skip(consent.check)`, `role.bypass()`. Poi un secondo modello filtra i mutanti equivalenti (sintassi diversa, comportamento identico — inutili da testare), e un terzo genera il test che uccide quelli rimasti. L'ingegnere umano non scrive niente: rivede.
+ACH fa un passo diverso: un ingegnere descrive in linguaggio naturale un'area di rischio — privacy, sicurezza, compliance — e un LLM genera mutanti *specifici per quell'area*: `log(user.email)`, `skip(consent.check)`, `role.bypass()`. Poi un secondo modello filtra i mutanti equivalenti (sintassi diversa, comportamento identico — inutili da testare), e un terzo genera il test che uccide quelli rimasti. L'ingegnere umano rivede soltanto, senza scrivere una riga.
 
 Tra ottobre e dicembre 2024 Meta ha fatto un trial su Facebook, Instagram, WhatsApp e i dispositivi indossabili (Quest, Ray-Ban): su migliaia di mutanti e centinaia di test generati, gli ingegneri privacy ne hanno accettati il **73%**, e il **36%** di quelli accettati è stato giudicato effettivamente privacy-relevant — non copertura facile, ma proprio dove contava ([Meta Engineering Blog](https://engineering.fb.com/2025/09/30/security/llms-are-the-key-to-mutation-testing-and-better-compliance/), [InfoQ](https://www.infoq.com/news/2026/01/meta-llm-mutation-testing/)).
 
@@ -63,7 +63,7 @@ Mark Harman, research scientist a Meta, l'ha detto meglio di come lo direi io: *
 
 ## La tesi
 
-Il giudizio non sparisce. Si sposta. Prima la domanda "questo test è buono?" la decideva un umano, spesso a sensazione, guardando quanto è verde la dashboard. Ora un secondo sistema può porla con un criterio oggettivo e ripetibile — *questo mutante è killed o survived?* — e un agente può leggerne la risposta senza aspettare che tocchi a un umano scorrere un report.
+Il giudizio si sposta, non sparisce. Prima la domanda "questo test è buono?" la decideva un umano, spesso a sensazione, guardando quanto è verde la dashboard. Ora un secondo sistema può porla con un criterio oggettivo e ripetibile — *questo mutante è killed o survived?* — e un agente può leggerne la risposta senza aspettare che tocchi a un umano scorrere un report.
 
 Ma il loop si chiude perché c'è un arbitro esterno, formale, indipendente da chi ha scritto codice e test — non perché l'agente si fidi di sé stesso. Resta valido lo stesso principio che uso ogni volta che delego a un agente: deleghi l'esecuzione, mai il giudizio finale su cosa sia *corretto* per il dominio. Cambia solo chi legge il verdetto per primo.
 
