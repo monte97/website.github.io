@@ -5,10 +5,10 @@
         v-for="(src, i) in images"
         :key="i"
         type="button"
-        class="block overflow-hidden rounded-lg border border-border/60 focus:outline-none focus:ring-2 focus:ring-accent"
+        class="block overflow-hidden rounded-lg border border-border/60 bg-surface dark:bg-surface-dark focus:outline-none focus:ring-2 focus:ring-accent"
         @click="open(i)"
       >
-        <img :src="src" :alt="`${title} - foto ${i + 1}`" loading="lazy" class="w-full h-32 object-cover hover:opacity-90 transition-opacity" />
+        <img :src="src" :alt="`${title} - foto ${i + 1}`" loading="lazy" class="w-full h-64 object-contain hover:opacity-90 transition-opacity" />
       </button>
     </div>
 

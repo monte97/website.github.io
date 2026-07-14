@@ -34,6 +34,7 @@ const t = lang === 'en'
       linkRecording: 'Recording',
       linkLinkedin: 'LinkedIn',
       linkConference: 'Conference',
+      linkSpeaker: 'Speaker page',
     }
   : {
       back: 'Tutti i talk',
@@ -45,10 +46,11 @@ const t = lang === 'en'
       linkRecording: 'Registrazione',
       linkLinkedin: 'LinkedIn',
       linkConference: 'Conferenza',
+      linkSpeaker: 'Pagina speaker',
     };
 
-type LinkKey = 'article' | 'repo' | 'slides' | 'recording' | 'linkedin' | 'conference';
-const linkOrder: LinkKey[] = ['article', 'repo', 'slides', 'recording', 'linkedin', 'conference'];
+type LinkKey = 'article' | 'repo' | 'slides' | 'recording' | 'linkedin' | 'conference' | 'speaker';
+const linkOrder: LinkKey[] = ['article', 'repo', 'slides', 'recording', 'linkedin', 'conference', 'speaker'];
 const linkLabel: Record<LinkKey, string> = {
   article: t.linkArticle,
   repo: t.linkRepo,
@@ -56,6 +58,7 @@ const linkLabel: Record<LinkKey, string> = {
   recording: t.linkRecording,
   linkedin: t.linkLinkedin,
   conference: t.linkConference,
+  speaker: t.linkSpeaker,
 };
 ---
 

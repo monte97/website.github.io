@@ -5,6 +5,7 @@ export type TalkLink = {
   conference?: string;
   recording?: string;
   article?: string;
+  speaker?: string;
 };
 
 export type Talk = {
@@ -32,6 +33,8 @@ export const talks: Talk[] = [
     },
     links: {
       conference: 'https://www.devsecopsday.it',
+      speaker: 'https://www.devsecopsday.it/speaker/francesco-montelli/',
+      linkedin: 'https://www.linkedin.com/posts/grusp_devsecopsday-devsecopsday-activity-7482697988751093762-4zuX?utm_source=share&utm_medium=member_desktop&rcm=ACoAAB73J5QBiTWCzxRrpP2WaZgBtH4empc8hrQ',
     },
   },
   {
