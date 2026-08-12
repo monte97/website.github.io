@@ -1,6 +1,7 @@
 ---
 import ThemeToggle from '@/components/interactive/ThemeToggle.vue';
 import SearchModal from '@/components/interactive/SearchModal.vue';
+import Logo from '@/assets/logo-fra.svg?raw';
 
 interface Props {
   lang?: 'it' | 'en';
@@ -42,10 +43,11 @@ function isActive(href: string): boolean {
   <nav class="max-w-5xl mx-auto px-5 h-14 flex items-center justify-between">
 
     <!-- Logo -->
-    <a href={lang === 'it' ? '/' : '/en/'} class="flex items-center gap-2 group">
-      <span class="w-8 h-8 rounded-md bg-accent flex items-center justify-center text-white text-sm font-bold tracking-tight transition-transform group-hover:scale-105">
-        M
-      </span>
+    <a href={lang === 'it' ? '/' : '/en/'} class="flex items-center gap-2.5 group">
+      <span
+        class="w-[61px] h-[52px] transition-transform group-hover:scale-105 [&_svg]:w-full [&_svg]:h-full"
+        set:html={Logo}
+      />
       <span class="text-sm font-semibold text-text-dark dark:text-text-light tracking-tight hidden sm:inline">
         montelli.dev
       </span>
