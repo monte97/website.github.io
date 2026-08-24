@@ -262,31 +262,33 @@ git commit -m "content: summary e openItems sulla serie Playwright"
 **Files:**
 - Modify: `src/content/posts/progettare/keycloak/**/index.md`
 
-- [ ] **Step 1: Elencare il lotto**
+- [x] **Step 1: Elencare il lotto**
 
 ```bash
 grep -rl "category: keycloak" src/content/posts/ --include=index.md
 ```
 
-- [ ] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
+- [x] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
 
-- [ ] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
+- [x] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
 
-- [ ] **Step 4: Verificare la build**
+- [x] **Step 4: Verificare la build**
 
 ```bash
 npm run build
 ```
 Expected: `[build] ✓ Completed` senza errori.
 
-- [ ] **Step 5: Auto-verifica del vincolo di verità**
+- [x] **Step 5: Auto-verifica del vincolo di verità**
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/content/posts/progettare/keycloak/
 git commit -m "content: summary e openItems sulla serie Keycloak"
 ```
+
+**Eseguito e verificato: commit `9d702c6d`.** Verifica indipendente: perimetro (`git show --stat`, solo 6 file keycloak, 110 inserimenti, 0 cancellazioni), YAML valido sui 6 file (`yaml.safe_load` sul blocco frontmatter — build differita per run parallele, vedi Nota operativa), vincolo di verità (numeri e fatti — versione 26.0, PKCE S256, access token 5 min/SSO 30 min-10 ore, cache token 60s, Keycloak 17+/`/auth`, 5 microservizi, 503 fail-closed, Resource Owner Password Credentials deprecato, First Broker Login Flow — tutti riscontrati esatti nel testo), incrocio (6 openNote tutti con formulazione diversa, openItems specifici per articolo senza ripetizioni).
 
 ---
 
