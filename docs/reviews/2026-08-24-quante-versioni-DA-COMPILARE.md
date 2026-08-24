@@ -37,7 +37,7 @@ Non è una domanda con una risposta ovvia, perché le configurazioni non si somm
     Basta un ordine di grandezza: «una decina di sviluppatori», «una trentina».
     Andra' inserito qui sopra, nel primo paragrafo.
 
-    RISPOSTA:
+    RISPOSTA: 5/10 dev
 
 
                 ════════════════════════════════════════════════
@@ -59,7 +59,7 @@ Nessuna di queste varianti era stata decisa da un architetto. Erano state tutte 
 
     Quale era vero da voi? O quale altro?
 
-    RISPOSTA:
+    RISPOSTA: era tutto vero
 
 
                 ════════════════════════════════════════════════
