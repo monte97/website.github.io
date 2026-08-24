@@ -9,8 +9,7 @@ weight: 0
 eyebrow: "Analisi tecnica · software installato presso il cliente"
 tags: [Manutenzione, Configurazioni, Testing, Delivery]
 oggetto: >
-  Un produttore di software gestionale per laboratori di analisi, installato dentro gli
-  ospedali. Ogni cliente chiede una variante in fase di contratto, e ogni variante diventa
+  Un produttore di software gestionale per laboratori di analisi privati, installato dentro le sedi dei clienti. Ogni cliente chiede una variante in fase di contratto, e ogni variante diventa
   un'installazione diversa da mantenere.
 metodo: >
   Contare le configurazioni realmente installate, dichiararle in un file unico, e leggerle
@@ -75,9 +74,9 @@ matrix:
       note: "Tutti i moduli, utenze gestite dal prodotto"
       cells: [full, full, full]
     - label: "Cliente con anagrafica centrale"
-      note: "Le utenze arrivano dal sistema dell'ospedale"
+      note: "Le utenze arrivano dal sistema dell'cliente"
       cells: [full, full, partial]
-    - label: "Presidio con rete isolata"
+    - label: "Sede con rete isolata"
       note: "Nessuna uscita verso l'esterno"
       cells: [full, partial, empty]
     - label: "Installazione multi-laboratorio"
@@ -138,9 +137,9 @@ La call durò quaranta minuti, e la frase che conta arrivò al trentacinquesimo.
 
 Il commerciale rispose come rispondono i commerciali quando la richiesta è ragionevole e il contratto è grosso: «certo, si può fare». Aveva ragione. Si poteva fare, si era già fatto altrove, e la stima buttata lì quel giorno — due giorni-uomo — era anche corretta, per la prima volta.
 
-Mesi dopo mi trovai a fare un conto che nessuno aveva mai fatto: quante versioni diverse di quel prodotto erano vive, in quel momento, dentro gli ospedali che l'avevano comprato.
+Mesi dopo mi trovai a fare un conto che nessuno aveva mai fatto: quante versioni diverse di quel prodotto erano vive, in quel momento, presso i clienti che l'avevano comprato.
 
-Non è una domanda con una risposta ovvia, perché le configurazioni non si sommano. Si moltiplicano. Una struttura porta le proprie utenze dall'anagrafica centrale, un altro le lascia gestire al prodotto. Un presidio ha la rete isolata verso l'esterno, un altro no. Qui i laboratori sono tre sulla stessa installazione, là uno solo. Ogni scelta è indipendente dalle altre, e ogni combinazione è una cosa che deve funzionare.
+Non è una domanda con una risposta ovvia, perché le configurazioni non si sommano. Si moltiplicano. Una struttura porta le proprie utenze dall'anagrafica centrale, un altro le lascia gestire al prodotto. Un sede ha la rete isolata verso l'esterno, un altro no. Qui i laboratori sono tre sulla stessa installazione, là uno solo. Ogni scelta è indipendente dalle altre, e ogni combinazione è una cosa che deve funzionare.
 
 Nessuna di queste varianti era stata decisa da un architetto. Erano state tutte concesse in trattativa, una alla volta, ognuna in un momento in cui dire di sì costava meno che dire di no.
 
@@ -150,11 +149,11 @@ La prima reazione, quando conti quel numero, è cercare i test.
 
 I test c'erano, ed erano verdi. Migliaia di asserzioni sul prodotto, scritte bene, mantenute nel tempo. Non servivano a niente per questo problema, e ci volle un po' per accettarlo.
 
-Il motivo è che **l'applicazione è la stessa ovunque**. Lo stesso identico codice gira dentro tutti quegli ospedali. Non è lì che si rompe qualcosa: si rompe nel modo in cui quel codice viene messo in piedi. Una struttura cambia il certificato dell'anagrafica centrale e le utenze smettono di arrivare; un altro rinnova la rete e un modulo non raggiunge più il servizio che gli serve. In entrambi i casi la suite del prodotto resta verde, perché il prodotto non ha nulla che non va.
+Il motivo è che **l'applicazione è la stessa ovunque**. Lo stesso identico codice gira dentro tutte quelle sedi. Non è lì che si rompe qualcosa: si rompe nel modo in cui quel codice viene messo in piedi. Una struttura cambia il certificato dell'anagrafica centrale e le utenze smettono di arrivare; un altro rinnova la rete e un modulo non raggiunge più il servizio che gli serve. In entrambi i casi la suite del prodotto resta verde, perché il prodotto non ha nulla che non va.
 
 L'oggetto da verificare non era il software. Era **l'installazione**, con la sua configurazione, dentro il suo ambiente.
 
-Questo sposta il problema in un posto scomodo. Un test sul prodotto lo lanci sulla tua macchina. Un test sull'installazione ha bisogno di un'installazione — e le installazioni vivono dentro ospedali dove non entri quando ti pare, e in alcuni casi non entri affatto.
+Questo sposta il problema in un posto scomodo. Un test sul prodotto lo lanci sulla tua macchina. Un test sull'installazione ha bisogno di un'installazione — e le installazioni vivono dentro le sedi dei clienti dove non entri quando ti pare, e in alcuni casi non entri affatto.
 
 ## Una fonte, due esecutori
 
