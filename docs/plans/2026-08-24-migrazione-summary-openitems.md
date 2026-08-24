@@ -18,7 +18,7 @@
 - **Nessun campo obbligatorio:** `summary` e `openItems` sono indipendenti. Un articolo può avere solo uno dei due, o nessuno dei due. **Omettere è sempre preferibile a inventare.**
 - **`summary`: 3-4 righe, mai 5 o più.** Ogni riga: `label` (una o due parole, sostantivo), `value` (una riga, max ~90 caratteri), `note` opzionale (una riga, max ~110 caratteri) da usare solo quando aggiunge un fatto, mai per parafrasare il `value`.
 - **`openItems`: 2-4 voci.** Ogni voce è un limite, un confine o una decisione lasciata al lettore, **non** un "prossimo passo" e **non** un difetto dell'articolo. Frase intera, max ~200 caratteri.
-- **`openNote`** è opzionale, una riga, introduce la lista.
+- **`openNote`** è opzionale, una riga, introduce la lista. **Varia la formulazione fra un articolo e l'altro**: nel lotto pilota tutti e quattro gli `openNote` sono usciti sullo stesso stampo («Quello che X non chiude, e che va Y sul proprio codice»). Su 61 articoli quel manierismo si vede. Se non hai una formulazione specifica per quell'articolo, **ometti il campo**.
 - **Lingua:** italiano, minuscolo dopo la prima lettera (sentence case), nessun punto finale sui `value` e sui `note`; gli `openItems` sono frasi intere senza punto finale.
 - **Niente markdown nei `value` e nelle `note`** tranne il backtick per identificatori di codice, già usato nel riferimento.
 - **YAML:** stringhe sempre fra virgolette doppie. Se il testo contiene virgolette doppie, usare le virgolette tipografiche `« »` o riformulare.
