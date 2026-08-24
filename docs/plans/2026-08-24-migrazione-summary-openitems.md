@@ -444,45 +444,51 @@ git commit -m "content: summary e openItems sul testing rimanente"
 
 **SPLIT (2026-08-24):** 13 articoli reali (non ~14) erano troppi per un dispatch. Diviso in 9a (i 5 singoli di `automatizzare`) e 9b (il resto, 8 articoli: system-design non-LINQ, `saturation-alerting`, vue, web-development).
 
-#### Task 9a: singoli `automatizzare` (5 articoli)
+#### Task 9a: singoli `automatizzare` (4 articoli — vedi correzione)
 
-**Files:** `devcontainer/devcontainer`, `developer-tools/ridurre-token-ai-coding-rtk-tokensave`, `devops/pipeline-proxmox-opentofu-ansible`, `docker/docker-internals`, `homelab/homelab-n8n`, tutti sotto `src/content/posts/automatizzare/`.
+**CORREZIONE (2026-08-24):** `devcontainer/devcontainer` è sotto `src/content/posts/altro/`, non `automatizzare/` — errore nella stesura di questo split. Escluso da 9a per perimetro letterale, spostato in 9b.
 
-- [ ] **Step 1: Elencare il lotto**
+**Files:** `developer-tools/ridurre-token-ai-coding-rtk-tokensave`, `devops/pipeline-proxmox-opentofu-ansible`, `docker/docker-internals`, `homelab/homelab-n8n`, tutti sotto `src/content/posts/automatizzare/`.
+
+- [x] **Step 1: Elencare il lotto**
 
 ```bash
 for f in $(find src/content/posts/automatizzare -name index.md); do grep -q "^summary:" "$f" || echo "$f"; done
 ```
 
-- [ ] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
+- [x] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
 
 Lotto eterogeneo: articoli singoli su temi non collegati. Trattarli uno per uno, senza cercare uniformità fra loro.
 
-- [ ] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
+- [x] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
 
-- [ ] **Step 4: Validare lo YAML del frontmatter di ogni file modificato**
+- [x] **Step 4: Validare lo YAML del frontmatter di ogni file modificato**
 
-- [ ] **Step 5: Auto-verifica del vincolo di verità**
+- [x] **Step 5: Auto-verifica del vincolo di verità**
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/content/posts/automatizzare/
 git commit -m "content: summary e openItems sugli articoli singoli di automatizzare"
 ```
 
+**Eseguito e verificato: commit `f9af60f6`.** Verifica indipendente: perimetro (4 file, 70 inserimenti, 0 cancellazioni), YAML valido (build differita), vincolo di verità (-80% output CLI/media -93% esplorazioni, 34 linguaggi in tre tier, otto tipi di namespace/cinque categorie di risorse cgroups — Memoria/CPU/Blkio/Network/Device — tutti riscontrati esatti), incrocio (4 openNote tutti diversi).
+
 ---
 
-#### Task 9b: resto della coda (8 articoli)
+#### Task 9b: resto della coda (9 articoli — correzione: include `devcontainer`)
 
-**Files:** `progettare/system-design/di-python`, `progettare/vue/micro-frontend-module-federation`, `altro/web-development/*` (3 file), `verificare/observability/{alert-routing-severity-inhibition,burn-rate-alerts-slo-multi-window,prometheus-predict-linear-alert-predittivi}`.
+**CORREZIONE (2026-08-24):** `altro/devcontainer/devcontainer` non è stato toccato da 9a (era erroneamente assegnato ad `automatizzare/`, vedi correzione in 9a): resta in coda qui, portando il lotto a 9 file invece di 8.
+
+**Files:** `altro/devcontainer/devcontainer`, `progettare/system-design/di-python`, `progettare/vue/micro-frontend-module-federation`, `altro/web-development/*` (3 file), `verificare/observability/{alert-routing-severity-inhibition,burn-rate-alerts-slo-multi-window,prometheus-predict-linear-alert-predittivi}`.
 
 - [ ] **Step 1: Elencare il lotto**
 
 ```bash
 for f in $(find src/content/posts -name index.md); do grep -q "^summary:" "$f" || echo "$f"; done
 ```
-Expected: 8 file (tutto ciò che non è stato coperto da 9a).
+Expected: 9 file (tutto ciò che non è stato coperto da 9a).
 
 - [ ] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
 
