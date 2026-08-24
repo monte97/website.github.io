@@ -297,31 +297,33 @@ git commit -m "content: summary e openItems sulla serie Keycloak"
 **Files:**
 - Modify: `src/content/posts/verificare/openfga/**/index.md`
 
-- [ ] **Step 1: Elencare il lotto**
+- [x] **Step 1: Elencare il lotto**
 
 ```bash
 grep -rl "category: openfga" src/content/posts/ --include=index.md
 ```
 
-- [ ] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
+- [x] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
 
-- [ ] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
+- [x] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
 
-- [ ] **Step 4: Verificare la build**
+- [x] **Step 4: Verificare la build**
 
 ```bash
 npm run build
 ```
 Expected: `[build] ✓ Completed` senza errori.
 
-- [ ] **Step 5: Auto-verifica del vincolo di verità**
+- [x] **Step 5: Auto-verifica del vincolo di verità**
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/content/posts/verificare/openfga/
 git commit -m "content: summary e openItems sulla serie OpenFGA"
 ```
+
+**Eseguito e verificato: commit `e85ff671`.** Verifica indipendente: perimetro (5 file, 88 inserimenti, 0 cancellazioni), YAML valido su tutti (build differita per run parallele, vedi Nota operativa), vincolo di verità (5-15ms→200-500ms su 50.000 documenti/4 livelli, cache TTL 60s, fast path 80%/slow path 20% con UNION su `access_source`, fino a tre Check per `getMaxRelation`, middleware 503 fail-closed — tutti riscontrati esatti nel testo), incrocio (5 openNote tutti diversi, openItems specifici). Anomalia cosmetica minore, non bloccante: nell'openItem di `04-gerarchie-query` compare "cacharli" (refuso per una forma di "cachare"), non un errore di contenuto.
 
 ---
 
