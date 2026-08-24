@@ -110,7 +110,7 @@ Il lotto pilota serve a validare il metodo su articoli densi di numeri, dove il 
 **Files:**
 - Modify: tutti gli `index.md` sotto `src/content/posts/progettare/system-design/` che hanno `series: linq`
 
-- [ ] **Step 1: Leggere i due riferimenti**
+- [x] **Step 1: Leggere i due riferimenti**
 
 ```bash
 cd /Users/monte97/Documents/1_AETE/0_Content/website.github.io
@@ -118,46 +118,46 @@ cat src/content/posts/verificare/testing/mutation-testing-oltre-la-coverage/inde
 cat src/content/posts/progettare/kafka/03-akka-pekko-migrazione/index.md
 ```
 
-- [ ] **Step 2: Elencare gli articoli del lotto**
+- [x] **Step 2: Elencare gli articoli del lotto**
 
 ```bash
 grep -rl "series: linq" src/content/posts/ --include=index.md
 ```
 
-- [ ] **Step 3: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
+- [x] **Step 3: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
 
 Per ciascun file, leggere il corpo per intero e scrivere (in scratch, non nel file) l'elenco dei fatti verificabili: numeri, versioni, nomi di strumenti, tempi, dimensioni, limiti dichiarati. **Solo da qui si possono pescare i valori.**
 
-- [ ] **Step 4: Scrivere `summary` e `openItems` per ogni articolo**
+- [x] **Step 4: Scrivere `summary` e `openItems` per ogni articolo**
 
 Inserire le chiavi dopo l'ultima chiave esistente del frontmatter, prima del `---` di chiusura. Rispettare i Global Constraints: 3-4 righe di summary, 2-4 openItems, virgolette doppie, nessun punto finale.
 
-- [ ] **Step 5: Verificare che la build passi**
+- [x] **Step 5: Verificare che la build passi**
 
 ```bash
 npm run build
 ```
 Expected: `[build] ✓ Completed` senza errori. Un errore Zod indica YAML malformato o un campo con il tipo sbagliato.
 
-- [ ] **Step 6: Verificare che i blocchi compaiano nell'HTML**
+- [x] **Step 6: Verificare che i blocchi compaiano nell'HTML**
 
 ```bash
 grep -c "In sintesi" dist/blog/progettare/system-design/*/index.html
 ```
 Expected: `1` per ogni articolo del lotto.
 
-- [ ] **Step 7: Auto-verifica del vincolo di verità**
+- [x] **Step 7: Auto-verifica del vincolo di verità**
 
 Per ogni valore scritto, individuare la frase dell'articolo da cui deriva. Se anche uno solo non ha una frase corrispondente, **rimuoverlo**. Riportare l'esito come elenco `valore → frase sorgente`.
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add src/content/posts/progettare/system-design/
 git commit -m "content: summary e openItems sulla serie LINQ"
 ```
 
-- [ ] **Step 9: FERMARSI e chiedere revisione all'autore prima del Task 2**
+- [x] **Step 9: FERMARSI e chiedere revisione all'autore prima del Task 2**
 
 ---
 
