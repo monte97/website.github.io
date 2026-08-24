@@ -403,36 +403,40 @@ git commit -m "content: summary e openItems su Kubernetes e CAPI"
 
 ---
 
-### Task 8: Testing rimanente (4 articoli non Playwright, non mutation)
+### Task 8: Testing rimanente (5 articoli non Playwright, non mutation)
+
+**CORREZIONE (2026-08-24):** il titolo indicava 4 articoli, il comando dello Step 1 (fonte di verità) ne ha trovati 5: 01-intro, 01-unit-test-nuxt3-logica-pura, 02-mock-traps-python-flask, 03-flask-factory-testabile, chiudere-il-loop-mutation-testing.
 
 **Files:**
 - Modify: gli `index.md` sotto `src/content/posts/verificare/testing/` privi di `summary:`
 
-- [ ] **Step 1: Elencare i rimanenti**
+- [x] **Step 1: Elencare i rimanenti**
 
 ```bash
 grep -rL "^summary:" $(grep -rl "" src/content/posts/verificare/testing/ --include=index.md)
 ```
 
-- [ ] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
+- [x] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
 
-- [ ] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
+- [x] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
 
-- [ ] **Step 4: Verificare la build**
+- [x] **Step 4: Verificare la build**
 
 ```bash
 npm run build
 ```
 Expected: `[build] ✓ Completed` senza errori.
 
-- [ ] **Step 5: Auto-verifica del vincolo di verità**
+- [x] **Step 5: Auto-verifica del vincolo di verità**
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/content/posts/verificare/testing/
 git commit -m "content: summary e openItems sul testing rimanente"
 ```
+
+**Eseguito e verificato: commit `c69df691`.** Verifica indipendente: perimetro (5 file, 85 inserimenti, 0 cancellazioni), YAML valido su tutti (build differita, vedi Nota operativa), vincolo di verità (106 componenti/9 test/7 rotti→72 test/13 file/1.7s, 88 test/19%→46% mutation score, 228→148 righe conftest/5 funzioni/3 file, R²≈0,70 vs 0,25 coverage, ACH Meta 73%/36% ottobre-dicembre 2024 — tutti riscontrati esatti nel testo), incrocio (5 openNote tutti diversi).
 
 ---
 
