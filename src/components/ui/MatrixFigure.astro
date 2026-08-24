@@ -1,0 +1,87 @@
+---
+interface Row {
+  label: string;
+  note?: string;
+  /** uno stato per colonna: "full" | "partial" | "empty" */
+  cells: ('full' | 'partial' | 'empty')[];
+}
+interface Props {
+  figureId?: string;
+  label?: string;
+  columns: string[];
+  rows: Row[];
+  legend?: { full?: string; partial?: string; empty?: string };
+  caption?: string;
+  note?: string;
+}
+const { figureId, label, columns, rows, legend, caption, note } = Astro.props;
+
+const cellClass = {
+  full: 'bg-accent/85 border-accent',
+  partial: 'bg-accent/25 border-accent/40',
+  empty: 'bg-transparent border-dashed border-text-muted/40',
+};
+---
+
+<figure class="not-prose my-10">
+  {figureId && label && (
+    <figcaption class="text-[10px] font-mono uppercase tracking-[0.18em] text-accent mb-3">
+      {figureId} · {label}
+    </figcaption>
+  )}
+
+  <div class="rounded-2xl border border-border/60 dark:border-border-dark/60 bg-accent-subtle/20 p-4 md:p-6 overflow-x-auto">
+    <table class="w-full border-collapse min-w-[440px]">
+      <thead>
+        <tr>
+          <th class="text-left align-bottom pb-3 pr-4 w-[46%]"></th>
+          {columns.map((c) => (
+            <th class="pb-3 px-2 text-center font-mono text-[10px] uppercase tracking-[0.12em] text-text-muted font-medium align-bottom">
+              {c}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr class="border-t border-border/40 dark:border-border-dark/40">
+            <th scope="row" class="text-left py-3 pr-4 font-normal align-top">
+              <span class="block text-sm text-text-dark dark:text-text-light leading-snug">{r.label}</span>
+              {r.note && <span class="block text-xs text-text-muted mt-0.5 leading-snug">{r.note}</span>}
+            </th>
+            {r.cells.map((state) => (
+              <td class="py-3 px-2">
+                <span class={`mx-auto block w-full max-w-[46px] h-5 rounded border ${cellClass[state]}`} />
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+
+    {legend && (
+      <div class="flex flex-wrap gap-x-5 gap-y-2 mt-5 pt-4 border-t border-border/40 dark:border-border-dark/40">
+        {legend.full && (
+          <span class="flex items-center gap-2 text-xs text-text-muted">
+            <span class={`w-6 h-3 rounded border ${cellClass.full}`} />{legend.full}
+          </span>
+        )}
+        {legend.partial && (
+          <span class="flex items-center gap-2 text-xs text-text-muted">
+            <span class={`w-6 h-3 rounded border ${cellClass.partial}`} />{legend.partial}
+          </span>
+        )}
+        {legend.empty && (
+          <span class="flex items-center gap-2 text-xs text-text-muted">
+            <span class={`w-6 h-3 rounded border ${cellClass.empty}`} />{legend.empty}
+          </span>
+        )}
+      </div>
+    )}
+  </div>
+
+  {caption && (
+    <figcaption class="mt-2 text-[10px] font-mono uppercase tracking-[0.15em] text-text-muted">{caption}</figcaption>
+  )}
+  {note && <p class="mt-3 text-sm text-text-muted leading-relaxed max-w-2xl">{note}</p>}
+</figure>

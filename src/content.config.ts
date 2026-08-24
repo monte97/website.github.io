@@ -89,6 +89,23 @@ const projects = defineCollection({
       why: z.string().optional(),     // il criterio, sotto la tabella
     })).optional(),
     decisionsNote: z.string().optional(),  // il filo che tiene insieme i bivi
+    // Figura: matrice di copertura, con le caselle vuote in evidenza
+    matrix: z.object({
+      label: z.string().optional(),
+      columns: z.array(z.string()),
+      rows: z.array(z.object({
+        label: z.string(),
+        note: z.string().optional(),
+        cells: z.array(z.enum(['full', 'partial', 'empty'])),
+      })),
+      legend: z.object({
+        full: z.string().optional(),
+        partial: z.string().optional(),
+        empty: z.string().optional(),
+      }).optional(),
+      caption: z.string().optional(),
+      note: z.string().optional(),
+    }).optional(),
     // Figura: disallineamento fra ordine chiesto e ordine ricevuto
     swap: z.object({
       label: z.string().optional(),

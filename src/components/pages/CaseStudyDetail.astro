@@ -6,6 +6,7 @@ import Footer from '@/components/layout/Footer.astro';
 import FinalCta from '@/components/ui/FinalCta.astro';
 import Decisions from '@/components/ui/Decisions.astro';
 import SwapFigure from '@/components/ui/SwapFigure.astro';
+import MatrixFigure from '@/components/ui/MatrixFigure.astro';
 import FlowDiagram from '@/components/ui/FlowDiagram.astro';
 import { pillarStyles } from '@/data/pillar-styles';
 import { getPillarLabel } from '@/data/pillars';
@@ -202,6 +203,11 @@ const metaCells = [
         <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-6">{t.decisions}</h2>
         <Decisions decisions={d.decisions} figureId="G1" note={d.decisionsNote} lang={lang} />
       </section>
+    )}
+
+    {d.matrix && (
+      <MatrixFigure figureId="G2" label={d.matrix.label} columns={d.matrix.columns} rows={d.matrix.rows}
+        legend={d.matrix.legend} caption={d.matrix.caption} note={d.matrix.note} />
     )}
 
     {d.swap && (
