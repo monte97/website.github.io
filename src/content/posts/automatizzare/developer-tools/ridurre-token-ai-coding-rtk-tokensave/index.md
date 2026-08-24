@@ -7,6 +7,23 @@ category: developer-tools
 tags: [Claude Code, MCP, Rust, Developer Tools, AI, RTK, tokensave]
 lang: it
 draft: false
+summary:
+  - label: "Problema"
+    value: "Consumo di token non lineare rispetto alla complessità dei task"
+    note: "Due sorgenti strutturali: output CLI verboso e scansioni ripetute del codebase"
+  - label: "Scelta"
+    value: "Due tool ortogonali: RTK comprime l'output CLI, tokensave indicizza il codice"
+    note: "Uno agisce sull'output dei comandi, l'altro su come il modello naviga il codice"
+  - label: "Risultato"
+    value: "Circa -80% sui token dell'output CLI, media -93% sulle esplorazioni"
+  - label: "Ampiezza"
+    value: "RTK indipendente dai linguaggi, tokensave ne copre 34 in tre tier"
+openItems:
+  - "I risparmi sono stime indicative per una sessione da 30 minuti su un progetto TypeScript/Rust medio: il valore reale si misura con `rtk gain`"
+  - "L'hook di RTK intercetta solo le chiamate Bash: i tool nativi Read, Grep e Glob non passano dal rewrite"
+  - "Il grafo di tokensave copre i linguaggi dei tre tier: file esclusi da `.gitignore` o linguaggi assenti lasciano buchi nell'indice"
+  - "tokensave è tutto locale: le sole chiamate di rete sono opzionali e disattivabili, e non trasportano codice"
+openNote: "Numeri dichiarati e coperture: da riportare sul proprio utilizzo."
 ---
 
 Claude Code funziona. I task vengono completati, il codice prodotto è corretto. C'è un dettaglio che emerge solo guardando i contatori: i token consumati crescono in modo non lineare rispetto alla complessità dei task. Le sessioni lunghe costano molto più del previsto.

@@ -17,6 +17,24 @@ draft: true
 reviewed: true
 series: cicd
 seriesOrder: 10
+summary:
+  - label: "Contesto"
+    value: "App multi-servizio, una VM Proxmox dedicata per ambiente"
+    note: "Deploy manuale su staging e produzione: costi e drift che si accumulano"
+  - label: "Scelta"
+    value: "Jenkins orchestra, OpenTofu provisiona, Semaphore esegue Ansible"
+    note: "Responsabilità singole e interfacce definite fra i componenti"
+  - label: "Costo reale"
+    value: "Repository sorgente e di deployment separati"
+    note: "Per risalire al sorgente di un deploy serve attraversare il tag dell'immagine"
+  - label: "Risultato"
+    value: "Nuove immagini rilevate e deployate senza intervento manuale"
+openItems:
+  - "L'architettura copre due ambienti, staging e produzione, ognuno su una VM dedicata provisionata su Proxmox"
+  - "L'health check verifica solo la raggiungibilità HTTP: smoke test funzionali e controlli di versione ne restano fuori"
+  - "La demo usa insecure = true verso l'API Proxmox perché i certificati sono tipicamente self-signed: il TLS va risolto nell'ambiente reale"
+  - "Il template VM resta creato a mano ed è l'unico passaggio manuale rimasto nel processo"
+openNote: "Dove la pipeline descritta si ferma."
 ---
 
 ## Il contesto

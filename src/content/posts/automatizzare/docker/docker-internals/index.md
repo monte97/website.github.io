@@ -12,6 +12,22 @@ tags:
 lang: it
 reviewed: human
 reproducibility: true
+summary:
+  - label: "Contesto"
+    value: "I meccanismi del kernel Linux dietro l'isolamento dei container Docker"
+  - label: "Scoperta"
+    value: "Un container è un processo dell'host, non una macchina a parte"
+    note: "Terminarlo dall'host ferma il container: è lo stesso processo"
+  - label: "Ampiezza"
+    value: "Otto tipi di namespace e cinque categorie di risorse sotto cgroups"
+  - label: "Costo reale"
+    value: "Kernel condiviso: meno overhead delle VM, isolamento meno robusto"
+openItems:
+  - "Nella gerarchia dei namespace PID i processi restano visibili ai livelli superiori: l'isolamento vale dall'interno verso il basso"
+  - "Senza configurazioni ad-hoc chi vive in un network namespace non raggiunge il resto del sistema: l'esposizione passa dal port mapping controllato"
+  - "I limiti hard di memoria portano all'OOM Killer: la soglia va tarata sul profilo dell'applicazione"
+  - "Container o macchina virtuale dipende dal compromesso che si accetta fra efficienza e isolamento completo"
+openNote: "Alcune proprietà di questi meccanismi da tenere presenti."
 ---
 
 # Docker e Linux Namespaces: Guida Completa alla Containerizzazione

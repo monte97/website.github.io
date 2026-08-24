@@ -13,6 +13,25 @@ tags:
 lang: it
 reviewed: human
 reproducibility: true
+summary:
+  - label: "Contesto"
+    value: "n8n self-hosted nel homelab come alternativa ai SaaS di automazione"
+    note: "Zapier e Make citati come termini di confronto"
+  - label: "Stack"
+    value: "OpenTofu provisiona, Ansible configura, Docker Compose esegue"
+    note: "Tre livelli separati sullo stesso container LXC"
+  - label: "Scelta"
+    value: "Container LXC al posto della macchina virtuale"
+    note: "Kernel dell'host condiviso: più leggero e trasparente di una VM"
+  - label: "Risultato"
+    value: "Servizio ricreabile da Git su qualsiasi nodo compatibile"
+    note: "Configurazioni versionate e applicate in modo idempotente"
+openItems:
+  - "L'istanza resta confinata alla LAN con rete bridge e IP dedicato: l'esposizione diretta su Internet non fa parte del progetto"
+  - "Il playbook cancella container e volumi esistenti prima del deploy: con dati da preservare quella fase va ripensata prima dell'uso"
+  - "Le dipendenze Python per Docker sono pinnate a versioni precise: aggiornarle è una rivalutazione di compatibilità, non un passo automatico"
+  - "La persistenza usa il volume Docker locale con il database SQLite interno di n8n: configurazioni a più istanze o database esterni sono fuori dal perimetro"
+openNote: "Confini da conoscere prima di riusare lo stack così com'è."
 ---
 
 ## Contesto e Motivazioni
