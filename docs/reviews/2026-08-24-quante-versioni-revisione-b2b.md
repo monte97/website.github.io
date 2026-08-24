@@ -35,7 +35,7 @@ contando, e le configurazioni non si sommano: **si moltiplicano.**
 
 Il costo si vedeva altrove, sotto altri nomi. Rilasci che richiedevano prove manuali su
 ambienti che nessuno sapeva elencare con certezza. Guasti che comparivano solo presso un
-ente e non erano riproducibili altrove. Persone che sapevano «come si fa da quel cliente»
+cliente e non erano riproducibili altrove. Persone che sapevano «come si fa da quel cliente»
 e la cui assenza bloccava un intervento. `[DATO: quanto durava un rilascio, o quanti
 interventi in emergenza al trimestre]`
 
