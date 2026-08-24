@@ -274,6 +274,6 @@ const metaCells = [
 
   </main>
 
-  <FinalCta title={t.ctaTitle} desc={t.ctaDesc} ctaLabel={t.ctaPrimary} secondaryLabel={t.ctaSecondary} secondaryHref={mailLink} umamiEvent="cta-case-study-detail" fullBleed />
+  <FinalCta title={d.cta?.title ?? t.ctaTitle} desc={d.cta?.desc ?? t.ctaDesc} ctaLabel={t.ctaPrimary} secondaryLabel={t.ctaSecondary} secondaryHref={mailLink} umamiEvent="cta-case-study-detail" fullBleed />
   <Footer lang={lang} />
 </BaseLayout>

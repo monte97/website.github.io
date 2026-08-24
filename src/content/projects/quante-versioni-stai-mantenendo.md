@@ -124,6 +124,9 @@ openItems:
   - "Le righe scoperte restano scoperte: la mappa dice dove sono i buchi, non li chiude"
   - "Il terzo livello — «funziona davvero» — è quello più costoso da scrivere, e infatti è quello con più bianco"
   - "Nessuno ha ancora messo un prezzo alla riga di matrice: la contabilità esiste, la tariffa no"
+cta:
+  title: "Sapete quante configurazioni del vostro prodotto sono vive adesso?"
+  desc: "Se la risposta richiede più di trenta secondi, il costo esiste già: semplicemente non è scritto, quindi non è né a bilancio né in preventivo. Contarle è un lavoro delimitato."
 thesis: "La flessibilità che vendi in trattativa non è una feature: è una riga di manutenzione che qualcuno pagherà ogni mese — e finché non la scrivi da qualche parte, quel qualcuno non lo sa nessuno."
 ---
 

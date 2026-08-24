@@ -124,6 +124,11 @@ const projects = defineCollection({
     })).optional(),
     // Cosa resta aperto — confini dichiarati
     openItems: z.array(z.string()).optional(),
+    // CTA specifica del pezzo: sovrascrive quella generica in fondo alla pagina
+    cta: z.object({
+      title: z.string(),
+      desc: z.string().optional(),
+    }).optional(),
     // Schermate reali
     shots: z.array(z.object({
       src: z.string(),
