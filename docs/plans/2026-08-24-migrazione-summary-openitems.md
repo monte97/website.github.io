@@ -334,31 +334,33 @@ git commit -m "content: summary e openItems sulla serie OpenFGA"
 **Files:**
 - Modify: `src/content/posts/progettare/kafka/**/index.md` tranne `03-akka-pekko-migrazione`
 
-- [ ] **Step 1: Elencare il lotto escludendo quello già fatto**
+- [x] **Step 1: Elencare il lotto escludendo quello già fatto**
 
 ```bash
 grep -rL "^summary:" $(grep -rl "category: kafka" src/content/posts/ --include=index.md)
 ```
 
-- [ ] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
+- [x] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
 
-- [ ] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
+- [x] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
 
-- [ ] **Step 4: Verificare la build**
+- [x] **Step 4: Verificare la build**
 
 ```bash
 npm run build
 ```
 Expected: `[build] ✓ Completed` senza errori.
 
-- [ ] **Step 5: Auto-verifica del vincolo di verità**
+- [x] **Step 5: Auto-verifica del vincolo di verità**
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/content/posts/progettare/kafka/
 git commit -m "content: summary e openItems sulla serie Kafka"
 ```
+
+**Eseguito e verificato: commit `9b3ea570`.** Verifica indipendente: perimetro (4 file, 74 inserimenti, 0 cancellazioni), YAML valido su tutti (build differita, vedi Nota operativa), vincolo di verità (acks=all da Kafka 3.0/acks=1 fino a 2.8, kafkajs non mantenuto dal 2023, Apicurio Apache 2.0/HTTP 409/modalità NONE, buffer 100 dropHead, 2 thread hot su due core, replay earliest/checkpoint latest, messaggi ogni 5 secondi, SIGTERM/health check assenti — tutti riscontrati esatti nel testo), incrocio (4 openNote tutti diversi, openItems specifici per articolo).
 
 ---
 
