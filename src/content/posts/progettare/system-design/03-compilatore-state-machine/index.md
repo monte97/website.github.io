@@ -16,6 +16,23 @@ lang: it
 reviewed: true
 series: linq
 seriesOrder: 30
+summary:
+  - label: "Contesto"
+    value: "Dietro ogni Where() il compilatore genera codice mai visto nel sorgente"
+    note: "Una state machine con campo di stato e protocollo di pausa e ripresa"
+  - label: "Scoperta"
+    value: "In .NET 8 Enumerable.Where non usa yield return ma iteratori specializzati"
+    note: "Path dedicati per array e List<T>, con il fallback generico più lento"
+  - label: "Problema"
+    value: "Castare a IEnumerable<T> manda la query sul path generico"
+    note: "Vale anche per le firme: un parametro IEnumerable forza il fallback dentro il metodo"
+  - label: "Strumento"
+    value: "SharpLab, source.dot.net e ILSpy per leggere il codice generato"
+openItems:
+  - "L'analisi riguarda System.Linq in memoria: la traduzione a SQL degli IQueryable dipende dal provider e resta solo accennata"
+  - "Gli iteratori specializzati descritti sono quelli di .NET 8, e le lambda senza cattura vengono cacheate solo da C# 10 in poi"
+  - "Il vantaggio del path specializzato è dichiarato misurabile ma non quantificato: l'articolo non porta numeri di benchmark"
+openNote: "Quello che questa discesa nel compilatore non chiude, e che va valutato sul proprio codice."
 ---
 
 Nei primi due articoli abbiamo visto *cosa* costa e *quanto* costa. Abbiamo misurato la differenza tra `List.Contains` e `HashSet.Contains`, quantificato il peso delle allocazioni intermedie, osservato `GroupBy` e `ToLookup` trasformare operazioni quadratiche in lineari. I numeri erano chiari, le fix immediate.

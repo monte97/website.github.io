@@ -16,6 +16,25 @@ lang: it
 reviewed: true
 series: linq
 seriesOrder: 40
+summary:
+  - label: "Contesto"
+    value: "Stack Grafana LGTM in un solo container Docker e tre pacchetti OpenTelemetry"
+    note: "Setup pensato per lo sviluppo locale, avvio con docker compose up"
+  - label: "Strumento"
+    value: "Monitor() e MonitorElements() rendono visibile ogni stage della pipeline LINQ"
+    note: "Extension method da incatenare tra gli operatori, senza cambiarne il comportamento"
+  - label: "Scoperta"
+    value: "La waterfall rende visibile lo streaming elemento per elemento"
+    note: "Con OrderBy nel mezzo lo streaming si spezza: bufferizza tutto prima di emettere"
+  - label: "Costo reale"
+    value: "Ogni span è un'allocazione: il tracing è diagnostica, non decorazione permanente"
+    note: "In produzione si protegge con sampling aggressivo, dall'1% al 5%"
+openItems:
+  - "La percentuale di sampling va scelta per pipeline: le linee guida danno un intervallo, non una soglia"
+  - "Su un hot path eseguito centinaia di volte al secondo anche un singolo Monitor() può introdurre latenza misurabile"
+  - "Uno span per elemento su migliaia di record rende la trace ingestibile: MonitorElements resta confinato a debug e collezioni piccole"
+  - "Lo stack LGTM monolitico copre lo sviluppo locale: collector, storage e retention di un ambiente produttivo non sono toccati"
+openNote: "Quello che questo strumento non decide, e che va pesato prima di portarlo in produzione."
 ---
 
 Nei tre articoli precedenti abbiamo visto [cosa sbagliare](/posts/dotnet/linq/01-errori-produzione), [quanto costa](/posts/dotnet/linq/02-benchmark-net8) e [cosa succede sotto il cofano](/posts/dotnet/linq/03-compilatore-state-machine). Abbiamo parlato di complessità computazionale, state machine, allocazioni e streaming. Ma finora era tutto teoria e numeri. Tabelle di benchmark, diagrammi ASCII, ragionamenti sulla deferred execution.

@@ -15,6 +15,25 @@ lang: it
 reviewed: true
 series: linq
 seriesOrder: 20
+summary:
+  - label: "Contesto"
+    value: "I quattro pattern della serie rimisurati con BenchmarkDotNet su .NET 8"
+    note: "Dataset sulle cardinalità del dispatcher: 50-500 veicoli, 200-5000 consegne, 100-2000 vincoli"
+  - label: "Risultato"
+    value: "List contro HashSet: fino a 63x a 500 elementi, a parità di allocazioni"
+    note: "Il rapporto parte da circa 7x a 50 elementi e cresce col dataset"
+  - label: "Scoperta"
+    value: "La pipeline lazy alloca circa il 60% in meno delle liste intermedie"
+    note: "Sul tempo la differenza è più contenuta: tra 1.5x e 1.6x"
+  - label: "Costo reale"
+    value: "Il costo fisso di AsParallel domina quando il lavoro per elemento è leggero"
+    note: "Nei test la versione parallela è più lenta e alloca il doppio o il triplo"
+openItems:
+  - "I risultati sono indicativi sulla macchina di test: i numeri esatti vanno riprodotti eseguendo i benchmark dal repository"
+  - "La soglia tra qualche microsecondo e qualche millisecondo per AsParallel è una regola empirica, non una misura del benchmark"
+  - "Per indici oltre 500 elementi e hot path ad alto throughput la matrice resta sul «dipende»: decidere richiede misurazione sul proprio codice"
+  - "Il trade-off del GroupBy non è gratis: l'indice costruito in una passata alloca più memoria dello scan ripetuto"
+openNote: "Quello che i numeri non decidono, e che va misurato sul proprio codice."
 ---
 
 In ogni code review C# prima o poi qualcuno dice "qui LINQ è troppo lento, usa un for". Ma nessuno tira fuori un benchmark. Oggi lo facciamo -- su .NET 8, con BenchmarkDotNet, e con i pattern reali dell'articolo precedente.

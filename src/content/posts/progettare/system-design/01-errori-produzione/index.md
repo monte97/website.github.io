@@ -16,6 +16,24 @@ draft: true
 reviewed: true
 series: linq
 seriesOrder: 10
+summary:
+  - label: "Contesto"
+    value: "Audit performance su un dispatcher di flotta commerciale"
+    note: "Flotta interamente in memoria, budget di latenza sotto i 100ms"
+  - label: "Problema"
+    value: "Quattro pattern LINQ trasformavano operazioni lineari in quadratiche"
+    note: "Singolarmente sembravano ragionevoli, insieme sforavano il budget"
+  - label: "Strumento"
+    value: "ToHashSet, GroupBy e ToLookup: costruire l'indice prima del loop"
+  - label: "Costo reale"
+    value: "Il filtraggio del primo pattern passa da 1.400.000 confronti a circa 2000"
+    note: "Da centinaia di millisecondi a meno di 1ms"
+openItems:
+  - "Le stime di costo derivano dal conteggio delle operazioni sulle cardinalità del dispatcher: il confronto misurato con BenchmarkDotNet non fa parte dell'articolo"
+  - "La soglia dei 500 elementi sotto cui AsParallel non conviene presuppone lavoro per elemento trascurabile: serve misura prima di parallelizzare"
+  - "Con liste di lookup piccole il costo è impercettibile: dove intervenire dipende dalle cardinalità del proprio dominio"
+  - "La scelta tra pipeline LINQ e foreach esplicito nell'hot path resta aperta: il foreach è più verboso ma porta early exit e zero allocazioni"
+openNote: "I confini che l'audit non chiude, e che spettano a chi porta questi pattern nel proprio codice."
 ---
 
 Qualche mese fa ho fatto un audit di performance su un servizio di dispatch per una flotta di veicoli commerciali. Il sistema gestisce centinaia di consegne al giorno e decide in tempo reale quale veicolo assegnare a ogni nuovo ordine, rispettando vincoli di zona, capacità, orario e tipo merce.
