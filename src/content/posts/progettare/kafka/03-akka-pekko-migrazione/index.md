@@ -15,6 +15,24 @@ reviewed: true
 series: kafka
 seriesOrder: 30
 reproducibility: true
+summary:
+  - label: "Contesto"
+    value: "Servizio Scala su Akka 2.6 in produzione da tre anni"
+    note: "Serie 2.6.x end-of-life da ottobre 2023: licenza ancora Apache 2.0, ma nessuna patch futura"
+  - label: "Scelta"
+    value: "Migrazione ad Apache Pekko 1.0.x"
+    note: "Fork diretto di Akka 2.6.x: API identica, cambia solo il namespace"
+  - label: "Costo reale"
+    value: "Mezza giornata per tre servizi, circa 50 file toccati"
+    note: "Il tempo non sta nel rename, che è meccanico: sta nella verifica"
+  - label: "Dove serve attenzione"
+    value: "Apicurio 3.x, Materializer implicito, reference.conf di terze parti, dipendenze transitive"
+openItems:
+  - "L'upgrade a Pekko 1.1.x è una decisione separata: introduce evoluzioni proprie e divergenze da Akka, quindi non è più una migrazione meccanica"
+  - "La migrazione ha toccato HTTP, Streams e Kafka: chi usa Cluster o sharding ha una superficie diversa da verificare"
+  - "La verifica è stata compilazione, test, avvio dei container e controllo delle risposte — non c'è una misura del comportamento a regime dopo il cambio"
+  - "Le dipendenze di terze parti che portano un reference.conf con chiavi akka vanno controllate una per una: non esiste una regola generale"
+openNote: "Quello che questa migrazione non copre, e che va deciso o verificato caso per caso."
 ---
 
 Un servizio Scala su Akka 2.6 in produzione da tre anni. La licenza cambia, le patch di sicurezza non arrivano più. Quello che segue è la migrazione pratica da Akka ad Apache Pekko: checklist, gotcha e lezioni dal campo.

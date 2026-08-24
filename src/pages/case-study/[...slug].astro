@@ -1,0 +1,19 @@
+---
+import { getCollection } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import CaseStudyDetail from '@/components/pages/CaseStudyDetail.astro';
+
+export const getStaticPaths = (async () => {
+  const projects = await getCollection('projects');
+  return projects
+    .filter((p) => p.data.type === 'case-study')
+    .map((project) => ({
+      params: { slug: project.id },
+      props: { project },
+    }));
+}) satisfies GetStaticPaths;
+
+const { project } = Astro.props;
+---
+
+<CaseStudyDetail project={project} lang="it" />

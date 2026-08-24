@@ -1,0 +1,22 @@
+---
+interface Props {
+  items: string[];
+  note?: string;
+  lang?: 'it' | 'en';
+}
+const { items, note, lang = 'it' } = Astro.props;
+const heading = lang === 'en' ? 'What remains open' : 'Cosa resta aperto';
+---
+
+<section class="not-prose mt-14 rounded-2xl border border-dashed border-border dark:border-border-dark p-5 md:p-6">
+  <h2 class="text-[11px] font-mono font-bold uppercase tracking-[0.18em] text-text-dark dark:text-text-light mb-4">{heading}</h2>
+  {note && <p class="text-sm text-text-muted leading-relaxed mb-4">{note}</p>}
+  <ul class="space-y-2.5">
+    {items.map((it) => (
+      <li class="flex gap-2.5 text-sm text-text-muted leading-relaxed">
+        <span class="text-text-muted/50 shrink-0 select-none">&mdash;</span>
+        <span>{it}</span>
+      </li>
+    ))}
+  </ul>
+</section>

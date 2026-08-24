@@ -1,0 +1,266 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import FinalCta from '@/components/ui/FinalCta.astro';
+import Decisions from '@/components/ui/Decisions.astro';
+import FlowDiagram from '@/components/ui/FlowDiagram.astro';
+import { pillarStyles } from '@/data/pillar-styles';
+import { getPillarLabel } from '@/data/pillars';
+
+interface Props {
+  project: any;
+  lang?: 'it' | 'en';
+}
+
+const { project, lang = 'it' } = Astro.props;
+const prefix = lang === 'en' ? '/en' : '';
+const { Content } = await render(project);
+const d = project.data;
+
+const pillarKey = d.pillarApplied ?? d.pillar;
+const pillarStyle = pillarKey ? pillarStyles[pillarKey] : null;
+const resultItems = Array.isArray(d.result) ? d.result : d.result ? [d.result] : [];
+
+const mailLink = 'mailto:francesco@montelli.dev';
+
+const t = lang === 'en'
+  ? { back: 'All case studies', oggetto: 'Subject', metodo: 'Method', struttura: 'Structure',
+      anon: 'Anonymisation', toc: 'What this document covers', howto: 'How to read this',
+      constraint: 'The constraint', context: 'Context', actions: 'What was done',
+      result: 'What was left behind', pillarApplied: 'Pillar applied', related: 'Related article',
+      decisions: 'The decisions, and the rule behind them',
+      specs: 'In brief', open: 'What remains open', shots: 'What it looks like',
+      ctaTitle: 'Same situation on your side?', ctaDesc: 'Tell me where the system is now and what is blocking you.',
+      ctaPrimary: 'Book a discovery call', ctaSecondary: 'or write me' }
+  : { back: 'Tutti i case study', oggetto: 'Oggetto', metodo: 'Metodo', struttura: 'Struttura',
+      anon: 'Anonimizzazione', toc: 'Cosa contiene questo documento', howto: 'Come leggerlo',
+      constraint: 'Il vincolo', context: 'Contesto', actions: 'Cosa è stato fatto',
+      result: 'Cosa è rimasto', pillarApplied: 'Pilastro applicato', related: 'Articolo correlato',
+      decisions: 'Le decisioni, e il criterio che le governa',
+      specs: 'In sintesi', open: 'Cosa resta aperto', shots: 'Cosa si vede',
+      ctaTitle: 'La stessa situazione, da voi?', ctaDesc: 'Raccontami dove sta il sistema adesso e cosa vi blocca.',
+      ctaPrimary: 'Prenota una discovery call', ctaSecondary: 'oppure scrivimi' };
+
+const metaCells = [
+  d.oggetto && { label: t.oggetto, value: d.oggetto },
+  d.metodo && { label: t.metodo, value: d.metodo },
+  d.sections && d.sections.length > 0 && { label: t.struttura, value: d.sections.map((s: any) => s.title).join(' · ') },
+  d.anonimizzazione && { label: t.anon, value: d.anonimizzazione },
+].filter(Boolean) as { label: string; value: string }[];
+---
+
+<BaseLayout title={d.title} description={d.description} lang={lang}>
+  <Header lang={lang} />
+  <main class="max-w-4xl mx-auto px-5 py-12 md:py-16">
+
+    <a href={`${prefix}/case-study/`} class="inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-accent transition-colors mb-8">
+      &larr; {t.back}
+    </a>
+
+    {/* COPERTINA */}
+    <header class="mb-12">
+      <div class="flex flex-wrap items-center gap-3 mb-5">
+        {d.eyebrow && (
+          <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-text-muted/80">{d.eyebrow}</p>
+        )}
+        {pillarKey && pillarStyle && (
+          <span class={`text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full ${pillarStyle.badge}`}>
+            {getPillarLabel(pillarKey)}
+          </span>
+        )}
+      </div>
+
+      <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-text-dark dark:text-text-light text-balance leading-[1.15] mb-5">
+        {d.title}
+      </h1>
+      <p class="text-base md:text-lg text-text-muted leading-relaxed max-w-2xl">{d.description}</p>
+    </header>
+
+    {/* GRIGLIA META — oggetto / metodo / struttura / anonimizzazione */}
+    {metaCells.length > 0 && (
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-px bg-border/50 dark:bg-border-dark/50 rounded-2xl overflow-hidden border border-border/50 dark:border-border-dark/50 mb-12">
+        {metaCells.map((cell) => (
+          <div class="bg-white dark:bg-surface-dark p-5 md:p-6">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.15em] text-accent mb-2">{cell.label}</p>
+            <p class="text-sm text-text-muted leading-relaxed">{cell.value}</p>
+          </div>
+        ))}
+      </div>
+    )}
+
+    {/* INDICE + PERCORSI DI LETTURA */}
+    {(d.sections?.length > 0 || d.readingPaths?.length > 0) && (
+      <section class="rounded-2xl border border-border/60 dark:border-border-dark/60 bg-accent-subtle/40 p-6 md:p-8 mb-12">
+        {d.sections?.length > 0 && (
+          <>
+            <h2 class="text-sm font-bold uppercase tracking-[0.15em] text-text-dark dark:text-text-light mb-5">{t.toc}</h2>
+            <ol class="space-y-3 mb-8">
+              {d.sections.map((s: any) => (
+                <li class="flex gap-4">
+                  <span class="text-xs font-mono text-accent shrink-0 pt-0.5 w-6">{s.n}</span>
+                  <div>
+                    <p class="text-sm font-semibold text-text-dark dark:text-text-light">{s.title}</p>
+                    {s.summary && <p class="text-xs text-text-muted mt-0.5 leading-relaxed">{s.summary}</p>}
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </>
+        )}
+
+        {d.readingPaths?.length > 0 && (
+          <div class="border-t border-border/50 dark:border-border-dark/50 pt-6">
+            <h3 class="text-sm font-bold uppercase tracking-[0.15em] text-text-dark dark:text-text-light mb-4">{t.howto}</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              {d.readingPaths.map((rp: any) => (
+                <div>
+                  <p class="text-xs font-semibold text-accent mb-1">{rp.label}</p>
+                  <p class="text-sm text-text-muted leading-relaxed">{rp.desc}</p>
+                </div>
+              ))}
+            </div>
+            {d.readingNote && (
+              <p class="text-xs text-text-muted/80 leading-relaxed mt-5 italic">{d.readingNote}</p>
+            )}
+          </div>
+        )}
+      </section>
+    )}
+
+    {/* SCHEDA — vincolo / contesto / azioni / esito */}
+    <div class="space-y-10 mb-12">
+      {d.problem && (
+        <section class="pl-5 border-l-4 border-accent/40">
+          <p class="text-xs uppercase tracking-wide text-text-muted mb-1">{t.constraint}</p>
+          <p class="text-text-muted leading-relaxed">{d.problem}</p>
+        </section>
+      )}
+
+      {d.context && (
+        <section>
+          <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-3">{t.context}</h2>
+          <p class="text-text-muted leading-relaxed">{d.context}</p>
+        </section>
+      )}
+
+      {d.specs?.length > 0 && (
+        <section>
+          <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-4">{t.specs}</h2>
+          <dl class="divide-y divide-border/50 dark:divide-border-dark/50 border-t border-b border-border/50 dark:border-border-dark/50">
+            {d.specs.map((sp: any) => (
+              <div class="grid grid-cols-1 sm:grid-cols-[9rem_1fr] gap-1 sm:gap-5 py-3">
+                <dt class="font-mono text-[10px] uppercase tracking-[0.15em] text-text-muted pt-1">{sp.label}</dt>
+                <dd>
+                  <span class="block text-text-dark dark:text-text-light leading-relaxed">{sp.value}</span>
+                  {sp.note && <span class="block text-sm text-text-muted mt-0.5 leading-relaxed">{sp.note}</span>}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </section>
+      )}
+
+      {d.flow?.nodes?.length > 0 && (
+        <FlowDiagram label={d.flow.label} caption={d.flow.caption} nodes={d.flow.nodes} />
+      )}
+
+      {d.actions?.length > 0 && (
+        <section>
+          <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-3">{t.actions}</h2>
+          <ul class="space-y-2">
+            {d.actions.map((a: string) => (
+              <li class="text-text-muted leading-relaxed flex gap-2">
+                <span class="text-accent mt-2 shrink-0 w-1 h-1 rounded-full bg-accent" />
+                <span>{a}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {resultItems.length > 0 && (
+        <section>
+          <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-3">{t.result}</h2>
+          <ul class="space-y-2">
+            {resultItems.map((item: string) => (
+              <li class="text-text-muted leading-relaxed flex gap-2">
+                <span class="text-accent mt-2 shrink-0 w-1 h-1 rounded-full bg-accent" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </div>
+
+    {/* LE DECISIONI */}
+    {d.decisions?.length > 0 && (
+      <section class="mb-14">
+        <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-6">{t.decisions}</h2>
+        <Decisions decisions={d.decisions} figureId="G1" note={d.decisionsNote} lang={lang} />
+      </section>
+    )}
+
+    {/* CORPO */}
+    {project.body && project.body.trim().length > 0 && (
+      <article class="prose prose-lg dark:prose-invert max-w-none
+        prose-headings:tracking-tight
+        prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-12 prose-h2:mb-4
+        prose-h3:text-lg prose-h3:font-semibold prose-h3:mt-8 prose-h3:mb-3">
+        <Content />
+      </article>
+    )}
+
+    {/* SCHERMATE */}
+    {d.shots?.length > 0 && (
+      <section class="mt-14">
+        <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-5">{t.shots}</h2>
+        {d.shotsNote && <p class="text-text-muted leading-relaxed mb-6 max-w-2xl">{d.shotsNote}</p>}
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {d.shots.map((sh: any) => (
+            <figure>
+              <img src={sh.src} alt={sh.caption} loading="lazy"
+                class="w-full rounded-xl border border-border/60 dark:border-border-dark/60 bg-white dark:bg-surface-dark" />
+              <figcaption class="mt-2 text-[10px] font-mono uppercase tracking-[0.15em] text-text-muted leading-relaxed">{sh.caption}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {/* COSA RESTA APERTO */}
+    {d.openItems?.length > 0 && (
+      <section class="mt-14 rounded-2xl border border-dashed border-border dark:border-border-dark p-6 md:p-7">
+        <h2 class="text-sm font-bold uppercase tracking-[0.15em] text-text-dark dark:text-text-light mb-4">{t.open}</h2>
+        <ul class="space-y-2">
+          {d.openItems.map((it: string) => (
+            <li class="text-text-muted leading-relaxed flex gap-2 text-sm">
+              <span class="text-text-muted/60 shrink-0">&mdash;</span><span>{it}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {/* TESI */}
+    {d.thesis && (
+      <blockquote class="mt-14 pl-6 border-l-4 border-accent">
+        <p class="text-lg md:text-xl font-semibold text-text-dark dark:text-text-light leading-snug text-balance">
+          {d.thesis}
+        </p>
+      </blockquote>
+    )}
+
+    {d.links?.blog && (
+      <a href={d.links.blog} class="inline-flex items-center gap-2 mt-10 px-4 py-2 rounded-lg border border-border dark:border-border-dark text-sm font-medium hover:border-accent hover:text-accent transition-colors">
+        {t.related} &rarr;
+      </a>
+    )}
+
+  </main>
+
+  <FinalCta title={t.ctaTitle} desc={t.ctaDesc} ctaLabel={t.ctaPrimary} secondaryLabel={t.ctaSecondary} secondaryHref={mailLink} umamiEvent="cta-case-study-detail" fullBleed />
+  <Footer lang={lang} />
+</BaseLayout>

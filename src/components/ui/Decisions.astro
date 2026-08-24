@@ -1,0 +1,69 @@
+---
+interface Decision {
+  title: string; chosen: string; chosenWhy?: string;
+  rejected: string; appeal?: string; why?: string;
+}
+interface Props { decisions: Decision[]; figureId?: string; note?: string; lang?: 'it' | 'en'; }
+const { decisions, figureId, note, lang = 'it' } = Astro.props;
+const t = lang === 'en'
+  ? { fork: 'Fork', chosen: 'Chosen', rejected: 'Rejected', title: 'Decision tree' }
+  : { fork: 'Bivio', chosen: 'Scelta', rejected: 'Scartata', title: 'Albero delle decisioni' };
+---
+
+<figure class="my-8">
+  {figureId && (
+    <figcaption class="text-[10px] font-mono uppercase tracking-[0.18em] text-accent mb-3">
+      {figureId} · {t.title}
+    </figcaption>
+  )}
+
+  {/* Tabella — da md in su */}
+  <div class="hidden md:block overflow-x-auto rounded-2xl border border-border/60 dark:border-border-dark/60">
+    <table class="w-full text-sm border-collapse">
+      <thead>
+        <tr class="bg-accent-subtle/50">
+          <th class="text-left font-mono text-[10px] uppercase tracking-[0.15em] text-text-muted px-4 py-3 w-[18%]">{t.fork}</th>
+          <th class="text-left font-mono text-[10px] uppercase tracking-[0.15em] text-accent px-4 py-3 w-[41%]">{t.chosen}</th>
+          <th class="text-left font-mono text-[10px] uppercase tracking-[0.15em] text-text-muted px-4 py-3 w-[41%]">{t.rejected}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {decisions.map((d) => (
+          <tr class="border-t border-border/50 dark:border-border-dark/50 align-top">
+            <td class="px-4 py-4 font-semibold text-text-dark dark:text-text-light">{d.title}</td>
+            <td class="px-4 py-4 border-l-2 border-accent">
+              <span class="block font-semibold text-text-dark dark:text-text-light leading-snug">{d.chosen}</span>
+              {d.chosenWhy && <span class="block text-text-muted text-[13px] mt-1.5 leading-relaxed">{d.chosenWhy}</span>}
+            </td>
+            <td class="px-4 py-4">
+              <span class="block text-text-muted leading-snug">{d.rejected}</span>
+              {d.appeal && <span class="block text-text-muted/80 text-[13px] italic mt-1.5 leading-relaxed">{d.appeal}</span>}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  {/* Card impilate — sotto md */}
+  <div class="md:hidden space-y-6">
+    {decisions.map((d) => (
+      <div class="rounded-xl border border-border/60 dark:border-border-dark/60 p-4">
+        <p class="font-mono text-[10px] uppercase tracking-[0.15em] text-text-muted mb-2">{t.fork}</p>
+        <h3 class="font-bold text-text-dark dark:text-text-light mb-3">{d.title}</h3>
+        <div class="pl-3 border-l-2 border-accent mb-3">
+          <span class="block font-mono text-[10px] uppercase tracking-[0.15em] text-accent">{t.chosen}</span>
+          <span class="block font-semibold text-text-dark dark:text-text-light text-sm mt-1">{d.chosen}</span>
+          {d.chosenWhy && <span class="block text-text-muted text-xs mt-1 leading-relaxed">{d.chosenWhy}</span>}
+        </div>
+        <div class="pl-3 border-l-2 border-border dark:border-border-dark">
+          <span class="block font-mono text-[10px] uppercase tracking-[0.15em] text-text-muted">{t.rejected}</span>
+          <span class="block text-text-muted text-sm mt-1">{d.rejected}</span>
+          {d.appeal && <span class="block text-text-muted/80 text-xs italic mt-1 leading-relaxed">{d.appeal}</span>}
+        </div>
+      </div>
+    ))}
+  </div>
+
+  {note && <p class="text-sm text-text-muted leading-relaxed mt-5 max-w-2xl">{note}</p>}
+</figure>

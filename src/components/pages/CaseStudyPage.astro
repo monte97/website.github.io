@@ -1,0 +1,136 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import FinalCta from '@/components/ui/FinalCta.astro';
+import { pillarStyles } from '@/data/pillar-styles';
+import { pillarLabels } from '@/data/pillars';
+
+interface Props {
+  lang?: 'it' | 'en';
+}
+
+const { lang = 'it' } = Astro.props;
+const prefix = lang === 'en' ? '/en' : '';
+
+const allProjects = await getCollection('projects');
+const caseStudies = allProjects
+  .filter((p) => p.data.type === 'case-study')
+  .sort((a, b) => a.data.weight - b.data.weight);
+
+const mailLink = 'mailto:francesco@montelli.dev';
+
+const t = lang === 'en'
+  ? {
+      pageTitle: 'Case Studies',
+      pageDesc: 'Technical analyses of real projects: the problem, the decisions, and where the work stopped. Client names omitted, decisions intact.',
+      eyebrow: 'Work',
+      heroTitle: 'What the work actually looked like',
+      heroSubtitle: 'Real projects, told through the decisions that shaped them — including the ones about where to stop.',
+      intro: 'Each case study covers a single project: what the constraint was, what was decided and why, and what the client was left with. Client and vendor names are omitted; the decisions are not.',
+      readLabel: 'Read the analysis',
+      emptyTitle: 'Nothing published yet',
+      emptyDesc: 'The first analyses are being written.',
+      ctaTitle: 'Recognise your own situation in one of these?',
+      ctaDesc: 'Tell me where the system is now and what is blocking you. We look at it together, no commitment.',
+      ctaPrimary: 'Book a discovery call',
+      ctaSecondary: 'or write me',
+    }
+  : {
+      pageTitle: 'Case Study',
+      pageDesc: 'Analisi tecniche di progetti reali: il problema, le decisioni, e il punto in cui il lavoro si è fermato. Nomi dei committenti omessi, decisioni intatte.',
+      eyebrow: 'Lavori',
+      heroTitle: 'Com’è andata davvero',
+      heroSubtitle: 'Progetti reali, raccontati attraverso le decisioni che li hanno formati — comprese quelle su dove fermarsi.',
+      intro: 'Ogni case study copre un progetto solo: qual era il vincolo, cosa è stato deciso e perché, e cosa è rimasto in mano a chi ha pagato. I nomi di committenti e fornitori sono omessi; le decisioni no.',
+      readLabel: 'Leggi l’analisi',
+      emptyTitle: 'Ancora niente di pubblicato',
+      emptyDesc: 'Le prime analisi sono in scrittura.',
+      ctaTitle: 'Ti ci riconosci in una di queste situazioni?',
+      ctaDesc: 'Raccontami dove sta il sistema adesso e cosa vi blocca. Lo guardiamo insieme, senza impegno.',
+      ctaPrimary: 'Prenota una discovery call',
+      ctaSecondary: 'oppure scrivimi',
+    };
+---
+
+<BaseLayout title={t.pageTitle} description={t.pageDesc} lang={lang}>
+  <Header lang={lang} />
+  <main>
+
+    {/* HERO */}
+    <section class="bg-accent-subtle border-b border-border/40 dark:border-border-dark/40">
+      <div class="max-w-3xl mx-auto px-5 py-16 md:py-24 text-center fade-in-section">
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-5">{t.eyebrow}</p>
+        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-text-dark dark:text-text-light text-balance leading-[1.2]">
+          {t.heroTitle}
+        </h1>
+        <p class="mt-5 text-base md:text-lg text-text-muted max-w-xl mx-auto leading-relaxed">
+          {t.heroSubtitle}
+        </p>
+      </div>
+    </section>
+
+    {/* ELENCO */}
+    <section>
+      <div class="max-w-5xl mx-auto px-5 pt-12 md:pt-16 pb-16 md:pb-20">
+        <p class="text-text-muted text-base md:text-lg leading-relaxed max-w-3xl mx-auto text-center mb-10 md:mb-12">{t.intro}</p>
+
+        {caseStudies.length === 0 ? (
+          <div class="max-w-xl mx-auto text-center rounded-2xl border border-dashed border-border/60 dark:border-border-dark/60 p-10">
+            <h2 class="text-lg font-bold text-text-dark dark:text-text-light mb-2">{t.emptyTitle}</h2>
+            <p class="text-text-muted text-sm">{t.emptyDesc}</p>
+          </div>
+        ) : (
+          <div class="space-y-5 md:space-y-6 stagger-children">
+            {caseStudies.map((cs) => {
+              const styles = pillarStyles[cs.data.pillar];
+              return (
+                <a
+                  href={`${prefix}/case-study/${cs.id}/`}
+                  class="group block rounded-2xl border border-border/60 dark:border-border-dark/60 bg-white dark:bg-surface-dark p-6 md:p-8 shadow-sm hover:shadow-md hover:border-accent/40 transition-all duration-200"
+                >
+                  <div class="flex items-start justify-between gap-4 mb-4">
+                    {cs.data.eyebrow && (
+                      <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-text-muted/80">{cs.data.eyebrow}</p>
+                    )}
+                    <span class={`text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full whitespace-nowrap shrink-0 ${styles.badge}`}>
+                      {pillarLabels[cs.data.pillar][lang]}
+                    </span>
+                  </div>
+
+                  <h2 class="text-xl md:text-2xl font-bold text-text-dark dark:text-text-light mb-3 group-hover:text-accent transition-colors text-balance">
+                    {cs.data.title}
+                  </h2>
+                  <p class="text-text-muted text-sm md:text-base leading-relaxed mb-5 max-w-2xl">{cs.data.description}</p>
+
+                  {cs.data.problem && (
+                    <div class="border-l-2 border-accent/30 pl-4 mb-5">
+                      <p class="text-xs uppercase tracking-wide text-text-muted/70 mb-1">{lang === 'en' ? 'The constraint' : 'Il vincolo'}</p>
+                      <p class="text-sm text-text-muted leading-relaxed">{cs.data.problem}</p>
+                    </div>
+                  )}
+
+                  <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+                    <span class="text-sm font-semibold text-accent">{t.readLabel} &rarr;</span>
+                    {cs.data.tags.length > 0 && (
+                      <div class="flex flex-wrap gap-1.5">
+                        {cs.data.tags.slice(0, 5).map((tag) => (
+                          <span class="text-[11px] text-text-muted/80 bg-text-muted/8 px-1.5 py-0.5 rounded">{tag}</span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </section>
+
+    <FinalCta title={t.ctaTitle} desc={t.ctaDesc} ctaLabel={t.ctaPrimary} secondaryLabel={t.ctaSecondary} secondaryHref={mailLink} umamiEvent="cta-case-study-final" fullBleed />
+
+  </main>
+  <Footer lang={lang} />
+</BaseLayout>

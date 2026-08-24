@@ -15,6 +15,23 @@ lang: it
 draft: false
 series: mutation-testing-ai
 seriesOrder: 10
+summary:
+  - label: "Contesto"
+    value: "Suite .NET verde, 93% di coverage"
+    note: "Un bug nel calcolo del subtotale passava indisturbato"
+  - label: "Scoperta"
+    value: "Un terzo dei test non verificava niente"
+    note: "Eseguivano il codice senza accorgersi se fosse sbagliato"
+  - label: "Strumento"
+    value: "Stryker.NET, mutazione sistematica del codice sotto test"
+  - label: "Risultato"
+    value: "Mutation score dal 65% al 92%"
+openItems:
+  - "Il mutation score dice se i test si accorgono di una modifica, non se verificano la cosa giusta: resta una domanda a cui risponde solo chi conosce il dominio"
+  - "Il costo di esecuzione cresce con la codebase. Con `--since:main` resta proporzionale alla PR, ma una passata sull'intero progetto è un'altra cosa"
+  - "Non esiste una soglia universale: 60 è un punto di partenza per bloccare le regressioni, non un obiettivo di qualità"
+  - "L'esempio è un flusso di gestione ordini piccolo e con logica propria. Su codice fatto per lo più di orchestrazione e framework, la resa dei mutanti è più bassa"
+openNote: "Quello che il mutation testing non risolve, e che va deciso guardando il proprio codice."
 ---
 
 La maggior parte di noi si fida della propria suite di test. I test sono verdi, la coverage è alta: si rilascia tranquilli. È un'equazione che diamo per scontata (*test passano → codice sano*), e quasi sempre funziona.

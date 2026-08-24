@@ -1,0 +1,23 @@
+---
+interface Props {
+  items: { label: string; value: string; note?: string }[];
+  lang?: 'it' | 'en';
+}
+const { items, lang = 'it' } = Astro.props;
+const heading = lang === 'en' ? 'In brief' : 'In sintesi';
+---
+
+<aside class="not-prose mb-9 rounded-xl border border-border/60 dark:border-border-dark/60 bg-accent-subtle/25 px-5 py-4">
+  <h2 class="text-[10px] font-mono font-bold uppercase tracking-[0.18em] text-accent mb-3">{heading}</h2>
+  <dl class="divide-y divide-border/40 dark:divide-border-dark/40">
+    {items.map((it) => (
+      <div class="grid grid-cols-1 sm:grid-cols-[7rem_1fr] gap-0.5 sm:gap-4 py-2 first:pt-0 last:pb-0">
+        <dt class="font-mono text-[10px] uppercase tracking-[0.15em] text-text-muted pt-1">{it.label}</dt>
+        <dd>
+          <span class="block text-[15px] text-text-dark dark:text-text-light leading-snug">{it.value}</span>
+          {it.note && <span class="block text-[13px] text-text-muted mt-0.5 leading-snug">{it.note}</span>}
+        </dd>
+      </div>
+    ))}
+  </dl>
+</aside>
