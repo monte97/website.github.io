@@ -3,55 +3,59 @@ import type { Pillar } from './pillars';
 /**
  * Shared pillar CSS class mappings.
  * Single source of truth for all pillar-related Tailwind classes.
- * Color tokens defined in src/styles/global.css (@theme).
+ *
+ * Il design system prevede un solo accento UI (arancio). I pillar non hanno
+ * un'identita' colore propria: si distinguono per tipografia — label mono
+ * uppercase e numerazione 01/02/03. Gli hex dedicati (blu/verde/viola) sono
+ * stati rimossi insieme ai token --color-pillar-* in global.css.
  */
 
 export const pillarStyles: Record<Pillar, {
-  /** Text color: text-pillar-{name} */
+  /** Numero d'ordine, per label tipografiche (01/02/03) */
+  num: string;
+  /** Text color — neutro, il colore non distingue i pillar */
   text: string;
-  /** Solid background: bg-pillar-{name} */
+  /** Solid background per pastiglie/numeri su testo bianco */
   bg: string;
-  /** Left border: border-l-pillar-{name} */
+  /** Left border: accento unico */
   borderLeft: string;
-  /** Full border: border-pillar-{name} */
+  /** Full border: accento unico */
   border: string;
-  /** Badge: 10% opacity bg + text color */
+  /** Badge: mono uppercase su superficie neutra */
   badge: string;
-  /** Subtle bg at 8% opacity */
+  /** Subtle bg */
   bgSubtle: string;
-  /** Active tab: 15% bg + text + 30% border */
+  /** Active tab */
   tabActive: string;
-  /** Hex value for CSS custom properties */
-  hex: string;
 }> = {
   progettare: {
-    text: 'text-pillar-progettare',
-    bg: 'bg-pillar-progettare',
-    borderLeft: 'border-l-pillar-progettare',
-    border: 'border-pillar-progettare',
-    badge: 'bg-pillar-progettare/10 text-pillar-progettare',
-    bgSubtle: 'bg-pillar-progettare/8',
-    tabActive: 'bg-pillar-progettare/15 text-pillar-progettare border-2 border-pillar-progettare/30',
-    hex: '#5B7FA5',
+    num: '01',
+    text: 'text-text-dark dark:text-text-light',
+    bg: 'bg-accent',
+    borderLeft: 'border-l-accent',
+    border: 'border-accent',
+    badge: 'bg-surface dark:bg-surface-dark text-text-muted font-mono uppercase',
+    bgSubtle: 'bg-surface dark:bg-surface-dark',
+    tabActive: 'bg-accent/10 text-accent border-2 border-accent/30',
   },
   verificare: {
-    text: 'text-pillar-verificare',
-    bg: 'bg-pillar-verificare',
-    borderLeft: 'border-l-pillar-verificare',
-    border: 'border-pillar-verificare',
-    badge: 'bg-pillar-verificare/10 text-pillar-verificare',
-    bgSubtle: 'bg-pillar-verificare/8',
-    tabActive: 'bg-pillar-verificare/15 text-pillar-verificare border-2 border-pillar-verificare/30',
-    hex: '#6B9B78',
+    num: '02',
+    text: 'text-text-dark dark:text-text-light',
+    bg: 'bg-accent',
+    borderLeft: 'border-l-accent',
+    border: 'border-accent',
+    badge: 'bg-surface dark:bg-surface-dark text-text-muted font-mono uppercase',
+    bgSubtle: 'bg-surface dark:bg-surface-dark',
+    tabActive: 'bg-accent/10 text-accent border-2 border-accent/30',
   },
   automatizzare: {
-    text: 'text-pillar-automatizzare',
-    bg: 'bg-pillar-automatizzare',
-    borderLeft: 'border-l-pillar-automatizzare',
-    border: 'border-pillar-automatizzare',
-    badge: 'bg-pillar-automatizzare/10 text-pillar-automatizzare',
-    bgSubtle: 'bg-pillar-automatizzare/8',
-    tabActive: 'bg-pillar-automatizzare/15 text-pillar-automatizzare border-2 border-pillar-automatizzare/30',
-    hex: '#9B7FB5',
+    num: '03',
+    text: 'text-text-dark dark:text-text-light',
+    bg: 'bg-accent',
+    borderLeft: 'border-l-accent',
+    border: 'border-accent',
+    badge: 'bg-surface dark:bg-surface-dark text-text-muted font-mono uppercase',
+    bgSubtle: 'bg-surface dark:bg-surface-dark',
+    tabActive: 'bg-accent/10 text-accent border-2 border-accent/30',
   },
 };

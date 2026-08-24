@@ -6,21 +6,21 @@
 /* Design tokens */
 @theme {
   /* Palette — warm, editorial */
+  /* Dark mode: estensione approvata del sito, non definita dal DS.
+     I toni *-dark / --color-text-light sono derivati dai token chiari
+     e restano fuori dal perimetro normativo del design system. */
   --color-base-dark: #1A1A28;
   --color-base-light: #FAF8F5;
   --color-surface: #F2EFE9;
   --color-surface-dark: #242436;
   --color-accent: #E8973A;
-  --color-accent-hover: #D4832E;
+  --color-accent-hover: #E5891F;
   --color-accent-subtle: #E8973A1A;
   --color-text-dark: #2D2D3A;
   --color-text-light: #E8E5DE;
   --color-text-muted: #606070;
-  --color-border: #DDD9D0;
+  --color-border: #E4DFD8;
   --color-border-dark: #33334A;
-  --color-pillar-progettare: #5B7FA5;
-  --color-pillar-verificare: #6B9B78;
-  --color-pillar-automatizzare: #9B7FB5;
   --color-code-bg: #1A1A28;
   --color-code-inline-light: #EDEAE3;
   --color-code-inline-dark: #2A2A3C;
@@ -51,6 +51,26 @@ body {
 /* Muted text is darker in light mode for contrast, lighter in dark mode */
 .dark {
   --color-text-muted: #9090A0;
+}
+
+:root {
+  --focus-ring: #9C5D18;
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+}
+
+/* ── Focus ring (DS) ── */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: inherit;
 }
 
 /* ── Selection ── */
@@ -166,11 +186,11 @@ pre {
 .prose hr {
   border: none;
   height: 1px;
-  background: linear-gradient(to right, transparent, var(--color-border) 20%, var(--color-border) 80%, transparent);
+  background-color: var(--color-border);
   margin: 3rem 0;
 }
 .dark .prose hr {
-  background: linear-gradient(to right, transparent, var(--color-border-dark) 20%, var(--color-border-dark) 80%, transparent);
+  background-color: var(--color-border-dark);
 }
 
 /* ── Headings ── */
@@ -237,37 +257,19 @@ html.dark .astro-code span {
   color: var(--shiki-dark) !important;
 }
 
-/* ── Scroll-triggered animations ── */
-.fade-in-section {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.fade-in-section.is-visible {
+/* ── Scroll-triggered animations: disattivate ──
+   Il DS vieta il motion on scroll. Le classi restano nel markup (le applica
+   un IntersectionObserver condiviso) ma sono no-op: il contenuto e' visibile
+   subito, anche senza JS. Non rimuoverle dai componenti: servono all'observer. */
+.fade-in-section,
+.fade-in-section.is-visible,
+.stagger-children > *,
+.stagger-children.is-visible > * {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
+  transition: none;
+  transition-delay: 0ms;
 }
-
-/* Staggered children */
-.stagger-children > * {
-  opacity: 0;
-  transform: translateY(16px);
-  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.stagger-children.is-visible > *:nth-child(1) { transition-delay: 0ms; opacity: 1; transform: translateY(0); }
-.stagger-children.is-visible > *:nth-child(2) { transition-delay: 100ms; opacity: 1; transform: translateY(0); }
-.stagger-children.is-visible > *:nth-child(3) { transition-delay: 200ms; opacity: 1; transform: translateY(0); }
-.stagger-children.is-visible > *:nth-child(4) { transition-delay: 300ms; opacity: 1; transform: translateY(0); }
-.stagger-children.is-visible > *:nth-child(5) { transition-delay: 400ms; opacity: 1; transform: translateY(0); }
-.stagger-children.is-visible > *:nth-child(6) { transition-delay: 500ms; opacity: 1; transform: translateY(0); }
-.stagger-children.is-visible > *:nth-child(7) { transition-delay: 600ms; opacity: 1; transform: translateY(0); }
-.stagger-children.is-visible > *:nth-child(8) { transition-delay: 700ms; opacity: 1; transform: translateY(0); }
-.stagger-children.is-visible > *:nth-child(9) { transition-delay: 800ms; opacity: 1; transform: translateY(0); }
-.stagger-children.is-visible > *:nth-child(10) { transition-delay: 900ms; opacity: 1; transform: translateY(0); }
-.stagger-children.is-visible > *:nth-child(11) { transition-delay: 1000ms; opacity: 1; transform: translateY(0); }
-.stagger-children.is-visible > *:nth-child(n+12) { transition-delay: 1100ms; opacity: 1; transform: translateY(0); }
 
 /* ── Pagefind theme ── */
 :root {
@@ -275,7 +277,7 @@ html.dark .astro-code span {
   --pagefind-ui-primary: #E8973A;
   --pagefind-ui-text: #2D2D3A;
   --pagefind-ui-background: #FAF8F5;
-  --pagefind-ui-border: #DDD9D0;
+  --pagefind-ui-border: #E4DFD8;
   --pagefind-ui-border-radius: 10px;
   --pagefind-ui-font: "Inter", system-ui, sans-serif;
 }

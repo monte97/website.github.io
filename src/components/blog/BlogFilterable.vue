@@ -275,7 +275,7 @@
               :class="[
                 'h-full flex flex-col',
                 'bg-white dark:bg-surface-dark rounded-xl border border-border/70 dark:border-border-dark/70',
-                'hover:border-border dark:hover:border-border-dark hover:shadow-md transition-all duration-300',
+                'hover:border-border dark:hover:border-border-dark hover:shadow-md transition-colors duration-200',
                 post.pillar ? 'border-l-[3px]' : '',
                 post.pillar ? pillarStyles[post.pillar].borderLeft : '',
                 'p-6',
