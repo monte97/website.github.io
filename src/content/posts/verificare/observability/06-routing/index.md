@@ -15,6 +15,23 @@ reviewed: human
 series: observability
 seriesOrder: 60
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "Log audit e debug nello stesso Loki, con la stessa retention di 30 giorni"
+  - label: "Scelta"
+    value: "Routing connector: l'applicazione marca lo span, il Collector decide la destinazione"
+    note: "Cambiare rotta è solo configurazione del Collector, nessun deploy dei microservizi"
+  - label: "Gotcha"
+    value: "setAttribute sullo span non propaga gli attributi ai log record: serve un logHook"
+    note: "Senza il logHook di PinoInstrumentation, il routing dei log non funziona"
+  - label: "Risultato"
+    value: "Retention differenziata: debug 48 ore, errori 30 giorni, audit da 1 a 7 anni"
+openItems:
+  - "Nella demo l'audit service stampa il payload su console: persistenza append-only, immutabilità, encryption e controllo accessi restano da costruire"
+  - "La configurazione mostrata è un fan-out, non routing selettivo: la separazione granulare passa dal routing connector con condizioni OTTL"
+  - "La retention differenziata per stream richiede il compactor Loki con retention_enabled: true ed è disponibile da Loki 2.3+"
+  - "Se in dubbio, non marcare: i log non marcati finiscono nel flusso default di Loki e restano disponibili per il debug"
+openNote: "Requisiti di produzione che la demo lascia deliberatamente fuori."
 ---
 
 Immaginate di ricevere una richiesta dal team compliance: "Servono i log di audit degli ultimi tre anni." Aprite Grafana, cercate in Loki e scoprite che la retention massima è 30 giorni. I log di audit sono stati cancellati insieme ai debug log, perché vivevano tutti nello stesso backend. Nessuna separazione, nessuna policy dedicata.

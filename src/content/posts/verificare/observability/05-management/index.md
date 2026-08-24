@@ -26,6 +26,22 @@ reviewed: human
 series: observability
 seriesOrder: 50
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "Al 100% di sampling, 100 req/s producono 34 GB di trace al giorno, circa 1 TB al mese"
+  - label: "Scelta"
+    value: "Tail sampling: errori e trace oltre 1s sempre tenuti, 10% del resto"
+    note: "La decisione arriva dopo aver osservato la trace completa, non all'inizio"
+  - label: "Risultato"
+    value: "Volume ridotto del 90%, errori e request lente catturati al 100%"
+  - label: "Steady state"
+    value: "Con sampling 10% e retention a 7 giorni lo storage si stabilizza a 24 GB"
+openItems:
+  - "Il tail sampling non protegge le metriche: una label unbounded come user_id può generare milioni di time series e va eliminata a monte"
+  - "Il Collector ha bisogno del memory_limiter come primo processor: senza, va in OOM invece di rifiutare dati in ingresso"
+  - "L'attributo audit.event non viene aggiunto in automatico: va impostato nel codice nei punti che rappresentano operazioni critiche"
+  - "Le proiezioni assumono ~8 span per trace, ~500 bytes per span e storage S3 a $0.023/GB: i numeri vanno validati sul traffico reale"
+openNote: "Le assunzioni dietro i numeri, e i rischi che il campionamento non tocca."
 ---
 
 Nel [tutorial precedente](https://montelli.dev/posts/otel-website-material/04-correlation/) abbiamo strumentato un e-commerce con OpenTelemetry e risolto tre scenari di debug: silent failure, latency spike, fan-out. Tutto funzionava: trace complete, errori visibili, latenza misurabile.

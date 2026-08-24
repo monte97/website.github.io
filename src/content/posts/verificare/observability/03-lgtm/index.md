@@ -26,6 +26,22 @@ reviewed: human
 series: observability
 seriesOrder: 30
 reproducibility: true
+summary:
+  - label: "Contesto"
+    value: "OpenTelemetry genera i dati standardizzati, lo stack LGTM li archivia e li visualizza"
+  - label: "Composizione"
+    value: "Loki per i log, Tempo per i trace, Mimir per le metriche, Grafana come interfaccia unica"
+  - label: "Scelta"
+    value: "Loki indicizza solo le etichette, Tempo solo il TraceID: il resto finisce su object storage"
+    note: "Indicizzare poco è ciò che rende entrambi costo-efficienti"
+  - label: "Risultato"
+    value: "Da Grafana, drill-down dalla metrica anomala ai trace e ai log correlati"
+openItems:
+  - "La ricerca per TraceID resta la modalità più efficiente in Tempo: le query avanzate passano da TraceQL o dalla correlazione con LogQL e PromQL"
+  - "Il volume complessivo dei dati può comunque essere elevato: retention aggressive e sampling nel Collector restano fondamentali per contenere i costi"
+  - "Ogni componente è progettato per scalare orizzontalmente, ma va dimensionato sul volume previsto di telemetria: CPU, RAM e storage vanno stimati"
+  - "Deployment e configurazione vanno gestiti con strumenti IaC come Helm, Terraform o Pulumi per garantire riproducibilità"
+openNote: "Le decisioni di dimensionamento e gestione che lo stack lascia a chi lo adotta."
 ---
 
 Abbiamo esplorato i principi dell'observability e il ruolo fondamentale di OpenTelemetry come standard unificante per la telemetria. OpenTelemetry ci fornisce gli strumenti per **generare e raccogliere** dati di altissima qualità (metriche, log e trace) in un formato agnostico e coerente. Ma una volta che questi preziosi segnali sono stati raccolti, dove vengono archiviati, interrogati e, soprattutto, visualizzati in modo significativo?

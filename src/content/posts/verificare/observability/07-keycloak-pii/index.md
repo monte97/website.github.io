@@ -15,6 +15,22 @@ draft: false
 reviewed: true
 series: observability
 seriesOrder: 70
+summary:
+  - label: "Problema"
+    value: "Keycloak con tracing attivo espone username, token e query SQL nel backend"
+  - label: "Strumento"
+    value: "Quattro tecniche nell'OTel Collector: DELETE, REDACT, HASH e SANITIZE"
+    note: "Il filtraggio avviene prima che i dati raggiungano Tempo"
+  - label: "Gotcha"
+    value: "L'hash SHA-256 del Collector è senza salt: dà correlazione tra span, non anonimizzazione"
+  - label: "Risultato"
+    value: "Il debug resta intatto: trace ID, timing, topologia e user ID hashed"
+openItems:
+  - "Per il diritto alla cancellazione, Tempo non supporta la cancellazione selettiva di singole trace: filtering più retention breve copre l'Art. 17 nella maggior parte dei casi, non sempre"
+  - "Se il backend Tempo risiede fuori EU, il filtering da solo non basta per la data residency: servono self-hosting in Europa o bucket europei"
+  - "Il tracing nativo esiste dalla versione 26.0, inizialmente come preview: le variabili unificate KC_TELEMETRY_* richiedono feature flag in quella versione"
+  - "Quali attributi compaiono dipende dalla versione dell'SDK bundled: la config copre sia i nomi vecchi (http.url, db.statement) sia i nuovi (url.full, db.query.text)"
+openNote: "Ciò che il filtering non risolve, sul fronte GDPR e sulle versioni."
 ---
 
 Abilitare il tracing su Keycloak significa ritrovarsi email, username e token JWT in chiaro negli span. Keycloak gestisce credenziali, token e sessioni — quando il tracing è attivo, tutto questo finisce nel backend di observability senza alcun filtro. Il rischio: data breach e violazione GDPR con un click su Explore.

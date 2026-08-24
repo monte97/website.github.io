@@ -26,6 +26,22 @@ reviewed: human
 series: observability
 seriesOrder: 40
 reproducibility: true
+summary:
+  - label: "Contesto"
+    value: "MockMart, e-commerce demo con microservizi Node.js strumentati con OpenTelemetry"
+  - label: "Metodo"
+    value: "Tre scenari di debug: silent failure, latency spike e fan-out"
+  - label: "Risultato"
+    value: "Il waterfall mostra esattamente quale span causa errore o rallentamento"
+  - label: "Ampiezza"
+    value: "Senza tracing, quattro servizi in fan-out significano 24 combinazioni da investigare"
+    note: "Con il tracing il bottleneck è visibile nel waterfall in pochi minuti"
+openItems:
+  - "LGTM all-in-one non scala in produzione: servono deployment separati con storage persistente, retention policies e alta disponibilità"
+  - "In produzione non si può mantenere il 100% delle trace: servono strategie di head sampling, tail sampling e rate limiting"
+  - "Gli scenari sono simulazioni controllate con delay artificiali e flag di configurazione: i problemi reali sono più difficili da riprodurre e spesso intermittenti"
+  - "Su monoliti o bottleneck locali il tracing non aiuta, e l'auto-instrumentation ha un costo di ~2-5% di CPU e ~10-30MB per servizio Node.js"
+openNote: "Quello che la demo non copre, e che distingue uno scenario simulato dalla produzione."
 ---
 
 Chi ha strumentato un'applicazione con OpenTelemetry ha trace e log centralizzati. Resta una domanda pratica: come si usa concretamente questa telemetria per risolvere problemi? Questo tutorial risponde con tre scenari di debug reali. Per chi non ha familiarita con i concetti base di OTel (spans, traces, context propagation), si consiglia prima la lettura di [Introduzione a OpenTelemetry](https://theredcode.it/devops/observability-monitoring-intro/).

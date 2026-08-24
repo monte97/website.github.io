@@ -19,6 +19,23 @@ reviewed: human
 series: observability
 seriesOrder: 10
 reproducibility: true
+summary:
+  - label: "Tesi"
+    value: "Il monitoraggio dice cosa sta succedendo, l'observability aiuta a capire il perché"
+    note: "Non lo sostituisce: lo estende con drill-down e correlazione tra fonti diverse"
+  - label: "Struttura"
+    value: "Tre segnali di telemetria: metriche, log e distributed tracing"
+  - label: "Metodo"
+    value: "Un ciclo iterativo: raccogliere, monitorare, analizzare"
+    note: "Le intuizioni dell'analisi migliorano raccolta e allarmi"
+  - label: "Correlazione"
+    value: "Metriche, log e trace collegati da identificatori comuni come il trace_id"
+openItems:
+  - "Il monitoraggio tradizionale resta efficace sui problemi noti e ricorrenti: soglie e alert predefiniti non vanno buttati"
+  - "Il volume dei dati è il primo ostacolo pratico: senza sampling intelligente e retention differenziate, storage e ingestione diventano proibitivi"
+  - "Le metriche non tollerano etichette ad alta cardinalità: identificatori come user_id o session_id vanno tenuti nei log o nei trace"
+  - "L'adozione è anche un cambio di mentalità: design per l'osservabilità, cultura blameless e decisioni basate sui dati non arrivano con i soli strumenti"
+openNote: "Le sfide che l'articolo stesso dichiara aperte, dai costi dei dati al cambio di mentalità."
 ---
 
 -----

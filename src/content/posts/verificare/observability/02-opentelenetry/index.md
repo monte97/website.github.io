@@ -19,6 +19,23 @@ reviewed: human
 series: observability
 seriesOrder: 20
 reproducibility: true
+summary:
+  - label: "Contesto"
+    value: "Prima di OTel, ogni vendor aveva protocolli e SDK proprietari"
+    note: "Cambiare strumento significava riscrivere l'instrumentazione"
+  - label: "Strumento"
+    value: "Tre layer: SDK genera, Collector raccoglie ed elabora, i backend consumano"
+  - label: "Protocollo"
+    value: "OTLP su Protocol Buffers, gRPC consigliato e HTTP/JSON per compatibilità"
+  - label: "Costo reale"
+    value: "Meno dell'1% di CPU con auto-instrumentation, circa 200 byte per span compresso"
+    note: "Batch da 1000 span: riduzione dell'overhead del 95%"
+openItems:
+  - "Agent sidecar e gateway centralizzato sono un trade-off: isolamento e configurazione per servizio contro rischio di single point of failure e latenza aggiuntiva"
+  - "Il segnale profiling è instabile e sconsigliato in produzione, e il sampling avanzato basato su ML non è incluso nella roadmap prioritaria"
+  - "La zero-instrumentation via eBPF è priorità P2: non ancora stabile né supportata ufficialmente, e l'osservabilità dei workload ML resta fuori dal core"
+  - "Le cifre di overhead sono stime indicative dell'articolo (SDK ~2-5 MB, Collector ~50-100 MB), non benchmark su un sistema specifico"
+openNote: "Dove l'architettura descritta incontra i limiti della roadmap."
 ---
 
 

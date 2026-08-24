@@ -14,6 +14,23 @@ lang: it
 reviewed: true
 series: observability
 seriesOrder: 80
+summary:
+  - label: "Problema"
+    value: "console.log produce stringhe piatte senza timestamp, livello o contesto, perse al riavvio"
+  - label: "Metodo"
+    value: "Tre step incrementali: Pino, OpenTelemetry, poi lo stack Docker"
+    note: "Ogni step nasce dai limiti del precedente"
+  - label: "Strumento"
+    value: "Pino con transport OTel: i logger.info() esistenti restano invariati"
+    note: "Containerizzato, l'endpoint OTLP deve puntare al nome del servizio, non a localhost"
+  - label: "Costo reale"
+    value: "Circa 20 righe di instrumentation.js, zero modifiche al codice applicativo"
+openItems:
+  - "Centralizzare log non strutturati produce log persistenti ma non cercabili: prima la struttura con Pino, poi la centralizzazione con OTel"
+  - "Il logging su file non risolve la centralizzazione tra istanze e aggiunge gestione di volumi e rotazione"
+  - "Con i log centralizzati, password o token nei campi strutturati diventano visibili a chiunque acceda a Grafana"
+  - "La configurazione Grafana della demo, accesso anonimo con ruolo Admin, vale solo per sviluppo locale"
+openNote: "Limiti che i tre step non eliminano."
 ---
 
 Un `console.log` "temporaneo" per capire perché una richiesta fallisce in produzione produce una stringa piatta: senza timestamp, senza livello, senza contesto. Se il container si riavvia, quei log spariscono. Con più istanze, l'unica opzione è saltare da un `docker logs` all'altro cercando la riga giusta. È l'approccio più rapido per iniziare, ma il primo a diventare inutile quando il sistema cresce.
