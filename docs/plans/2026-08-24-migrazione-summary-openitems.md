@@ -440,17 +440,18 @@ git commit -m "content: summary e openItems sul testing rimanente"
 
 ---
 
-### Task 9: Coda — tutto ciò che resta (~14 articoli)
+### Task 9: Coda — tutto ciò che resta (13 articoli, split in 9a/9b)
 
-Comprende: system-design non-LINQ, la serie `saturation-alerting` dentro observability, vue, web-development, e gli articoli singoli di `automatizzare` (devcontainer, developer-tools, devops, docker, homelab). Il comando dello Step 1 è la fonte di verità: qualunque cosa elenchi va fatta.
+**SPLIT (2026-08-24):** 13 articoli reali (non ~14) erano troppi per un dispatch. Diviso in 9a (i 5 singoli di `automatizzare`) e 9b (il resto, 8 articoli: system-design non-LINQ, `saturation-alerting`, vue, web-development).
 
-**Files:**
-- Modify: tutti gli `index.md` rimasti senza `summary:`
+#### Task 9a: singoli `automatizzare` (5 articoli)
 
-- [ ] **Step 1: Elencare tutto ciò che resta**
+**Files:** `devcontainer/devcontainer`, `developer-tools/ridurre-token-ai-coding-rtk-tokensave`, `devops/pipeline-proxmox-opentofu-ansible`, `docker/docker-internals`, `homelab/homelab-n8n`, tutti sotto `src/content/posts/automatizzare/`.
+
+- [ ] **Step 1: Elencare il lotto**
 
 ```bash
-for f in $(find src/content/posts -name index.md); do grep -q "^summary:" "$f" || echo "$f"; done
+for f in $(find src/content/posts/automatizzare -name index.md); do grep -q "^summary:" "$f" || echo "$f"; done
 ```
 
 - [ ] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
@@ -459,12 +460,37 @@ Lotto eterogeneo: articoli singoli su temi non collegati. Trattarli uno per uno,
 
 - [ ] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
 
-- [ ] **Step 4: Verificare la build**
+- [ ] **Step 4: Validare lo YAML del frontmatter di ogni file modificato**
+
+- [ ] **Step 5: Auto-verifica del vincolo di verità**
+
+- [ ] **Step 6: Commit**
 
 ```bash
-npm run build
+git add src/content/posts/automatizzare/
+git commit -m "content: summary e openItems sugli articoli singoli di automatizzare"
 ```
-Expected: `[build] ✓ Completed` senza errori.
+
+---
+
+#### Task 9b: resto della coda (8 articoli)
+
+**Files:** `progettare/system-design/di-python`, `progettare/vue/micro-frontend-module-federation`, `altro/web-development/*` (3 file), `verificare/observability/{alert-routing-severity-inhibition,burn-rate-alerts-slo-multi-window,prometheus-predict-linear-alert-predittivi}`.
+
+- [ ] **Step 1: Elencare il lotto**
+
+```bash
+for f in $(find src/content/posts -name index.md); do grep -q "^summary:" "$f" || echo "$f"; done
+```
+Expected: 8 file (tutto ciò che non è stato coperto da 9a).
+
+- [ ] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
+
+Lotto eterogeneo: articoli singoli su temi non collegati. Trattarli uno per uno, senza cercare uniformità fra loro.
+
+- [ ] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
+
+- [ ] **Step 4: Validare lo YAML del frontmatter di ogni file modificato**
 
 - [ ] **Step 5: Verificare la copertura finale**
 
