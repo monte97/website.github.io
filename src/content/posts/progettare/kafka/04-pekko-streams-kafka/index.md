@@ -15,6 +15,25 @@ reviewed: true
 series: kafka
 seriesOrder: 40
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "`consumer.poll` bloccante dentro un attore: tre reader saturano il dispatcher"
+    note: "Su due core i default Pekko lasciano solo 2 thread hot nel pool"
+  - label: "Pattern 1"
+    value: "`Source.queue` con buffer 100 e dropHead per il producer"
+    note: "Load shedding: scarta il messaggio più vecchio, il dato recente conta di più"
+  - label: "Pattern 2"
+    value: "Un thread consumer per topic, convergenza su stato condiviso `ConcurrentHashMap`"
+    note: "Tre sorgenti eterogenee: due topic Avro e un JSON esterno"
+  - label: "Principio"
+    value: "I/O Kafka separato dalla logica di business"
+    note: "Il calcolo haversine è uscito dall'attore: classe plain Scala testabile senza broker"
+openItems:
+  - "Con dropHead l'attore che fa offer non viene mai rallentato: quando il buffer è pieno i messaggi più vecchi vengono persi"
+  - "I consumer threads non hanno shutdown graceful: senza flag volatile, `wakeup()` e `close()` gli offset restano non committati fino al session timeout"
+  - "Le operazioni composte get-then-put su `ConcurrentHashMap` non sono atomiche: il lost update è accettato perché i dati telemetrici vengono ricalcolati frequentemente"
+  - "L'ordine di arrivo tra i tre topic non è garantito: ogni messaggio può aggiornare lo stato indipendentemente dagli altri"
+openNote: "I compromessi assunti dai due pattern, da rivalutare fuori dalla telemetria."
 ---
 ## Il pattern di partenza: while(true) dentro un attore
 

@@ -15,6 +15,24 @@ reviewed: machine
 series: kafka
 seriesOrder: 10
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "Chiamate sincrone tra servizi: una latenza si propaga a catena"
+    note: "Il costo cresce in modo non lineare con il numero di componenti"
+  - label: "Struttura"
+    value: "Ogni partizione è una directory di segmenti con indici memory-mapped"
+    note: "Retention O(1): si eliminano i segmenti più vecchi, non i record"
+  - label: "Contratto"
+    value: "Stessa chiave, stessa partizione: ordinamento preservato"
+    note: "Vale solo se il numero di partizioni resta costante"
+  - label: "Durabilità"
+    value: "`acks=all` come default da Kafka 3.0"
+    note: "Insieme a `enable.idempotence=true`; fino al 2.8 incluso il default era `acks=1`"
+openItems:
+  - "Aggiungere partizioni cambia l'esito di `hash(key) % N`: messaggi con la stessa chiave possono finire in partizioni diverse"
+  - "Il producer della demo usa kafkajs, client non mantenuto dal 2023: per nuovi progetti Confluent pubblica `@confluentinc/kafka-javascript`"
+  - "L'articolo copre partizioni, chiave e replicazione: consumer group e ribilanciamento non sono trattati qui"
+openNote: "Dove la garanzia d'ordine si ferma e cosa le fondamenta lasciano fuori."
 ---
 Foto di <a href="https://unsplash.com/it/@jonflobrant?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Jon Flobrant</a> su <a href="https://unsplash.com/it/foto/specchio-dacqua-tra-gli-alberi-sotto-il-cielo-nuvoloso-rB7-LCa_diU?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>
       

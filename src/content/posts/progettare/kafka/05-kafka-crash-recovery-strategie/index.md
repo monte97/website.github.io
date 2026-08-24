@@ -14,6 +14,25 @@ series: kafka
 seriesOrder: 50
 reviewed: true
 reproducibility: true
+summary:
+  - label: "Tesi"
+    value: "La strategia di recovery segue il tipo di stato, non una preferenza di configurazione"
+    note: "Domanda guida: cosa succede se processo lo stesso messaggio due volte"
+  - label: "Strategia 1"
+    value: "Stato idempotente in memoria: replay completo con `earliest`"
+    note: "`group.id` nuovo ad ogni restart, offset che non serve committare"
+  - label: "Strategia 2"
+    value: "Delta additivi: checkpoint su MongoDB e ripartenza con `latest`"
+    note: "Riconsumare raddoppierrebbe i valori aggregati"
+  - label: "Strategia 3"
+    value: "Consumer stateless di sola lettura: nessun recovery"
+    note: "Separato dall'ingest per isolare il carico delle query"
+openItems:
+  - "Con pochi sensori e qualche migliaio di messaggi il replay richiede secondi: con milioni servono log compaction o snapshot periodici"
+  - "Checkpoint e salvataggio del delta non sono in transazione atomica: un crash tra le due scritture produce un delta ricalcolato, errore dell'ordine di un intervallo di polling"
+  - "Con messaggi ogni 5 secondi la finestra di perdita è al massimo un delta per sensore, trascurabile su aggregazioni giornaliere"
+  - "La demo non gestisce SIGTERM, non espone health check e non ha flow control: in produzione ognuno di questi punti va risolto"
+openNote: "I limiti dichiarati dalla demo, da ripensare prima dell'uso in produzione."
 ---
 
 Un consumer Kafka crasha. Cosa succede ai dati che stava processando? La risposta non dipende da Kafka, ma dal tipo di stato che il consumer mantiene. Un consumer idempotente può ripartire dall'inizio del topic senza conseguenze. Un consumer che accumula delta non può permetterselo: ricalcolerebbe valori già contati. Un consumer stateless non ha nulla da recuperare.

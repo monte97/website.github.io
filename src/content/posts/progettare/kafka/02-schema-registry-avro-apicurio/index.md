@@ -16,6 +16,24 @@ reviewed: true
 series: kafka
 seriesOrder: 20
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "JSON senza contratto: le divergenze di schema producono dati sbagliati, non errori"
+    note: "Un campo ignorato o un timestamp male interpretato non fanno rumore"
+  - label: "Scelta"
+    value: "Apicurio Registry: Apache 2.0, storage su topic Kafka, API compatibile Confluent"
+    note: "Zero dipendenze aggiuntive: nessun database esterno da gestire"
+  - label: "Regola"
+    value: "Avro per il core interno, JSON Schema per i bordi"
+    note: "Nessun browser né client esterno sui topic tra microservizi"
+  - label: "Rete di sicurezza"
+    value: "Evoluzione incompatibile rifiutata dal registry con HTTP 409"
+    note: "Togliere un campo obbligatorio blocca la pubblicazione, non i consumer"
+openItems:
+  - "Apicurio di default applica la modalità NONE: la compatibilità BACKWARD va configurata esplicitamente per ogni subject"
+  - "La demo usa KafkaJS, fermo dal 2023 e con problemi di compatibilità con Kafka 4.x, perché il codice di produzione originale lo adottava"
+  - "I payload Avro sono binari: per il debug serve kafka-avro-console-consumer, kafkacat basta solo con il JSON"
+openNote: "Cosa la scelta di Apicurio non risolve da sé."
 ---
 ## Il problema: JSON senza contratto
 
