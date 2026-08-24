@@ -19,14 +19,13 @@
 | **Riunioni di trattativa in cui il costo di manutenzione era a bilancio** | zero, prima dell'intervento |
 
 **Profilo del committente:** produttore di software gestionale, prodotto installato presso
-il cliente finale (non SaaS), contratti pluriennali con enti pubblici, ogni gara porta
-varianti di configurazione. `[DATO: dimensione del team di sviluppo, es. «~25 sviluppatori»]`
+il cliente finale (non SaaS), contratti pluriennali, ogni trattativa porta varianti di configurazione. `[DATO: dimensione del team di sviluppo, es. «~25 sviluppatori»]`
 
 ---
 
 ## Il problema, dal punto di vista di chi lo aveva
 
-Un produttore di gestionali per laboratori vende a ospedali. Ogni gara arriva con una
+Un produttore di gestionali per laboratori vende a ospedali. Ogni trattativa arriva con una
 richiesta ragionevole: *l'anagrafica centrale ce l'abbiamo già, la rete è isolata, questo
 modulo non ci serve.* Ogni richiesta accolta diventa una combinazione da tenere viva per
 tutta la durata del contratto.
@@ -51,7 +50,7 @@ prodotto, scritte bene e mantenute nel tempo.
 Non c'entravano niente, ed è questo il punto che sposta tutto il resto.
 
 **L'applicazione è identica ovunque.** Lo stesso codice gira dentro tutti gli ospedali. Non
-è lì che si rompe: si rompe nel modo in cui quel codice viene messo in piedi. Un ente cambia
+è lì che si rompe: si rompe nel modo in cui quel codice viene messo in piedi. Una struttura cambia
 il certificato dell'anagrafica centrale e le utenze smettono di arrivare. Un altro rinnova
 la rete e un modulo non raggiunge più il servizio che gli serve. In entrambi i casi la suite
 del prodotto resta verde, perché il prodotto non ha nulla che non va.
@@ -102,7 +101,7 @@ configurazioni sono scoperte, e a che livello.
 
 Una percentuale sarebbe stata più comoda da mostrare e inutile da usare, perché non dice
 *quale* configurazione è scoperta — e le configurazioni non sono intercambiabili. Sapere di
-essere coperti al settanta per cento non serve se il trenta scoperto è quello dell'ente più
+essere coperti al settanta per cento non serve se il trenta scoperto è quello del cliente più
 grosso.
 
 Da lì il cambiamento che conta, e non è tecnico:

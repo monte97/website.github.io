@@ -10,7 +10,7 @@ eyebrow: "Analisi tecnica · software installato presso il cliente"
 tags: [Manutenzione, Configurazioni, Testing, Delivery]
 oggetto: >
   Un produttore di software gestionale per laboratori di analisi, installato dentro gli
-  ospedali. Ogni ente chiede una variante in fase di capitolato, e ogni variante diventa
+  ospedali. Ogni cliente chiede una variante in fase di contratto, e ogni variante diventa
   un'installazione diversa da mantenere.
 metodo: >
   Contare le configurazioni realmente installate, dichiararle in un file unico, e leggerle
@@ -25,8 +25,8 @@ problem: >
   nessuno sapeva quante installazioni diverse esistessero, perché non erano scritte da
   nessuna parte.
 context: >
-  Il software si installa dentro l'ente, non gira su un'infrastruttura nostra. Ogni
-  capitolato porta una richiesta ragionevole: l'anagrafica centrale ce l'abbiamo già,
+  Il software si installa dentro il cliente, non gira su un'infrastruttura nostra. Ogni
+  contratto porta una richiesta ragionevole: l'anagrafica centrale ce l'abbiamo già,
   la rete è isolata, questo modulo non ci serve. Ogni richiesta accolta in trattativa
   diventa una combinazione da tenere viva per tutta la durata del contratto.
 specs:
@@ -74,7 +74,7 @@ matrix:
     - label: "Installazione di riferimento"
       note: "Tutti i moduli, utenze gestite dal prodotto"
       cells: [full, full, full]
-    - label: "Ente con anagrafica centrale"
+    - label: "Cliente con anagrafica centrale"
       note: "Le utenze arrivano dal sistema dell'ospedale"
       cells: [full, full, partial]
     - label: "Presidio con rete isolata"
@@ -83,7 +83,7 @@ matrix:
     - label: "Installazione multi-laboratorio"
       note: "Più laboratori sulla stessa istanza"
       cells: [full, empty, empty]
-    - label: "Ambiente di collaudo dell'ente"
+    - label: "Ambiente di collaudo del cliente"
       note: "Dati finti, moduli parziali"
       cells: [partial, empty, empty]
   legend:
@@ -140,7 +140,7 @@ Il commerciale rispose come rispondono i commerciali quando la richiesta è ragi
 
 Mesi dopo mi trovai a fare un conto che nessuno aveva mai fatto: quante versioni diverse di quel prodotto erano vive, in quel momento, dentro gli ospedali che l'avevano comprato.
 
-Non è una domanda con una risposta ovvia, perché le configurazioni non si sommano. Si moltiplicano. Un ente porta le proprie utenze dall'anagrafica centrale, un altro le lascia gestire al prodotto. Un presidio ha la rete isolata verso l'esterno, un altro no. Qui i laboratori sono tre sulla stessa installazione, là uno solo. Ogni scelta è indipendente dalle altre, e ogni combinazione è una cosa che deve funzionare.
+Non è una domanda con una risposta ovvia, perché le configurazioni non si sommano. Si moltiplicano. Una struttura porta le proprie utenze dall'anagrafica centrale, un altro le lascia gestire al prodotto. Un presidio ha la rete isolata verso l'esterno, un altro no. Qui i laboratori sono tre sulla stessa installazione, là uno solo. Ogni scelta è indipendente dalle altre, e ogni combinazione è una cosa che deve funzionare.
 
 Nessuna di queste varianti era stata decisa da un architetto. Erano state tutte concesse in trattativa, una alla volta, ognuna in un momento in cui dire di sì costava meno che dire di no.
 
@@ -150,7 +150,7 @@ La prima reazione, quando conti quel numero, è cercare i test.
 
 I test c'erano, ed erano verdi. Migliaia di asserzioni sul prodotto, scritte bene, mantenute nel tempo. Non servivano a niente per questo problema, e ci volle un po' per accettarlo.
 
-Il motivo è che **l'applicazione è la stessa ovunque**. Lo stesso identico codice gira dentro tutti quegli ospedali. Non è lì che si rompe qualcosa: si rompe nel modo in cui quel codice viene messo in piedi. Un ente cambia il certificato dell'anagrafica centrale e le utenze smettono di arrivare; un altro rinnova la rete e un modulo non raggiunge più il servizio che gli serve. In entrambi i casi la suite del prodotto resta verde, perché il prodotto non ha nulla che non va.
+Il motivo è che **l'applicazione è la stessa ovunque**. Lo stesso identico codice gira dentro tutti quegli ospedali. Non è lì che si rompe qualcosa: si rompe nel modo in cui quel codice viene messo in piedi. Una struttura cambia il certificato dell'anagrafica centrale e le utenze smettono di arrivare; un altro rinnova la rete e un modulo non raggiunge più il servizio che gli serve. In entrambi i casi la suite del prodotto resta verde, perché il prodotto non ha nulla che non va.
 
 L'oggetto da verificare non era il software. Era **l'installazione**, con la sua configurazione, dentro il suo ambiente.
 
@@ -198,13 +198,13 @@ Tre livelli, scritti esplicitamente. *Esiste*: il pezzo c'è, dove doveva essere
 
 Il risultato non è un cruscotto tutto verde. È una griglia in cui il bianco si vede, e si vede soprattutto nella terza colonna.
 
-Il prodotto utile di questo lavoro non è la copertura: **è la mappa dei buchi**. Una percentuale sarebbe stata più comoda da mostrare e inutile da usare, perché non dice quale configurazione è scoperta — e le configurazioni non sono intercambiabili. Sapere che sei coperto al settanta per cento non serve a nessuno se il trenta scoperto è quello dell'ente più grosso.
+Il prodotto utile di questo lavoro non è la copertura: **è la mappa dei buchi**. Una percentuale sarebbe stata più comoda da mostrare e inutile da usare, perché non dice quale configurazione è scoperta — e le configurazioni non sono intercambiabili. Sapere che sei coperto al settanta per cento non serve a nessuno se il trenta scoperto è quello del cliente più grosso.
 
 ## Il conto torna al commerciale
 
 A questo punto la matrice ha smesso di essere un documento tecnico.
 
-Ogni riga è una configurazione che qualcuno deve tenere viva: quando esce una versione va provata su quella riga, quando cambia una dipendenza va ricontrollata su quella riga, e quando l'ente rinnova qualcosa dalla sua parte è su quella riga che si rompe. Ha un costo mensile, e quel costo esisteva già da anni. Semplicemente non era scritto da nessuna parte, e quello che non è scritto non entra in nessun preventivo.
+Ogni riga è una configurazione che qualcuno deve tenere viva: quando esce una versione va provata su quella riga, quando cambia una dipendenza va ricontrollata su quella riga, e quando il cliente rinnova qualcosa dalla sua parte è su quella riga che si rompe. Ha un costo mensile, e quel costo esisteva già da anni. Semplicemente non era scritto da nessuna parte, e quello che non è scritto non entra in nessun preventivo.
 
 **La matrice è il listino vero.** Non quello dei moduli: quello delle combinazioni.
 
@@ -216,7 +216,7 @@ L'ultima richiesta arrivò quando la matrice esisteva già.
 
 Era ragionevole quanto le altre, tecnicamente fattibile in pochi giorni, e chiedeva una combinazione nuova che nessun'altra installazione aveva. Con la griglia sul tavolo, però, la conversazione fu diversa: non si discusse se si potesse fare, ma quanto sarebbe costato tenerla in piedi per la durata del contratto, e chi l'avrebbe provata a ogni rilascio.
 
-La risposta al cliente non fu no. Fu che quella combinazione si poteva avere accostandola a una riga che esisteva già, rinunciando a un dettaglio che nella pratica non gli cambiava la giornata. L'ente accettò senza pensarci troppo: era un dettaglio, per l'appunto. Nessuno l'aveva mai potuto proporre prima, perché prima nessuno sapeva che l'alternativa costava una riga in più per sempre.
+La risposta al cliente non fu no. Fu che quella combinazione si poteva avere accostandola a una riga che esisteva già, rinunciando a un dettaglio che nella pratica non gli cambiava la giornata. Il cliente accettò senza pensarci troppo: era un dettaglio, per l'appunto. Nessuno l'aveva mai potuto proporre prima, perché prima nessuno sapeva che l'alternativa costava una riga in più per sempre.
 
 **La flessibilità che vendi in trattativa non è una feature: è una riga di manutenzione che qualcuno pagherà ogni mese — e finché non la scrivi da qualche parte, quel qualcuno non lo sa nessuno.**
 
