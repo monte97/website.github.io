@@ -5,6 +5,7 @@ import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import FinalCta from '@/components/ui/FinalCta.astro';
 import Decisions from '@/components/ui/Decisions.astro';
+import SwapFigure from '@/components/ui/SwapFigure.astro';
 import FlowDiagram from '@/components/ui/FlowDiagram.astro';
 import { pillarStyles } from '@/data/pillar-styles';
 import { getPillarLabel } from '@/data/pillars';
@@ -201,6 +202,12 @@ const metaCells = [
         <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-6">{t.decisions}</h2>
         <Decisions decisions={d.decisions} figureId="G1" note={d.decisionsNote} lang={lang} />
       </section>
+    )}
+
+    {d.swap && (
+      <SwapFigure figureId="G2" label={d.swap.label} requested={d.swap.requested} order={d.swap.order}
+        requestedLabel={d.swap.requestedLabel} receivedLabel={d.swap.receivedLabel}
+        caption={d.swap.caption} note={d.swap.note} />
     )}
 
     {/* CORPO */}

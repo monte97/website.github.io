@@ -123,6 +123,20 @@ openItems:
   - "Nessuna sorveglianza automatica sul cambio del portale: quando il costruttore aggiornerà, il primo segnale sarà un dato che non arriva"
   - "La configurazione dei parametri resta manuale, sul portale del costruttore"
   - "L'integrazione ha una data di scadenza che nessuno conosce — è dichiarato nel documento di protocollo, non risolto"
+swap:
+  label: "Il riordino silenzioso"
+  requestedLabel: "Chiesto"
+  receivedLabel: "Arrivato"
+  requested:
+    - "Ore motore"
+    - "Cicli di lavoro"
+    - "Temperatura olio"
+  order: [1, 2, 0]
+  caption: "Nessun errore, nessun campo nullo: solo un ordine diverso da quello chiesto"
+  note: >
+    L'endpoint riordina le serie secondo un criterio suo. Mappando per posizione, ogni
+    valore finisce sotto l'etichetta sbagliata — e restando tutti nell'intervallo
+    plausibile, nessun controllo automatico distingue il risultato da uno corretto.
 thesis: "Un'integrazione è finita quando qualcun altro può portarla avanti da solo, compresi i punti dove hai deciso di non arrivare."
 ---
 

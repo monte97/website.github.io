@@ -1,0 +1,94 @@
+---
+interface Props {
+  figureId?: string;
+  label?: string;
+  requestedLabel?: string;
+  receivedLabel?: string;
+  /** Grandezze nell'ordine in cui sono state chieste */
+  requested: string[];
+  /** Per ogni posizione della risposta, l'indice (0-based) della grandezza richiesta che vi finisce */
+  order: number[];
+  caption?: string;
+  note?: string;
+}
+const {
+  figureId,
+  label,
+  requestedLabel = 'Chiesto',
+  receivedLabel = 'Arrivato',
+  requested,
+  order,
+  caption,
+  note,
+} = Astro.props;
+
+const n = requested.length;
+const boxH = 38;
+const gap = 18;
+const top = 46;
+const H = top + n * (boxH + gap);
+const W = 640;
+const leftX = 8;
+const rightX = 372;
+const boxW = 260;
+const y = (i: number) => top + i * (boxH + gap);
+---
+
+<figure class="not-prose my-10">
+  {figureId && label && (
+    <figcaption class="text-[10px] font-mono uppercase tracking-[0.18em] text-accent mb-3">
+      {figureId} · {label}
+    </figcaption>
+  )}
+
+  <div class="rounded-2xl border border-border/60 dark:border-border-dark/60 bg-accent-subtle/20 p-4 md:p-6 overflow-x-auto">
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img"
+      aria-label={`${requestedLabel}: ${requested.join(', ')}. ${receivedLabel} in ordine diverso.`}
+      class="min-w-[520px]">
+
+      <text x={leftX} y="20" class="fill-current text-text-muted" font-size="11"
+        font-family="ui-monospace, monospace" letter-spacing="1.6">{requestedLabel.toUpperCase()}</text>
+      <text x={rightX} y="20" class="fill-current text-text-muted" font-size="11"
+        font-family="ui-monospace, monospace" letter-spacing="1.6">{receivedLabel.toUpperCase()}</text>
+
+      {/* linee: dalla grandezza chiesta alla posizione in cui e' arrivata */}
+      {order.map((from, slot) => (
+        <path
+          d={`M ${leftX + boxW} ${y(from) + boxH / 2}
+              C ${leftX + boxW + 60} ${y(from) + boxH / 2},
+                ${rightX - 60} ${y(slot) + boxH / 2},
+                ${rightX} ${y(slot) + boxH / 2}`}
+          fill="none" stroke="currentColor" stroke-width="1.5"
+          class={from === slot ? 'text-border dark:text-border-dark' : 'text-accent'}
+          opacity={from === slot ? '0.5' : '0.85'} />
+      ))}
+
+      {requested.map((q, i) => (
+        <>
+          <rect x={leftX} y={y(i)} width={boxW} height={boxH} rx="7"
+            class="fill-white dark:fill-surface-dark stroke-current text-border dark:text-border-dark" stroke-width="1" />
+          <text x={leftX + 14} y={y(i) + boxH / 2 + 4}
+            class="fill-current text-text-dark dark:text-text-light" font-size="13">{q}</text>
+        </>
+      ))}
+
+      {order.map((from, slot) => (
+        <>
+          <rect x={rightX} y={y(slot)} width={boxW} height={boxH} rx="7"
+            class="fill-white dark:fill-surface-dark stroke-current text-border dark:text-border-dark" stroke-width="1" />
+          <text x={rightX + 14} y={y(slot) + boxH / 2 + 4}
+            class="fill-current text-text-dark dark:text-text-light" font-size="13">{requested[from]}</text>
+          <text x={rightX + boxW - 12} y={y(slot) + boxH / 2 + 4} text-anchor="end"
+            class="fill-current text-text-muted" font-size="11" font-family="ui-monospace, monospace">
+            {`pos. ${slot + 1}`}
+          </text>
+        </>
+      ))}
+    </svg>
+  </div>
+
+  {caption && (
+    <figcaption class="mt-2 text-[10px] font-mono uppercase tracking-[0.15em] text-text-muted">{caption}</figcaption>
+  )}
+  {note && <p class="mt-3 text-sm text-text-muted leading-relaxed max-w-2xl">{note}</p>}
+</figure>

@@ -89,6 +89,16 @@ const projects = defineCollection({
       why: z.string().optional(),     // il criterio, sotto la tabella
     })).optional(),
     decisionsNote: z.string().optional(),  // il filo che tiene insieme i bivi
+    // Figura: disallineamento fra ordine chiesto e ordine ricevuto
+    swap: z.object({
+      label: z.string().optional(),
+      requestedLabel: z.string().optional(),
+      receivedLabel: z.string().optional(),
+      requested: z.array(z.string()),
+      order: z.array(z.number()),
+      caption: z.string().optional(),
+      note: z.string().optional(),
+    }).optional(),
     // Griglia di definizione: Feature / Stack / Perimetro / Dati / Fuori scope
     specs: z.array(z.object({
       label: z.string(),
