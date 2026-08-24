@@ -32,7 +32,7 @@ summary:
 openItems:
   - "Il fast path presuppone che le relazioni gerarchiche di OpenFGA rispecchino relazioni già presenti nel database applicativo"
   - "L'80/20 tra fast e slow path non è fisso: con molte condivisioni peer-to-peer il peso torna su ListObjects"
-  - "Determinare la relazione massima per la mascheratura costa fino a tre Check in sequenza: parallelizzarli o cacharli è una scelta implementativa aperta"
+  - "Determinare la relazione massima per la mascheratura costa fino a tre Check in sequenza: parallelizzarli o metterli in cache è una scelta implementativa aperta"
 openNote: "Dove finisce ReBAC e inizia il lavoro del layer applicativo."
 ---
 
