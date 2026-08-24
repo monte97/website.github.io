@@ -16,6 +16,23 @@ lang: it
 draft: true
 series: unit-testing
 seriesOrder: 30
+summary:
+  - label: "Problema"
+    value: "Import con side-effect e conftest speculare: 228 righe per 88 test"
+    note: "Ogni connessione aggiunta al modulo richiede una riga corrispondente nel conftest"
+  - label: "Scelta"
+    value: "Application factory con dependency injection esplicita"
+    note: "`create_app(config)` attacca i client all'app, i thread restano in `__main__`"
+  - label: "Risultato"
+    value: "Conftest da 228 a 148 righe, hack su `sys.modules` eliminati"
+    note: "`business.py` a zero dipendenze rende le funzioni pure testabili senza fixture"
+  - label: "Costo reale"
+    value: "Su usage, 5 funzioni cambiano firma e 3 file di test vanno aggiornati"
+openItems:
+  - "I mutation score dopo il refactoring non sono ancora stati misurati: il miglioramento atteso resta una previsione"
+  - "La factory non serve per script one-shot, CLI tool e prototipi che vivono meno di una settimana"
+  - "Il pattern ha senso quando il servizio resta in produzione e ha bisogno di test"
+openNote: "Cosa resta da verificare e dove il pattern non conviene."
 ---
 
 Tre servizi Flask in un sistema di telemetria per mezzi d'opera. Ognuno consuma dati da Kafka, li persiste su MongoDB, e li espone tramite API REST. Tutti e tre condividono lo stesso difetto architetturale: le connessioni a database e broker vengono create al momento dell'import, a livello di modulo.

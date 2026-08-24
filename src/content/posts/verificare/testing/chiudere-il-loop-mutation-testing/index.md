@@ -15,6 +15,23 @@ lang: it
 draft: false
 series: mutation-testing-ai
 seriesOrder: 20
+summary:
+  - label: "Problema"
+    value: "Il collo di bottiglia si è spostato dallo scrivere i test al giudicarli"
+    note: "Nessuno rilegge migliaia di test generati in un pomeriggio"
+  - label: "Scelta"
+    value: "Il report dei survived diventa prompt di ritorno per l'agente che ha scritto i test"
+    note: "L'arbitro resta esterno e formale, indipendente da chi ha scritto codice e test"
+  - label: "Evidenza"
+    value: "Mutation score e bug reali correlano con R² ≈ 0,70, la line coverage ferma a 0,25"
+  - label: "Risultato"
+    value: "ACH di Meta in produzione: 73% accettato dagli ingegneri, 36% privacy-relevant"
+    note: "Trial tra ottobre e dicembre 2024 su Facebook, Instagram, WhatsApp e dispositivi indossabili"
+openItems:
+  - "Decidere se un mutante è equivalente resta indecidibile: i detector migliorano in pratica, ma il limite teorico non sparisce"
+  - "I workflow fai-da-te sopra Stryker o PIT non hanno integrazione LLM nativa: sono artigianali, non prodotti maturi"
+  - "I numeri di ACH e Just-in-Time testing arrivano dall'infrastruttura di Meta: per iniziare basta chiudere il loop in piccolo"
+openNote: "Cosa resta fuori dal loop automatico, per teoria e per scala."
 ---
 
 Nel post precedente ho raccontato la storia: coverage al 93%, test tutti verdi, un bug in produzione per tre settimane perché nessun test distingueva `Sum` da `Max`. Buona parte di quei test li avevano scritti gli agenti AI, ed è lì che si apre la domanda che voglio affrontare qui: chiunque scriva i test, umano o agente, quello che conta è se qualcuno li mette alla prova.

@@ -14,6 +14,22 @@ lang: it
 draft: true
 series: unit-testing
 seriesOrder: 10
+summary:
+  - label: "Contesto"
+    value: "Frontend Nuxt 3 con 106 componenti e nove test residui, di cui sette rotti"
+  - label: "Scelta"
+    value: "Ignorare i componenti Vue e testare solo la logica pura"
+    note: "Il valore anti-regressione sta negli store, nelle factory API e nei composable"
+  - label: "Setup"
+    value: "Stub globali in `test/setup.ts` al posto di `@nuxt/test-utils`"
+    note: "`onMounted` eseguito subito e alias `~/` verso la root, senza build Nuxt"
+  - label: "Risultato"
+    value: "72 test in 13 file, 1.7 secondi, zero dipendenze aggiunte"
+openItems:
+  - "Restano senza copertura i componenti Vue, i composable legati a OpenLayers e i test E2E"
+  - "La rinuncia agli E2E vale per un'applicazione interna con utenti limitati: con un contesto diverso il rapporto costo/beneficio cambia"
+  - "La convenzione sui file di test è ibrida per scelta: colocata nei composable, centralizzata in `test/` per store e helper"
+openNote: "Cosa è rimasto fuori dalla suite, e perché è una scelta dichiarata."
 ---
 
 Ho un frontend Nuxt 3 con 106 componenti Vue, 4 store Pinia, 6 composable e 11 helper API. Zero test. O meglio: nove test di cui sette rotti -- residui di un tentativo precedente mai completato.

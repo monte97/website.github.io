@@ -18,6 +18,25 @@ reviewed: human
 series: unit-testing
 seriesOrder: 20
 reproducibility: true
+summary:
+  - label: "Anti-pattern"
+    value: "Connessioni Kafka e MongoDB create al momento dell'import"
+    note: "Nessun lazy loading, nessuna factory, nessuna dependency injection"
+  - label: "Workaround"
+    value: "Moduli fake in `sys.modules`, poi env vars e patch threading, infine l'import"
+    note: "L'ordine è un contratto: invertire un singolo step crasha il modulo"
+  - label: "Risultato"
+    value: "88 test nuovi, mutation score dal 19% al 46% sui tre servizi"
+    note: "La logica dentro il consumer Kafka resta fuori dalla portata dei test"
+  - label: "Refactoring"
+    value: "Logica estratta in funzioni pure, dependency injection nei servizi successivi"
+    note: "70 test, zero mutanti sopravvissuti sulla logica di business dopo il filtro"
+openItems:
+  - "I tre servizi originali restano in produzione senza refactoring: l'estrazione strutturale è applicata solo ai cinque servizi successivi"
+  - "Consumer Kafka e procedure imperative restano non unit-testabili: quel codice è raggiungibile solo rifattorizzando il modulo"
+  - "Un nuovo import al top level rompe il conftest in modo silenzioso: il contratto d'ordine va documentato"
+  - "Un 100% ottenuto filtrando i mutanti infrastrutturali non equivale a un 100% su tutti i mutanti"
+openNote: "Fin dove arrivano le workaround, e cosa richiede un refactoring vero."
 ---
 
 Tre servizi Flask, tre conftest.py, un singolo smoke test ciascuno: `GET /health` restituiva 200, tutti verdi, CI felice. Poi ho scritto il secondo test e tutto è crollato.

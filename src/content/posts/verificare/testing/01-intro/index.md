@@ -15,6 +15,22 @@ reviewed: human
 series: performance-engineering
 seriesOrder: 10
 reproducibility: true
+summary:
+  - label: "Definizione"
+    value: "Responsività, throughput, affidabilità e scalabilità di un sistema sotto carico"
+    note: "Sistema come interazione di componenti, non una singola parte isolata"
+  - label: "Obiettivi"
+    value: "Prontezza alla release, adeguatezza dell'infrastruttura, ottimizzazioni mirate"
+  - label: "Segnali chiave"
+    value: "Metodo RED sulla prospettiva del servizio, metodo USE sulle risorse sottostanti"
+    note: "Per le latenze, percentili p50/p90/p99: la media nasconde i problemi delle minoranze"
+  - label: "Uso combinato"
+    value: "RED dice quando qualcosa non va per l'utente, USE spiega perché a livello di risorsa"
+openItems:
+  - "Il risultato non è bianco/nero: senza il contesto del progetto è facile concentrarsi su aree di analisi sbagliate"
+  - "Gli scenari devono assomigliare all'uso reale del prodotto: simulare milioni di utenti dove ce ne sono centinaia non ha senso"
+  - "L'articolo copre definizioni, tipologie e metodi di misura, non strumenti o configurazioni concrete"
+openNote: "Il quadro c'è: le scelte di misura appartengono al contesto di progetto."
 ---
 
 ## Introduzione
