@@ -16,6 +16,24 @@ reviewed: false
 series: openfga
 seriesOrder: 40
 reproducibility: true
+summary:
+  - label: "Scoperta"
+    value: "`viewer from parent` risolve N livelli di nesting senza codice applicativo"
+    note: "La gerarchia sta nelle tuple, la logica di risoluzione sta nel DSL"
+  - label: "Problema"
+    value: "Con migliaia di documenti la query IN (...) di ListObjects diventa un problema"
+    note: "Cresce la latenza sia sul database sia nella risoluzione del grafo"
+  - label: "Scelta"
+    value: "Fast path SQL per l'accesso organizzativo, ListObjects per le condivisioni dirette"
+    note: "Uniti con una UNION, la colonna access_source dice perché un documento compare"
+  - label: "Fuori scope"
+    value: "La visibilità a livello di campo non è ReBAC: è ABAC puro"
+    note: "Dynamic Data Masking separa l'accesso alla risorsa dalla visibilità dei campi"
+openItems:
+  - "Il fast path presuppone che le relazioni gerarchiche di OpenFGA rispecchino relazioni già presenti nel database applicativo"
+  - "L'80/20 tra fast e slow path non è fisso: con molte condivisioni peer-to-peer il peso torna su ListObjects"
+  - "Determinare la relazione massima per la mascheratura costa fino a tre Check in sequenza: parallelizzarli o cacharli è una scelta implementativa aperta"
+openNote: "Dove finisce ReBAC e inizia il lavoro del layer applicativo."
 ---
 
 Nei primi tre articoli della serie abbiamo costruito un modello di autorizzazione completo: tipi, relazioni, store per tenant, integrazione con Keycloak. Ma finora gli esempi avevano al massimo due livelli di nesting: organizzazione e documento, oppure organizzazione e folder. Il mondo reale è diverso. Una folder contiene subfolder, che contengono altre subfolder, che contengono documenti. Un utente condivide una cartella e si aspetta che tutto il contenuto sotto diventi accessibile. E quando devi mostrare una lista di documenti, non puoi fare un Check per ciascuno.

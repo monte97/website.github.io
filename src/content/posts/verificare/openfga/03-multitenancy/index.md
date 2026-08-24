@@ -16,6 +16,24 @@ reviewed: false
 series: openfga
 seriesOrder: 30
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "Con RBAC l'isolamento vive nel codice: basta un WHERE dimenticato per il data leak"
+    note: "La correttezza dipende da ogni sviluppatore che applica il filtro ovunque"
+  - label: "Scoperta"
+    value: "Nel grafo l'isolamento è strutturale: senza cammini tra le relazioni non c'è accesso"
+    note: "L'organizzazione è la radice del grafo e ogni risorsa le resta collegata dalla relazione org"
+  - label: "Scelta"
+    value: "Type-per-tenant per la maggior parte dei casi, store-per-tenant per la compliance"
+    note: "Compliance, modelli diversi o milioni di tuple sono i motivi per store dedicati"
+  - label: "Risultato"
+    value: "Stesso modello, regole diverse per tenant: cambiano le tuple, non il codice"
+    note: "I team di prodotto possono differenziare i piani senza coinvolgere gli sviluppatori"
+openItems:
+  - "Con store separati non esiste un punto unico da interrogare per le query cross-tenant, e ogni aggiornamento del modello va applicato su tutti gli store"
+  - "Alcuni regolamenti, come quelli su sanità e finanza, richiedono l'isolamento fisico dei dati: in quel caso l'isolamento logico del type-per-tenant non basta"
+  - "Passare successivamente a store dedicati è incrementale, ma richiede un layer di routing che mappa ogni tenant sul suo store"
+openNote: "Quando il modello unico smette di bastare, e cosa costa spostarsi su store dedicati."
 ---
 
 Ogni applicazione SaaS, prima o poi, arriva allo stesso punto: il primo cliente funziona, il secondo pure, ma al terzo emerge che l'isolamento tra tenant non è un dettaglio. È l'architettura stessa. Con RBAC tradizionale, la soluzione tipica è un `WHERE tenant_id = ?` in ogni query, un middleware che inietta il contesto del tenant, e il rischio costante che un bug faccia trapelare dati da un'organizzazione all'altra. Con ReBAC il problema si affronta diversamente: l'isolamento non è applicativo, ma **strutturale**. Se un utente non ha relazioni con un'organizzazione, non può accedere a nulla al suo interno. Nessun `WHERE` necessario.

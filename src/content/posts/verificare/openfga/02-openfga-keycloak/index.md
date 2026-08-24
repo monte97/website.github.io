@@ -16,6 +16,23 @@ reviewed: false
 series: openfga
 seriesOrder: 20
 reproducibility: true
+summary:
+  - label: "Scelta"
+    value: "Il `sub` del JWT diventa `user:{sub}`: identità e permessi si incontrano lì"
+    note: "Keycloak non sa nulla delle risorse, OpenFGA non sa nulla di login e sessioni"
+  - label: "Prerequisiti"
+    value: "Claim groups configurato una volta come client scope di realm"
+    note: "Tutti i client del realm ereditano il mapper senza configurazione per singolo client"
+  - label: "Scoperta"
+    value: "Si sincronizzano le relazioni di identità, non quelle sulle risorse"
+    note: "Le tuple su folder e documenti le scrive l'applicazione quando crea o condivide"
+  - label: "Risultato"
+    value: "La combinazione più comune è on-demand al login più batch di riconciliazione"
+openItems:
+  - "La sincronizzazione on-demand copre solo chi fa login: chi deve avere permessi pre-assegnati senza essersi mai autenticato richiede il batch di riconciliazione"
+  - "Le contextual tuples vivono per la singola chiamata: le relazioni strutturali passate così restano invisibili a ListObjects e a tutti gli altri utenti"
+  - "Il middleware è fail closed: se OpenFGA non è raggiungibile la richiesta si ferma con un 503 e non passa"
+openNote: "I confini delle tre strategie di sincronizzazione, prima di sceglierne una."
 ---
 
 Un identity provider gestisce utenti, ruoli e login. Un authorization engine decide chi può fare cosa su quale risorsa. Il problema non è farli funzionare: è farli parlare senza che uno invada il territorio dell'altro. Nell'[articolo precedente]({{< ref "/posts/openfga/01-zanzibar-concetti" >}}) abbiamo costruito un modello di autorizzazione relationship-based con OpenFGA. Ora lo colleghiamo a Keycloak, usando [VaultDrive](https://github.com/monte97/VaultDrive) come progetto di riferimento: una demo costruita per questa serie con setup containerizzato e codice riproducibile.

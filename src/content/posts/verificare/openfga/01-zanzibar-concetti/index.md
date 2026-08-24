@@ -16,6 +16,24 @@ reviewed: false
 series: openfga
 seriesOrder: 10
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "Con RBAC i ruoli crescono in modo combinatorio appena le risorse hanno gerarchie"
+    note: "Tre cartelle con cinque documenti e tre livelli di accesso producono già decine di ruoli"
+  - label: "Scoperta"
+    value: "In Zanzibar le relazioni tra utenti e risorse sono dati, non configurazione"
+    note: "Il soggetto della tupla può essere un utente, un altro oggetto o un userset"
+  - label: "Strumento"
+    value: "OpenFGA: DSL dichiarativo con ereditarietà transitiva e deny-by-default"
+  - label: "Ampiezza"
+    value: "Check, ListObjects e ListUsers coprono le tre domande dell'autorizzazione"
+    note: "Gate nel middleware, filtraggio della UI, audit e condivisione"
+openItems:
+  - "ListObjects è l'operazione più costosa del modello: con milioni di documenti va contenuta con paginazione, caching o pre-materializzazione"
+  - "Il DSL non valuta attributi, non fa pattern matching e non fa calcoli: risolve grafi di relazioni, per condizioni arbitrarie serve un modello come ABAC"
+  - "Il modello qui resta su user, folder e document: organizzazioni, team e multitenancy sono estensioni successive della serie"
+  - "I numeri di scala del paper Zanzibar riguardano il sistema Google, non le implementazioni open source come OpenFGA"
+openNote: "Cosa resta fuori dal modello base descritto in questo articolo."
 ---
 
 In un sistema di file sharing come Google Drive, Alice crea una cartella "Progetto X" con tre documenti e la condivide con Bob come editor. Bob deve poter modificare tutti i documenti nella cartella, inclusi quelli aggiunti in seguito, senza che nessuno intervenga manualmente.

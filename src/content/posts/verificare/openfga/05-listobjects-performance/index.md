@@ -16,6 +16,23 @@ reviewed: false
 series: openfga
 seriesOrder: 50
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "ListObjects scala con il numero di oggetti: da 5-15ms a 200-500ms"
+    note: "Da qualche centinaio di documenti a 50.000 con gerarchie a 4 livelli"
+  - label: "Scelta"
+    value: "Cache con TTL, pre-materializzazione o BatchCheck secondo il pattern di accesso"
+    note: "Non sono mutualmente esclusive: in produzione si usano in combinazione"
+  - label: "Costo reale"
+    value: "Una cache senza invalidazione corretta è pericolosa in autorizzazione"
+    note: "Lo spostamento di un documento cambia la tupla parent senza toccare la cache di chi lo vedeva"
+  - label: "Risultato"
+    value: "VaultDrive sceglie fast path, cache TTL 60 secondi e invalidazione on-write"
+openItems:
+  - "L'invalidazione a cascata dipende dalla frequenza degli spostamenti: broadcast via pub/sub se sono rari, TTL basso o niente cache se sono frequenti"
+  - "La pre-materializzazione offre le query più veloci ma introduce overhead sui write e consistenza eventuale: non conviene quando le tuple cambiano più spesso di quanto la lista venga letta"
+  - "BatchCheck non sostituisce ListObjects: risponde su candidati già noti, come i risultati di una ricerca, non sull'intero store"
+openNote: "Il prezzo di ogni strategia emerge quando i permessi devono cambiare subito."
 ---
 
 Nell'[articolo precedente]({{< ref "/posts/openfga/04-gerarchie-query" >}}) abbiamo visto il pattern fast/slow path: usare un JOIN SQL per i casi comuni (accesso derivato dall'organizzazione) e ListObjects solo per le condivisioni dirette. È una buona euristica. Ma non è sempre sufficiente.
