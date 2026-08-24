@@ -10,6 +10,24 @@
 
 **Spec:** questo documento. Il riferimento normativo sono i due articoli già migrati (vedi Global Constraints).
 
+## Nota operativa — verifica differita (2026-08-24)
+
+**Non lanciare `npm run build` a ogni task.** Le run di questo piano girano in parallelo ad
+altre sullo stesso repo e condividono `.astro/` e `dist/`: build concorrenti producono
+fallimenti fantasma che non c'entrano con il lavoro svolto.
+
+Regola nuova, valida da adesso:
+
+- **Durante i task**: concentrarsi sulla scrittura. Al posto della build, verificare che il
+  frontmatter sia YAML valido, che è il vero rischio:
+  ```bash
+  python3 -c "import yaml,re,sys; f=sys.argv[1]; yaml.safe_load(re.match(r'^---\n(.*?)\n---', open(f).read(), re.S).group(1)); print('YAML ok:', f)" <file>
+  ```
+- **Le altre verifiche di merito restano**: perimetro dei file toccati, assenza di token
+  vietati, fedeltà alla fonte. Sono quelle che contano, e non richiedono la build.
+- **La build si fa una volta sola, alla fine**, quando tutte le run sono rientrate.
+
+
 ## Global Constraints
 
 - **Repo e branch:** `/Users/monte97/Documents/1_AETE/0_Content/website.github.io`, branch `feat/case-study-section`. Non fare merge, non fare push.
