@@ -483,22 +483,22 @@ git commit -m "content: summary e openItems sugli articoli singoli di automatizz
 
 **Files:** `altro/devcontainer/devcontainer`, `progettare/system-design/di-python`, `progettare/vue/micro-frontend-module-federation`, `altro/web-development/*` (3 file), `verificare/observability/{alert-routing-severity-inhibition,burn-rate-alerts-slo-multi-window,prometheus-predict-linear-alert-predittivi}`.
 
-- [ ] **Step 1: Elencare il lotto**
+- [x] **Step 1: Elencare il lotto**
 
 ```bash
 for f in $(find src/content/posts -name index.md); do grep -q "^summary:" "$f" || echo "$f"; done
 ```
 Expected: 9 file (tutto ciò che non è stato coperto da 9a).
 
-- [ ] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
+- [x] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
 
 Lotto eterogeneo: articoli singoli su temi non collegati. Trattarli uno per uno, senza cercare uniformità fra loro.
 
-- [ ] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
+- [x] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
 
-- [ ] **Step 4: Validare lo YAML del frontmatter di ogni file modificato**
+- [x] **Step 4: Validare lo YAML del frontmatter di ogni file modificato**
 
-- [ ] **Step 5: Verificare la copertura finale**
+- [x] **Step 5: Verificare la copertura finale**
 
 ```bash
 echo "articoli totali: $(find src/content/posts -name index.md | wc -l)"
@@ -508,14 +508,16 @@ echo "con openItems:  $(grep -rl '^openItems:' src/content/posts --include=index
 
 Un articolo senza `summary` è accettabile **solo** se nel corpo non c'erano fatti citabili sufficienti. Elencare quali sono stati saltati e perché.
 
-- [ ] **Step 6: Auto-verifica del vincolo di verità**
+- [x] **Step 6: Auto-verifica del vincolo di verità**
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/content/posts/
 git commit -m "content: summary e openItems sugli articoli rimanenti"
 ```
+
+**Eseguito e verificato: commit `dd91ff14`.** Verifica indipendente: perimetro (9 file, 158 inserimenti, 0 cancellazioni, esattamente l'elenco atteso), YAML valido su tutti (build differita), copertura finale: 0 articoli senza `summary` su 63 totali. Vincolo di verità (228→148 righe conftest, 12 hack sys.modules, kill rate 19/41/46%, burn rate 14.4×/6×/1× su finestre 1h+5m/6h+30m/3d+6h, budget 2%/5%/10% su 720 ore, 70% del gap coperto dai tre mattoni, finestra ≥24 ore per pattern giornalieri — tutti riscontrati esatti nel testo). Incrocio: 9 openNote tutti testualmente diversi (3 condividono il tema "dove fermarsi" ma non lo stampo, accettabile). **Piano completo: tutti i task da 1 a 9b eseguiti e verificati.**
 
 ---
 
