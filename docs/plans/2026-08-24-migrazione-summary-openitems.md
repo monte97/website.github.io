@@ -366,36 +366,40 @@ git commit -m "content: summary e openItems sulla serie Kafka"
 
 ### Task 7: Kubernetes e CAPI (7 articoli)
 
+**CORREZIONE (2026-08-24):** il path indicato sotto (`src/content/posts/automatizzare/kubernetes/`) è errato — i file reali sono sotto `src/content/posts/progettare/kubernetes/` (verificato con `grep -rl "category: kubernetes"`). Il lotto eseguito ha usato il path reale.
+
 **Files:**
 - Modify: `src/content/posts/automatizzare/kubernetes/**/index.md`
 
-- [ ] **Step 1: Elencare il lotto**
+- [x] **Step 1: Elencare il lotto**
 
 ```bash
 grep -rl "category: kubernetes" src/content/posts/ --include=index.md
 ```
 
-- [ ] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
+- [x] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
 
-- [ ] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
+- [x] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
 
 Serie di infrastruttura: le `label` più adatte sono spesso `Prerequisiti`, `Ampiezza`, `Fuori scope`.
 
-- [ ] **Step 4: Verificare la build**
+- [x] **Step 4: Verificare la build**
 
 ```bash
 npm run build
 ```
 Expected: `[build] ✓ Completed` senza errori.
 
-- [ ] **Step 5: Auto-verifica del vincolo di verità**
+- [x] **Step 5: Auto-verifica del vincolo di verità**
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
-git add src/content/posts/automatizzare/kubernetes/
+git add src/content/posts/progettare/kubernetes/
 git commit -m "content: summary e openItems su Kubernetes e CAPI"
 ```
+
+**Eseguito e verificato: commit `9251ec79`.** Verifica indipendente: perimetro (7 file sotto `progettare/kubernetes/`, 118 inserimenti, 0 cancellazioni), YAML valido su tutti (build differita, vedi Nota operativa), vincolo di verità (NodePort 32000/32443, backoff 5ms→16 minuti, ~1847 pacchetti Ubuntu, clusterctl 1.10.3/provider Proxmox 0.6.2/Kubernetes v1.32.0, template VM 8700, DHCP/Calico manuale — tutti riscontrati esatti nel testo), incrocio (6/7 openNote presenti, tutti diversi; `04-capi-part4-day1` lo omette correttamente).
 
 ---
 
