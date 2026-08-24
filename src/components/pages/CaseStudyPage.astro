@@ -5,6 +5,7 @@ import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import FinalCta from '@/components/ui/FinalCta.astro';
 import PageHero from '@/components/ui/PageHero.astro';
+import CaseStudyFilterable from '@/components/case-study/CaseStudyFilterable.vue';
 import { pillarStyles } from '@/data/pillar-styles';
 import { pillarLabels } from '@/data/pillars';
 
@@ -21,6 +22,18 @@ const caseStudies = allProjects
   .sort((a, b) => a.data.weight - b.data.weight);
 
 const mailLink = 'mailto:francesco@montelli.dev';
+
+const serialized = caseStudies.map((cs) => ({
+  id: cs.id,
+  title: cs.data.title,
+  description: cs.data.description,
+  eyebrow: cs.data.eyebrow,
+  pillar: cs.data.pillar,
+  tags: cs.data.tags,
+  problem: cs.data.problem,
+  result: Array.isArray(cs.data.result) ? cs.data.result[0] : cs.data.result,
+  href: `${prefix}/case-study/${cs.id}/`,
+}));
 
 const t = lang === 'en'
   ? {
@@ -72,61 +85,7 @@ const t = lang === 'en'
             <p class="text-text-muted text-sm">{t.emptyDesc}</p>
           </div>
         ) : (
-          <div class="space-y-5 md:space-y-6 stagger-children">
-            {caseStudies.map((cs) => {
-              const styles = pillarStyles[cs.data.pillar];
-              return (
-                <a
-                  href={`${prefix}/case-study/${cs.id}/`}
-                  class="group block rounded-2xl border border-border/60 dark:border-border-dark/60 bg-white dark:bg-surface-dark p-6 md:p-8 shadow-sm hover:shadow-md hover:border-accent/40 transition-all duration-200"
-                >
-                  <div class="flex items-start justify-between gap-4 mb-4">
-                    {cs.data.eyebrow && (
-                      <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-text-muted/80">{cs.data.eyebrow}</p>
-                    )}
-                    <span class={`text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full whitespace-nowrap shrink-0 ${styles.badge}`}>
-                      {pillarLabels[cs.data.pillar][lang]}
-                    </span>
-                  </div>
-
-                  <h2 class="text-xl md:text-2xl font-bold text-text-dark dark:text-text-light mb-3 group-hover:text-accent transition-colors text-balance">
-                    {cs.data.title}
-                  </h2>
-                  <p class="text-text-muted text-sm md:text-base leading-relaxed mb-5 max-w-2xl">{cs.data.description}</p>
-
-                  {(cs.data.problem || cs.data.result) && (
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 mb-5">
-                      {cs.data.problem && (
-                        <div class="border-l-2 border-border dark:border-border-dark pl-4">
-                          <p class="text-[10px] font-mono uppercase tracking-[0.15em] text-text-muted/70 mb-1.5">{lang === 'en' ? 'The constraint' : 'Il vincolo'}</p>
-                          <p class="text-sm text-text-muted leading-relaxed">{cs.data.problem}</p>
-                        </div>
-                      )}
-                      {cs.data.result && (
-                        <div class="border-l-2 border-accent pl-4">
-                          <p class="text-[10px] font-mono uppercase tracking-[0.15em] text-accent mb-1.5">{lang === 'en' ? 'The outcome' : 'L’esito'}</p>
-                          <p class="text-sm text-text-muted leading-relaxed">
-                            {Array.isArray(cs.data.result) ? cs.data.result[0] : cs.data.result}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-                    <span class="text-sm font-semibold text-accent">{t.readLabel} &rarr;</span>
-                    {cs.data.tags.length > 0 && (
-                      <div class="flex flex-wrap gap-1.5">
-                        {cs.data.tags.slice(0, 5).map((tag) => (
-                          <span class="text-[11px] text-text-muted/80 bg-text-muted/8 px-1.5 py-0.5 rounded">{tag}</span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </a>
-              );
-            })}
-          </div>
+          <CaseStudyFilterable client:load items={serialized} lang={lang} />
         )}
       </div>
     </section>

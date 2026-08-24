@@ -15,6 +15,23 @@ reviewed: human
 series: playwright
 seriesOrder: 30
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "La suite passa in locale e fallisce in CI"
+    note: "Runner con meno CPU, nessun display, report da rendere persistenti"
+  - label: "Scelta"
+    value: "Sharding su più macchine con blob reporter e job di merge"
+    note: "Con `fail-fast: false` uno shard in errore non cancella gli altri"
+  - label: "Risultato"
+    value: "200 test su 4 shard riducono il tempo totale di circa 4 volte"
+  - label: "Ampiezza"
+    value: "Da CI GitHub Actions a emulazione mobile, API testing e agent-driven"
+    note: "iOS via WebKit, Android via Chromium, senza dispositivi fisici"
+openItems:
+  - "La soglia dei 10-15 minuti oltre cui conviene lo sharding dipende dall'infrastruttura CI e dalla tolleranza del team"
+  - "Con matrici multi-dimensionali `strategy.job-total` restituisce il prodotto di tutte le dimensioni, non il numero di shard: meglio hardcodare il totale"
+  - "In pipeline il mobile è emulazione di viewport, user agent ed eventi touch: non è coinvolto nessun dispositivo fisico"
+  - "Senza test chiari e semantici l'automazione agent-driven non è praticabile: la suite ne è il prerequisito"
 ---
 
 Una suite di test E2E completa che passa in locale e fallisce in CI - timeout, browser che non si avviano, report frammentati - è uno scenario comune. Una suite di test ha valore solo se viene eseguita in modo sistematico e affidabile. Integrare Playwright in una pipeline CI/CD non si limita ad aggiungere un `npx playwright test` nel workflow: servono configurazioni specifiche per runner con risorse limitate, strategie di parallelizzazione su più macchine e reporter adatti all'ambiente.

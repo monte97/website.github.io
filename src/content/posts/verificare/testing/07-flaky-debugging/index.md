@@ -16,6 +16,24 @@ lang: it
 series: playwright
 seriesOrder: 70
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "Il retry cieco maschera i test flaky invece di eliminarli"
+    note: "Una regressione reale scambiata per flaky porta il bug in produzione"
+  - label: "Diagnosi"
+    value: "La frequenza di fallimento indica la categoria del problema"
+    note: "Timing 10-20% dei run, race di rendering 5-10%, dipendenze esterne a cluster"
+  - label: "Strumento"
+    value: "Trace Viewer con trace on-first-retry"
+    note: "Registra la trace solo quando il test fallisce e viene riprovato"
+  - label: "Ampiezza"
+    value: "Quattro cause, cinque pattern anti-flaky, checklist diagnostica"
+openItems:
+  - "Il retry resta legittimo per i glitch transitori dell'infrastruttura CI, ma sui test del critical path va disabilitato"
+  - "Se il test non si riproduce in locale con `--repeat-each`, il problema è quasi certamente nelle risorse della macchina CI"
+  - "`failOnFlakyTests` e `--only-changed` richiedono Playwright 1.56 o successivo: le versioni precedenti non li hanno"
+  - "I test E2E della UI non devono dipendere dal database, ma i test di integrazione col database reale restano un livello separato della piramide"
+openNote: "Quello che il retry, da solo, non risolve."
 ---
 
 Il test passa 9 volte su 10. In CI fallisce una volta a settimana, sempre su un test diverso. Il team aggiunge `retries: 2` nella configurazione, il test passa, nessuno investiga. Dopo un mese la suite ha 15 test flaky mascherati dai retry, e nessuno si fida più dei risultati. Quando un test fallisce davvero -- una regressione reale -- la reazione è "sarà un flaky, rieseguiamo". Il bug arriva in produzione.

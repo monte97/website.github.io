@@ -18,6 +18,24 @@ reviewed: human
 series: playwright
 seriesOrder: 10
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "I test E2E tradizionali sono fragili, lenti e costosi"
+    note: "Falsi positivi, falsi negativi e ore perse su fallimenti non riproducibili"
+  - label: "Strumento"
+    value: "Playwright, framework Microsoft con auto-waiting e assertion con retry"
+    note: "I controlli si ripetono con retry fino al timeout, senza sleep espliciti"
+  - label: "Risultato"
+    value: "100 test passano da 10 a 2,5 minuti con 4 worker"
+    note: "Speedup 4x senza modifiche ai test, ogni worker isolato"
+  - label: "Ampiezza"
+    value: "Architettura, tooling, workshop e-commerce e buone pratiche"
+    note: "Chromium, Firefox e WebKit con una singola API"
+openItems:
+  - "Playwright copre solo il web mobile tramite emulazione: le app native e i browser mobili reali restano fuori dal perimetro"
+  - "Per team abituati a Selenium o Cypress resta un investimento di apprendimento e un costo di migrazione da valutare"
+  - "I requisiti enterprise specifici, come il supporto commerciale, vanno verificati caso per caso"
+  - "Il confronto con Selenium riguarda l'API legacy di WebDriver: dalla versione 4 il protocollo BiDi riduce il divario"
 ---
 
 Test che passano al terzo tentativo, `sleep(5000)` disseminati nel codice, suite che girano per 20 minuti e falliscono in modo non deterministico. Il testing end-to-end resta un pilastro per la qualità delle applicazioni web moderne - simulare l'esperienza utente reale fornisce un livello di confidenza impossibile da ottenere con test unitari o di integrazione isolati - ma troppo spesso i costi superano i benefici.

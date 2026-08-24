@@ -15,6 +15,23 @@ lang: it
 series: playwright
 seriesOrder: 40
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "Un servizio esterno lento o down blocca merge e suite"
+    note: "Mezza mattinata persa per capire che il problema non è nel codice"
+  - label: "Strumento"
+    value: "`page.route()` intercetta le richieste a livello di browser"
+    note: "Tre azioni fondamentali: fulfill, continue e abort"
+  - label: "Ampiezza"
+    value: "Cinque pattern: risposte custom, errori HTTP, delay, conditional, abort"
+  - label: "Fuori scope"
+    value: "Le chiamate server-to-server tra microservizi"
+    note: "Per mockare fra servizi serve intervenire a livello di infrastruttura"
+openItems:
+  - "Il mock 402 simula «il gateway risponde 402 al browser», non «il payment-service rifiuta la transazione»: gli scenari di integrazione richiedono test diversi"
+  - "Happy path critico e test di integrazione restano senza mock: il valore sta nel contratto reale e nella comunicazione tra servizi"
+  - "I test di performance e carico non hanno senso sui mock, troppo veloci rispetto ai servizi reali"
+openNote: "Tutto ciò che non attraversa il browser resta fuori dal perimetro di page.route()."
 ---
 
 Il test E2E del checkout fallisce. Lo screenshot mostra un messaggio di errore generico, il log dice `timeout waiting for selector [data-testid="order-confirmation"]`. Apri Grafana, controlli le trace: il payment-service è down. Non è un bug del frontend, non è una regressione -- è un servizio esterno che non risponde. Ma la suite CI è rossa, il merge è bloccato, e il team perde mezza mattinata a capire che il problema non è nel codice.

@@ -15,6 +15,23 @@ lang: it
 series: playwright
 seriesOrder: 50
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "Il mock inline duplicato diventa un costo di manutenzione"
+    note: "Un campo nuovo nello schema costa tanti aggiornamenti quanti i test"
+  - label: "Scelta"
+    value: "Classe MockApi con metodi semantici esposta come fixture Playwright"
+    note: "Il setup di un test scende da otto righe di route a una chiamata"
+  - label: "Strumento"
+    value: "HAR replay per i flussi con troppe API da mockare a mano"
+    note: "Si registra il traffico reale una volta, poi lo si riproduce nei test"
+  - label: "Criterio"
+    value: "Inline per un solo test, fixture dai tre in su, HAR per i flussi complessi"
+openItems:
+  - "Il matching HAR è rigido: se cambiano URL, metodo o body di un POST, la richiesta passa silenziosamente al server reale senza errori espliciti"
+  - "Il HAR riflette il backend al momento della registrazione e non ha invalidazione automatica: serve registrarlo di nuovo, mensile o per sprint"
+  - "Un flusso di checkout completo può generare un HAR di diversi megabyte: committarlo pesa su clone e review delle diff"
+  - "`mergeTests` serve con fixture in moduli separati o mantenute da team diversi: nello stesso file basta estendere una volta sola"
 ---
 
 Nell'[articolo precedente](/blog/verificare/testing/04-network-mocking/) abbiamo visto come `page.route()` permette di intercettare le richieste HTTP del browser e restituire risposte controllate. Funziona: si registra un handler, si chiama `route.fulfill()`, e il test non dipende più dal backend reale. Ma c'è un problema che emerge appena la suite cresce.

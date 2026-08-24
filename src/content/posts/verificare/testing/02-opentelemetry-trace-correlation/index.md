@@ -16,6 +16,24 @@ reviewed: human
 series: playwright
 seriesOrder: 20
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "Il test fallisce ma vede solo il frontend"
+    note: "Il checkout attraversa 4 microservizi che il test non può osservare"
+  - label: "Scelta"
+    value: "Catturare il trace ID dall'header traceparent delle response"
+    note: "L'ID si cerca in Grafana e mostra esattamente cosa è successo nel backend"
+  - label: "Prerequisiti"
+    value: "Backend configurato per propagare traceparent nelle response"
+    note: "Non è comportamento W3C standard sulle response: va attivato lato server"
+  - label: "Risultato"
+    value: "Root cause del timeout letta nella trace, senza indovinare tra 4 servizi"
+openItems:
+  - "Gli screenshot reference generati su macOS non corrispondono a quelli di Linux in CI: il rendering va uniformato nell'ambiente dei test"
+  - "Nei test serve sampling al 100%, in produzione la norma è 1-10%: per staging e pre-prod condivisi la policy va decisa esplicitamente"
+  - "Il tail-based sampling accumula le trace in memoria del Collector: `num_traces` va dimensionato sul throughput o le trace vengono scartate"
+  - "Su un'app monolitica senza OpenTelemetry non c'è nessuna trace da correlare e la tecnica non ha presa"
+openNote: "I limiti concreti che l'articolo stesso elenca in chiusura."
 ---
 
 Il test E2E fallisce con un timeout, lo screenshot mostra uno spinner infinito, e l'unica informazione utile è "qualcosa nel backend non ha risposto". I test Playwright verificano il percorso utente: login, aggiungi al carrello, checkout. Ma il checkout di un e-commerce a microservizi attraversa 4 servizi diversi, e quando il test fallisce con timeout Playwright vede solo il frontend. Il backend resta una **black box**.

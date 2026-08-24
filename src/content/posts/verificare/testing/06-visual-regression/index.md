@@ -15,6 +15,24 @@ lang: it
 series: playwright
 seriesOrder: 60
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "I test funzionali vedono il DOM, non il rendering"
+    note: "Elementi spostati o coperti, font non caricato: il DOM è corretto, lo schermo no"
+  - label: "Strumento"
+    value: "`toHaveScreenshot()` confronta pixel per pixel con una baseline approvata"
+    note: "Al fallimento produce screenshot attuale, baseline attesa e immagine diff"
+  - label: "Scelta"
+    value: "Dati mockati per rendere la baseline deterministica"
+    note: "Errore, vuoto e caricamento diventano stati catturabili su richiesta"
+  - label: "Costo reale"
+    value: "Tre browser significano tre volte baseline, esecuzione e review"
+openItems:
+  - "Le baseline vanno generate nello stesso ambiente dei test: quelle del laptop macOS generano falsi positivi sui runner Linux di CI"
+  - "Il cross-browser paga dove gli utenti usano browser diversi: con un target noto, come Chrome aziendale, è overkill"
+  - "Il visual testing aggiunge valore a design stabilizzato: in prototipazione ogni commit genera diff e i fallimenti vengono ignorati"
+  - "Restano esclusi API, backend e prodotti in early stage: si introduce quando il design è abbastanza maturo da proteggere"
+openNote: "Dove la rete di sicurezza visiva non va installata."
 ---
 
 Il test funzionale passa: il bottone esiste, il testo è corretto, il redirect funziona. Ma il layout è rotto. Un CSS override ha spostato il bottone fuori dallo schermo, un `z-index` sbagliato nasconde il messaggio di errore sotto un altro elemento, un font non caricato rende il testo illeggibile. I test funzionali non vedono questi problemi -- verificano la struttura del DOM, non il rendering. Un `toBeVisible()` controlla che l'elemento non abbia `display: none`, non che sia effettivamente leggibile a schermo.

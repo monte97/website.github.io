@@ -15,6 +15,23 @@ lang: it
 series: playwright
 seriesOrder: 80
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "Login ripetuto in ogni test: tre secondi a testa"
+    note: "Keycloak lento raddoppia i tempi, Keycloak down mette in rosso tutta la suite"
+  - label: "Scelta"
+    value: "`storageState`: login una volta nel setup, stato riusato dai test"
+    note: "Cookie e localStorage serializzati in un file JSON per utente"
+  - label: "Risultato"
+    value: "Con 50 test e 3 utenti si passa da 50 login a 3"
+  - label: "Ampiezza"
+    value: "Ruoli multipli via progetti, logout e token scaduto"
+    note: "La scadenza si simula mockando l'endpoint di refresh, senza attese reali"
+openItems:
+  - "I file di `storageState` contengono token reali: sono credenziali valide e vanno esclusi dal repository con .gitignore"
+  - "Il timer di refresh di keycloak-js resta non testato: è logica della libreria, si verifica il comportamento dell'app quando il refresh fallisce"
+  - "`canCheckout` non è un ruolo Keycloak ma un custom claim del JWT: la decisione di autorizzazione sta nel backend che legge il token"
+openNote: "Ciò che resta fuori appartiene alla libreria, al backend o al repository."
 ---
 
 La suite ha 50 test. Ogni test parte dalla pagina di login, compila username e password, clicca "Accedi", aspetta il redirect, verifica il cookie. Tre secondi per ogni login. 50 test per 3 secondi: due minuti e mezzo spesi solo per autenticarsi, prima ancora di verificare qualcosa. Se Keycloak è lento -- e nei runner CI con risorse condivise lo è spesso -- i tempi raddoppiano. Se Keycloak è down, tutta la suite è rossa. Non per un bug, non per una regressione: perché il servizio di autenticazione non risponde.

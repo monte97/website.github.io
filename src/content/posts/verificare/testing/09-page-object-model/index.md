@@ -15,6 +15,22 @@ lang: it
 series: playwright
 seriesOrder: 90
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "Lo stesso selettore sparso in cinque file diversi"
+    note: "Un rename del frontend costa otto aggiornamenti, e basta perderne uno"
+  - label: "Scelta"
+    value: "Classi per pagina: locator come proprietà, azioni utente come metodi"
+    note: "Il Page Object non fa asserzioni: decidere cosa verificare spetta al test"
+  - label: "Risultato"
+    value: "Il checkout flow scende da quindici locator a cinque righe di scenario"
+  - label: "Composizione"
+    value: "`mergeTests` unisce fixture POM e mockApi nello stesso test"
+openItems:
+  - "Con un selettore usato in un solo test, una pagina da una-due interazioni o uno spike esplorativo, il POM è boilerplate senza beneficio"
+  - "Page Object creati per ogni pagina al giorno zero producono classi mai usate: il pattern deve emergere dal refactoring"
+  - "Le asserzioni su testi generici senza `data-testid` restano su `page.getByText()`: il POM copre azioni ripetute e selettori strutturali"
+  - "L'indirezione non elimina l'accoppiamento, lo sposta dal DOM alla classe: quando la UI cambia si aggiorna la pagina object, non i test"
 ---
 
 La suite funziona. Otto articoli di test, dieci file spec, copertura su checkout, autenticazione, visual regression, network mocking. I test passano, la CI è verde, il team si fida della suite. Ma apri un file qualsiasi e trovi questo:
