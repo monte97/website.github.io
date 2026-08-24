@@ -16,6 +16,23 @@ reviewed: human
 series: kubernetes-fondamenti
 seriesOrder: 10
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "Un tunnel `port-forward` per ogni servizio, con una porta diversa da ricordare"
+    note: "Un tunnel di debug fragile, non un vero servizio di rete"
+  - label: "Scelta"
+    value: "Ingress Controller NGINX su `kind`, con routing a Layer 7"
+    note: "Controller e risorsa `Ingress` come esempio del modello dichiarativo di Kubernetes"
+  - label: "Prerequisiti"
+    value: "Mappatura stabile delle porte: `localhost:80` verso il `NodePort` statico 32000"
+    note: "Stessa catena prevedibile per HTTPS sulla 32443"
+  - label: "Risultato"
+    value: "Un unico punto d'ingresso `miodominio.local` con routing per percorso e per host"
+openItems:
+  - "HTTPS solo con certificati auto-firmati da usare con `--insecure`: cert-manager e Let's Encrypt sono citati come strada per la produzione, non implementati"
+  - "Le mappature di porta passano da Docker: il setup è legato a `kind` e non si trasferisce così com'è ad altri ambienti"
+  - "Traefik, Istio, HAProxy e Contour compaiono come alternative, ma le istruzioni complete restano quelle del controller NGINX"
+openNote: "Dove la guida si ferma, e cosa resta in carico a chi replica il setup."
 ---
 
 ## Il Problema: Accedere ai Servizi in un Ambiente di Sviluppo Locale

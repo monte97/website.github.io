@@ -16,6 +16,23 @@ reviewed: human
 series: homelab-capi
 seriesOrder: 30
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "OS generalistici sui nodi: drift, superficie di attacco larga, manutenzione via SSH"
+    note: "Un Ubuntu tipico porta con sé ~1847 pacchetti, pochi necessari a Kubernetes"
+  - label: "Scelta"
+    value: "Talos Linux: root filesystem read-only, gestione via API gRPC, niente shell"
+    note: "Mutual TLS su tutte le comunicazioni"
+  - label: "Prerequisiti"
+    value: "Per Proxmox, ISO «no-cloud» con estensione `qemu-guest-agent`"
+    note: "Estensioni aggiuntive solo quando servono, per restare minimali"
+  - label: "Risultato"
+    value: "Upgrade atomici con rollback automatico e rolling update senza downtime"
+openItems:
+  - "La sezione su monitoring e alerting è segnata dall'articolo stesso come ancora da testare"
+  - "Solo `/var` resta scrivibile: dati persistenti e storage vanno pianificati a parte"
+  - "Le cifre citate (~1847 pacchetti, ~50 servizi) descrivono un'installazione Ubuntu tipica, non un benchmark comparativo"
+openNote: "Aspetti da pesare prima di scegliere Talos."
 ---
 
 ## Il Paradigma dell'OS Immutabile per Kubernetes

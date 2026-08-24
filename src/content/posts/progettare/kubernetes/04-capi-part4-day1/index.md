@@ -16,6 +16,22 @@ reviewed: human
 series: homelab-capi
 seriesOrder: 40
 reproducibility: true
+summary:
+  - label: "Contesto"
+    value: "Day 1: da Proxmox vuoto al primo workload cluster funzionante e verificato"
+    note: "Obiettivo dichiarato: un cluster minimalmente funzionante"
+  - label: "Prerequisiti"
+    value: "Utente Proxmox dedicato con token API e template Talos pronto al clone"
+    note: "Template VM 8700 costruito dall'ISO factory con datasource NoCloud"
+  - label: "Strumento"
+    value: "Python generator con Jinja2 per i manifest parametrici del cluster"
+    note: "Configurazione default pronta in un file YAML"
+  - label: "Risultato"
+    value: "Cluster in fase Provisioned, kubeconfig estratto, controlli di base superati"
+openItems:
+  - "Le versioni indicate definiscono lo scenario: clusterctl 1.10.3, provider Proxmox 0.6.2, Kubernetes v1.32.0"
+  - "Al termine del Day 1 il metrics server può non essere ancora disponibile: `kubectl top` è previsto fallire"
+  - "Il perimetro si ferma a un cluster minimale verificato su nodi, DNS e connettività esterna: storage, ingress e monitoraggio restano esclusi"
 ---
 
 # Parte 4: Setup Pratico - Day 1 Operations

@@ -16,6 +16,23 @@ reviewed: human
 series: homelab-capi
 seriesOrder: 10
 reproducibility: true
+summary:
+  - label: "Contesto"
+    value: "Cluster gestiti a mano: script, procedure manuali e drift di configurazione"
+    note: "Il carico operativo cresce al crescere del numero di cluster"
+  - label: "Scelta"
+    value: "Cluster API: lo stato desiderato dei cluster in manifest YAML"
+    note: "Controller che riconciliano continuamente stato osservato e desiderato"
+  - label: "Ampiezza"
+    value: "Target della serie: management su `kind`, infrastruttura Proxmox, nodi Talos"
+    note: "Il management cluster può essere leggero, anche locale"
+  - label: "Fuori scope"
+    value: "Principi e architettura: il flusso operativo resta descritto a grandissime linee"
+openItems:
+  - "L'architettura target lega la serie a Proxmox e Talos: gli altri provider dell'ecosistema CAPI restano citati, non usati"
+  - "Idempotenza, self-healing e riproducibilità sono proprietà attribuite al design dei controller, non verifiche condotte su un ambiente"
+  - "L'esempio di scaling tocca solo il control plane, portandolo da 1 a 3 repliche"
+openNote: "Confini di una parte che resta deliberatamente teorica."
 ---
 ## Il Problema della Gestione Manuale di Kubernetes
 

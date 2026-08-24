@@ -16,6 +16,23 @@ reviewed: human
 series: homelab-capi
 seriesOrder: 20
 reproducibility: true
+summary:
+  - label: "Contesto"
+    value: "Anatomia interna di CAPI: componenti specializzati e loro interazioni"
+    note: "Separazione netta fra management cluster e workload cluster"
+  - label: "Ampiezza"
+    value: "Core controller, bootstrap, control plane e infrastructure provider"
+    note: "Ogni famiglia ha implementazioni per kubeadm, Talos e Proxmox"
+  - label: "Scelta"
+    value: "Machine come infrastruttura immutabile: modificare significa sostituire"
+    note: "MachineSet e MachineDeployment gestiscono repliche e rolling update"
+  - label: "Risultato"
+    value: "Flusso end-to-end in cinque fasi, dal manifest al kubeconfig nel management cluster"
+openItems:
+  - "Il reconciliation del Cluster Controller appare in pseudocodice: gli estratti spiegano la logica, non sono pensati per essere eseguiti"
+  - "Il flusso seguito è quello Proxmox e Talos: gli altri provider replicano lo stesso contratto con risorse proprie"
+  - "Alcune verifiche di bootstrap, come i log cloud-init sulla VM, richiedono accesso alla console oltre a `kubectl`"
+openNote: "Dove la trattazione resta sul generale."
 ---
 
 ## Architettura dei Componenti CAPI

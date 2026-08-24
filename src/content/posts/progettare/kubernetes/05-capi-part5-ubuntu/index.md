@@ -17,6 +17,23 @@ reviewed: human
 series: homelab-capi
 seriesOrder: 50
 reproducibility: true
+summary:
+  - label: "Scelta"
+    value: "Ubuntu invece di Talos per debug più semplice e personalizzazione"
+    note: "Familiarità per chi arriva da ambienti Linux tradizionali"
+  - label: "Strumento"
+    value: "Image-builder per immagini Ubuntu conformi a Kubernetes, target Proxmox"
+    note: "Richiede utente e ruolo Proxmox dedicati, con permessi granulari"
+  - label: "Risultato"
+    value: "Cluster `capi-cluster` su Kubernetes v1.32.0, un control plane e due worker"
+    note: "Calico applicata a mano perché il CNI non arriva col deploy"
+  - label: "Fuori scope"
+    value: "Storage persistente, ingress e monitoraggio restano citati come prossimi passi"
+openItems:
+  - "Senza plugin di rete il cluster resta incompleto: Calico va installata e i nodi passano a `Ready` dopo qualche minuto"
+  - "La rete delle VM presuppone un server DHCP già configurato: l'indirizzamento non è gestito dalla procedura"
+  - "Il secret del token Proxmox è visibile solo alla creazione: dopo non è più recuperabile"
+openNote: "Decisioni e condizioni esterne alla guida."
 ---
 
 Dopo aver esplorato Talos Linux nei precedenti articoli, è tempo di cambiare approccio e utilizzare Ubuntu come sistema operativo base per i nostri nodi Kubernetes. In questo post vedremo come creare un cluster Kubernetes su Proxmox utilizzando Cluster API (CAPI) e le immagini ufficiali generate con image-builder.

@@ -16,6 +16,23 @@ reviewed: human
 series: kubernetes-fondamenti
 seriesOrder: 20
 reproducibility: true
+summary:
+  - label: "Contesto"
+    value: "Ogni `kubectl apply` passa per un controller che confronta `.spec` e `.status`"
+    note: "Il pattern governa Deployment, Service, Ingress e ogni risorsa applicata"
+  - label: "Strumento"
+    value: "Informer con cache locale e work queue con deduplicazione"
+    note: "Retry con backoff esponenziale, dai 5ms fino a circa 16 minuti"
+  - label: "Scelta"
+    value: "Controller level-triggered: ricevono una chiave, non l'evento"
+    note: "Dopo un riavvio rileggono lo stato corrente e convergono comunque"
+  - label: "Risultato"
+    value: "EchoConfig controller con self-healing provato su `kind`"
+    note: "Deployment eliminato e ricreato, repliche aggiornate via patch della CR"
+openItems:
+  - "Il controller d'esempio è scritto a mano per isolare i concetti: per progetti reali l'articolo indica Kubebuilder o Operator SDK"
+  - "La verifica mostrata è manuale su `kind`: il testing automatizzato dei controller non entra nell'articolo"
+openNote: "Cosa l'esempio minimale lascia fuori."
 ---
 
 ## Il Meccanismo Dietro kubectl apply
