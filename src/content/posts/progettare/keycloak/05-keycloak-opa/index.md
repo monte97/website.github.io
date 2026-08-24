@@ -15,6 +15,25 @@ draft: false
 reviewed: true
 series: keycloak
 seriesOrder: 50
+summary:
+  - label: "Problema"
+    value: "Regole d'accesso sparse tra claim JWT, mapper Keycloak e codice Express"
+    note: "Aggiungere una regola tocca più componenti, bloccare un utente aspetta la scadenza del token"
+  - label: "Scelta"
+    value: "Keycloak autentica chi sei, OPA decide cosa puoi fare"
+    note: "Policy Rego in container sidecar interrogato via HTTP prima di ogni operazione protetta"
+  - label: "Ampiezza"
+    value: "Tre policy: RBAC sui prodotti, deny list sul checkout, ownership sugli ordini"
+    note: "Gli utenti bloccati vivono in `data.json`: effetto immediato, senza re-login né deploy"
+  - label: "Costo reale"
+    value: "Un container in più e una chiamata HTTP per ogni decisione"
+    note: "L'ownership chiede una query aggiuntiva per risalire al proprietario della risorsa"
+openItems:
+  - "Nessuno dei due approcci vince in assoluto: i claims JWT restano ragionevoli con poche regole statiche, OPA conviene quando le regole cambiano spesso o usano dati esterni"
+  - "Se OPA non risponde, il middleware risponde 503: negare per default in caso di errore è una scelta di sistema da assumersi"
+  - "Gli esempi da terminale usano il flusso Resource Owner Password Credentials, deprecato e tenuto in MockMart solo per il testing locale"
+  - "L'immagine `latest-debug` dell'esempio serve al debug: in produzione l'indicazione è fissare una versione specifica"
+openNote: "Punti in cui serve una decisione architetturale, non soltanto codice"
 ---
 
 Bloccare un utente dal checkout quando il claim JWT è ancora valido fino alla scadenza del token. Aggiungere una regola di accesso e dover modificare Keycloak, il codice Express, e magari anche un mapper custom. Sono problemi comuni quando autenticazione e autorizzazione non sono separate.

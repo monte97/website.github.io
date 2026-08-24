@@ -15,6 +15,24 @@ lang: it
 draft: false
 series: keycloak
 seriesOrder: 15
+summary:
+  - label: "Problema"
+    value: "Identità frammentate: AD aziendale, social login dei clienti, partner su Okta"
+    note: "Le applicazioni vogliono un solo token JWT firmato da Keycloak, qualunque sia la sorgente"
+  - label: "Meccanismi"
+    value: "User Federation per directory proprie, Identity Brokering per identità di terzi"
+    note: "Il criterio di scelta è chi controlla lo storage delle credenziali"
+  - label: "Differenza"
+    value: "Nella federation Keycloak riceve le credenziali, nel brokering non le tocca mai"
+    note: "Una sola pagina di login contro il redirect potenziale al provider esterno"
+  - label: "Risultato"
+    value: "Le due strategie convivono nello stesso realm: Keycloak diventa il punto di convergenza"
+openItems:
+  - "Con la federation gli attributi arrivano al login o con sync periodiche: un cambio nella directory si riflette nel token dopo la prossima sincronizzazione, non subito"
+  - "Gli attributi federati vengono importati di default nel database locale di Keycloak: interrogare la directory a ogni richiesta è possibile ma resta la strada non standard"
+  - "I diagrammi seguono il flusso OIDC: con SAML l'asserzione transita via browser POST, senza lo scambio code-token server-to-server"
+  - "Il First Broker Login Flow va deciso: creazione automatica dell'utente, collegamento a un account esistente o prompt esplicito sono le strategie possibili"
+openNote: "Comportamenti che cambiano secondo la configurazione scelta"
 ---
 
 In molte organizzazioni le identità degli utenti sono distribuite su sistemi eterogenei: un Active Directory con migliaia di dipendenti, un provider di social login per i clienti, un IdP esterno per i partner commerciali. Le applicazioni hanno bisogno di un punto unico di autenticazione, indipendentemente da dove vivono gli utenti.

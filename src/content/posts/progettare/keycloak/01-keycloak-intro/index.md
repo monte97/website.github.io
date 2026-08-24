@@ -15,6 +15,24 @@ reviewed: human
 series: keycloak
 seriesOrder: 10
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "Ogni app gestisce le proprie credenziali, senza Single Sign-On"
+    note: "Password duplicate, sicurezza inconsistente: disattivare un dipendente tocca N sistemi"
+  - label: "Scelta"
+    value: "Identity Provider centralizzato: le app ricevono token firmati"
+    note: "Se il codice non gestisce password, non può gestirle male"
+  - label: "Strumento"
+    value: "Keycloak, IdP open source nato in casa Red Hat, licenza Apache 2.0"
+    note: "Servizio a sé stante, non un framework da integrare nel codice"
+  - label: "Risultato"
+    value: "Realm, client, utenti e primo login in pochi minuti via Docker"
+openItems:
+  - "Il flusso di login è descritto nei suoi tre passaggi ad alto livello: la configurazione completa di client e protocollo resta fuori da questa introduzione"
+  - "Federazione LDAP, social login e ruoli compaiono come capacità disponibili: nessuna viene qui configurata"
+  - "L'esempio di avvio fissa la versione 26.0 dell'immagine Docker: comandi e console di amministrazione possono variare in altre release"
+  - "`start-dev` vale solo per la prova: HTTP senza TLS e database H2 locale lo rendono inadatto oltre lo sviluppo"
+openNote: "Ciò che una panoramica d'introduzione lascia deliberatamente fuori"
 ---
 
 Se hai mai scritto un sistema di login da zero — registrazione, reset password, gestione sessioni, hash delle credenziali — sai quanto tempo porta via. E sai anche che, per quanto lo testi, resta quella sensazione fastidiosa: *stai davvero gestendo le password in modo sicuro?*

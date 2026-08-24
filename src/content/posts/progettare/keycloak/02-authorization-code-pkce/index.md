@@ -15,6 +15,24 @@ draft: false
 reviewed: true
 series: keycloak
 seriesOrder: 2
+summary:
+  - label: "Contesto"
+    value: "SPA React e API Express delegate a un realm Keycloak unico"
+    note: "MockMart, e-commerce demo: le credenziali si inseriscono solo su Keycloak"
+  - label: "Scelta"
+    value: "Authorization Code Flow con PKCE e challenge SHA-256 (S256)"
+    note: "In una SPA qualunque secret nel codice JavaScript è leggibile dai DevTools"
+  - label: "Validazione"
+    value: "Express verifica firma, issuer, scadenza e audience via JWKS"
+    note: "Due URL Keycloak per design: interno per le chiavi, pubblico per l'issuer"
+  - label: "Risultato"
+    value: "Frontend senza secret, backend senza database utenti"
+openItems:
+  - "Access token a 5 minuti e sessioni SSO a 30 minuti di inattività o 10 ore totali sono default del realm: le finestre valide dipendono dalla configurazione scelta"
+  - "`checkLoginIframe` resta disabilitato per i cookie cross-origin di localhost: in produzione l'articolo consiglia di riabilitarlo"
+  - "Su localhost la redirect URI con wildcard copre tutte le route: per la produzione l'indicazione è registrare URI esatti e prevenire open redirect"
+  - "Senza un audience mapper il claim aud resta «account»: abilitare la validazione dell'audience richiede un intervento anche sul realm, non solo nel codice"
+openNote: "Dove i default di Keycloak e le comodità di localhost smettono di valere"
 ---
 
 Keycloak configurato, realm creato, client registrato. Il passo successivo è collegare concretamente un frontend React e un backend Express all'Identity Provider. L'[articolo introduttivo]({{< ref "/posts/keycloak/01-keycloak-intro" >}}) copre il concetto di delegare l'autenticazione. Qui si implementa il pezzo pratico.

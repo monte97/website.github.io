@@ -16,6 +16,25 @@ lang: it
 reviewed: true
 series: keycloak
 seriesOrder: 40
+summary:
+  - label: "Contesto"
+    value: "Integrazione Keycloak in MockMart, e-commerce con 5 microservizi Node.js"
+    note: "Verde su localhost, al primo deploy in staging arrivano i 401 inspiegabili"
+  - label: "Ampiezza"
+    value: "Sei problemi raccontati con sintomo, causa nel codice e correzione"
+    note: "Dall'issuer mismatch alla race condition sul token endpoint M2M"
+  - label: "Scoperta"
+    value: "Senza audience validation, ogni token valido apre qualsiasi porta"
+    note: "Il problema non genera errori: genera accessi non autorizzati"
+  - label: "Correzioni"
+    value: "URL configurabili, audience mapper, parsing difensivo, lock sulla cache token"
+    note: "Per i claim custom i ruoli restano più stabili degli attributi"
+openItems:
+  - "Le sei voci coprono l'integrazione applicativa: configurazione del realm, flussi di autenticazione custom e monitoring in produzione restano un capitolo a parte"
+  - "Il realm demo usa `sslRequired` «none» e secret nel repository e nel compose: scelte dichiarate valide solo in locale, da invertire prima della produzione"
+  - "Con `checkLoginIframe` disabilitato, il logout da un'altra tab non raggiunge il frontend fino alla scadenza del token, cinque minuti di default"
+  - "Il formato dei claim custom dipende da versione di Keycloak, tipo di mapper e configurazione: le decisioni di authorization sui ruoli restano la via più stabile"
+openNote: "Ciò che emerge quando localhost incontra staging"
 ---
 
 Un'integrazione Keycloak che funziona perfettamente su localhost e poi esplode al primo deploy in staging è uno scenario comune.

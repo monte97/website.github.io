@@ -15,6 +15,24 @@ draft: false
 reviewed: true
 series: keycloak
 seriesOrder: 30
+summary:
+  - label: "Problema"
+    value: "Notificare un ordine da shop-api a notification-service senza utente attivo"
+    note: "API key hardcodate, token utente riciclate, rete interna aperta: strade scartate"
+  - label: "Scelta"
+    value: "Flusso Client Credentials: il servizio si autentica come se stesso"
+    note: "Client dedicato con service account, senza standard flow né direct access grants"
+  - label: "Token"
+    value: "Vita breve, 5 minuti di default: cache con rinnovo 60 secondi prima della scadenza"
+    note: "La Promise condivisa deduplica le richieste concorrenti al token endpoint"
+  - label: "Validazione"
+    value: "Il ricevente valida firma, identità service account e `azp` autorizzato"
+    note: "Due check distinti: senza entrambi passa anche un token utente rubato"
+openItems:
+  - "Con molti servizi il controllo hardcodato su `azp` diventa fragile: l'alternativa indicata è passare a ruoli e scope verificati nel middleware"
+  - "Client Credentials non prevede refresh token: alla scadenza si richiede un nuovo token, quindi ogni chiamante deve saper gestire il rinnovo"
+  - "Da Keycloak 17+ (distribuzione Quarkus) il prefisso `/auth` esce dagli URL di default: la variabile `KEYCLOAK_AUTH_PATH` copre entrambe le convenzioni"
+openNote: "Assunzioni che tengono finché i servizi coinvolti sono pochi"
 ---
 
 Job schedulati, webhook, eventi asincroni: in questi casi non c'è nessun utente davanti allo schermo, ma i servizi devono comunque autenticarsi tra loro. La comunicazione machine-to-machine richiede un meccanismo di autenticazione diverso da quello basato su browser e redirect.
