@@ -14,6 +14,22 @@ lang: it
 reviewed: human
 series: web-development
 seriesOrder: 30
+summary:
+  - label: "Contesto"
+    value: "SPA con decine di pagine-variazione: un bug nel salvataggio va corretto in dodici posti"
+    note: "Esempi su Nuxt 3 e Vuetify 3, con albero decisionale finale"
+  - label: "Strumento"
+    value: "Composable per il setup, wrapper con slot per il template, utility per la logica pura"
+  - label: "Risultato"
+    value: "Il wrapper porta una pagina di dettaglio da circa cinquanta righe ripetute a venticinque totali"
+  - label: "Scoperta"
+    value: "Il componente generico iper-configurabile sposta la complessità sulla configurazione"
+    note: "Nel contro-esempio: 120 righe, 15 prop e 4 slot dopo tre mesi"
+openItems:
+  - "Il wrapper con slot funziona finché le pagine restano davvero simili: oltre 3-4 slot sta facendo troppo"
+  - "Se la configurazione del componente generico richiede più righe del codice che sostituisce, la direzione è sbagliata"
+  - "Estrarre si può sempre fare dopo: disfare un'astrazione sbagliata è molto più costoso"
+openNote: "Dove fermarsi: la duplicazione consapevole resta un'opzione."
 ---
 
 Nelle SPA di grandi dimensioni con Vue 3 è comune trovarsi con decine di pagine che sono variazioni dello stesso tema: stessa struttura, stesso boilerplate, stesse cinque righe di setup. Si parte con copia-incolla, poi un bug nel flusso di salvataggio va corretto in dodici posti.

@@ -18,6 +18,24 @@ reviewed: machine
 series: saturation-alerting
 seriesOrder: 30
 reproducibility: true
+summary:
+  - label: "Contesto"
+    value: "La regola firing è solo l'inizio: manca un contratto con chi riceve l'alert"
+    note: "Alert precisi tutti nello stesso canale, senza severity differenziata né runbook"
+  - label: "Strumento"
+    value: "`severity` è l'input del routing tree: critical e warning verso receiver diversi"
+    note: "Cambiare canale significa toccare solo l'`alertmanager.yml`, non le decine di regole"
+  - label: "Scoperta"
+    value: "Le `inhibit_rules` sopprimono il burn-rate medium quando il fast è firing sullo stesso SLO"
+    note: "L'API v2 riporta lo stato suppressed e il fingerprint dell'alert sorgente"
+  - label: "Risultato"
+    value: "`runbook_url` nelle annotations arriva intatto fino al payload del webhook"
+    note: "`commonAnnotations` è la chiave giusta per template Slack o integrazioni PagerDuty"
+openItems:
+  - "I tre mattoni coprono il 70% del gap tra regola scattata e problema risolto: testing delle regole, templating avanzato, silenze e cluster Alertmanager in HA restano fuori"
+  - "`runbook_url` non è formalizzato nella documentazione Prometheus core: è una convenzione dell'ecosistema (kube-prometheus, Operator) che nessuno forza"
+  - "Il demo instrada verso un mock-receiver webhook locale: le integrazioni reali verso PagerDuty o Slack vanno configurate nei receiver"
+openNote: "I confini dichiarati dei tre mattoni."
 ---
 
 ## Il Gap tra la Regola `firing` e l'Umano che Deve Agire

@@ -19,6 +19,24 @@ reviewed: machine
 series: saturation-alerting
 seriesOrder: 20
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "La soglia statica scatta troppo presto o troppo tardi: ignora il ritmo di consumo del budget"
+    note: "Uno 0.5% sostenuto per un'ora brucia circa il 30% del budget mensile inosservato"
+  - label: "Strumento"
+    value: "Multi-window multi-burn-rate del Workbook: alert solo se finestra lunga E corta superano soglia"
+    note: "La congiunzione AND gestisce insieme detection time e reset time"
+  - label: "Risultato"
+    value: "Tre coppie canoniche per SLO mensili: 14.4× su 1h+5m, 6× su 6h+30m, 1× su 3d+6h"
+    note: "Budget consumato al firing: 2%, 5% e 10%; reset dettato dalla finestra corta"
+  - label: "Prerequisiti"
+    value: "Recording rules per lo SLI sulle quattro finestre prima di scrivere gli alert"
+    note: "Pre-calcolare `rate[1h]` costa meno e lo stesso valore serve a più alert e dashboard"
+openItems:
+  - "La demo implementa solo fast e medium: la slow burn su finestra 3d richiede tre giorni di dati reali e non è osservabile in una demo che parte da zero"
+  - "I valori della tabella 5-8 valgono per uno SLO mensile di 720 ore: con finestre settimanali o trimestrali i burn rate vanno ricalcolati"
+  - "Il burn-rate misura qualità vista dall'utente: per la saturazione fisica lo strumento è `predict_linear`, per il semplice su/giù basta il threshold"
+openNote: "Numeri canonici del Workbook, con le condizioni per cui valgono."
 ---
 
 ## Il Problema: l'Alert di Availability che Scatta Troppo Tardi

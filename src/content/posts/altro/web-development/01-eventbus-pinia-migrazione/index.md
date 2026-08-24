@@ -14,6 +14,24 @@ lang: it
 reviewed: human
 series: web-development
 seriesOrder: 10
+summary:
+  - label: "Contesto"
+    value: "EventBus in Vue 2: stato implicito negli eventi, senza cache né single source of truth"
+    note: "`$on`, `$off` e `$once` rimossi in Vue 3: il pattern non è più possibile"
+  - label: "Scelta"
+    value: "Pinia direttamente, senza passare per Vuex"
+    note: "Vuex è in maintenance mode, Pinia è il successore ufficiale raccomandato dalla documentazione"
+  - label: "Strumento"
+    value: "Cache centralizzata con cache-once, deduplicazione delle richieste e invalidazione manuale"
+    note: "Dopo le CRUD il momento del cambiamento è noto: niente TTL che scade nel momento sbagliato"
+  - label: "Risultato"
+    value: "Migrazione per strati: prima gli store, poi i composable, poi la sintassi dei componenti"
+    note: "Composition API negli store e Options API nelle pagine convivono tramite il ponte di `setup()`"
+openItems:
+  - "`fetchEntities` non include error handling nello store mostrato: l'articolo indica un ref dedicato per entità e un `.catch()` come completamento necessario"
+  - "L'invalidazione manuale presuppone che il momento del cambiamento sia noto: per dati che cambiano in modo imprevedibile i TTL restano la scelta indicata"
+  - "Senza `pick`, il plugin di persistenza serializza l'intero stato dello store, inclusi campi effimeri o derivati: la lista va mantenuta esplicita"
+openNote: "Scelte e confini emersi in una migrazione concreta, non regole generali."
 ---
 
 ## EventBus: stato implicito distribuito tra componenti

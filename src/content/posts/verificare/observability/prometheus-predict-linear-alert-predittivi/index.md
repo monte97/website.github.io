@@ -19,6 +19,23 @@ reviewed: machine
 series: saturation-alerting
 seriesOrder: 10
 reproducibility: true
+summary:
+  - label: "Problema"
+    value: "La soglia statica risponde allo stato attuale: quando scatta il disco è già al 90%"
+  - label: "Scoperta"
+    value: "USE definisce saturation come coda presente, i Golden Signals includono le predizioni"
+    note: "Due framework compatibili con focus diversi: stato corrente contro trend futuro"
+  - label: "Strumento"
+    value: "`predict_linear`: regressione lineare sulla finestra osservata, proiettata t secondi avanti"
+    note: "Equivalente concettuale a `deriv(v) * t` più il valore corrente"
+  - label: "Scelta"
+    value: "Non tutto va reso predittivo: il connection pool si satura in secondi e vuole soglia reattiva"
+openItems:
+  - "La funzione assume crescita lineare: leak esponenziali, allocazioni frenate dal GC e crescita a scalini rompono sistematicamente l'assunzione"
+  - "La finestra storica dovrebbe essere almeno un quarto dell'orizzonte di proiezione: sotto quella proporzione la regressione è instabile"
+  - "Per le metriche con ciclo giornaliero serve una finestra di almeno 24 ore o un modello con stagionalità esplicita come Holt-Winters o Prophet"
+  - "La query sulla quota mensile è pseudocodice didattico: PromQL non ha `days_until_month_end()` e in produzione serve una recording rule o una metrica custom"
+openNote: "Le assunzioni del modello lineare e dove smettono di valere."
 ---
 
 ## Il Problema: l'Alert che Scatta Sempre Tardi

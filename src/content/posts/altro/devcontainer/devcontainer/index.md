@@ -12,6 +12,24 @@ tags:
 lang: it
 reviewed: human
 reproducibility: true
+summary:
+  - label: "Contesto"
+    value: "Ogni macchina configura l'ambiente a modo suo, con versioni e dipendenze non allineate"
+    note: "Il costo: ore di debugging del setup, onboarding lenti, sorprese al deploy"
+  - label: "Strumento"
+    value: "DevContainer: l'ambiente di sviluppo descritto in un file versionato con il codice"
+    note: "VS Code esegue un server remoto nel container, Docker ospita l'ambiente"
+  - label: "Scoperta"
+    value: "Su Linux i file scritti dal container escono di proprietà di root sull'host"
+    note: "Il bind mount passa l'UID numerico: senza utente dichiarato i processi girano come root"
+  - label: "Risultato"
+    value: "Basta nominare un utente non root con `remoteUser` o `containerUser`"
+    note: "Nominare l'utente attiva updateRemoteUserUID, la sincronizzazione UID che VS Code esegue"
+openItems:
+  - "Su macOS e Windows lo stesso flusso non lascia file di root: in un gruppo misto lo scopre chi sviluppa su Linux, e la CI non se ne accorge perché costruisce da zero senza montare la working directory"
+  - "La sincronizzazione automatica dell'UID è documentata per immagine e Dockerfile ma non per Docker Compose: dichiarare l'utente nel servizio toglie il dubbio"
+  - "Un ambiente di sviluppo riproducibile non porta con sé una build riproducibile: la seconda richiede lockfile, digest delle immagini e pipeline"
+openNote: "Dove la riproducibilità dell'ambiente si ferma."
 ---
 
 

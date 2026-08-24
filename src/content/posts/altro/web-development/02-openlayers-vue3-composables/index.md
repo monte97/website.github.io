@@ -14,6 +14,23 @@ lang: it
 reviewed: human
 series: web-development
 seriesOrder: 20
+summary:
+  - label: "Problema"
+    value: "Il wrapping ricorsivo di `ref()` su oggetti OpenLayers causa rallentamenti e crash silenziosi"
+    note: "Una Map di OL ha centinaia di proprietà interne che non devono diventare Proxy"
+  - label: "Scelta"
+    value: "`shallowRef` tiene gli oggetti OL fuori dal sistema reattivo, i composables fanno da ponte"
+    note: "Vue controlla i dati dell'applicazione, OL controlla la mappa"
+  - label: "Strumento"
+    value: "Quattro pattern: lifecycle mappa, layer vettoriali, click sulla mappa, polling con cleanup"
+  - label: "Risultato"
+    value: "Cleanup incapsulato: `dispose()` evita mappe fantasma, il polling si ferma all'unmount"
+    note: "Il consumatore non deve ricordarsi di liberare risorse"
+openItems:
+  - "`watch` con `once: true` richiede Vue 3.4+: su versioni precedenti la registrazione degli handler va organizzata diversamente"
+  - "Il contratto minimo è `GeoLocatable`: qualsiasi entità con latitude e longitude entra in mappa, la demo traccia negozi fissi e veicoli in movimento"
+  - "Il pattern `shallowRef` vale per qualsiasi libreria imperativa con stato interno complesso: Three.js, D3, Leaflet"
+openNote: "Confini dei pattern così come usati nella demo."
 ---
 
 ## Il problema: Vue wrappa ciò che non dovrebbe

@@ -12,6 +12,24 @@ tags:
   - Patterns
 lang: it
 draft: true
+summary:
+  - label: "Contesto"
+    value: "Tre servizi Flask con conftest da 228 righe e dodici hack su `sys.modules`"
+    note: "L'import è esecuzione: ogni mock andava configurato prima dell'import, nell'ordine giusto"
+  - label: "Scelta"
+    value: "DI senza framework: `Protocol` per il contratto strutturale, costruttore per l'iniezione"
+    note: "Il fake deterministico evita i falsi positivi di MagicMock sui typo"
+  - label: "App factory"
+    value: "L'application factory di Flask fa da container DI naturale"
+    note: "`create_app(config)` accetta client mock: il dizionario di configurazione è il container"
+  - label: "Risultato"
+    value: "Conftest da 228 a 148 righe, `sys.modules` da 12 hack a zero, mutanti sopravvissuti azzerati"
+    note: "Kill rate prima del refactoring: 19%, 41% e 46% sui tre servizi"
+openItems:
+  - "`dependency-injector` inizia a pagare con 10+ dipendenze o configurazioni per ambienti multipli: sotto quella soglia il vanilla è più chiaro"
+  - "Il codice già puro per natura non ha bisogno di DI: `compute_delta` riceve dizionari e restituisce valori, iniettare sarebbe overhead"
+  - "La scala ha quattro livelli e il consiglio è non saltarli: partire dal più semplice che risolve il problema e salire solo se la complessità cresce"
+openNote: "Quale livello di DI serve, e dove fermarsi."
 ---
 
 Ho refactorizzato 3 servizi Flask. I conftest sono passati da 228 a 148 righe totali. Gli hack su `sys.modules` sono scomparsi. Il mutation score sulla logica di business è arrivato a zero mutanti sopravvissuti. Ma la lezione non era su Flask -- era su come Python gestisce le dipendenze.

@@ -15,6 +15,24 @@ lang: it
 draft: false
 reviewed: false
 reproducibility: true
+summary:
+  - label: "Contesto"
+    value: "Cinque team su una SPA: ogni modifica fa ripartire il build e il deploy è monolitico"
+    note: "Il primo segnale: tre team bloccati nella stessa riunione sullo stesso `router.ts`"
+  - label: "Strumento"
+    value: "Module Federation con `@originjs/vite-plugin-federation`: shell e remoti composti a runtime"
+    note: "Il `remoteEntry.js` è il manifest del remote, caricato dall'URL configurato per ambiente"
+  - label: "Contratto"
+    value: "Il contratto shell/remoto va dichiarato a mano: il plugin non genera tipizzazioni"
+    note: "Il file di dichiarazioni nella shell va aggiornato quando il remote cambia interfaccia"
+  - label: "Prerequisiti"
+    value: "`vue`, `vue-router` e `pinia` singleton: due istanze di Vue nella stessa pagina rompono tutto"
+openItems:
+  - "Il plugin supporta il dev server solo per la shell: i remoti vanno buildati con `vite build --watch` e serviti come build statici"
+  - "Una breaking change al contratto blocca la shell in produzione senza build error: servono URL versionati, contract testing o PR coordinate"
+  - "Versioni non compatibili di una dipendenza singleton degradano l'app in silenzio: il plugin usa la prima istanza caricata e si limita a un warning"
+  - "Con un solo team o cinque sviluppatori è overengineering: il segnale giusto è bloccarsi a vicenda nel deploy, non essere tanti"
+openNote: "Dove la composizione runtime sposta il problema invece di risolverlo."
 ---
 
 Il progetto frontend nasce come una SPA. Cresce. Arrivano più team. Il primo segnale di allarme non è la lentezza del build: è la riunione settimanale in cui tre team si bloccano a vicenda perché lavorano sullo stesso `router.ts`.
