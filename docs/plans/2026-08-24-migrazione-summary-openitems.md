@@ -166,37 +166,39 @@ git commit -m "content: summary e openItems sulla serie LINQ"
 **Files:**
 - Modify: `src/content/posts/verificare/observability/**/index.md` con `series: observability`
 
-- [ ] **Step 1: Elencare il lotto**
+- [x] **Step 1: Elencare il lotto**
 
 ```bash
 grep -rl "series: observability" src/content/posts/ --include=index.md
 ```
 
-- [ ] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
+- [x] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
 
 Come Task 1 Step 3. Gli articoli di observability sono i più lunghi (media 3.000 parole): non saltare la lettura del corpo.
 
-- [ ] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
+- [x] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
 
 Rispettare i Global Constraints. Per questa serie, attenzione particolare: gli articoli citano percentuali di riduzione dati e soglie. **Copiare i numeri esatti dal testo, mai arrotondare.**
 
-- [ ] **Step 4: Verificare la build**
+- [x] **Step 4: Verificare la build**
 
 ```bash
 npm run build
 ```
 Expected: `[build] ✓ Completed` senza errori.
 
-- [ ] **Step 5: Auto-verifica del vincolo di verità**
+- [x] **Step 5: Auto-verifica del vincolo di verità**
 
 Come Task 1 Step 7: elenco `valore → frase sorgente` per ogni valore scritto.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/content/posts/verificare/observability/
 git commit -m "content: summary e openItems sulla serie observability"
 ```
+
+**Eseguito e verificato: commit `0e4797c`.** Due dispatch precedenti falliti per `network_error` transitorio del provider (nessuna scrittura su disco), terzo tentativo riuscito. Verifica indipendente: perimetro (`git show --stat 0e4797c`, solo 8 file observability, solo inserimenti), build (`npm run build` verde), vincolo di verità (numeri — 1% CPU, 200 byte/span, 95% overhead, 24 combinazioni, 34GB/90%/24GB, 8 span/500 bytes/$0.023, 30gg/48h/1-7 anni/Loki 2.3+, SHA-256 senza salt/Art.17/26.0, 20 righe — riscontrati esatti nel testo sorgente), incrocio (openItems e openNote differenziati fra gli articoli, nessuna formula ripetuta).
 
 ---
 
