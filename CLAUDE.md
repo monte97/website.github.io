@@ -110,4 +110,4 @@ TypeScript modules for structured site data:
 - `import.meta.glob` for hero images must stay in the consuming file (Vite static analysis). Pass the result to `getHeroImage()` from `@/utils/blog`.
 - Path alias `@/` maps to `src/`.
 - Blog post IDs follow the pattern `pillar/category/slug/index` (e.g., `progettare/kafka/01-intro/index`).
-- The style guide at `.claude/rules/style-guide.md` defines tone, formatting, and structural conventions for blog articles.
+- Writing rules live in the vault: `_strategy/writing-rules/blog.md` (blog articles), `_strategy/writing-rules/case-study.md` (case studies), tone of voice in `_strategy/tone-of-voice.md`.
