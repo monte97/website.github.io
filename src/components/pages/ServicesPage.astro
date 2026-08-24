@@ -102,6 +102,9 @@ const t = lang === 'en'
       signalsClosing: 'If two of these already feel familiar, the right time to act is before the third one shows up.',
       // Method
       methodTitle: 'How I work',
+      csTitle: 'What this looks like in practice',
+      csDesc: 'Real projects, told through the decisions that shaped them — including the ones about where to stop. Client names omitted, decisions intact.',
+      csCta: 'Read the case studies',
       methodIntro: 'Everything I do follows the same order: design, then verify, then automate.',
       whyLabel: 'Why this order',
       caseStudyLabel: 'Case study',
@@ -142,6 +145,9 @@ const t = lang === 'en'
       signalsClosing: 'Se due di queste te le sei già sentite addosso, il momento giusto per intervenire è prima della terza.',
       // Metodo
       methodTitle: 'Come lavoro',
+      csTitle: 'Com’è andata, su lavori veri',
+      csDesc: 'Progetti reali raccontati attraverso le decisioni che li hanno formati — comprese quelle su dove fermarsi. Nomi dei committenti omessi, decisioni intatte.',
+      csCta: 'Leggi i case study',
       methodIntro: 'Tutto quello che faccio segue lo stesso ordine: prima progettare, poi verificare, poi automatizzare.',
       whyLabel: 'Perché in quest’ordine',
       caseStudyLabel: 'Case study',
@@ -291,6 +297,16 @@ const t = lang === 'en'
                   </tbody>
                 </table>
               </div>
+            </section>
+
+            {/* Prova: i case study */}
+            <section class="fade-in-section mt-14">
+              <a href={`${prefix}/case-study/`}
+                class="group block rounded-2xl border border-border/60 dark:border-border-dark/60 bg-accent-subtle/30 p-6 md:p-8 hover:border-accent/50 transition-colors">
+                <h2 class="text-2xl font-bold text-text-dark dark:text-text-light mb-3 group-hover:text-accent transition-colors">{t.csTitle}</h2>
+                <p class="text-text-muted leading-relaxed max-w-3xl mb-4">{t.csDesc}</p>
+                <span class="text-sm font-semibold text-accent">{t.csCta} &rarr;</span>
+              </a>
             </section>
           </>
         )}

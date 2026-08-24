@@ -104,10 +104,22 @@ const t = lang === 'en'
                   </h2>
                   <p class="text-text-muted text-sm md:text-base leading-relaxed mb-5 max-w-2xl">{cs.data.description}</p>
 
-                  {cs.data.problem && (
-                    <div class="border-l-2 border-accent/30 pl-4 mb-5">
-                      <p class="text-xs uppercase tracking-wide text-text-muted/70 mb-1">{lang === 'en' ? 'The constraint' : 'Il vincolo'}</p>
-                      <p class="text-sm text-text-muted leading-relaxed">{cs.data.problem}</p>
+                  {(cs.data.problem || cs.data.result) && (
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 mb-5">
+                      {cs.data.problem && (
+                        <div class="border-l-2 border-border dark:border-border-dark pl-4">
+                          <p class="text-[10px] font-mono uppercase tracking-[0.15em] text-text-muted/70 mb-1.5">{lang === 'en' ? 'The constraint' : 'Il vincolo'}</p>
+                          <p class="text-sm text-text-muted leading-relaxed">{cs.data.problem}</p>
+                        </div>
+                      )}
+                      {cs.data.result && (
+                        <div class="border-l-2 border-accent pl-4">
+                          <p class="text-[10px] font-mono uppercase tracking-[0.15em] text-accent mb-1.5">{lang === 'en' ? 'The outcome' : 'L’esito'}</p>
+                          <p class="text-sm text-text-muted leading-relaxed">
+                            {Array.isArray(cs.data.result) ? cs.data.result[0] : cs.data.result}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
 
