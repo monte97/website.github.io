@@ -4,16 +4,21 @@ import Button from '@/components/ui/Button.astro';
 interface Props {
   title: string;
   subtitle?: string;
+  /** Etichetta mono sopra il titolo (Formazione, Lavori, ...) */
+  eyebrow?: string;
+  /** 'left' (default, con immagine) oppure 'center' per le pagine indice */
+  align?: 'left' | 'center';
   image?: { src: string; alt: string };
   cta?: { href: string; label: string };
   ctaSecondary?: { href: string; label: string };
 }
 
-const { title, subtitle, image, cta, ctaSecondary } = Astro.props;
+const { title, subtitle, eyebrow, align = 'left', image, cta, ctaSecondary } = Astro.props;
+const centered = align === 'center' && !image;
 ---
 
 <section class="bg-accent-subtle border-b border-border/40 dark:border-border-dark/40">
-  <div class="max-w-5xl mx-auto px-5 py-16 md:py-24 fade-in-section">
+  <div class:list={['mx-auto px-5 py-16 md:py-24 fade-in-section', centered ? 'max-w-3xl text-center' : 'max-w-5xl']}>
     <div class:list={[
       'flex flex-col',
       image ? 'md:flex-row md:items-center md:gap-10' : '',
@@ -31,14 +36,19 @@ const { title, subtitle, image, cta, ctaSecondary } = Astro.props;
       )}
 
       <div class="flex-1">
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text-dark dark:text-text-light leading-[1.15]">
+        {eyebrow && (
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-5">{eyebrow}</p>
+        )}
+        <h1 class:list={['font-bold tracking-tight text-text-dark dark:text-text-light leading-[1.15]',
+          centered ? 'text-3xl sm:text-4xl text-balance' : 'text-3xl sm:text-4xl md:text-5xl']}>
           {title}
         </h1>
         {subtitle && (
-          <p class="mt-4 text-base md:text-lg text-text-muted max-w-2xl leading-relaxed" set:html={subtitle} />
+          <p class:list={['mt-4 text-base md:text-lg text-text-muted leading-relaxed',
+            centered ? 'max-w-xl mx-auto mt-5' : 'max-w-2xl']} set:html={subtitle} />
         )}
         {(cta || ctaSecondary) && (
-          <div class="mt-8 flex flex-wrap gap-3">
+          <div class:list={['mt-8 flex flex-wrap gap-3', centered && 'justify-center']}>
             {cta && (
               <Button href={cta.href} size="lg">
                 {cta.label}

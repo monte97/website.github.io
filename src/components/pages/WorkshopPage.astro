@@ -5,6 +5,7 @@ import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import Button from '@/components/ui/Button.astro';
 import FinalCta from '@/components/ui/FinalCta.astro';
+import PageHero from '@/components/ui/PageHero.astro';
 import { pillarStyles } from '@/data/pillar-styles';
 import { pillarLabels } from '@/data/pillars';
 
@@ -64,22 +65,11 @@ const t = lang === 'en'
   <Header lang={lang} />
   <main>
 
-    {/* HERO — banda centrata con eyebrow, stessa struttura dei servizi */}
-    <section class="bg-accent-subtle border-b border-border/40 dark:border-border-dark/40">
-      <div class="max-w-3xl mx-auto px-5 py-16 md:py-24 text-center fade-in-section">
-        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-5">{t.eyebrow}</p>
-        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-text-dark dark:text-text-light text-balance leading-[1.2]">
-          {t.heroTitle}
-        </h1>
-        <p class="mt-5 text-base md:text-lg text-text-muted max-w-xl mx-auto leading-relaxed">
-          {t.heroSubtitle}
-        </p>
-      </div>
-    </section>
+    <PageHero title={t.heroTitle} subtitle={t.heroSubtitle} eyebrow={t.eyebrow} align="center" />
 
     {/* CONTENUTO */}
     <section>
-      <div class="max-w-6xl mx-auto px-5 pt-12 md:pt-16 pb-16 md:pb-20">
+      <div class="max-w-5xl mx-auto px-5 pt-12 md:pt-16 pb-16 md:pb-20">
         <p class="text-text-muted text-base md:text-lg leading-relaxed max-w-3xl mx-auto text-center mb-10 md:mb-12">{t.intro}</p>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 stagger-children items-stretch">

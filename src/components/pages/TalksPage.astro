@@ -3,6 +3,7 @@ import PageLayout from '@/layouts/PageLayout.astro';
 import PageHero from '@/components/ui/PageHero.astro';
 import { talks } from '@/data/talks';
 import { talkImagesFrom } from '@/utils/talks';
+import FinalCta from '@/components/ui/FinalCta.astro';
 
 interface Props {
   lang?: 'it' | 'en';
@@ -10,6 +11,7 @@ interface Props {
 
 const { lang = 'it' } = Astro.props;
 const prefix = lang === 'en' ? '/en' : '';
+const mailLink = 'mailto:francesco@montelli.dev';
 
 // Foto talk: glob eager su src/assets/talks/<slug>/*, risolto per slug tramite talkImagesFrom.
 // import.meta.glob deve stare nel file consumante (static analysis di Vite).
@@ -34,21 +36,37 @@ const t = lang === 'en'
   ? {
       pageTitle: 'Talks',
       pageDesc: 'Conferences and talks by Francesco Montelli: slides, material and recordings.',
-      heroTitle: 'Conferences & Speaking',
+      eyebrow: 'Speaking',
+      heroTitle: 'Conferences & speaking',
+      heroSubtitle: 'Talks on the same topics I work on every day — brought to a room, with the parts that went wrong included.',
+      intro: 'Every talk comes out of a real project. Slides, material and recordings are here; if a topic fits your event or your team, we can adapt it.',
       upcomingTitle: 'Upcoming',
       pastTitle: 'Past talks',
+      ctaTitle: 'Looking for a speaker on these topics?',
+      ctaDesc: 'Tell me about the event, the audience and the slot. We\'ll work out the angle together.',
+      ctaPrimary: 'Book a call',
+      ctaSecondary: 'or write me',
     }
   : {
       pageTitle: 'Talks',
       pageDesc: 'Conferenze e talk di Francesco Montelli: slide, materiale e registrazioni.',
-      heroTitle: 'Conferenze & Speaking',
+      eyebrow: 'Speaking',
+      heroTitle: 'Conferenze e speaking',
+      heroSubtitle: 'Gli stessi temi su cui lavoro tutti i giorni, portati in una sala — comprese le parti andate storte.',
+      intro: 'Ogni talk nasce da un progetto vero. Qui trovi slide, materiale e registrazioni; se un tema è adatto al tuo evento o al tuo team, si adatta.',
       upcomingTitle: 'Prossimi',
       pastTitle: 'Talk passati',
+      ctaTitle: 'Cerchi uno speaker su questi temi?',
+      ctaDesc: 'Raccontami evento, pubblico e durata dello slot. L\'angolo lo troviamo insieme.',
+      ctaPrimary: 'Prenota una call',
+      ctaSecondary: 'oppure scrivimi',
     };
 ---
 
 <PageLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/talks.png" lang={lang}>
-  <PageHero slot="hero" title={t.heroTitle} />
+  <PageHero slot="hero" title={t.heroTitle} subtitle={t.heroSubtitle} eyebrow={t.eyebrow} align="center" />
+
+  <p class="text-text-muted text-base md:text-lg leading-relaxed max-w-3xl mx-auto text-center mb-10 md:mb-12 fade-in-section">{t.intro}</p>
 
   {upcoming.length > 0 && (
     <section class="mb-16 fade-in-section">
@@ -95,4 +113,7 @@ const t = lang === 'en'
       </div>
     </section>
   )}
+
+  <FinalCta title={t.ctaTitle} desc={t.ctaDesc} ctaLabel={t.ctaPrimary} secondaryLabel={t.ctaSecondary} secondaryHref={mailLink} umamiEvent="cta-talks-final" fullBleed />
+
 </PageLayout>

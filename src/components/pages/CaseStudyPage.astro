@@ -4,6 +4,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import FinalCta from '@/components/ui/FinalCta.astro';
+import PageHero from '@/components/ui/PageHero.astro';
 import { pillarStyles } from '@/data/pillar-styles';
 import { pillarLabels } from '@/data/pillars';
 
@@ -58,18 +59,7 @@ const t = lang === 'en'
   <Header lang={lang} />
   <main>
 
-    {/* HERO */}
-    <section class="bg-accent-subtle border-b border-border/40 dark:border-border-dark/40">
-      <div class="max-w-3xl mx-auto px-5 py-16 md:py-24 text-center fade-in-section">
-        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-5">{t.eyebrow}</p>
-        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-text-dark dark:text-text-light text-balance leading-[1.2]">
-          {t.heroTitle}
-        </h1>
-        <p class="mt-5 text-base md:text-lg text-text-muted max-w-xl mx-auto leading-relaxed">
-          {t.heroSubtitle}
-        </p>
-      </div>
-    </section>
+    <PageHero title={t.heroTitle} subtitle={t.heroSubtitle} eyebrow={t.eyebrow} align="center" />
 
     {/* ELENCO */}
     <section>
