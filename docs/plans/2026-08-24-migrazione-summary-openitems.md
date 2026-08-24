@@ -207,33 +207,35 @@ git commit -m "content: summary e openItems sulla serie observability"
 **Files:**
 - Modify: `src/content/posts/verificare/testing/**/index.md` con `series: playwright`
 
-- [ ] **Step 1: Elencare il lotto**
+- [x] **Step 1: Elencare il lotto**
 
 ```bash
 grep -rl "series: playwright" src/content/posts/ --include=index.md
 ```
 
-- [ ] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
+- [x] **Step 2: Per ogni articolo, leggerlo integralmente e annotare i fatti citabili**
 
-- [ ] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
+- [x] **Step 3: Scrivere `summary` e `openItems` per ogni articolo**
 
 Serie molto omogenea: nove articoli sullo stesso strumento. **Non copiare gli stessi `openItems` da un articolo all'altro** — se due articoli finiscono con gli stessi confini, uno dei due li ha inventati.
 
-- [ ] **Step 4: Verificare la build**
+- [x] **Step 4: Verificare la build**
 
 ```bash
 npm run build
 ```
 Expected: `[build] ✓ Completed` senza errori.
 
-- [ ] **Step 5: Auto-verifica del vincolo di verità**
+- [x] **Step 5: Auto-verifica del vincolo di verità**
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/content/posts/verificare/testing/
 git commit -m "content: summary e openItems sulla serie Playwright"
 ```
+
+**Eseguito e verificato: contenuto nel commit `02e389cb`.** Deviazione registrata: fra il `git add` e il `git commit` dell'esecutore, una sessione concorrente sul repo ha creato il commit `02e389cb` ("feat(case-study): ricerca e filtri per pilastro e tecnologia") assorbendo i 9 `index.md` già in staging insieme a due file di componenti (`CaseStudyFilterable.vue`, `CaseStudyPage.astro`, non toccati dall'esecutore). Il messaggio di commit pianificato non esiste separatamente. Verifica indipendente isolata sul solo path `src/content/posts/verificare/testing/`: `git show --stat 02e389cb -- src/content/posts/verificare/testing/` conferma 9 file, 156 inserimenti, 0 cancellazioni; build verde; vincolo di verità confermato a campione sui numeri (10min→2.5min/4 worker, 200 test/4 shard, 8 righe→1 chiamata, 10-20%/5-10%, Playwright 1.56, 50 test/3 utenti, 15 locator→5 righe, tutti riscontrati esatti nel testo); incrocio sui 9 set di openItems: nessuna ripetizione, nessun confine generico; openNote presente su 5/9 articoli, formulazioni tutte diverse.
 
 ---
 
