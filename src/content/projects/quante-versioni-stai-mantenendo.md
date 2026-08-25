@@ -12,9 +12,9 @@ oggetto: >
   Un produttore di software gestionale per laboratori di analisi privati, installato dentro le sedi dei clienti. Ogni cliente chiede una variante in fase di contratto, e ogni variante diventa
   un'installazione diversa da mantenere.
 metodo: >
-  Contare le configurazioni realmente installate, dichiararle in un file unico, e leggerle
-  da due esecutori diversi: uno che verifica dove non si può installare niente, uno che
-  installa davvero. Poi tre livelli di controllo dichiarati per riga.
+  Contare le configurazioni realmente installate, dichiararle in un solo file YAML, e
+  leggerlo da due esecutori diversi: uno smoke test in shell dove non si può installare
+  niente, una suite pytest che installa davvero. Poi tre livelli di controllo per riga.
 esito: >
   Le configurazioni supportate sono diventate un elenco scritto, e «verde» ha smesso di
   significare tre cose diverse. Il lavoro ha rivelato controlli che dichiaravano successo
@@ -22,16 +22,16 @@ esito: >
   consegnato non e' una copertura piu' alta: e' la mappa di dove sono i buchi, e quanto
   costa ogni riga.
 anonimizzazione: >
-  Settore e dominio sono sostituiti. Nomi di servizi, indirizzi, esiti attesi e il numero
-  reale delle configurazioni sono omessi: l'elenco completo è la distinta base di un
-  prodotto che non è mio.
+  Cliente e settore sono sostituiti; lo stack è quello reale. Restano fuori i nomi dei
+  servizi, gli indirizzi, gli esiti attesi e il numero delle configurazioni: l'elenco
+  completo è l'inventario delle varianti che il cliente vende, e non è mio.
 problem: >
   Il prodotto è lo stesso ovunque. A rompersi non è l'applicazione, è l'installazione — e
   nessuno sapeva quante installazioni diverse esistessero, perché non erano scritte da
   nessuna parte.
 context: >
   Il software si installa dentro il cliente, non gira su un'infrastruttura nostra. Ogni
-  contratto porta una richiesta ragionevole: l'anagrafica centrale ce l'abbiamo già,
+  contratto porta una richiesta ragionevole: il Keycloak ce l'abbiamo già,
   la rete è isolata, questo modulo non ci serve. Ogni richiesta accolta in trattativa
   diventa una combinazione da tenere viva per tutta la durata del contratto.
 specs:
@@ -39,10 +39,10 @@ specs:
     value: "L'installazione, non l'applicazione"
     note: "La suite del prodotto era verde e non c'entrava niente: il codice è lo stesso ovunque"
   - label: "Fonte di verità"
-    value: "Un solo file dichiarativo con le configurazioni supportate"
+    value: "Un solo file YAML con le configurazioni supportate"
   - label: "Esecutori"
-    value: "Due, che leggono lo stesso file"
-    note: "Uno verifica dove non si può installare nulla, l'altro installa davvero e guarda cosa succede"
+    value: "Due, che leggono lo stesso YAML"
+    note: "Uno smoke test in shell dove non si può installare nulla, una suite pytest che installa davvero"
   - label: "Livelli di controllo"
     value: "Tre, dichiarati per ogni riga: esiste, risponde, funziona davvero"
   - label: "Fuori scope"
@@ -54,7 +54,7 @@ decisions:
     rejected: "Allargare la suite di test del prodotto"
     appeal: "Esisteva già, era verde, e allargarla sembrava il passo naturale."
   - title: "Dove vivono le configurazioni"
-    chosen: "Un file dichiarativo unico, letto da entrambi gli esecutori"
+    chosen: "Un solo file YAML, letto sia dallo smoke test sia dalla suite pytest"
     chosenWhy: "Due esecutori che leggono la stessa fonte non possono divergere in silenzio."
     rejected: "Un elenco per esecutore, ciascuno con il proprio formato"
     appeal: "Ognuno resta semplice e indipendente — finché i due elenchi non si separano senza che nessuno lo noti."
@@ -79,7 +79,7 @@ matrix:
     - label: "Installazione di riferimento"
       note: "Tutti i moduli, utenze gestite dal prodotto"
       cells: [full, full, full]
-    - label: "Cliente con anagrafica centrale"
+    - label: "Cliente con Keycloak proprio"
       note: "Le utenze arrivano dal sistema dell'cliente"
       cells: [full, full, partial]
     - label: "Sede con rete isolata"
@@ -95,7 +95,7 @@ matrix:
     full: "verificato"
     partial: "verificato in parte"
     empty: "nessun controllo"
-  caption: "Configurazioni di esempio, inventate: le righe reali sono la distinta base del prodotto"
+  caption: "Configurazioni di esempio, inventate: le righe reali sono l'inventario delle varianti vendute"
   note: >
     La prima riga è quella su cui si lavora tutti i giorni, ed è l'unica coperta fino in
     fondo. Le altre esistono in produzione da anni. La colonna che conta non è la prima:
@@ -139,7 +139,7 @@ thesis: "La flessibilità che vendi in trattativa non è una feature: è una rig
 
 La call durò quaranta minuti, e la frase che conta arrivò al trentacinquesimo.
 
-«L'anagrafica centrale ce l'abbiamo già. Gli utenti li gestiamo noi, il vostro sistema deve solo fidarsi.»
+«Il nostro Keycloak ce l'abbiamo già. Gli utenti li gestiamo noi, il vostro sistema deve solo fidarsi.»
 
 Il commerciale rispose come rispondono i commerciali quando la richiesta è ragionevole e il contratto è grosso: «certo, si può fare». Aveva ragione. Si poteva fare, si era già fatto altrove, e la stima buttata lì quel giorno — due giorni-uomo — era anche corretta, per la prima volta.
 
@@ -165,9 +165,9 @@ Questo sposta il problema in un posto scomodo. Un test sul prodotto lo lanci sul
 
 La forma che ha retto è più semplice di quanto sembri.
 
-Un solo file dichiarativo elenca le configurazioni supportate. Non è codice: è un elenco. Per ogni riga, quali moduli ci sono, come arrivano le utenze, cosa deve rispondere e a che livello.
+Un solo file YAML elenca le configurazioni supportate. Non è codice: è un elenco. Per ogni riga, quali moduli ci sono, come arrivano le utenze, cosa deve rispondere e a che livello.
 
-Quel file viene letto da **due esecutori diversi**. Il primo è leggero e non installa niente: serve dove non puoi installare, ambienti chiusi, macchine di qualcun altro, situazioni in cui hai il permesso di guardare e non di toccare. Il secondo installa davvero, da zero, e poi guarda cosa succede.
+Quel file viene letto da **due esecutori diversi**. Il primo è uno smoke test in shell che non installa niente: serve dove non puoi installare, ambienti chiusi, macchine di qualcun altro, situazioni in cui hai il permesso di guardare e non di toccare. Il secondo è una suite pytest che porta su l'ambiente con Ansible e OpenTofu, da zero, e poi guarda cosa succede.
 
 La parte che conta non è nessuno dei due esecutori: è che **leggono la stessa fonte**. Due elenchi separati, uno per esecutore, sarebbero stati più semplici da scrivere e avrebbero divergito nel giro di qualche mese senza che nessuno se ne accorgesse — perché due elenchi che divergono non producono nessun errore, producono due verdi.
 
@@ -187,7 +187,7 @@ L'installazione era sana. **Sbagliava il file che avevo scritto io per dire quan
 
 Se un controllo può sbagliare dicendo rosso a un sistema sano, può sbagliare anche nell'altra direzione. Andai a rileggerli tutti.
 
-Uno accettava come successo **qualunque risposta che non fosse un errore del server**. Un accesso negato passava per verde. Una richiesta respinta perché l'utente non esisteva passava per verde. In quella configurazione il controllo aveva risposto verde per mesi senza aver mai verificato un accesso riuscito, e stampava a schermo un esito che non corrispondeva a quello che aveva davvero misurato.
+Uno controllava il flusso di autenticazione OIDC e accettava come successo **qualunque risposta sotto il 500**. Un 401 passava per verde. Un 403 passava per verde. In quella configurazione il controllo aveva risposto verde per mesi senza aver mai verificato un accesso riuscito, e stampava a schermo un esito che non corrispondeva a quello che aveva davvero misurato.
 
 E c'era il secondo pezzo, peggiore del primo perché più banale: **diverse configurazioni avevano la casella dei controlli semplicemente vuota**. Nessun controllo scritto. Nel cruscotto non comparivano come mancanti: non comparivano affatto.
 
@@ -199,7 +199,7 @@ Sommate le due cose, la matrice mostrava una fila di verdi che significavano tre
 
 La riparazione non è stata scrivere i controlli mancanti. È stata **dichiarare cosa significa verde**.
 
-Tre livelli, scritti esplicitamente. *Esiste*: il pezzo c'è, dove doveva essere. *Risponde*: risponde a chi lo interroga. *Funziona davvero*: fa la cosa per cui esiste, con un esito che solo un successo autentico può produrre. Per ogni configurazione si scrive quale livello raggiunge, e le caselle non raggiunte restano bianche.
+Tre livelli, scritti esplicitamente. *Esiste*: il container è su, la porta risponde. *Risponde*: l'endpoint restituisce qualcosa di sensato. *Funziona davvero*: un login OIDC completo arriva fino al token, con un esito che solo un successo autentico può produrre. Per ogni configurazione si scrive quale livello raggiunge, e le caselle non raggiunte restano bianche.
 
 Il risultato non è un cruscotto tutto verde. È una griglia in cui il bianco si vede, e si vede soprattutto nella terza colonna.
 

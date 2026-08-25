@@ -32,6 +32,7 @@ openItems:
   - "Il timer di refresh di keycloak-js resta non testato: è logica della libreria, si verifica il comportamento dell'app quando il refresh fallisce"
   - "`canCheckout` non è un ruolo Keycloak ma un custom claim del JWT: la decisione di autorizzazione sta nel backend che legge il token"
 openNote: "Ciò che resta fuori appartiene alla libreria, al backend o al repository."
+mode: how-to
 ---
 
 La suite ha 50 test. Ogni test parte dalla pagina di login, compila username e password, clicca "Accedi", aspetta il redirect, verifica il cookie. Tre secondi per ogni login. 50 test per 3 secondi: due minuti e mezzo spesi solo per autenticarsi, prima ancora di verificare qualcosa. Se Keycloak è lento -- e nei runner CI con risorse condivise lo è spesso -- i tempi raddoppiano. Se Keycloak è down, tutta la suite è rossa. Non per un bug, non per una regressione: perché il servizio di autenticazione non risponde.

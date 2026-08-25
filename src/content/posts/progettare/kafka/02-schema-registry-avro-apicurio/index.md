@@ -34,6 +34,7 @@ openItems:
   - "La demo usa KafkaJS, fermo dal 2023 e con problemi di compatibilità con Kafka 4.x, perché il codice di produzione originale lo adottava"
   - "I payload Avro sono binari: per il debug serve kafka-avro-console-consumer, kafkacat basta solo con il JSON"
 openNote: "Cosa la scelta di Apicurio non risolve da sé."
+mode: explanation
 ---
 ## Il problema: JSON senza contratto
 

@@ -36,6 +36,7 @@ openItems:
   - "Per le metriche con ciclo giornaliero serve una finestra di almeno 24 ore o un modello con stagionalità esplicita come Holt-Winters o Prophet"
   - "La query sulla quota mensile è pseudocodice didattico: PromQL non ha `days_until_month_end()` e in produzione serve una recording rule o una metrica custom"
 openNote: "Le assunzioni del modello lineare e dove smettono di valere."
+mode: explanation
 ---
 
 ## Il Problema: l'Alert che Scatta Sempre Tardi

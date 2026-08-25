@@ -34,6 +34,7 @@ openItems:
   - "Alcuni regolamenti, come quelli su sanità e finanza, richiedono l'isolamento fisico dei dati: in quel caso l'isolamento logico del type-per-tenant non basta"
   - "Passare successivamente a store dedicati è incrementale, ma richiede un layer di routing che mappa ogni tenant sul suo store"
 openNote: "Quando il modello unico smette di bastare, e cosa costa spostarsi su store dedicati."
+mode: explanation
 ---
 
 Ogni applicazione SaaS, prima o poi, arriva allo stesso punto: il primo cliente funziona, il secondo pure, ma al terzo emerge che l'isolamento tra tenant non è un dettaglio. È l'architettura stessa. Con RBAC tradizionale, la soluzione tipica è un `WHERE tenant_id = ?` in ogni query, un middleware che inietta il contesto del tenant, e il rischio costante che un bug faccia trapelare dati da un'organizzazione all'altra. Con ReBAC il problema si affronta diversamente: l'isolamento non è applicativo, ma **strutturale**. Se un utente non ha relazioni con un'organizzazione, non può accedere a nulla al suo interno. Nessun `WHERE` necessario.

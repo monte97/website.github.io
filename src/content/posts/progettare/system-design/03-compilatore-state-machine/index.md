@@ -33,6 +33,7 @@ openItems:
   - "Gli iteratori specializzati descritti sono quelli di .NET 8, e le lambda senza cattura vengono cacheate solo da C# 10 in poi"
   - "Il vantaggio del path specializzato è dichiarato misurabile ma non quantificato: l'articolo non porta numeri di benchmark"
 openNote: "Quello che questa discesa nel compilatore non chiude, e che va valutato sul proprio codice."
+mode: explanation
 ---
 
 Nei primi due articoli abbiamo visto *cosa* costa e *quanto* costa. Abbiamo misurato la differenza tra `List.Contains` e `HashSet.Contains`, quantificato il peso delle allocazioni intermedie, osservato `GroupBy` e `ToLookup` trasformare operazioni quadratiche in lineari. I numeri erano chiari, le fix immediate.

@@ -33,6 +33,7 @@ openItems:
   - "Le contextual tuples vivono per la singola chiamata: le relazioni strutturali passate così restano invisibili a ListObjects e a tutti gli altri utenti"
   - "Il middleware è fail closed: se OpenFGA non è raggiungibile la richiesta si ferma con un 503 e non passa"
 openNote: "I confini delle tre strategie di sincronizzazione, prima di sceglierne una."
+mode: explanation
 ---
 
 Un identity provider gestisce utenti, ruoli e login. Un authorization engine decide chi può fare cosa su quale risorsa. Il problema non è farli funzionare: è farli parlare senza che uno invada il territorio dell'altro. Nell'[articolo precedente]({{< ref "/posts/openfga/01-zanzibar-concetti" >}}) abbiamo costruito un modello di autorizzazione relationship-based con OpenFGA. Ora lo colleghiamo a Keycloak, usando [VaultDrive](https://github.com/monte97/VaultDrive) come progetto di riferimento: una demo costruita per questa serie con setup containerizzato e codice riproducibile.

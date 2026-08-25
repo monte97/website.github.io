@@ -31,6 +31,7 @@ openItems:
   - "Con i log centralizzati, password o token nei campi strutturati diventano visibili a chiunque acceda a Grafana"
   - "La configurazione Grafana della demo, accesso anonimo con ruolo Admin, vale solo per sviluppo locale"
 openNote: "Limiti che i tre step non eliminano."
+mode: how-to
 ---
 
 Un `console.log` "temporaneo" per capire perché una richiesta fallisce in produzione produce una stringa piatta: senza timestamp, senza livello, senza contesto. Se il container si riavvia, quei log spariscono. Con più istanze, l'unica opzione è saltare da un `docker logs` all'altro cercando la riga giusta. È l'approccio più rapido per iniziare, ma il primo a diventare inutile quando il sistema cresce.

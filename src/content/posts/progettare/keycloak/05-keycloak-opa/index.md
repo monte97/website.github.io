@@ -34,6 +34,7 @@ openItems:
   - "Gli esempi da terminale usano il flusso Resource Owner Password Credentials, deprecato e tenuto in MockMart solo per il testing locale"
   - "L'immagine `latest-debug` dell'esempio serve al debug: in produzione l'indicazione è fissare una versione specifica"
 openNote: "Punti in cui serve una decisione architetturale, non soltanto codice"
+mode: how-to
 ---
 
 Bloccare un utente dal checkout quando il claim JWT è ancora valido fino alla scadenza del token. Aggiungere una regola di accesso e dover modificare Keycloak, il codice Express, e magari anche un mapper custom. Sono problemi comuni quando autenticazione e autorizzazione non sono separate.

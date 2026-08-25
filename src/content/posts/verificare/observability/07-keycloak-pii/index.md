@@ -31,6 +31,7 @@ openItems:
   - "Il tracing nativo esiste dalla versione 26.0, inizialmente come preview: le variabili unificate KC_TELEMETRY_* richiedono feature flag in quella versione"
   - "Quali attributi compaiono dipende dalla versione dell'SDK bundled: la config copre sia i nomi vecchi (http.url, db.statement) sia i nuovi (url.full, db.query.text)"
 openNote: "Ciò che il filtering non risolve, sul fronte GDPR e sulle versioni."
+mode: how-to
 ---
 
 Abilitare il tracing su Keycloak significa ritrovarsi email, username e token JWT in chiaro negli span. Keycloak gestisce credenziali, token e sessioni — quando il tracing è attivo, tutto questo finisce nel backend di observability senza alcun filtro. Il rischio: data breach e violazione GDPR con un click su Explore.

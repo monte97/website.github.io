@@ -34,6 +34,7 @@ openItems:
   - "`failOnFlakyTests` e `--only-changed` richiedono Playwright 1.56 o successivo: le versioni precedenti non li hanno"
   - "I test E2E della UI non devono dipendere dal database, ma i test di integrazione col database reale restano un livello separato della piramide"
 openNote: "Quello che il retry, da solo, non risolve."
+mode: how-to
 ---
 
 Il test passa 9 volte su 10. In CI fallisce una volta a settimana, sempre su un test diverso. Il team aggiunge `retries: 2` nella configurazione, il test passa, nessuno investiga. Dopo un mese la suite ha 15 test flaky mascherati dai retry, e nessuno si fida più dei risultati. Quando un test fallisce davvero -- una regressione reale -- la reazione è "sarà un flaky, rieseguiamo". Il bug arriva in produzione.

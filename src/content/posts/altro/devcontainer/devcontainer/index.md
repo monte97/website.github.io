@@ -30,6 +30,7 @@ openItems:
   - "La sincronizzazione automatica dell'UID è documentata per immagine e Dockerfile ma non per Docker Compose: dichiarare l'utente nel servizio toglie il dubbio"
   - "Un ambiente di sviluppo riproducibile non porta con sé una build riproducibile: la seconda richiede lockfile, digest delle immagini e pipeline"
 openNote: "Dove la riproducibilità dell'ambiente si ferma."
+mode: explanation
 ---
 
 

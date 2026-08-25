@@ -32,6 +32,7 @@ openItems:
   - "La retention differenziata per stream richiede il compactor Loki con retention_enabled: true ed è disponibile da Loki 2.3+"
   - "Se in dubbio, non marcare: i log non marcati finiscono nel flusso default di Loki e restano disponibili per il debug"
 openNote: "Requisiti di produzione che la demo lascia deliberatamente fuori."
+mode: how-to
 ---
 
 Immaginate di ricevere una richiesta dal team compliance: "Servono i log di audit degli ultimi tre anni." Aprite Grafana, cercate in Loki e scoprite che la retention massima è 30 giorni. I log di audit sono stati cancellati insieme ai debug log, perché vivevano tutti nello stesso backend. Nessuna separazione, nessuna policy dedicata.

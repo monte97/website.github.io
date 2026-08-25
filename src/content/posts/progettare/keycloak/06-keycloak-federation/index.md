@@ -33,6 +33,7 @@ openItems:
   - "I diagrammi seguono il flusso OIDC: con SAML l'asserzione transita via browser POST, senza lo scambio code-token server-to-server"
   - "Il First Broker Login Flow va deciso: creazione automatica dell'utente, collegamento a un account esistente o prompt esplicito sono le strategie possibili"
 openNote: "Comportamenti che cambiano secondo la configurazione scelta"
+mode: explanation
 ---
 
 In molte organizzazioni le identità degli utenti sono distribuite su sistemi eterogenei: un Active Directory con migliaia di dipendenti, un provider di social login per i clienti, un IdP esterno per i partner commerciali. Le applicazioni hanno bisogno di un punto unico di autenticazione, indipendentemente da dove vivono gli utenti.

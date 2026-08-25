@@ -33,6 +33,7 @@ openItems:
   - "La verifica è stata compilazione, test, avvio dei container e controllo delle risposte — non c'è una misura del comportamento a regime dopo il cambio"
   - "Le dipendenze di terze parti che portano un reference.conf con chiavi akka vanno controllate una per una: non esiste una regola generale"
 openNote: "Quello che questa migrazione non copre, e che va deciso o verificato caso per caso."
+mode: how-to
 ---
 
 Un servizio Scala su Akka 2.6 in produzione da tre anni. La licenza cambia, le patch di sicurezza non arrivano più. Quello che segue è la migrazione pratica da Akka ad Apache Pekko: checklist, gotcha e lezioni dal campo.

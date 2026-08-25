@@ -42,6 +42,7 @@ openItems:
   - "L'attributo audit.event non viene aggiunto in automatico: va impostato nel codice nei punti che rappresentano operazioni critiche"
   - "Le proiezioni assumono ~8 span per trace, ~500 bytes per span e storage S3 a $0.023/GB: i numeri vanno validati sul traffico reale"
 openNote: "Le assunzioni dietro i numeri, e i rischi che il campionamento non tocca."
+mode: how-to
 ---
 
 Nel [tutorial precedente](https://montelli.dev/posts/otel-website-material/04-correlation/) abbiamo strumentato un e-commerce con OpenTelemetry e risolto tre scenari di debug: silent failure, latency spike, fan-out. Tutto funzionava: trace complete, errori visibili, latenza misurabile.

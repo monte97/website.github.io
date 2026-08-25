@@ -34,6 +34,7 @@ openItems:
   - "L'80/20 tra fast e slow path non è fisso: con molte condivisioni peer-to-peer il peso torna su ListObjects"
   - "Determinare la relazione massima per la mascheratura costa fino a tre Check in sequenza: parallelizzarli o metterli in cache è una scelta implementativa aperta"
 openNote: "Dove finisce ReBAC e inizia il lavoro del layer applicativo."
+mode: how-to
 ---
 
 Nei primi tre articoli della serie abbiamo costruito un modello di autorizzazione completo: tipi, relazioni, store per tenant, integrazione con Keycloak. Ma finora gli esempi avevano al massimo due livelli di nesting: organizzazione e documento, oppure organizzazione e folder. Il mondo reale è diverso. Una folder contiene subfolder, che contengono altre subfolder, che contengono documenti. Un utente condivide una cartella e si aspetta che tutto il contenuto sotto diventi accessibile. E quando devi mostrare una lista di documenti, non puoi fare un Check per ciascuno.

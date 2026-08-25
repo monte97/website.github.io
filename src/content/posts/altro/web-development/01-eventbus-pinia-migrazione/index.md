@@ -32,6 +32,7 @@ openItems:
   - "L'invalidazione manuale presuppone che il momento del cambiamento sia noto: per dati che cambiano in modo imprevedibile i TTL restano la scelta indicata"
   - "Senza `pick`, il plugin di persistenza serializza l'intero stato dello store, inclusi campi effimeri o derivati: la lista va mantenuta esplicita"
 openNote: "Scelte e confini emersi in una migrazione concreta, non regole generali."
+mode: how-to
 ---
 
 ## EventBus: stato implicito distribuito tra componenti

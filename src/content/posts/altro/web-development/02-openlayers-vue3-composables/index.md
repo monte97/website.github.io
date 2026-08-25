@@ -31,6 +31,7 @@ openItems:
   - "Il contratto minimo è `GeoLocatable`: qualsiasi entità con latitude e longitude entra in mappa, la demo traccia negozi fissi e veicoli in movimento"
   - "Il pattern `shallowRef` vale per qualsiasi libreria imperativa con stato interno complesso: Three.js, D3, Leaflet"
 openNote: "Confini dei pattern così come usati nella demo."
+mode: explanation
 ---
 
 ## Il problema: Vue wrappa ciò che non dovrebbe

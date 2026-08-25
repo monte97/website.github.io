@@ -33,6 +33,7 @@ openItems:
   - "Il controller d'esempio è scritto a mano per isolare i concetti: per progetti reali l'articolo indica Kubebuilder o Operator SDK"
   - "La verifica mostrata è manuale su `kind`: il testing automatizzato dei controller non entra nell'articolo"
 openNote: "Cosa l'esempio minimale lascia fuori."
+mode: explanation
 ---
 
 ## Il Meccanismo Dietro kubectl apply

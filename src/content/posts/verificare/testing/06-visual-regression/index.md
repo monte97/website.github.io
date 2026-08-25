@@ -33,6 +33,7 @@ openItems:
   - "Il visual testing aggiunge valore a design stabilizzato: in prototipazione ogni commit genera diff e i fallimenti vengono ignorati"
   - "Restano esclusi API, backend e prodotti in early stage: si introduce quando il design è abbastanza maturo da proteggere"
 openNote: "Dove la rete di sicurezza visiva non va installata."
+mode: how-to
 ---
 
 Il test funzionale passa: il bottone esiste, il testo è corretto, il redirect funziona. Ma il layout è rotto. Un CSS override ha spostato il bottone fuori dallo schermo, un `z-index` sbagliato nasconde il messaggio di errore sotto un altro elemento, un font non caricato rende il testo illeggibile. I test funzionali non vedono questi problemi -- verificano la struttura del DOM, non il rendering. Un `toBeVisible()` controlla che l'elemento non abbia `display: none`, non che sia effettivamente leggibile a schermo.

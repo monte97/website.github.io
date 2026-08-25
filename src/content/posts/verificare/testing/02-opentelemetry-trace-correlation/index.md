@@ -34,6 +34,7 @@ openItems:
   - "Il tail-based sampling accumula le trace in memoria del Collector: `num_traces` va dimensionato sul throughput o le trace vengono scartate"
   - "Su un'app monolitica senza OpenTelemetry non c'è nessuna trace da correlare e la tecnica non ha presa"
 openNote: "I limiti concreti che l'articolo stesso elenca in chiusura."
+mode: how-to
 ---
 
 Il test E2E fallisce con un timeout, lo screenshot mostra uno spinner infinito, e l'unica informazione utile è "qualcosa nel backend non ha risposto". I test Playwright verificano il percorso utente: login, aggiungi al carrello, checkout. Ma il checkout di un e-commerce a microservizi attraversa 4 servizi diversi, e quando il test fallisce con timeout Playwright vede solo il frontend. Il backend resta una **black box**.

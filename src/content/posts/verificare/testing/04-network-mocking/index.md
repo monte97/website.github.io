@@ -32,6 +32,7 @@ openItems:
   - "Happy path critico e test di integrazione restano senza mock: il valore sta nel contratto reale e nella comunicazione tra servizi"
   - "I test di performance e carico non hanno senso sui mock, troppo veloci rispetto ai servizi reali"
 openNote: "Tutto ciò che non attraversa il browser resta fuori dal perimetro di page.route()."
+mode: how-to
 ---
 
 Il test E2E del checkout fallisce. Lo screenshot mostra un messaggio di errore generico, il log dice `timeout waiting for selector [data-testid="order-confirmation"]`. Apri Grafana, controlli le trace: il payment-service è down. Non è un bug del frontend, non è una regressione -- è un servizio esterno che non risponde. Ma la suite CI è rossa, il merge è bloccato, e il team perde mezza mattinata a capire che il problema non è nel codice.

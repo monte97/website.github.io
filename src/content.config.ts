@@ -6,8 +6,10 @@ const posts = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/posts' }),
   schema: z.object({
     title: z.string(),
+    seoTitle: z.string().optional(),   // solo per il <title>: l'H1 resta `title`
     date: z.coerce.date(),
     description: z.string(),
+    mode: z.enum(['tutorial', 'how-to', 'reference', 'explanation']).optional(),
     pillar: z.enum(['progettare', 'verificare', 'automatizzare']).nullable().default(null),
     category: z.string(),
     tags: z.array(z.string()).default([]),

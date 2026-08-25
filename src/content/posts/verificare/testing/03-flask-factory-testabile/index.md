@@ -33,6 +33,7 @@ openItems:
   - "La factory non serve per script one-shot, CLI tool e prototipi che vivono meno di una settimana"
   - "Il pattern ha senso quando il servizio resta in produzione e ha bisogno di test"
 openNote: "Cosa resta da verificare e dove il pattern non conviene."
+mode: explanation
 ---
 
 Tre servizi Flask in un sistema di telemetria per mezzi d'opera. Ognuno consuma dati da Kafka, li persiste su MongoDB, e li espone tramite API REST. Tutti e tre condividono lo stesso difetto architetturale: le connessioni a database e broker vengono create al momento dell'import, a livello di modulo.

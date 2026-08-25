@@ -35,6 +35,7 @@ openItems:
   - "Uno span per elemento su migliaia di record rende la trace ingestibile: MonitorElements resta confinato a debug e collezioni piccole"
   - "Lo stack LGTM monolitico copre lo sviluppo locale: collector, storage e retention di un ambiente produttivo non sono toccati"
 openNote: "Quello che questo strumento non decide, e che va pesato prima di portarlo in produzione."
+mode: how-to
 ---
 
 Nei tre articoli precedenti abbiamo visto [cosa sbagliare](/posts/dotnet/linq/01-errori-produzione), [quanto costa](/posts/dotnet/linq/02-benchmark-net8) e [cosa succede sotto il cofano](/posts/dotnet/linq/03-compilatore-state-machine). Abbiamo parlato di complessità computazionale, state machine, allocazioni e streaming. Ma finora era tutto teoria e numeri. Tabelle di benchmark, diagrammi ASCII, ragionamenti sulla deferred execution.

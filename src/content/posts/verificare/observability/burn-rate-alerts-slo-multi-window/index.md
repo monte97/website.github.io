@@ -37,6 +37,7 @@ openItems:
   - "I valori della tabella 5-8 valgono per uno SLO mensile di 720 ore: con finestre settimanali o trimestrali i burn rate vanno ricalcolati"
   - "Il burn-rate misura qualità vista dall'utente: per la saturazione fisica lo strumento è `predict_linear`, per il semplice su/giù basta il threshold"
 openNote: "Numeri canonici del Workbook, con le condizioni per cui valgono."
+mode: explanation
 ---
 
 ## Il Problema: l'Alert di Availability che Scatta Troppo Tardi

@@ -30,6 +30,7 @@ openItems:
   - "Il codice già puro per natura non ha bisogno di DI: `compute_delta` riceve dizionari e restituisce valori, iniettare sarebbe overhead"
   - "La scala ha quattro livelli e il consiglio è non saltarli: partire dal più semplice che risolve il problema e salire solo se la complessità cresce"
 openNote: "Quale livello di DI serve, e dove fermarsi."
+mode: explanation
 ---
 
 Ho refactorizzato 3 servizi Flask. I conftest sono passati da 228 a 148 righe totali. Gli hack su `sys.modules` sono scomparsi. Il mutation score sulla logica di business è arrivato a zero mutanti sopravvissuti. Ma la lezione non era su Flask -- era su come Python gestisce le dipendenze.

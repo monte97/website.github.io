@@ -34,6 +34,7 @@ openItems:
   - "Le operazioni composte get-then-put su `ConcurrentHashMap` non sono atomiche: il lost update è accettato perché i dati telemetrici vengono ricalcolati frequentemente"
   - "L'ordine di arrivo tra i tre topic non è garantito: ogni messaggio può aggiornare lo stato indipendentemente dagli altri"
 openNote: "I compromessi assunti dai due pattern, da rivalutare fuori dalla telemetria."
+mode: explanation
 ---
 ## Il pattern di partenza: while(true) dentro un attore
 

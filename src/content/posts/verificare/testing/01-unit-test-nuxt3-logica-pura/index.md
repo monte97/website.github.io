@@ -30,6 +30,7 @@ openItems:
   - "La rinuncia agli E2E vale per un'applicazione interna con utenti limitati: con un contesto diverso il rapporto costo/beneficio cambia"
   - "La convenzione sui file di test è ibrida per scelta: colocata nei composable, centralizzata in `test/` per store e helper"
 openNote: "Cosa è rimasto fuori dalla suite, e perché è una scelta dichiarata."
+mode: how-to
 ---
 
 Ho un frontend Nuxt 3 con 106 componenti Vue, 4 store Pinia, 6 composable e 11 helper API. Zero test. O meglio: nove test di cui sette rotti -- residui di un tentativo precedente mai completato.

@@ -36,6 +36,7 @@ openItems:
   - "`runbook_url` non è formalizzato nella documentazione Prometheus core: è una convenzione dell'ecosistema (kube-prometheus, Operator) che nessuno forza"
   - "Il demo instrada verso un mock-receiver webhook locale: le integrazioni reali verso PagerDuty o Slack vanno configurate nei receiver"
 openNote: "I confini dichiarati dei tre mattoni."
+mode: explanation
 ---
 
 ## Il Gap tra la Regola `firing` e l'Umano che Deve Agire

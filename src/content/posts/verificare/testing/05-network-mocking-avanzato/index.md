@@ -32,6 +32,7 @@ openItems:
   - "Il HAR riflette il backend al momento della registrazione e non ha invalidazione automatica: serve registrarlo di nuovo, mensile o per sprint"
   - "Un flusso di checkout completo può generare un HAR di diversi megabyte: committarlo pesa su clone e review delle diff"
   - "`mergeTests` serve con fixture in moduli separati o mantenute da team diversi: nello stesso file basta estendere una volta sola"
+mode: how-to
 ---
 
 Nell'[articolo precedente](/blog/verificare/testing/04-network-mocking/) abbiamo visto come `page.route()` permette di intercettare le richieste HTTP del browser e restituire risposte controllate. Funziona: si registra un handler, si chiama `route.fulfill()`, e il test non dipende più dal backend reale. Ma c'è un problema che emerge appena la suite cresce.

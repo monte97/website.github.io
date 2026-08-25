@@ -32,6 +32,7 @@ openItems:
   - "Non esiste una soglia universale: 60 è un punto di partenza per bloccare le regressioni, non un obiettivo di qualità"
   - "L'esempio è un flusso di gestione ordini piccolo e con logica propria. Su codice fatto per lo più di orchestrazione e framework, la resa dei mutanti è più bassa"
 openNote: "Quello che il mutation testing non risolve, e che va deciso guardando il proprio codice."
+mode: explanation
 ---
 
 La maggior parte di noi si fida della propria suite di test. I test sono verdi, la coverage è alta: si rilascia tranquilli. È un'equazione che diamo per scontata (*test passano → codice sano*), e quasi sempre funziona.

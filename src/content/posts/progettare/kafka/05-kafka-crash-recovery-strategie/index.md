@@ -33,6 +33,7 @@ openItems:
   - "Con messaggi ogni 5 secondi la finestra di perdita è al massimo un delta per sensore, trascurabile su aggregazioni giornaliere"
   - "La demo non gestisce SIGTERM, non espone health check e non ha flow control: in produzione ognuno di questi punti va risolto"
 openNote: "I limiti dichiarati dalla demo, da ripensare prima dell'uso in produzione."
+mode: explanation
 ---
 
 Un consumer Kafka crasha. Cosa succede ai dati che stava processando? La risposta non dipende da Kafka, ma dal tipo di stato che il consumer mantiene. Un consumer idempotente può ripartire dall'inizio del topic senza conseguenze. Un consumer che accumula delta non può permetterselo: ricalcolerebbe valori già contati. Un consumer stateless non ha nulla da recuperare.

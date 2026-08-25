@@ -34,6 +34,7 @@ openItems:
   - "La rete delle VM presuppone un server DHCP già configurato: l'indirizzamento non è gestito dalla procedura"
   - "Il secret del token Proxmox è visibile solo alla creazione: dopo non è più recuperabile"
 openNote: "Decisioni e condizioni esterne alla guida."
+mode: how-to
 ---
 
 Dopo aver esplorato Talos Linux nei precedenti articoli, è tempo di cambiare approccio e utilizzare Ubuntu come sistema operativo base per i nostri nodi Kubernetes. In questo post vedremo come creare un cluster Kubernetes su Proxmox utilizzando Cluster API (CAPI) e le immagini ufficiali generate con image-builder.

@@ -33,6 +33,7 @@ openItems:
   - "La pre-materializzazione offre le query più veloci ma introduce overhead sui write e consistenza eventuale: non conviene quando le tuple cambiano più spesso di quanto la lista venga letta"
   - "BatchCheck non sostituisce ListObjects: risponde su candidati già noti, come i risultati di una ricerca, non sull'intero store"
 openNote: "Il prezzo di ogni strategia emerge quando i permessi devono cambiare subito."
+mode: explanation
 ---
 
 Nell'[articolo precedente]({{< ref "/posts/openfga/04-gerarchie-query" >}}) abbiamo visto il pattern fast/slow path: usare un JOIN SQL per i casi comuni (accesso derivato dall'organizzazione) e ListObjects solo per le condivisioni dirette. È una buona euristica. Ma non è sempre sufficiente.

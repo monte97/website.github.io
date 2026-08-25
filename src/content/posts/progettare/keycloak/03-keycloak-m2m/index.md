@@ -33,6 +33,7 @@ openItems:
   - "Client Credentials non prevede refresh token: alla scadenza si richiede un nuovo token, quindi ogni chiamante deve saper gestire il rinnovo"
   - "Da Keycloak 17+ (distribuzione Quarkus) il prefisso `/auth` esce dagli URL di default: la variabile `KEYCLOAK_AUTH_PATH` copre entrambe le convenzioni"
 openNote: "Assunzioni che tengono finché i servizi coinvolti sono pochi"
+mode: how-to
 ---
 
 Job schedulati, webhook, eventi asincroni: in questi casi non c'è nessun utente davanti allo schermo, ma i servizi devono comunque autenticarsi tra loro. La comunicazione machine-to-machine richiede un meccanismo di autenticazione diverso da quello basato su browser e redirect.

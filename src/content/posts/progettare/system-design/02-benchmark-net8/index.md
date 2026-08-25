@@ -34,6 +34,7 @@ openItems:
   - "Per indici oltre 500 elementi e hot path ad alto throughput la matrice resta sul «dipende»: decidere richiede misurazione sul proprio codice"
   - "Il trade-off del GroupBy non è gratis: l'indice costruito in una passata alloca più memoria dello scan ripetuto"
 openNote: "Quello che i numeri non decidono, e che va misurato sul proprio codice."
+mode: explanation
 ---
 
 In ogni code review C# prima o poi qualcuno dice "qui LINQ è troppo lento, usa un for". Ma nessuno tira fuori un benchmark. Oggi lo facciamo -- su .NET 8, con BenchmarkDotNet, e con i pattern reali dell'articolo precedente.

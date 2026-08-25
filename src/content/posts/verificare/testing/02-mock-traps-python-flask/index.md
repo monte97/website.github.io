@@ -37,6 +37,7 @@ openItems:
   - "Un nuovo import al top level rompe il conftest in modo silenzioso: il contratto d'ordine va documentato"
   - "Un 100% ottenuto filtrando i mutanti infrastrutturali non equivale a un 100% su tutti i mutanti"
 openNote: "Fin dove arrivano le workaround, e cosa richiede un refactoring vero."
+mode: explanation
 ---
 
 Tre servizi Flask, tre conftest.py, un singolo smoke test ciascuno: `GET /health` restituiva 200, tutti verdi, CI felice. Poi ho scritto il secondo test e tutto è crollato.

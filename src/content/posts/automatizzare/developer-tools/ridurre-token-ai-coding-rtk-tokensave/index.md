@@ -24,6 +24,7 @@ openItems:
   - "Il grafo di tokensave copre i linguaggi dei tre tier: file esclusi da `.gitignore` o linguaggi assenti lasciano buchi nell'indice"
   - "tokensave è tutto locale: le sole chiamate di rete sono opzionali e disattivabili, e non trasportano codice"
 openNote: "Numeri dichiarati e coperture: da riportare sul proprio utilizzo."
+mode: how-to
 ---
 
 Claude Code funziona. I task vengono completati, il codice prodotto è corretto. C'è un dettaglio che emerge solo guardando i contatori: i token consumati crescono in modo non lineare rispetto alla complessità dei task. Le sessioni lunghe costano molto più del previsto.

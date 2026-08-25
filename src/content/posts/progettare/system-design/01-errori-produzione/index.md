@@ -34,6 +34,7 @@ openItems:
   - "Con liste di lookup piccole il costo è impercettibile: dove intervenire dipende dalle cardinalità del proprio dominio"
   - "La scelta tra pipeline LINQ e foreach esplicito nell'hot path resta aperta: il foreach è più verboso ma porta early exit e zero allocazioni"
 openNote: "I confini che l'audit non chiude, e che spettano a chi porta questi pattern nel proprio codice."
+mode: explanation
 ---
 
 Qualche mese fa ho fatto un audit di performance su un servizio di dispatch per una flotta di veicoli commerciali. Il sistema gestisce centinaia di consegne al giorno e decide in tempo reale quale veicolo assegnare a ogni nuovo ordine, rispettando vincoli di zona, capacità, orario e tipo merce.

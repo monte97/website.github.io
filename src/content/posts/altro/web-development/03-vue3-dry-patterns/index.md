@@ -30,6 +30,7 @@ openItems:
   - "Se la configurazione del componente generico richiede più righe del codice che sostituisce, la direzione è sbagliata"
   - "Estrarre si può sempre fare dopo: disfare un'astrazione sbagliata è molto più costoso"
 openNote: "Dove fermarsi: la duplicazione consapevole resta un'opzione."
+mode: how-to
 ---
 
 Nelle SPA di grandi dimensioni con Vue 3 è comune trovarsi con decine di pagine che sono variazioni dello stesso tema: stessa struttura, stesso boilerplate, stesse cinque righe di setup. Si parte con copia-incolla, poi un bug nel flusso di salvataggio va corretto in dodici posti.

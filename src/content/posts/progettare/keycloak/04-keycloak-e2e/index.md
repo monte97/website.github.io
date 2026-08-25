@@ -35,6 +35,7 @@ openItems:
   - "Con `checkLoginIframe` disabilitato, il logout da un'altra tab non raggiunge il frontend fino alla scadenza del token, cinque minuti di default"
   - "Il formato dei claim custom dipende da versione di Keycloak, tipo di mapper e configurazione: le decisioni di authorization sui ruoli restano la via più stabile"
 openNote: "Ciò che emerge quando localhost incontra staging"
+mode: how-to
 ---
 
 Un'integrazione Keycloak che funziona perfettamente su localhost e poi esplode al primo deploy in staging è uno scenario comune.

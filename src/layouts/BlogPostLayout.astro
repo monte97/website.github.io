@@ -18,6 +18,7 @@ interface Heading {
 
 interface Props {
   title: string;
+  seoTitle?: string;
   description: string;
   date: Date;
   pillar: 'progettare' | 'verificare' | 'automatizzare' | null;
@@ -36,6 +37,7 @@ interface Props {
 
 const {
   title,
+  seoTitle,
   description,
   date,
   pillar,
@@ -100,7 +102,7 @@ const relatedPosts = pillar
 
 ---
 
-<BaseLayout title={title} description={description} ogImage={ogImage} lang={lang} type="article" publishedTime={date} alternateUrl={alternateUrl} author="Francesco Montelli" jsonLd={blogPostingJsonLd}>
+<BaseLayout title={title} seoTitle={seoTitle} description={description} ogImage={ogImage} lang={lang} type="article" publishedTime={date} alternateUrl={alternateUrl} author="Francesco Montelli" jsonLd={blogPostingJsonLd}>
   <Header lang={lang} />
 
   <main class="max-w-5xl mx-auto px-5 py-8">

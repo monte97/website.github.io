@@ -31,6 +31,7 @@ openItems:
   - "Page Object creati per ogni pagina al giorno zero producono classi mai usate: il pattern deve emergere dal refactoring"
   - "Le asserzioni su testi generici senza `data-testid` restano su `page.getByText()`: il POM copre azioni ripetute e selettori strutturali"
   - "L'indirezione non elimina l'accoppiamento, lo sposta dal DOM alla classe: quando la UI cambia si aggiorna la pagina object, non i test"
+mode: how-to
 ---
 
 La suite funziona. Otto articoli di test, dieci file spec, copertura su checkout, autenticazione, visual regression, network mocking. I test passano, la CI è verde, il team si fida della suite. Ma apri un file qualsiasi e trovi questo:
