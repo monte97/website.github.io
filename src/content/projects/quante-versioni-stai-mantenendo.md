@@ -15,6 +15,12 @@ metodo: >
   Contare le configurazioni realmente installate, dichiararle in un file unico, e leggerle
   da due esecutori diversi: uno che verifica dove non si può installare niente, uno che
   installa davvero. Poi tre livelli di controllo dichiarati per riga.
+esito: >
+  Le configurazioni supportate sono diventate un elenco scritto, e «verde» ha smesso di
+  significare tre cose diverse. Il lavoro ha rivelato controlli che dichiaravano successo
+  senza aver verificato nulla e configurazioni senza alcun controllo. Il risultato
+  consegnato non e' una copertura piu' alta: e' la mappa di dove sono i buchi, e quanto
+  costa ogni riga.
 anonimizzazione: >
   Settore e dominio sono sostituiti. Nomi di servizi, indirizzi, esiti attesi e il numero
   reale delle configurazioni sono omessi: l'elenco completo è la distinta base di un

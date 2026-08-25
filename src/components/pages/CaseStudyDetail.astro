@@ -28,7 +28,7 @@ const resultItems = Array.isArray(d.result) ? d.result : d.result ? [d.result] :
 const mailLink = 'mailto:francesco@montelli.dev';
 
 const t = lang === 'en'
-  ? { back: 'All case studies', oggetto: 'Subject', metodo: 'Method', struttura: 'Structure',
+  ? { back: 'All case studies', oggetto: 'Subject', esito: 'Outcome', metodo: 'Method', struttura: 'Structure',
       anon: 'Anonymisation', toc: 'What this document covers', howto: 'How to read this',
       constraint: 'The constraint', context: 'Context', actions: 'What was done',
       result: 'What was left behind', pillarApplied: 'Pillar applied', related: 'Related article',
@@ -36,7 +36,7 @@ const t = lang === 'en'
       specs: 'In brief', open: 'What remains open', shots: 'What it looks like',
       ctaTitle: 'Same situation on your side?', ctaDesc: 'Tell me where the system is now and what is blocking you.',
       ctaPrimary: 'Book a discovery call', ctaSecondary: 'or write me' }
-  : { back: 'Tutti i case study', oggetto: 'Oggetto', metodo: 'Metodo', struttura: 'Struttura',
+  : { back: 'Tutti i case study', oggetto: 'Oggetto', esito: 'Com’è andata', metodo: 'Metodo', struttura: 'Struttura',
       anon: 'Anonimizzazione', toc: 'Cosa contiene questo documento', howto: 'Come leggerlo',
       constraint: 'Il vincolo', context: 'Contesto', actions: 'Cosa è stato fatto',
       result: 'Cosa è rimasto', pillarApplied: 'Pilastro applicato', related: 'Articolo correlato',
@@ -47,10 +47,11 @@ const t = lang === 'en'
 
 const metaCells = [
   d.oggetto && { label: t.oggetto, value: d.oggetto },
+  d.esito && { label: t.esito, value: d.esito, key: true },
   d.metodo && { label: t.metodo, value: d.metodo },
   d.sections && d.sections.length > 0 && { label: t.struttura, value: d.sections.map((s: any) => s.title).join(' · ') },
   d.anonimizzazione && { label: t.anon, value: d.anonimizzazione },
-].filter(Boolean) as { label: string; value: string }[];
+].filter(Boolean) as { label: string; value: string; key?: boolean }[];
 ---
 
 <BaseLayout title={d.title} description={d.description} lang={lang}>
@@ -84,9 +85,9 @@ const metaCells = [
     {metaCells.length > 0 && (
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-px bg-border/50 dark:bg-border-dark/50 rounded-2xl overflow-hidden border border-border/50 dark:border-border-dark/50 mb-12">
         {metaCells.map((cell) => (
-          <div class="bg-white dark:bg-surface-dark p-5 md:p-6">
+          <div class:list={['p-5 md:p-6', cell.key ? 'bg-accent-subtle' : 'bg-white dark:bg-surface-dark']}>
             <p class="text-[11px] font-semibold uppercase tracking-[0.15em] text-accent mb-2">{cell.label}</p>
-            <p class="text-sm text-text-muted leading-relaxed">{cell.value}</p>
+            <p class:list={['text-sm leading-relaxed', cell.key ? 'text-text-dark dark:text-text-light font-medium' : 'text-text-muted']}>{cell.value}</p>
           </div>
         ))}
       </div>

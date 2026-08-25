@@ -56,6 +56,7 @@ const projects = defineCollection({
     thesis: z.string().optional(),           // la tesi in una riga, chiude la pagina
     oggetto: z.string().optional(),          // cosa è stato analizzato
     metodo: z.string().optional(),           // come si è proceduto
+    esito: z.string().optional(),            // com'è andata: la sintesi in 2-3 righe
     anonimizzazione: z.string().optional(),  // cosa è stato omesso e perché
     sections: z.array(z.object({             // indice del documento
       n: z.string(),

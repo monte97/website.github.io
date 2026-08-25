@@ -17,6 +17,10 @@ metodo: >
   dietro — una che replica deliberatamente il comportamento vecchio, una vuota, una nuova —
   e un flag che decide chi risponde. Le relazioni nuove si sintetizzano da ciò che il
   sistema già sa: nessun record migrato, nessun cutover notturno.
+esito: >
+  L'autorizzazione per singola risorsa e' diventata esprimibile, senza migrare un solo
+  record: i permessi vecchi non erano dati, erano condizioni sparse nel codice. Il
+  percorso precedente resta attivo dietro un flag, ed e' la parte onesta del risultato.
 anonimizzazione: >
   Il dominio è sostituito: piattaforma di gestione cantieri edili al posto di quello
   reale. Il direttore lavori è un personaggio composito di richieste arrivate in momenti

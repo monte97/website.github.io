@@ -15,6 +15,11 @@ metodo: >
   Una sola feature portata end-to-end invece di tre abbozzate, ogni bivio deciso prima di
   scrivere il codice e registrato insieme all'alternativa scartata, verifica proporzionata
   al dimostratore e dichiarata per intero.
+esito: >
+  Una feature portata end-to-end su Android e iOS dallo stesso codice, con mappa nativa.
+  Ogni bivio e' registrato con l'alternativa scartata, e la verifica e' dichiarata per
+  intero: cosa e' coperto da test, cosa e' stato provato a mano, cosa non e' verificato e
+  perche'.
 anonimizzazione: >
   Il caso di partenza è reale — una piattaforma di telemetria e gestione cantiere — ma qui
   compare solo come scenario: la demo non usa le sue API né i suoi dati, e nessun ambiente

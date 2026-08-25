@@ -16,6 +16,12 @@ metodo: >
   Ricostruzione del protocollo osservando il traffico del portale, primo accesso delegato
   a un browser headless e rinnovo del token via HTTP, mappatura per nome e non per
   posizione, perimetro limitato alla sola lettura.
+esito: >
+  I dati arrivano nel gestionale senza piu' trascrizioni manuali. Lungo la strada e'
+  emerso che l'endpoint riordinava le risposte, e per due settimane i valori sono finiti
+  nella colonna sbagliata senza produrre un solo errore. Il canale che scriveva sui
+  parametri di sicurezza e' stato lasciato al costruttore: decisione presa prima di
+  provarci, e concordata.
 anonimizzazione: >
   Il dominio è quello reale. Sono omessi il nome del costruttore, quello del cliente e i
   modelli delle macchine; tempi e scene sono compressi e ricostruiti.
