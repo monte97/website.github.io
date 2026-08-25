@@ -1,16 +1,17 @@
 ---
-title: "Docker Internals: Namespaces e CGroups Spiegati"
+title: "Un container è un processo, non una macchina"
 date: 2025-07-13T02:06:25.000Z
-description: Guida completa ai meccanismi interni di Docker e all'isolamento dei container
+description: "Dall'host lanci kill sul PID e il container si ferma: è lo stesso processo. Namespaces, cgroups, e dove finisce davvero l'isolamento."
 pillar: automatizzare
 category: docker
+mode: explanation
 tags:
   - Docker
   - Linux
   - Containerizzazione
   - DevOps
 lang: it
-reviewed: human
+reviewed: false
 reproducibility: true
 summary:
   - label: "Contesto"
@@ -27,158 +28,25 @@ openItems:
   - "Senza configurazioni ad-hoc chi vive in un network namespace non raggiunge il resto del sistema: l'esposizione passa dal port mapping controllato"
   - "I limiti hard di memoria portano all'OOM Killer: la soglia va tarata sul profilo dell'applicazione"
   - "Container o macchina virtuale dipende dal compromesso che si accetta fra efficienza e isolamento completo"
+  - "I percorsi delle demo su cgroups assumono cgroup v1: su una distribuzione con v2 come default la gerarchia sotto `/sys/fs/cgroup` è organizzata diversamente"
 openNote: "Alcune proprietà di questi meccanismi da tenere presenti."
 ---
 
-# Docker e Linux Namespaces: Guida Completa alla Containerizzazione
+Avvia un container, prendi il PID che Docker ti dà, e dall'host lancia `kill`.
 
-La containerizzazione ha rivoluzionato il modo in cui sviluppiamo e distribuiamo le applicazioni. In questo articolo esploreremo Docker e i meccanismi fondamentali che rendono possibile l'isolamento dei container: i **namespaces** e i **cgroups** di Linux.
+```bash
+CONTAINER_PID=$(docker inspect --format '{{.State.Pid}}' pid-demo)
+kill $CONTAINER_PID
+# Il container si ferma
+```
 
-## Cos'è Docker?
+Non hai spento una macchina. Hai terminato un processo — un processo normale, che compare in `ps aux` dell'host insieme a tutti gli altri, che ha un genitore, e che il kernel tratta come qualunque altro.
 
-Docker è una piattaforma open-source che semplifica lo sviluppo, la distribuzione e l'esecuzione delle applicazioni tramite l'uso di **container**. Un container è un'astrazione che permette di racchiudere un'applicazione e tutte le sue dipendenze in un ambiente isolato e portatile, eliminando le incompatibilità dovute alle differenti configurazioni dei sistemi host.
+È la cosa che conviene tenere a mente quando si ragiona su cosa un container garantisce e cosa no: **non c'è nessuna macchina isolata sotto**. Ci sono due meccanismi del kernel Linux che limitano quello che quel processo *vede* e quello che *può prendersi*. Si chiamano namespaces e cgroups, e sapere dove finisce ognuno dei due è la differenza fra usare Docker e fidarsi di Docker.
 
-### Caratteristiche Principali
+## Il container è un processo dell'host
 
-**Isolamento e Portabilità**: Ogni container contiene tutto il necessario per eseguire l'applicazione, garantendo che il software venga eseguito sempre allo stesso modo su qualsiasi infrastruttura.
-
-**Efficienza e Leggerezza**: I container offrono un consumo minore di risorse rispetto alle tradizionali macchine virtuali, condividendo il kernel dell'host.
-
-**Uniformità di Gestione**: Il container diventa la nuova "unità fondamentale" durante il ciclo di vita dell'applicativo, riducendo il tempo che intercorre tra la scrittura del codice e la messa in esercizio.
-
-## Casi d'Uso Principali
-
-### 1. Rilascio Rapido e Coerente delle Applicazioni
-
-Docker elimina il problema del "funziona sulla mia macchina" attraverso:
-
-- **Sviluppo in ambienti isolati**: Ogni sviluppatore lavora in un ambiente standardizzato
-- **Testing uniforme**: I container sono identici in ogni ambiente, garantendo test affidabili
-- **Aggiornamenti rapidi**: Le modifiche possono essere immediatamente testate e distribuite
-
-### 2. Deploy e Scalabilità Reattivi
-
-La flessibilità di Docker si manifesta in:
-
-- **Portabilità totale**: I container possono essere eseguiti su qualsiasi infrastruttura (PC, server fisici, macchine virtuali, cloud, ambienti ibridi)
-- **Scalabilità dinamica**: Possibilità di avviare o terminare istanze in tempo reale per rispondere alle variazioni del carico
-
-### 3. Massimizzazione delle Risorse Hardware
-
-L'efficienza dei container permette:
-
-- **Maggiore densità**: Numerosi container possono essere eseguiti sullo stesso server
-- **Riduzione dei costi**: Uso più efficiente dell'hardware si traduce in minori costi infrastrutturali
-
-## Architettura Docker
-
-![docker-architecture](./imgs/docker-architecture.png)
-> Architettura dei componenti principali di Docker
-
-L'architettura di Docker si basa su tre componenti principali:
-
-### Docker Client
-L'interfaccia primaria per interagire con Docker. Il comando `docker` invia le richieste al Docker daemon e può comunicare con più daemon contemporaneamente.
-
-### Docker Host
-Il sistema su cui gira il Docker daemon (`dockerd`), responsabile di:
-- Ascoltare le richieste API
-- Gestire gli oggetti Docker (immagini, container, reti, volumi)
-- Coordinare i servizi distribuiti
-
-### Docker Registry
-Il sistema di archiviazione e distribuzione delle immagini Docker. Docker Hub è il registry pubblico predefinito, ma è possibile configurare registry privati.
-
-### Flusso di Esecuzione di un Container
-
-Quando eseguiamo `docker run`, Docker esegue questi passaggi:
-
-1. **Risoluzione dell'immagine**: Verifica la disponibilità locale, altrimenti effettua il pull dal registry
-2. **Creazione del container**: Istanzia un nuovo container basato sull'immagine specificata  
-3. **Configurazione del filesystem**: Aggiunge un layer scrivibile sopra l'immagine read-only
-4. **Setup networking**: Configura l'interfaccia di rete e l'indirizzamento IP
-5. **Avvio del processo**: Esegue il comando specificato come processo principale
-
-## Docker vs Virtual Machine
-
-![virt-vs-docker](./imgs/virtualization-vs-docker.png)
-> Comparazione dello stack usato da Docker e dai sistemi di virtualizzazione
-
-La differenza fondamentale tra containerizzazione e virtualizzazione risiede nell'architettura:
-
-**Virtualizzazione**: Crea macchine virtuali complete con proprio sistema operativo tramite hypervisor. Offre isolamento rigoroso ma con overhead elevato.
-
-**Containerizzazione**: I container condividono il kernel dell'host, isolandosi tramite namespaces e cgroups. Riduce drasticamente l'overhead ma offre isolamento meno robusto.
-
-Questa scelta architettuale determina un compromesso tra sicurezza/isolamento completo e agilità/efficienza.
-
-## Linux Namespaces: Il Cuore dell'Isolamento
-
-I **namespaces** sono un meccanismo del kernel Linux che permette di creare ambienti isolati per processi e risorse. Ogni processo può avere una visione limitata del sistema, accedendo solo alle risorse assegnate.
-
-### Tipi di Namespace
-
-Linux supporta otto tipi di namespace:
-
-- **Mount (mnt)**: Isola i punti di montaggio dei filesystem
-- **Process ID (pid)**: Separa gli ID di processo
-- **Network (net)**: Isola le risorse di rete
-- **Interprocess Communication (ipc)**: Separa le risorse IPC
-- **UTS (uts)**: Permette di modificare hostname e domain name
-- **User (user)**: Fornisce separazione tra ID utente e gruppo
-- **Cgroup (cgroup)**: Isola la visibilità dei gruppi di controllo
-- **Time (time)**: Consente separazione degli orologi di sistema
-
-### PID Namespace
-
-I namespace di tipo PID permettono di isolare i processi, assegnando loro identificativi (PID) distinti rispetto ad altri namespace. Di default, un sistema Linux esegue tutti i processi all'interno di un unico namespace PID, rendendoli reciprocamente visibili. È però possibile creare namespace PID annidati, ottenendo gruppi di processi isolati dal resto del sistema.
-
-Questa caratteristica è cruciale nella gestione dei container, dove ogni istanza può avere un proprio processo di init con PID 1, senza interferire con altri container né con l'host.
-
-A differenza di altri namespace, quelli di tipo PID sono organizzati gerarchicamente: ogni namespace ha un padre, e i processi al suo interno sono visibili dai namespace superiori. Un sistema di mappatura consente a un processo di avere PID diversi a seconda del namespace da cui viene osservato. Questa visibilità permette anche di eseguire syscall su un processo utilizzando il PID valido nel namespace del chiamante.
-
-
-![Gerchia PID](./imgs/ns_pid_hier2.jpg)
-> Rappresentazione della gerarchia tra processi nel namespace pid
-
-### Network Namespace
-
-L'isolamento delle risorse di rete (come indirizzi IP, tabelle di routing e file di sistema come `/proc/net`) consente a ciascun namespace di rete di avere il proprio stack di rete indipendente. Questo significa che ogni processo all'interno del namespace opera in una sottorete isolata, senza possibilità di comunicare con il resto del sistema, a meno di configurazioni eseguite ad-hoc.
-
-Questo isolamento è un meccanismo essenziale per la sicurezza: impedisce a un processo compromesso di accedere direttamente alla rete del sistema host o di intercettare traffico non autorizzato. In questo modo, eventuali attacchi o compromissioni restano confinati all'interno del namespace di rete.
-
-Nel contesto di Docker, questa tipologia di namespace viene utilizzata per mappare le porte del sistema host su porte interne ai container, permettendo ai servizi interni di essere raggiungibili dall'esterno in modo controllato. Questo consente di esporre solo i servizi necessari, migliorando la sicurezza e la gestione delle connessioni.
-
-![Esempio comunicazione tramite network namespace](./imgs/net_ns.jpg)
-> Esempio comunicazione tramite network namespace
-
-È inoltre possibile creare reti virtuali condivise tra un gruppo ristretto di processi, consentendo loro di comunicare tra loro senza esporli all'esterno. Un esempio di questo comportamento è illustrato nella figura precedente. Allo stesso modo, si possono configurare reti che permettono la comunicazione tra namespace diversi, facilitando l'interazione tra container o processi isolati pur mantenendo un elevato livello di sicurezza e modularità.
-
-## CGroups: Controllo delle Risorse
-
-I *cgroups* (control groups) sono una funzionalità del kernel Linux che consente di limitare, monitorare e isolare l'uso delle risorse di sistema (come CPU, memoria, I/O su disco e rete) tra gruppi di processi.
-
-Grazie ai *cgroups*, è possibile definire quote e priorità, impedendo che un singolo processo monopolizzi le risorse del sistema e garantendo un migliore isolamento tra applicazioni.
-
-I *cgroups* sono gestiti tramite un'interfaccia a livello di filesystem, tipicamente montata sotto `/sys/fs/cgroup/`. Ogni gerarchia di *cgroups* corrisponde a una directory, con sottodirectory che rappresentano i diversi gruppi di controllo. All'interno di queste directory, file speciali permettono di configurare i limiti e ottenere statistiche sulle risorse consumate dai processi appartenenti al gruppo. Ad esempio, scrivendo un valore nel file `memory.max`, è possibile impostare un limite massimo di memoria per i processi del gruppo.
-
-Questa tecnologia è ampiamente utilizzata in ambienti containerizzati per garantire un uso efficiente delle risorse e migliorare l'isolamento tra container.
-
-A livello concettuale possiamo gestire le seguenti categorie di risorse:
-
-- **Memoria**: possiamo tenere traccia del consumo di memoria (es. quantitativi massimi, possibilità di usare swap). I limiti possono essere soft, in cui la memoria viene reclamata in caso di necessità, oppure hard, in cui il superamento scatena un OOM Killer;
-- **CPU**: tiene traccia del consumo di CPU. Possiamo impostare dei limiti che, se superati, causano throttle sulle CPU che eseguono i processi "problematici";
-- **Blkio**: tiene traccia delle operazioni di I/O. In caso di letture/scritture eccessive, è in grado di applicare throttling;
-- **Network**: possiamo limitare il traffico di rete;
-- **Device**: possiamo limitare quali dispositivi un processo è in grado di scrivere.
-
-
----
-
-## Demo Pratiche
-### Demo 1: Esplorare i PID Namespace
-
-Questa demo illustra come i container sono processi isolati nell'host:
+Il modo più rapido di convincersene è guardarlo.
 
 ```bash
 # 1. Avviare un container Ubuntu con una shell interattiva
@@ -204,9 +72,21 @@ kill $CONTAINER_PID
 # Il container si fermerà
 ```
 
-### Demo 2: Network Namespace e Port Mapping
+Il passo 5 è quello che spiega tutto il resto. `/proc/$PID/status` mostra due PID per lo stesso processo: quello valido nel namespace del container — di solito 1, perché lì dentro è il processo di init — e quello valido sull'host. Un processo, due identità, a seconda di chi guarda.
 
-Questa demo mostra il funzionamento dell'isolamento di rete:
+I namespace PID sono organizzati **gerarchicamente**: ogni namespace ha un padre, e i processi al suo interno restano visibili dai livelli superiori. L'isolamento va in una direzione sola. Dall'host vedi dentro il container; dal container non vedi fuori.
+
+![Rappresentazione della gerarchia fra processi nel namespace PID: lo stesso processo ha identificativi diversi a seconda del livello da cui viene osservato](./imgs/ns_pid_hier2.jpg)
+
+## Namespaces: cosa quel processo riesce a vedere
+
+Un namespace limita la porzione di sistema che un processo percepisce. Linux ne ha otto tipi — mount, PID, network, IPC, UTS, user, cgroup, time — e Docker li usa quasi tutti insieme, ma due meritano attenzione perché è lì che le aspettative sbagliano più spesso.
+
+**PID**, appena visto: ogni container ha il suo processo con PID 1, che non interferisce con gli altri container né con l'host. Con l'asimmetria che ne consegue.
+
+**Network** isola l'intero stack: indirizzi, tabelle di routing, `/proc/net`. La conseguenza pratica è che un processo dentro un network namespace **non raggiunge il resto del sistema**, punto, se non lo si configura apposta. Il port mapping di Docker è esattamente quella configurazione: un canale esplicito verso una porta specifica.
+
+Si vede in due comandi:
 
 ```bash
 # 1. Avviare un container con port mapping
@@ -220,8 +100,8 @@ ss -tlnp | grep :8080
 CONTAINER_PID=$(docker inspect --format '{{.State.Pid}}' web-demo)
 
 # 4. Confrontare i network namespace
-ls -l /proc/1/ns/net      # Host namespace
-ls -l /proc/$CONTAINER_PID/ns/net  # Container namespace
+ls -l /proc/1/ns/net                # Host namespace
+ls -l /proc/$CONTAINER_PID/ns/net   # Container namespace
 
 # 5. Testare la connettività
 curl localhost:80         # Fallisce - porta non esposta sull'host
@@ -233,9 +113,25 @@ nsenter --target $CONTAINER_PID --net --mount --pid bash
 curl localhost:80         # Funziona - siamo nel namespace del container
 ```
 
-### Demo 3: CGroups e Limitazione delle Risorse
+Il passo 6 è il seguito del ragionamento di prima: `nsenter` entra nei namespace di un processo. Non c'è nessuna porta da forzare, nessun hypervisor da bucare — basta essere root sull'host.
 
-Questa demo mostra il controllo delle risorse tramite cgroups:
+![Comunicazione fra processi attraverso i network namespace: reti virtuali condivise fra gruppi ristretti di processi, senza esposizione verso l'esterno](./imgs/net_ns.jpg)
+
+Lo stesso meccanismo permette di costruire reti virtuali fra container che comunicano fra loro senza essere raggiungibili da fuori, che è quello che fa Docker quando crei una rete definita dall'utente.
+
+## Cgroups: quanto quel processo riesce a prendere
+
+Se i namespace decidono cosa il processo vede, i **cgroups** decidono quanto può consumare. Sono un'interfaccia a filesystem sotto `/sys/fs/cgroup/`: ogni gruppo è una directory, e i file dentro la directory sono i limiti e i contatori.
+
+Cinque categorie di risorse:
+
+- **Memoria** — quantitativo massimo e uso dello swap. Il limite può essere *soft*, e allora la memoria viene reclamata quando serve, oppure *hard*, e allora superarlo scatena l'OOM Killer.
+- **CPU** — superare il limite non fa fallire il processo: lo mette in throttle.
+- **Blkio** — operazioni di I/O, con throttling su letture e scritture eccessive.
+- **Network** — limiti sul traffico.
+- **Device** — quali dispositivi il processo può scrivere.
+
+La differenza fra il limite soft e quello hard non è un dettaglio di configurazione: decide se sotto pressione l'applicazione rallenta o muore. Si vede lanciando un container contro il proprio limite.
 
 ```bash
 # 1. Creare un container con limiti di memoria
@@ -266,28 +162,43 @@ for i in range(150):
 dmesg | tail -n 20 | grep -i "killed process"
 ```
 
-### Demo 4: Monitoraggio Real-time delle Risorse
+Il passo 4 non produce un errore dell'applicazione: produce un processo ucciso dal kernel. Chi legge i log dell'applicazione non trova niente, perché l'applicazione non ha avuto modo di scrivere. La traccia è in `dmesg`, ed è il motivo per cui un container che "sparisce senza log" è quasi sempre un limite di memoria tarato male.
+
+Gli stessi file servono a osservare invece che a limitare:
 
 ```bash
-# 1. Avviare un container con stress testing
+# Container sotto carico controllato
 docker run -d --name stress-demo --memory=200m --cpus=0.5 ubuntu \
   bash -c "apt update && apt install -y stress && stress --cpu 2 --memory 1 --memory-bytes 150M"
 
-# 2. Monitorare l'utilizzo delle risorse
 docker stats stress-demo
 
-# 3. Ispezionare i cgroup files direttamente
+# Gli stessi numeri, letti direttamente dal cgroup
 CONTAINER_ID=$(docker inspect --format '{{.Id}}' stress-demo)
 watch -n 1 "cat /sys/fs/cgroup/memory/docker/$CONTAINER_ID/memory.usage_in_bytes"
-
-# 4. Analizzare le statistiche CPU
 cat /sys/fs/cgroup/cpu/docker/$CONTAINER_ID/cpu.stat
 ```
 
-## Conclusioni
+`docker stats` legge quei file. Sapere che sono file spiega perché il monitoraggio dei container non richiede un agente dentro il container.
 
-Docker rappresenta una rivoluzione nel deployment delle applicazioni, combinando efficienza, portabilità e semplicità d'uso. La comprensione dei meccanismi sottostanti - namespaces e cgroups - è fondamentale per utilizzare al meglio questa tecnologia.
+## Dove finisce l'isolamento
 
-I namespaces forniscono l'isolamento necessario per far credere a ogni container di essere l'unico sul sistema, mentre i cgroups garantiscono che le risorse siano distribuite equamente e in modo controllato.
+Qui sta la conseguenza che vale la pena portarsi via, ed è il rovescio della tesi iniziale.
 
-Questa combinazione rende Docker ideale per ambienti cloud-native, microservizi e pipeline CI/CD, dove l'agilità e l'efficienza sono requisiti fondamentali.
+Una macchina virtuale ha un kernel proprio: l'hypervisor separa due sistemi operativi completi. Un container **condivide il kernel dell'host**. Namespaces e cgroups sono funzionalità di quel kernel condiviso — sono un limite imposto dall'interno, non un muro fra due sistemi.
+
+Le conseguenze sono tre, e sono operative:
+
+- **Una vulnerabilità del kernel è una vulnerabilità di tutti i container** che ci girano sopra. Non c'è un secondo kernel a fare da rete.
+- **Root sull'host è root ovunque.** `nsenter` della sezione precedente non è un exploit: è un comando documentato.
+- **In compenso non c'è un sistema operativo da avviare**, ed è per questo che un container parte in un secondo e una VM in un minuto.
+
+È un compromesso, non un difetto, ma va scelto sapendo cosa si sta scegliendo. Container per densità e velocità di ciclo; macchina virtuale quando l'isolamento deve reggere anche contro chi gira nel processo accanto — codice di terzi, tenant che non si fidano fra loro, requisiti di conformità che chiedono separazione fisica.
+
+**Tradotto in una frase da portare fuori dal team**: la densità di container che permette di far girare quaranta servizi su un server invece di quaranta VM è la stessa scelta che mette quei quaranta servizi dietro un unico kernel, e la seconda metà di quella frase è quella che di solito nessuno dice quando si presenta il risparmio sull'infrastruttura.
+
+## Cosa fare domani
+
+Prendi un container che gira in produzione da voi e fai i tre passaggi della prima demo: trova il PID sull'host, guarda `/proc/$PID/ns/`, leggi `/proc/$PID/status`. Dieci minuti, e il modello mentale cambia da «macchina» a «processo con una vista ristretta».
+
+Poi guarda i limiti di memoria dei vostri container. Se non sono impostati, il primo che perde memoria se la prende tutta e il kernel decide da solo chi uccidere. Se sono impostati troppo stretti, li state uccidendo voi — e in `dmesg`, non nei vostri log.

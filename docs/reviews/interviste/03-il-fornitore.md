@@ -1,6 +1,6 @@
 # Il fornitore non ha un'API. Il portale sì.
 
-> **Testo integrale del case study**, con dentro **6 blocchi da compilare**.
+> **Questo è il testo integrale dell'articolo**, così com'è oggi sul sito, con dentro
 > Cerca `DA COMPILARE` per saltare da uno all'altro.
 >
 > Scrivi sulla riga `RISPOSTA:`. Se non hai niente, scrivi `NIENTE`: il blocco sparisce,
@@ -26,6 +26,22 @@ Nessuno stava misurando quel costo, perché era distribuito su chiunque capitass
 Abbiamo chiesto al costruttore l'accesso via API. La risposta è arrivata come allegato: il manuale utente del portale, con gli screenshot. Nessuna cattiveria e nessuna trattativa — semplicemente, per come era pensato quel prodotto, la domanda non aveva senso. I dati si guardano. Se li vuoi altrove, li guardi e li riscrivi.
 
 E qui comincia il lavoro vero, che non è tecnico: decidere se questa cosa si fa, e cosa significa farla.
+
+                ════════════════════════════════════════════════
+                ▶ DA COMPILARE — 3 · IL COSTO DELLA TRASCRIZIONE A MANO
+                ════════════════════════════════════════════════
+
+    Il pezzo dice che le ore le dichiarava il cantiere e qualcuno le ricopiava dal
+    portale. Serve l'attrito concreto:
+      · ogni quanto qualcuno apriva quel portale
+      · quante contestazioni su fatture arrivavano
+      · una in particolare che e' costata cara
+
+    RISPOSTA:
+
+
+                ════════════════════════════════════════════════
+
 
 ## Il tentativo che fanno tutti
 
@@ -83,6 +99,26 @@ Il portale non serve solo a guardare: serve a configurare. Fra le cose configura
 
 Non le ho ricostruite, e la decisione è arrivata prima di provarci, non dopo aver fallito.
 
+                ════════════════════════════════════════════════
+                ▶ DA COMPILARE — 6 · IL CANALE DI SCRITTURA
+                ════════════════════════════════════════════════
+
+    Il finale dice che la configurazione resta al costruttore, con la sua responsabilita'.
+    Serve sapere se quella conversazione e' avvenuta davvero e come e' andata:
+
+      · l'hai proposto tu o l'hanno chiesto loro?
+      · qualcuno ha insistito per averla comunque?
+      · come hai spiegato il no?
+
+    Se il cliente ha accettato senza discutere, dirlo rafforza il pezzo. Se ha insistito
+    e hai tenuto duro, lo rafforza il doppio.
+
+    RISPOSTA:
+
+
+                ════════════════════════════════════════════════
+
+
 ## Dove finisce il lavoro
 
 La differenza fra le due cose non è la difficoltà. È che una è reversibile e l'altra no.
@@ -92,49 +128,6 @@ Leggere quei dati è un'operazione che il cliente ha già il diritto di fare: so
 Il limitatore di carico è il dispositivo che impedisce a una macchina di sollevare più di quanto può reggere. In cantiere, sotto una macchina, ci sono delle persone.
 
 Non è un limite tecnico che non ho saputo aggirare. È il punto in cui il lavoro finisce — e dirlo al cliente fa parte del lavoro quanto il resto. La risposta è stata: quella configurazione continuerà a farla il costruttore, dal suo portale, con la sua responsabilità.
-
-## Il deliverable non era il codice
-
-Alla fine il gestionale ha ricevuto le ore, i cicli e gli allarmi senza che nessuno li trascrivesse più a mano. Le contestazioni sulle fatture si chiudono guardando una schermata invece di ricostruire una settimana. La manutenzione si programma sui numeri veri.
-
-Ma la cosa che ho consegnato con più cura non è l'integrazione.
-
-È un documento. Come funziona il protocollo, per quanto ne so. Perché il primo accesso passa da un browser, e cosa succederebbe se il costruttore cambiasse quel flusso. Perché le risposte vanno mappate per nome e mai per posizione — con la storia dei numeri nella colonna sbagliata scritta per intero, così che il prossimo non debba ritrovarla da solo. Cosa non è stato costruito, e per quale ragione: non per mancanza di tempo, per scelta. Cosa andrebbe sorvegliato. Cosa resta aperto.
-
-È scritto per qualcuno a cui non sarò io a spiegarlo. Perché un'integrazione basata sull'osservazione di un sistema di terzi ha una data di scadenza che nessuno conosce: il giorno che il costruttore aggiorna il portale qualcosa smette di funzionare, e in quel momento la differenza fra un problema di mezza giornata e una riscrittura da zero è tutta lì dentro.
-
-**Un'integrazione è finita quando qualcun altro può portarla avanti da solo, compresi i punti dove hai deciso di non arrivare.**
-
----
-
-*Il caso è reale. Sono stati rimossi i nomi del costruttore, del cliente e dei modelli coinvolti; tempi e scene sono compressi e ricostruiti. Restano fedeli il vincolo sul primo accesso, il riordino silenzioso delle risposte, e il fatto che la decisione di non toccare il canale di configurazione sia stata presa prima di guardarci dentro.*
-
----
-
-## Domande
-
-
-                ════════════════════════════════════════════════
-                ▶ DA COMPILARE — 1 · LA FRASE DEL CLIENTE
-                ════════════════════════════════════════════════
-
-    IL BLOCCO PIU' IMPORTANTE. Sostituisce da solo tutte le metriche: il case study
-    di Dropbox non ha un solo numero e regge su una frase del cliente.
-
-    Serve una frase detta da qualcuno del noleggiatore sul lavoro fatto. Anche breve, anche tiepida,
-    anche presa da una chat. Meglio se detta da chi decide.
-
-    Se non esiste, va bene il fatto osservato: qualcuno che ha smesso di fare una
-    cosa, o che ha iniziato a farne una che prima non poteva.
-
-    CHI L'HA DETTA (ruolo, non nome):
-
-    RISPOSTA:
-
-
-                ════════════════════════════════════════════════
-
-
 
                 ════════════════════════════════════════════════
                 ▶ DA COMPILARE — 2 · COSA SUCCEDE OGGI ALL'INTEGRAZIONE
@@ -155,16 +148,38 @@ Ma la cosa che ho consegnato con più cura non è l'integrazione.
                 ════════════════════════════════════════════════
 
 
+## Il deliverable non era il codice
+
+Alla fine il gestionale ha ricevuto le ore, i cicli e gli allarmi senza che nessuno li trascrivesse più a mano. Le contestazioni sulle fatture si chiudono guardando una schermata invece di ricostruire una settimana. La manutenzione si programma sui numeri veri.
+
+Ma la cosa che ho consegnato con più cura non è l'integrazione.
+
+È un documento. Come funziona il protocollo, per quanto ne so. Perché il primo accesso passa da un browser, e cosa succederebbe se il costruttore cambiasse quel flusso. Perché le risposte vanno mappate per nome e mai per posizione — con la storia dei numeri nella colonna sbagliata scritta per intero, così che il prossimo non debba ritrovarla da solo. Cosa non è stato costruito, e per quale ragione: non per mancanza di tempo, per scelta. Cosa andrebbe sorvegliato. Cosa resta aperto.
+
+È scritto per qualcuno a cui non sarò io a spiegarlo. Perché un'integrazione basata sull'osservazione di un sistema di terzi ha una data di scadenza che nessuno conosce: il giorno che il costruttore aggiorna il portale qualcosa smette di funzionare, e in quel momento la differenza fra un problema di mezza giornata e una riscrittura da zero è tutta lì dentro.
+
+**Un'integrazione è finita quando qualcun altro può portarla avanti da solo, compresi i punti dove hai deciso di non arrivare.**
+
+---
+
+*Il caso è reale. Sono stati rimossi i nomi del costruttore, del cliente e dei modelli coinvolti; tempi e scene sono compressi e ricostruiti. Restano fedeli il vincolo sul primo accesso, il riordino silenzioso delle risposte, e il fatto che la decisione di non toccare il canale di configurazione sia stata presa prima di guardarci dentro.*
+
+
 
                 ════════════════════════════════════════════════
-                ▶ DA COMPILARE — 3 · IL COSTO DELLA TRASCRIZIONE A MANO
+                ▶ DA COMPILARE — 1 · LA FRASE DEL CLIENTE
                 ════════════════════════════════════════════════
 
-    Il pezzo dice che le ore le dichiarava il cantiere e qualcuno le ricopiava dal
-    portale. Serve l'attrito concreto:
-      · ogni quanto qualcuno apriva quel portale
-      · quante contestazioni su fatture arrivavano
-      · una in particolare che e' costata cara
+    IL BLOCCO PIU' IMPORTANTE. Sostituisce da solo tutte le metriche: il case study
+    di Dropbox non ha un solo numero e regge su una frase del cliente.
+
+    Serve una frase detta da qualcuno del noleggiatore sul lavoro fatto. Anche breve, anche tiepida,
+    anche presa da una chat. Meglio se detta da chi decide.
+
+    Se non esiste, va bene il fatto osservato: qualcuno che ha smesso di fare una
+    cosa, o che ha iniziato a farne una che prima non poteva.
+
+    CHI L'HA DETTA (ruolo, non nome):
 
     RISPOSTA:
 
@@ -204,25 +219,3 @@ Ma la cosa che ho consegnato con più cura non è l'integrazione.
 
 
                 ════════════════════════════════════════════════
-
-
-
-                ════════════════════════════════════════════════
-                ▶ DA COMPILARE — 6 · IL CANALE DI SCRITTURA
-                ════════════════════════════════════════════════
-
-    Il finale dice che la configurazione resta al costruttore, con la sua responsabilita'.
-    Serve sapere se quella conversazione e' avvenuta davvero e come e' andata:
-
-      · l'hai proposto tu o l'hanno chiesto loro?
-      · qualcuno ha insistito per averla comunque?
-      · come hai spiegato il no?
-
-    Se il cliente ha accettato senza discutere, dirlo rafforza il pezzo. Se ha insistito
-    e hai tenuto duro, lo rafforza il doppio.
-
-    RISPOSTA:
-
-
-                ════════════════════════════════════════════════
-

@@ -1,6 +1,6 @@
 # Dalla cecità alla traccia: strumentare una pipeline esistente
 
-> **Testo integrale del case study**, con dentro **6 blocchi da compilare**.
+> **Questo è il testo integrale dell'articolo**, così com'è oggi sul sito, con dentro
 > Cerca `DA COMPILARE` per saltare da uno all'altro.
 >
 > Scrivi sulla riga `RISPOSTA:`. Se non hai niente, scrivi `NIENTE`: il blocco sparisce,
@@ -22,6 +22,21 @@ Accanto al percorso del dato ne corre uno secondo, quello dei segnali:
 - **Tracce · metriche · log** — uno stack di osservabilità già esistente presso il committente, non introdotto da questo lavoro.
 
 Il percorso dei segnali è deliberatamente parallelo a quello del dato e non lo attraversa: **nessun servizio parla direttamente con le destinazioni finali**. Cambiare backend è una modifica alla configurazione del collector, non ai nove servizi.
+
+                ════════════════════════════════════════════════
+                ▶ DA COMPILARE — 3 · COSA NON SI RIUSCIVA A CAPIRE, PRIMA
+                ════════════════════════════════════════════════
+
+    Il pezzo dice che un dato mancante in fondo non aveva un'origine. Serve un episodio:
+      · un caso concreto in cui non si riusciva a capire dove si era fermato il flusso
+      · quanto tempo ci si perdeva
+      · chi veniva chiamato quando succedeva
+
+    RISPOSTA:
+
+
+                ════════════════════════════════════════════════
+
 
 ## Le decisioni
 
@@ -48,6 +63,22 @@ La strada prevista era propagare il contesto a mano su ogni confine Kafka, da su
 Le tracce sono risultate collegate attraverso i topic senza alcun intervento sul codice: gli header di contesto viaggiano fuori dal payload, quindi gli schemi dei messaggi non sono stati toccati e i consumatori non strumentati li ignorano. Sei modifiche pianificate non sono state fatte — e non perché siano state rinviate, ma perché la verifica ha mostrato che non servivano. Il costo di quella verifica è stato una traccia guardata in faccia; il costo di non farla sarebbe stato codice di trasporto sparso in sei file, da mantenere per sempre.
 
 La verifica prima del codice non è prudenza generica: **vale quando l'alternativa è codice permanente in punti di passaggio**. Un'ora di controllo contro sei file da mantenere.
+
+                ════════════════════════════════════════════════
+                ▶ DA COMPILARE — 6 · LE SEI MODIFICHE NON FATTE
+                ════════════════════════════════════════════════
+
+    E' la parte migliore del pezzo: sei modifiche pianificate non sono state fatte perche'
+    la verifica ha mostrato che non servivano.
+
+    Serve sapere quanto e' costata quella verifica — un'ora? mezza giornata? — e se
+    qualcuno aveva gia' cominciato a scrivere quel codice prima che tu controllassi.
+
+    RISPOSTA:
+
+
+                ════════════════════════════════════════════════
+
 
 ## Configurazione
 
@@ -108,9 +139,6 @@ Il percorso critico del dato è tracciabile dall'inizio alla fine: una singola t
 
 **Estendere la strumentazione al perimetro, con lo stesso meccanismo.** La prima fase ha già pagato il costo di apprendimento: le fasi successive sono repliche di una configurazione verificata, servizio per servizio, e ognuna vale da sola.
 
----
-
-## Domande
 
 
                 ════════════════════════════════════════════════
@@ -155,22 +183,6 @@ Il percorso critico del dato è tracciabile dall'inizio alla fine: una singola t
 
 
                 ════════════════════════════════════════════════
-                ▶ DA COMPILARE — 3 · COSA NON SI RIUSCIVA A CAPIRE, PRIMA
-                ════════════════════════════════════════════════
-
-    Il pezzo dice che un dato mancante in fondo non aveva un'origine. Serve un episodio:
-      · un caso concreto in cui non si riusciva a capire dove si era fermato il flusso
-      · quanto tempo ci si perdeva
-      · chi veniva chiamato quando succedeva
-
-    RISPOSTA:
-
-
-                ════════════════════════════════════════════════
-
-
-
-                ════════════════════════════════════════════════
                 ▶ DA COMPILARE — 4 · CHI STA MEGLIO, E COME SI VEDE
                 ════════════════════════════════════════════════
 
@@ -201,21 +213,3 @@ Il percorso critico del dato è tracciabile dall'inizio alla fine: una singola t
 
 
                 ════════════════════════════════════════════════
-
-
-
-                ════════════════════════════════════════════════
-                ▶ DA COMPILARE — 6 · LE SEI MODIFICHE NON FATTE
-                ════════════════════════════════════════════════
-
-    E' la parte migliore del pezzo: sei modifiche pianificate non sono state fatte perche'
-    la verifica ha mostrato che non servivano.
-
-    Serve sapere quanto e' costata quella verifica — un'ora? mezza giornata? — e se
-    qualcuno aveva gia' cominciato a scrivere quel codice prima che tu controllassi.
-
-    RISPOSTA:
-
-
-                ════════════════════════════════════════════════
-

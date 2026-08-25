@@ -1,6 +1,6 @@
 # Il permesso che il sistema non sapeva pronunciare
 
-> **Testo integrale del case study**, con dentro **6 blocchi da compilare**.
+> **Questo è il testo integrale dell'articolo**, così com'è oggi sul sito, con dentro
 > Cerca `DA COMPILARE` per saltare da uno all'altro.
 >
 > Scrivi sulla riga `RISPOSTA:`. Se non hai niente, scrivi `NIENTE`: il blocco sparisce,
@@ -23,6 +23,22 @@ Non nel senso che la funzionalità non era implementata, né che c'era un'impost
 
 Il direttore lavori non stava chiedendo una feature. Stava pronunciando una frase grammaticalmente corretta in una lingua che il sistema non parla. E la piattaforma non poteva nemmeno rispondere «non si può»: non aveva le parole né per la domanda né per il rifiuto.
 
+                ════════════════════════════════════════════════
+                ▶ DA COMPILARE — 2 · COSA NON SI POTEVA FARE, PRIMA
+                ════════════════════════════════════════════════
+
+    Il pezzo apre su una richiesta che il sistema non sa esprimere. Serve sapere
+    quante volte quella richiesta e' arrivata davvero, e da chi.
+
+    Era un caso isolato o una domanda ricorrente? Chi la faceva: clienti, commerciale,
+    supporto? Cosa si rispondeva prima che il seam esistesse?
+
+    RISPOSTA:
+
+
+                ════════════════════════════════════════════════
+
+
 ## Tre ruoli, quindici anni prima
 
 Prima di cercare un colpevole, vale la pena guardare quei tre ruoli per quello che sono stati.
@@ -40,6 +56,23 @@ Funzionava. Si aggiungeva il ruolo, si metteva l'utente dentro, il subappaltator
 Ed è qui che la trappola va descritta per bene, perché non è la trappola ovvia. **La soluzione sbagliata non fallisce mai.** Ogni ruolo nuovo funziona la mattina stessa in cui lo aggiungi. Nessun errore, nessun incidente, nessuna mail di protesta: solo un'altra chiave globale che apre tutte le porte allo stesso modo. Il conto non arriva mai in una data precisa — arriva distribuito, in decennali piccole concessioni, finché i ruoli non sono più una descrizione delle persone ma una lista di eccezioni con nome proprio.
 
 Dopo due giorni il piano è cambiato, e non perché quello vecchio avesse smesso di funzionare. Proprio il contrario: perché funzionava ogni singola volta, e quindi non c'era nessun momento naturale in cui fermarsi e chiedersi dove si stesse andando. Il quarto ruolo avrebbe funzionato anche lui. E il quinto. E la domanda del direttore lavori, nel frattempo, restava senza una risposta vera: il subappaltatore avrebbe visto *tutti* i cantieri, non il suo.
+
+                ════════════════════════════════════════════════
+                ▶ DA COMPILARE — 3 · IL COSTO DEL RUOLO IN PIU'
+                ════════════════════════════════════════════════
+
+    Il pezzo dice che aggiungere un ruolo funziona sempre e ogni volta peggiora.
+    Serve l'attrito concreto che questo produceva:
+      · quanto durava aggiungere un ruolo nuovo
+      · quante volte e' stato fatto prima che diventasse insostenibile
+      · chi doveva essere coinvolto ogni volta
+      · cosa si rompeva quando si toccava
+
+    RISPOSTA:
+
+
+                ════════════════════════════════════════════════
+
 
 ## Il salto
 
@@ -89,6 +122,21 @@ Non è un difetto che si aggiusta con un filtro: è una scelta di forma, e va fa
 
 Lo scrivo perché è il prezzo vero, ed è meglio saperlo prima. Chi vende il modello a relazioni come «stesso servizio, funzioni in più» sta vendendo anche questo, senza dirlo.
 
+                ════════════════════════════════════════════════
+                ▶ DA COMPILARE — 4 · CHI STA MEGLIO, E COME SI VEDE
+                ════════════════════════════════════════════════
+
+    Serve un fatto osservabile: qualcosa che un estraneo avrebbe potuto vedere
+    entrando in azienda. Chi apre cosa, quando, al posto di cosa faceva prima.
+
+    La precisione qui e' il sostituto del numero.
+
+    RISPOSTA:
+
+
+                ════════════════════════════════════════════════
+
+
 ## Dietro il flag
 
 Il finale onesto è che il percorso vecchio è ancora lì.
@@ -101,9 +149,6 @@ C'è chi leggerà questo come un lavoro finito a metà. Lo capisco, e la mia ris
 
 *Il caso è reale, il dominio no: piattaforma di gestione cantieri edili al posto di quello originale, terminologia sostituita per intero. Il direttore lavori è un personaggio composito di richieste arrivate in momenti diversi; tempi e scene sono compressi, e la svolta è raccontata dove diventa comprensibile, non dove è stata capita. Restano fedeli le cose che contano: nessun record è stato migrato, le relazioni nuove si sintetizzano da ciò che il sistema già sa, e il percorso vecchio è ancora attivo dietro un flag.*
 
----
-
-## Domande
 
 
                 ════════════════════════════════════════════════
@@ -120,57 +165,6 @@ C'è chi leggerà questo come un lavoro finito a metà. Lo capisco, e la mia ris
     cosa, o che ha iniziato a farne una che prima non poteva.
 
     CHI L'HA DETTA (ruolo, non nome):
-
-    RISPOSTA:
-
-
-                ════════════════════════════════════════════════
-
-
-
-                ════════════════════════════════════════════════
-                ▶ DA COMPILARE — 2 · COSA NON SI POTEVA FARE, PRIMA
-                ════════════════════════════════════════════════
-
-    Il pezzo apre su una richiesta che il sistema non sa esprimere. Serve sapere
-    quante volte quella richiesta e' arrivata davvero, e da chi.
-
-    Era un caso isolato o una domanda ricorrente? Chi la faceva: clienti, commerciale,
-    supporto? Cosa si rispondeva prima che il seam esistesse?
-
-    RISPOSTA:
-
-
-                ════════════════════════════════════════════════
-
-
-
-                ════════════════════════════════════════════════
-                ▶ DA COMPILARE — 3 · IL COSTO DEL RUOLO IN PIU'
-                ════════════════════════════════════════════════
-
-    Il pezzo dice che aggiungere un ruolo funziona sempre e ogni volta peggiora.
-    Serve l'attrito concreto che questo produceva:
-      · quanto durava aggiungere un ruolo nuovo
-      · quante volte e' stato fatto prima che diventasse insostenibile
-      · chi doveva essere coinvolto ogni volta
-      · cosa si rompeva quando si toccava
-
-    RISPOSTA:
-
-
-                ════════════════════════════════════════════════
-
-
-
-                ════════════════════════════════════════════════
-                ▶ DA COMPILARE — 4 · CHI STA MEGLIO, E COME SI VEDE
-                ════════════════════════════════════════════════
-
-    Serve un fatto osservabile: qualcosa che un estraneo avrebbe potuto vedere
-    entrando in azienda. Chi apre cosa, quando, al posto di cosa faceva prima.
-
-    La precisione qui e' il sostituto del numero.
 
     RISPOSTA:
 
@@ -215,4 +209,3 @@ C'è chi leggerà questo come un lavoro finito a metà. Lo capisco, e la mia ris
 
 
                 ════════════════════════════════════════════════
-

@@ -1,6 +1,6 @@
 # Tracking live dei mezzi su mappa
 
-> **Testo integrale del case study**, con dentro **4 blocchi da compilare**.
+> **Questo è il testo integrale dell'articolo**, così com'è oggi sul sito, con dentro
 > Cerca `DA COMPILARE` per saltare da uno all'altro.
 >
 > Scrivi sulla riga `RISPOSTA:`. Se non hai niente, scrivi `NIENTE`: il blocco sparisce,
@@ -19,6 +19,21 @@ Il caso di partenza elencava tre aree candidate. Ne ho costruita una sola, porta
 
 Le altre due aree non sono state abbozzate come schermate vuote. Una schermata vuota è una promessa che il codice non mantiene: fa sembrare il prodotto più completo e lo rende meno credibile appena qualcuno la tocca.
 
+                ════════════════════════════════════════════════
+                ▶ DA COMPILARE — 2 · PERCHE' PROPRIO QUESTA FEATURE
+                ════════════════════════════════════════════════
+
+    Il pezzo dice che il caso di partenza elencava tre aree e ne hai costruita una.
+    Serve sapere come hai scelto quella:
+      · era la piu' difficile? la piu' dimostrativa? la piu' vicina a quello che ti chiedevano?
+      · quanto tempo ci hai messo in tutto?
+
+    RISPOSTA:
+
+
+                ════════════════════════════════════════════════
+
+
 ## Le decisioni prima del codice
 
 Ogni bivio è stato deciso prima di scrivere il codice corrispondente, e il motivo dello scarto è registrato insieme alla scelta. È una disciplina che costa poco durante e vale molto dopo: sei mesi più tardi, una scelta senza la sua alternativa non si distingue da un'abitudine, e nessuno sa più se fosse una decisione o un riflesso.
@@ -33,15 +48,27 @@ La parte che può davvero rompersi — la sincronizzazione della collezione cond
 
 Un leak sulle sottoscrizioni al ciclo di vita non era stato previsto in fase di design: è emerso in code review, ed è stato corretto e coperto da test nello stesso giro. Sta scritto perché è più utile di una lista di cose andate bene.
 
+                ════════════════════════════════════════════════
+                ▶ DA COMPILARE — 3 · IL LEAK EMERSO IN CODE REVIEW
+                ════════════════════════════════════════════════
+
+    Il pezzo dice che un leak sulle sottoscrizioni non era stato previsto in fase di
+    design ed e' emerso in code review. Serve sapere:
+      · chi ha fatto quella review — tu stesso a distanza di giorni, uno strumento, una persona?
+      · e' la risposta che rende credibile tutto il capitolo sulla verifica.
+
+    RISPOSTA:
+
+
+                ════════════════════════════════════════════════
+
+
 ## La verifica, dichiarata per intero
 
 I test automatici coprono il contratto del gateway e le trasformazioni pure e condivise della app. Le build e alcune prove runtime restano manuali. La guardia di avvio è testata con cento chiamate concorrenti; il wire format è verificato leggendo il JSON grezzo, non solo l'oggetto deserializzato, così una regressione del formato si vede prima che se ne accorga la app.
 
 Quello che non è verificato è scritto insieme al motivo. Una verifica proporzionata dichiarata per intero dice più di una copertura alta di cui non si conosce il perimetro.
 
----
-
-## Domande
 
 
                 ════════════════════════════════════════════════
@@ -63,38 +90,6 @@ Quello che non è verificato è scritto insieme al motivo. Una verifica proporzi
 
 
                 ════════════════════════════════════════════════
-                ▶ DA COMPILARE — 2 · PERCHE' PROPRIO QUESTA FEATURE
-                ════════════════════════════════════════════════
-
-    Il pezzo dice che il caso di partenza elencava tre aree e ne hai costruita una.
-    Serve sapere come hai scelto quella:
-      · era la piu' difficile? la piu' dimostrativa? la piu' vicina a quello che ti chiedevano?
-      · quanto tempo ci hai messo in tutto?
-
-    RISPOSTA:
-
-
-                ════════════════════════════════════════════════
-
-
-
-                ════════════════════════════════════════════════
-                ▶ DA COMPILARE — 3 · IL LEAK EMERSO IN CODE REVIEW
-                ════════════════════════════════════════════════
-
-    Il pezzo dice che un leak sulle sottoscrizioni non era stato previsto in fase di
-    design ed e' emerso in code review. Serve sapere:
-      · chi ha fatto quella review — tu stesso a distanza di giorni, uno strumento, una persona?
-      · e' la risposta che rende credibile tutto il capitolo sulla verifica.
-
-    RISPOSTA:
-
-
-                ════════════════════════════════════════════════
-
-
-
-                ════════════════════════════════════════════════
                 ▶ DA COMPILARE — 4 · L'ANIMAZIONE MAI FATTA
                 ════════════════════════════════════════════════
 
@@ -105,4 +100,3 @@ Quello che non è verificato è scritto insieme al motivo. Una verifica proporzi
 
 
                 ════════════════════════════════════════════════
-
