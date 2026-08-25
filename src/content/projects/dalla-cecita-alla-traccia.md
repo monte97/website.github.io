@@ -8,6 +8,8 @@ featured: true
 weight: 3
 eyebrow: "Case study · osservabilità di un sistema a eventi"
 tags: [Osservabilità, OpenTelemetry, Sistemi a eventi, Tracing]
+links:
+  blog: "/blog/verificare/observability/02-opentelenetry/"
 oggetto: >
   Una piattaforma di telemetria per asset mobili distribuiti sul territorio, in esercizio
   e senza strumentazione: raccolta, normalizzazione, arricchimento, API di consultazione.
@@ -103,7 +105,7 @@ thesis: "La verifica prima del codice non è prudenza generica: vale quando l'al
 
 ## Il quadro
 
-Il dato attraversa quattro servizi e tre topic prima di diventare una risposta HTTP. Finché ogni servizio parlava solo di sé, un dato mancante in fondo non aveva un'origine: si poteva sapere che l'API restituiva poco, non dove il flusso si era interrotto. Il perimetro di questa strumentazione è il percorso critico del dato, per intero; il resto del sistema viene dopo.
+Il dato attraversa quattro servizi e tre topic prima di diventare una risposta HTTP. Il quadro generale — perché in un sistema distribuito le metriche da sole non bastano — l'ho raccontato [qui](/blog/verificare/observability/01-observability/). Finché ogni servizio parlava solo di sé, un dato mancante in fondo non aveva un'origine: si poteva sapere che l'API restituiva poco, non dove il flusso si era interrotto. Il perimetro di questa strumentazione è il percorso critico del dato, per intero; il resto del sistema viene dopo.
 
 Accanto al percorso del dato ne corre uno secondo, quello dei segnali:
 

@@ -8,6 +8,8 @@ featured: true
 weight: 0
 eyebrow: "Analisi tecnica · software installato presso il cliente"
 tags: [Manutenzione, Configurazioni, Testing, Delivery]
+links:
+  blog: "/blog/verificare/testing/mutation-testing-oltre-la-coverage/"
 oggetto: >
   Un produttore di software gestionale per laboratori di analisi privati, installato dentro le sedi dei clienti. Ogni cliente chiede una variante in fase di contratto, e ogni variante diventa
   un'installazione diversa da mantenere.

@@ -8,6 +8,8 @@ featured: false
 weight: 4
 eyebrow: "Analisi tecnica · autorizzazione di un sistema in esercizio"
 tags: [Autorizzazione, Legacy, ReBAC, Strangler fig]
+links:
+  blog: "/blog/verificare/openfga/01-zanzibar-concetti/"
 oggetto: >
   L'autorizzazione di una piattaforma di gestione cantieri per un'impresa di costruzioni:
   tre ruoli globali portati da Keycloak, controlli sparsi nel codice .NET, e una richiesta

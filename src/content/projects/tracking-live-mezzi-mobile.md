@@ -8,6 +8,8 @@ featured: true
 weight: 2
 eyebrow: "Case study · dimostratore mobile"
 tags: [.NET MAUI, .NET 9, Mobile, Minimal API, xUnit]
+links:
+  blog: "/blog/verificare/testing/01-unit-test-nuxt3-logica-pura/"
 oggetto: >
   Un dimostratore di portfolio: companion app mobile per il tracking live dei mezzi su
   mappa nativa, Android e iOS da un solo progetto, con backend mock generato in locale.
