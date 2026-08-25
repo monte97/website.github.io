@@ -122,13 +122,20 @@ decisions:
     chosenWhy: "La lettura è reversibile: se sbaglio, il danno è un grafico storto e me ne accorgo."
     rejected: "Ricostruire anche la scrittura e portare la configurazione nel gestionale"
     appeal: "Era la parte facile — stessa struttura, stesso token. E il cliente l'avrebbe voluta."
+  - title: "Perimetro del servizio"
+    chosen: "Le credenziali del portale restano dentro il servizio, i client non le vedono mai"
+    chosenWhy: "Il servizio parla al cloud con la propria identità: chi lo interroga non può risalire alle credenziali né usarle altrove."
+    rejected: "Passare le credenziali ai client e lasciarli parlare direttamente col portale"
+    appeal: "Un componente in meno da scrivere e da tenere su."
 decisionsNote: >
   Il filo che tiene insieme i tre bivi è sempre lo stesso: cosa succede il giorno in cui
   questa scelta si rompe, e in quale direzione. Non quale strada costa meno oggi.
 openItems:
-  - "Nessuna sorveglianza automatica sul cambio del portale: quando il costruttore aggiornerà, il primo segnale sarà un dato che non arriva"
-  - "La configurazione dei parametri resta manuale, sul portale del costruttore"
-  - "L'integrazione ha una data di scadenza che nessuno conosce — è dichiarato nel documento di protocollo, non risolto"
+  - "L'interfaccia usata non è documentata dal costruttore: può cambiare senza preavviso, e non esiste nessun contratto né sorveglianza che avvisi quando succede"
+  - "Se un giorno venisse attivata l'autenticazione a due fattori sull'account, il primo accesso si romperebbe: non è gestito, ed è una scelta consapevole"
+  - "Il portale offre anche dati aggregati, ma il manuale non dice cosa calcoli l'aggregazione: finché non è verificato empiricamente si usano solo i campioni grezzi"
+  - "La dipendenza da un browser per il primo accesso pesa negli ambienti minimali, dove conviene la via alternativa via file"
+  - "Resta da chiedere al costruttore se esista un'interfaccia ufficiale supportata: toglierebbe di mezzo sia il browser sia la ricostruzione"
 swap:
   label: "Il riordino silenzioso"
   requestedLabel: "Chiesto"
@@ -166,7 +173,7 @@ E qui comincia il lavoro vero, che non è tecnico: decidere se questa cosa si fa
 
 La prima cosa che ho provato è la prima che prova chiunque: prendere l'indirizzo del portale, cercare un endpoint di autenticazione, mandargli utente e password.
 
-Non funziona. Il password grant OAuth2 è disabilitato sull'endpoint OIDC — non per una configurazione sbagliata, per una scelta di chi ha montato il sistema. E la pagina di login non è una pagina: è un'applicazione JavaScript SPA. Non c'è un form da inviare, c'è del codice che parla con un endpoint OIDC.
+Non funziona. Il password grant OAuth2 è disabilitato sull'endpoint OIDC — il server risponde che il client non è abilitato agli accessi diretti — non per una configurazione sbagliata, per una scelta di chi ha montato il sistema. E la pagina di login non è una pagina: è un'applicazione JavaScript SPA. Non c'è un form da inviare, c'è del codice che parla con un endpoint OIDC.
 
 Ho passato qualche ora a provare varianti. È il punto in cui è facile perdere una settimana: ogni tentativo è abbastanza vicino al successo da far credere che manchi un dettaglio.
 
@@ -182,7 +189,7 @@ Da lì in poi non è stato reverse engineering nel senso avventuroso del termine
 
 ## Quindici minuti alla volta
 
-Restava il primo accesso, e la scelta è stata accettare il confine invece di forzarlo: un browser headless, che fa il login una volta e restituisce le credenziali di sessione. Da quel momento il browser non serve più — l'access token dura quindici minuti e si rinnova con polling HTTP, e la catena di rinnovi regge circa otto ore.
+Restava il primo accesso, e la scelta è stata accettare il confine invece di forzarlo: un browser headless — Chromium pilotato da Playwright — che fa il login una volta e restituisce le credenziali di sessione. Da quel momento il browser non serve più — l'access token dura quindici minuti e si rinnova con polling HTTP, e la catena di rinnovi regge circa otto ore.
 
 Otto ore sono un turno. Il processo poteva partire la mattina, raccogliere tutto il giorno e chiudersi da solo.
 
