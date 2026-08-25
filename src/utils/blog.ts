@@ -19,16 +19,3 @@ export function estimateReadingTime(body: string | undefined): number {
   return Math.max(1, Math.ceil(words / 200));
 }
 
-/**
- * Resolve a hero image from a pre-loaded glob result.
- * The glob must be `import.meta.glob<{ default: { src: string } }>('/src/content/posts/** /hero.webp', { eager: true })`.
- */
-export function getHeroImage(
-  postId: string,
-  heroImages: Record<string, { default: { src: string } }>
-): string | null {
-  const dir = postId.replace(/\/indexen$/, '');
-  const key = `/src/content/posts/${dir}/hero.webp`;
-  const img = heroImages[key];
-  return img?.default?.src || null;
-}

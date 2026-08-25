@@ -18,7 +18,6 @@ const posts = defineCollection({
     reviewed: z.union([z.boolean(), z.literal('machine'), z.literal('human')]).default(false),
     series: z.string().optional(),
     seriesOrder: z.number().optional(),
-    heroImage: z.string().optional(),
     reproducibility: z.boolean().optional(),
     // Blocchi a posizione fissa (dal linguaggio dei case study)
     summary: z.array(z.object({        // "In sintesi", in cima

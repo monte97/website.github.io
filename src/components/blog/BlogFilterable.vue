@@ -367,7 +367,6 @@ export interface PostData {
   tags: string[];
   series?: string;
   href: string;
-  heroImage?: string;
   readingTime: number;
 }
 

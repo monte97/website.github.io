@@ -29,7 +29,6 @@ interface Props {
   editUrl?: string;
   series?: string;
   postId: string;
-  heroImage?: string | null;
   readingTime?: number;
   ogImage?: string | null;
   alternateUrl?: string;
@@ -48,7 +47,6 @@ const {
   editUrl,
   series,
   postId,
-  heroImage,
   readingTime,
   ogImage,
   alternateUrl,
@@ -123,16 +121,6 @@ const relatedPosts = pillar
         <li class="truncate max-w-[200px] text-text-dark dark:text-text-light" title={title}>{title}</li>
       </ol>
     </nav>
-
-    <!-- Hero image -->
-    {heroImage && (
-      <img
-        src={heroImage}
-        alt=""
-        class="w-full max-w-4xl mx-auto h-56 md:h-72 object-cover rounded-xl shadow-sm mb-8"
-        loading="eager"
-      />
-    )}
 
     <!-- Title block -->
     <header class="mb-10 max-w-3xl">

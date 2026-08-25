@@ -5,13 +5,7 @@ import BlogPostLayout from '@/layouts/BlogPostLayout.astro';
 import PostSummary from '@/components/ui/PostSummary.astro';
 import PostOpenItems from '@/components/ui/PostOpenItems.astro';
 import PostCaseStudy from '@/components/ui/PostCaseStudy.astro';
-import { getHeroImage, estimateReadingTime } from '@/utils/blog';
-
-// Hero image auto-detection via import.meta.glob (must stay here — Vite statically analyzes globs)
-const heroImages = import.meta.glob<{ default: { src: string } }>(
-  '/src/content/posts/**/hero.webp',
-  { eager: true }
-);
+import { estimateReadingTime } from '@/utils/blog';
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection('posts');
@@ -31,7 +25,6 @@ const { Content, headings } = await render(post);
 const editUrl = `https://github.com/monte97/website.github.io/edit/main/src/content/posts/${post.id}.md`;
 
 const slug = post.id.replace(/\/indexen$/, '');
-const heroImage = getHeroImage(post.id, heroImages);
 const readingTime = estimateReadingTime(post.body);
 const alternateUrl = `/blog/${slug}`;
 ---
@@ -49,9 +42,8 @@ const alternateUrl = `/blog/${slug}`;
   editUrl={editUrl}
   series={post.data.series}
   postId={post.id}
-  heroImage={heroImage}
   readingTime={readingTime}
-  ogImage={heroImage}
+  ogImage={`/og/posts/${slug}.en.png`}
   alternateUrl={alternateUrl}
 >
   {post.data.summary && post.data.summary.length > 0 && (

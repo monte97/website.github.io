@@ -2,7 +2,7 @@
 import PageLayout from '@/layouts/PageLayout.astro';
 import PageHero from '@/components/ui/PageHero.astro';
 import BlogFilterable from '@/components/blog/BlogFilterable.vue';
-import { postHref, estimateReadingTime, getHeroImage } from '@/utils/blog';
+import { postHref, estimateReadingTime } from '@/utils/blog';
 
 interface Props {
   allPosts: any[];
@@ -20,9 +20,6 @@ const t = lang === 'en'
   ? { articles: 'articles' }
   : { articles: 'articoli' };
 
-// Hero image resolution via import.meta.glob (must stay here — Vite statically analyzes globs)
-const heroImages = import.meta.glob<{ default: { src: string } }>('/src/content/posts/**/hero.webp', { eager: true });
-
 // Serialize ALL posts sorted by date descending for the Vue component
 const serializedPosts = allPosts
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
@@ -36,7 +33,6 @@ const serializedPosts = allPosts
     tags: post.data.tags,
     series: post.data.series,
     href: postHref(post.id, lang),
-    heroImage: getHeroImage(post.id, heroImages) || undefined,
     readingTime: estimateReadingTime(post.body),
   }));
 ---

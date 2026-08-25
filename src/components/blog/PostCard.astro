@@ -12,11 +12,10 @@ interface Props {
   tags: string[];
   href: string;
   lang?: 'it' | 'en';
-  heroImage?: string;
   readingTime?: number;
 }
 
-const { title, description, date, pillar, category, tags, href, lang = 'it', heroImage, readingTime } = Astro.props;
+const { title, description, date, pillar, category, tags, href, lang = 'it', readingTime } = Astro.props;
 
 const formattedDate = date.toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-US', {
   year: 'numeric',
@@ -28,11 +27,8 @@ const displayTags = tags.slice(0, 3);
 ---
 
 <a href={href} class="group block h-full" data-umami-event="blog-read" data-umami-event-pillar={pillar ?? ''} data-umami-event-category={category ?? ''}>
-  <Card pillar={pillar} class={heroImage ? 'overflow-hidden !p-0' : ''}>
-    {heroImage && (
-      <img src={heroImage} alt="" class="w-full h-36 object-cover" loading="lazy" />
-    )}
-    <div class:list={[heroImage ? 'p-6' : '', 'flex flex-col flex-1']}>
+  <Card pillar={pillar}>
+    <div class="flex flex-col flex-1">
       <div class="flex items-center gap-2 mb-3">
         <time class="text-xs text-text-muted tabular-nums" datetime={date.toISOString()}>
           {formattedDate}

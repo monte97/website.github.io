@@ -49,7 +49,7 @@ Il problema non è la PromQL, è che manca un contratto con chi riceve il messag
 
 Tre domande a cui un repo di alerting maturo deve poter rispondere, e che questo articolo prova a coprire con gli strumenti nativi di Alertmanager: chi riceve ciascun alert e con quale urgenza, cosa succede quando due regole correlate scattano insieme, cosa trova chi apre il messaggio di notifica.
 
-![Alertmanager UI con l'alert `ErrorBudgetBurnRateFast` raggruppato nel receiver `critical-channel`, etichette severity/slo/window visibili](./hero.webp)
+![Alertmanager UI con l'alert `ErrorBudgetBurnRateFast` raggruppato nel receiver `critical-channel`, etichette severity/slo/window visibili](./alertmanager-grouping.webp)
 
 ## Severity come Contratto, non come Etichetta
 
