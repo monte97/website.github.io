@@ -34,6 +34,11 @@ openItems:
   - "Il modello qui resta su user, folder e document: organizzazioni, team e multitenancy sono estensioni successive della serie"
   - "I numeri di scala del paper Zanzibar riguardano il sistema Google, non le implementazioni open source come OpenFGA"
 openNote: "Cosa resta fuori dal modello base descritto in questo articolo."
+caseStudy:
+  slug: "il-permesso-che-non-sapeva-pronunciare"
+  hook: >
+    Il modello raccontato qui, applicato a un sistema in esercizio che aveva tre ruoli
+    globali e quindici anni di storia.
 ---
 
 In un sistema di file sharing come Google Drive, Alice crea una cartella "Progetto X" con tre documenti e la condivide con Bob come editor. Bob deve poter modificare tutti i documenti nella cartella, inclusi quelli aggiunti in seguito, senza che nessuno intervenga manualmente.

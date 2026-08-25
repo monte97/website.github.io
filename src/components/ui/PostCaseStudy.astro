@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+  /** id del case study in src/content/projects (senza estensione) */
+  slug: string;
+  /** perché questo articolo e quel case study si parlano */
+  hook?: string;
+  lang?: 'it' | 'en';
+}
+const { slug, hook, lang = 'it' } = Astro.props;
+const prefix = lang === 'en' ? '/en' : '';
+
+const projects = await getCollection('projects');
+const cs = projects.find((p) => p.id === slug && p.data.type === 'case-study');
+
+const t = lang === 'en'
+  ? { eyebrow: 'From a real project', cta: 'Read the case study' }
+  : { eyebrow: 'Da un progetto vero', cta: 'Leggi il case study' };
+---
+
+{cs && (
+  <aside class="not-prose mt-14 rounded-2xl border border-border/60 dark:border-border-dark/60 bg-accent-subtle/30 p-5 md:p-6">
+    <p class="text-[10px] font-mono font-bold uppercase tracking-[0.18em] text-accent mb-3">{t.eyebrow}</p>
+
+    {hook && <p class="text-sm text-text-muted leading-relaxed mb-4">{hook}</p>}
+
+    <a href={`${prefix}/case-study/${cs.id}/`} class="group block">
+      <h2 class="text-lg font-bold text-text-dark dark:text-text-light group-hover:text-accent transition-colors text-balance">
+        {cs.data.title}
+      </h2>
+      {cs.data.esito && (
+        <p class="text-sm text-text-muted leading-relaxed mt-2">{cs.data.esito}</p>
+      )}
+      <span class="inline-block text-sm font-semibold text-accent mt-3">{t.cta} &rarr;</span>
+    </a>
+  </aside>
+)}

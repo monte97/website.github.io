@@ -36,6 +36,11 @@ openItems:
   - "La zero-instrumentation via eBPF è priorità P2: non ancora stabile né supportata ufficialmente, e l'osservabilità dei workload ML resta fuori dal core"
   - "Le cifre di overhead sono stime indicative dell'articolo (SDK ~2-5 MB, Collector ~50-100 MB), non benchmark su un sistema specifico"
 openNote: "Dove l'architettura descritta incontra i limiti della roadmap."
+caseStudy:
+  slug: "dalla-cecita-alla-traccia"
+  hook: >
+    La stessa strumentazione, su un sistema in esercizio e senza toccare la logica
+    applicativa.
 ---
 
 

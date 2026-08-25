@@ -36,6 +36,11 @@ openItems:
   - "Le metriche non tollerano etichette ad alta cardinalità: identificatori come user_id o session_id vanno tenuti nei log o nei trace"
   - "L'adozione è anche un cambio di mentalità: design per l'osservabilità, cultura blameless e decisioni basate sui dati non arrivano con i soli strumenti"
 openNote: "Le sfide che l'articolo stesso dichiara aperte, dai costi dei dati al cambio di mentalità."
+caseStudy:
+  slug: "dalla-cecita-alla-traccia"
+  hook: >
+    Cosa costa davvero aggiungere l'osservabilità a un sistema a eventi costruito senza
+    pensarci: nove servizi, tre linguaggi, un broker in mezzo.
 ---
 
 -----

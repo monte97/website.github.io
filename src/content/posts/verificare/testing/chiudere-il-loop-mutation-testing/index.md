@@ -33,6 +33,11 @@ openItems:
   - "I numeri di ACH e Just-in-Time testing arrivano dall'infrastruttura di Meta: per iniziare basta chiudere il loop in piccolo"
 openNote: "Cosa resta fuori dal loop automatico, per teoria e per scala."
 mode: explanation
+caseStudy:
+  slug: "quante-versioni-stai-mantenendo"
+  hook: >
+    «Chi controlla che i test funzionino» non è una domanda sull'AI: qui i controlli
+    sbagliati li avevo scritti io, e il risultato è stato identico.
 ---
 
 Nel post precedente ho raccontato la storia: coverage al 93%, test tutti verdi, un bug in produzione per tre settimane perché nessun test distingueva `Sum` da `Max`. Buona parte di quei test li avevano scritti gli agenti AI, ed è lì che si apre la domanda che voglio affrontare qui: chiunque scriva i test, umano o agente, quello che conta è se qualcuno li mette alla prova.

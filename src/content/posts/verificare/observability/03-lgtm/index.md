@@ -42,6 +42,11 @@ openItems:
   - "Ogni componente è progettato per scalare orizzontalmente, ma va dimensionato sul volume previsto di telemetria: CPU, RAM e storage vanno stimati"
   - "Deployment e configurazione vanno gestiti con strumenti IaC come Helm, Terraform o Pulumi per garantire riproducibilità"
 openNote: "Le decisioni di dimensionamento e gestione che lo stack lascia a chi lo adotta."
+caseStudy:
+  slug: "dalla-cecita-alla-traccia"
+  hook: >
+    Lo stack visto dal lato di chi ci ha collegato un sistema esistente, con un
+    collector come unico punto di uscita.
 ---
 
 Abbiamo esplorato i principi dell'observability e il ruolo fondamentale di OpenTelemetry come standard unificante per la telemetria. OpenTelemetry ci fornisce gli strumenti per **generare e raccogliere** dati di altissima qualità (metriche, log e trace) in un formato agnostico e coerente. Ma una volta che questi preziosi segnali sono stati raccolti, dove vengono archiviati, interrogati e, soprattutto, visualizzati in modo significativo?

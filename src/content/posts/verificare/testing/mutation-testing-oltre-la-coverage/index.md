@@ -33,6 +33,12 @@ openItems:
   - "L'esempio è un flusso di gestione ordini piccolo e con logica propria. Su codice fatto per lo più di orchestrazione e framework, la resa dei mutanti è più bassa"
 openNote: "Quello che il mutation testing non risolve, e che va deciso guardando il proprio codice."
 mode: explanation
+caseStudy:
+  slug: "quante-versioni-stai-mantenendo"
+  hook: >
+    Lo stesso riflesso — fidarsi del verde invece della cosa che il verde dovrebbe
+    misurare — l'ho ritrovato su un sistema installato presso decine di clienti, dove
+    alcuni controlli rispondevano verde da mesi senza aver verificato nulla.
 ---
 
 La maggior parte di noi si fida della propria suite di test. I test sono verdi, la coverage è alta: si rilascia tranquilli. È un'equazione che diamo per scontata (*test passano → codice sano*), e quasi sempre funziona.

@@ -27,6 +27,10 @@ const posts = defineCollection({
       note: z.string().optional(),
     })).optional(),
     openItems: z.array(z.string()).optional(),  // "Cosa resta aperto", in fondo
+    caseStudy: z.object({                      // rimando al case study imparentato
+      slug: z.string(),
+      hook: z.string().optional(),
+    }).optional(),
     openNote: z.string().optional(),
   }),
 });

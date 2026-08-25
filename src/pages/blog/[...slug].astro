@@ -4,6 +4,7 @@ import type { GetStaticPaths } from 'astro';
 import BlogPostLayout from '@/layouts/BlogPostLayout.astro';
 import PostSummary from '@/components/ui/PostSummary.astro';
 import PostOpenItems from '@/components/ui/PostOpenItems.astro';
+import PostCaseStudy from '@/components/ui/PostCaseStudy.astro';
 import { getHeroImage, estimateReadingTime } from '@/utils/blog';
 
 // Hero image auto-detection via import.meta.glob (must stay here — Vite statically analyzes globs)
@@ -64,5 +65,9 @@ const alternateUrl = hasEnVersion ? `/en/blog/${slug}` : undefined;
 
   {post.data.openItems && post.data.openItems.length > 0 && (
     <PostOpenItems items={post.data.openItems} note={post.data.openNote} lang="it" />
+  )}
+
+  {post.data.caseStudy && (
+    <PostCaseStudy slug={post.data.caseStudy.slug} hook={post.data.caseStudy.hook} lang="it" />
   )}
 </BlogPostLayout>
