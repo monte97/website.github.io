@@ -75,8 +75,6 @@ I test automatici coprono il contratto del gateway e le trasformazioni pure e co
 
 Quello che non è verificato è scritto insieme al motivo. Una verifica proporzionata dichiarata per intero dice più di una copertura alta di cui non si conosce il perimetro.
 
-
-
                 ════════════════════════════════════════════════
                 ▶ DA COMPILARE — 1 · A COSA E' SERVITO DAVVERO
                 ════════════════════════════════════════════════
@@ -92,8 +90,6 @@ Quello che non è verificato è scritto insieme al motivo. Una verifica proporzi
 
 
                 ════════════════════════════════════════════════
-
-
 
                 ════════════════════════════════════════════════
                 ▶ DA COMPILARE — 4 · L'ANIMAZIONE MAI FATTA

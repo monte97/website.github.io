@@ -170,8 +170,6 @@ Ma la cosa che ho consegnato con più cura non è l'integrazione.
 
 *Il caso è reale. Sono stati rimossi i nomi del costruttore, del cliente e dei modelli coinvolti; tempi e scene sono compressi e ricostruiti. Restano fedeli il vincolo sul primo accesso, il riordino silenzioso delle risposte, e il fatto che la decisione di non toccare il canale di configurazione sia stata presa prima di guardarci dentro.*
 
-
-
                 ════════════════════════════════════════════════
                 ▶ DA COMPILARE — 1 · LA FRASE DEL CLIENTE
                 ════════════════════════════════════════════════
@@ -192,8 +190,6 @@ Ma la cosa che ho consegnato con più cura non è l'integrazione.
 
                 ════════════════════════════════════════════════
 
-
-
                 ════════════════════════════════════════════════
                 ▶ DA COMPILARE — 4 · CHI STA MEGLIO, E COME SI VEDE
                 ════════════════════════════════════════════════
@@ -207,8 +203,6 @@ Ma la cosa che ho consegnato con più cura non è l'integrazione.
 
 
                 ════════════════════════════════════════════════
-
-
 
                 ════════════════════════════════════════════════
                 ▶ DA COMPILARE — 5 · IL MOMENTO IN CUI FA MALE  →  riscrive la CTA

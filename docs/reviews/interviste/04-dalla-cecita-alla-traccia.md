@@ -145,8 +145,6 @@ Il percorso critico del dato è tracciabile dall'inizio alla fine: una singola t
 
 **Estendere la strumentazione al perimetro, con lo stesso meccanismo.** La prima fase ha già pagato il costo di apprendimento: le fasi successive sono repliche di una configurazione verificata, servizio per servizio, e ognuna vale da sola.
 
-
-
                 ════════════════════════════════════════════════
                 ▶ DA COMPILARE — 1 · LA FRASE DEL CLIENTE
                 ════════════════════════════════════════════════
@@ -167,8 +165,6 @@ Il percorso critico del dato è tracciabile dall'inizio alla fine: una singola t
 
                 ════════════════════════════════════════════════
 
-
-
                 ════════════════════════════════════════════════
                 ▶ DA COMPILARE — 2 · IL DOMINIO REALE — serve per la chiave
                 ════════════════════════════════════════════════
@@ -186,8 +182,6 @@ Il percorso critico del dato è tracciabile dall'inizio alla fine: una singola t
 
                 ════════════════════════════════════════════════
 
-
-
                 ════════════════════════════════════════════════
                 ▶ DA COMPILARE — 4 · CHI STA MEGLIO, E COME SI VEDE
                 ════════════════════════════════════════════════
@@ -201,8 +195,6 @@ Il percorso critico del dato è tracciabile dall'inizio alla fine: una singola t
 
 
                 ════════════════════════════════════════════════
-
-
 
                 ════════════════════════════════════════════════
                 ▶ DA COMPILARE — 5 · IL MOMENTO IN CUI FA MALE  →  riscrive la CTA

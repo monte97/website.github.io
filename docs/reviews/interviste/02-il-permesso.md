@@ -155,8 +155,6 @@ C'è chi leggerà questo come un lavoro finito a metà. Lo capisco, e la mia ris
 
 *Il caso è reale, il dominio no: piattaforma di gestione cantieri edili al posto di quello originale, terminologia sostituita per intero. Il direttore lavori è un personaggio composito di richieste arrivate in momenti diversi; tempi e scene sono compressi, e la svolta è raccontata dove diventa comprensibile, non dove è stata capita. Restano fedeli le cose che contano: nessun record è stato migrato, le relazioni nuove si sintetizzano da ciò che il sistema già sa, e il percorso vecchio è ancora attivo dietro un flag.*
 
-
-
                 ════════════════════════════════════════════════
                 ▶ DA COMPILARE — 1 · LA FRASE DEL CLIENTE
                 ════════════════════════════════════════════════
@@ -177,8 +175,6 @@ C'è chi leggerà questo come un lavoro finito a metà. Lo capisco, e la mia ris
 
                 ════════════════════════════════════════════════
 
-
-
                 ════════════════════════════════════════════════
                 ▶ DA COMPILARE — 5 · IL MOMENTO IN CUI FA MALE  →  riscrive la CTA
                 ════════════════════════════════════════════════
@@ -194,8 +190,6 @@ C'è chi leggerà questo come un lavoro finito a metà. Lo capisco, e la mia ris
 
 
                 ════════════════════════════════════════════════
-
-
 
                 ════════════════════════════════════════════════
                 ▶ DA COMPILARE — 6 · IL FLAG E' ANCORA LI'?
