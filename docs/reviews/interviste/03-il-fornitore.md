@@ -43,7 +43,7 @@ E qui comincia il lavoro vero, che non è tecnico: decidere se questa cosa si fa
       · quante contestazioni su fatture arrivavano
       · una in particolare che e' costata cara
 
-    RISPOSTA:
+    RISPOSTA: le contestazioni non erano tutto sommato tante però arrivavano insieme ad altre situazioni spiacevoli spesso quando poi in cantiere o nel lavoro in generale ci sono dei problemi ci si prova ad attaccare in qualunque situazione quindi, il senso di avere a disposizione dei dati raccolti in modo oggettivo automatico fin dalle prime fasi fondamentale soprattutto per mettere bene in chiaro quali sono i modi di di collaborare il fatto che dovevano essere trascritte a mano era il suo problema soprattutto per il fatto che dipendeva dalla buona volontà della persona ovviamente oltre a quello aveva anche da fare altre cose per scrivere delle delle ore non era né divertente né né rapido, quindi anche veniva spesso anche  lasciato indietro per fare spazio ad altre ad altre attività mentre invece avendo tutto climatizzato, era solamente che era anche una cosa in meno di cui preoccuparsi magari poi possono essere definiti dell'allarme o del sogno dei campionamenti per fare le verifiche, ma il grosso diventa un'attività di routine che va viene delegata alla macchina piuttosto che la persona che alla quale viene liberato del tempo per dedicarsi a cose più importanti
 
 
                 ════════════════════════════════════════════════
@@ -77,6 +77,8 @@ Il resto è venuto in fretta. Ore motore, cicli, allarmi, stati. Nel giro di poc
 
 ## I numeri erano sbagliati
 
+> su questa parte fisserai un errore veramente di distrazione piuttosto che che di altro racconterei semplicemente il fatto che bisogna stare attenti a determinate cose che si possono scoprire in determinati modo in determinati modi direttamente alla soluzione soluzione corretta, senza raccontare di di sbagli o di avere lasciato passare o prendere per buoni dei dati senza verificare se leggessi una cosa così mi verrebbe da ridere più e questa persona consapevolezza di quello che fa
+
 Funzionava per modo di dire.
 
 Ce ne siamo accorti per una via traversa: una macchina risultava avere ore motore che non stavano in piedi rispetto ai cicli di lavoro registrati. Non un valore assurdo — un valore *strano*. Il tipo di anomalia che su una macchina vera può benissimo essere una macchina che sta lavorando male, e infatti la prima ipotesi è stata quella.
@@ -98,6 +100,8 @@ Solo il sistema vero riordina. Solo il sistema vero si comporta in un modo che n
 Non è un argomento contro i test, è un argomento su cosa provano. Un'integrazione con un sistema di terzi ha una classe di errori che vive interamente nello spazio fra quello che credi che l'altro faccia e quello che l'altro fa. Quello spazio si copre in un modo solo: guardando i dati veri e chiedendosi se hanno senso. Da noi ha funzionato un controllo di coerenza fisica — ore di funzionamento che devono stare in un certo rapporto con i cicli — non un test.
 
 ## L'endpoint che ho lasciato lì
+> questa parte qui non mi interessa la andrai a nascondere anche perché non so se ci sono dei vincoli normativi o cose che non raccontare per quanto riguarda la scrittura lasciamo stare
+> Piuttosto diciamo che le informazioni raccolte vengono ora condivise con il cliente man mano in modo che possa essere lui a potere anche segnalare cose strane e per dare maggiore visibilita' a quello che sta succedendo
 
 Mentre leggevo il traffico per capire la lettura, ho visto anche il resto.
 
@@ -185,7 +189,7 @@ Ma la cosa che ho consegnato con più cura non è l'integrazione.
 
     CHI L'HA DETTA (ruolo, non nome):
 
-    RISPOSTA:
+    RISPOSTA: qui non c'è una frase diretta, ma la possono ricostruire, cioè essenzialmente tutti si fidano estremamente di più del sistema che utilizzano perché dà dei feedback durante la sua situazione. Possono vedere il tempo quasi reale quello che viene prodotto è molto utile anche per il Cet finale perché ha un resoconto non consuntivo, ma in tempo reale di quello che viene prodotto e per l'azienda sa che è una maggiore affidabilità nel caso in cui ci siano delle controversie perché i dati non sono prodotti quando è necessario, ma vengono costruiti volta per volta e secondo un processo ben definito
 
 
                 ════════════════════════════════════════════════
@@ -199,7 +203,7 @@ Ma la cosa che ho consegnato con più cura non è l'integrazione.
 
     La precisione qui e' il sostituto del numero.
 
-    RISPOSTA:
+    RISPOSTA: vedi risposta di prima
 
 
                 ════════════════════════════════════════════════
@@ -215,7 +219,7 @@ Ma la cosa che ho consegnato con più cura non è l'integrazione.
     Nel progetto vero c'era una di queste cose all'orizzonte?
     Questo blocco non entra nel corpo: riscrive il campo `cta` nel frontmatter.
 
-    RISPOSTA:
+    RISPOSTA: vedi altre risposte
 
 
                 ════════════════════════════════════════════════

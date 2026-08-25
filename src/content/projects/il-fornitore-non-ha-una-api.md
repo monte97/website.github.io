@@ -150,6 +150,12 @@ swap:
     L'endpoint riordina le serie secondo un criterio suo. Mappando per posizione, ogni
     valore finisce sotto l'etichetta sbagliata — e restando tutti nell'intervallo
     plausibile, nessun controllo automatico distingue il risultato da uno corretto.
+cta:
+  title: "I dati che vi servono per discutere una fattura, chi li scrive?"
+  desc: >
+    Se dipendono da qualcuno che se li ricorda a fine giornata, arriveranno tardi e
+    incompleti proprio quando servono — cioè quando il cliente sta contestando anche
+    altro. Portarli fuori dal sistema che li produce è un lavoro delimitato.
 thesis: "Un'integrazione è finita quando qualcun altro può portarla avanti da solo, compresi i punti dove hai deciso di non arrivare."
 ---
 
@@ -161,7 +167,9 @@ A dirla era il responsabile operativo di un noleggiatore di taglia media: qualch
 
 Nel gestionale c'era già tutto il resto: contratti, trasporti, manutenzioni programmate, fatturazione. Mancavano le macchine: ore motore, cicli di lavoro, allarmi, stati. Un campione ogni tre minuti, per ogni macchina connessa. Quei dati esistevano ed erano completi. Erano sul portale del costruttore, dietro un login, in una pagina con un grafico e un pulsante di esportazione.
 
-**La posta in gioco non era la comodità, era il contratto.** Il noleggio si fattura a ore di utilizzo, e le ore le dichiarava il cantiere. La manutenzione si programma sulle ore, e quelle stesse ore le trascriveva a mano qualcuno che apriva il portale, filiale per filiale, quando se ne ricordava. Ogni contestazione su una fattura diventava mezza giornata di ricostruzione. Ogni intervento saltato era una macchina che tornava rotta prima del previsto, e nessuno collegava le due cose perché non c'era un posto dove i numeri stessero insieme.
+Il punto non era la fatica in sé. Era che **la registrazione delle ore dipendeva dalla buona volontà di una persona** che aveva anche altro da fare, e a cui scrivere numeri su un foglio non piaceva né veniva rapido. Quindi slittava, regolarmente, dietro a cose più urgenti — e quando serviva, i dati erano quelli che qualcuno si era ricordato di annotare.
+
+**La posta in gioco non era la comodità, era il contratto.** Il noleggio si fattura a ore di utilizzo, e le ore le dichiarava il cantiere. La manutenzione si programma sulle ore, e quelle stesse ore le trascriveva a mano qualcuno che apriva il portale, filiale per filiale, quando se ne ricordava. Le contestazioni non erano tante. Ma arrivavano quasi sempre insieme ad altre difficoltà: quando in cantiere qualcosa va storto si discute su tutti i fronti contemporaneamente, e le ore diventano uno dei fronti. Ogni contestazione diventava mezza giornata di ricostruzione, nel momento peggiore per averla. Ogni intervento saltato era una macchina che tornava rotta prima del previsto, e nessuno collegava le due cose perché non c'era un posto dove i numeri stessero insieme.
 
 Nessuno stava misurando quel costo, perché era distribuito su chiunque capitasse.
 
@@ -244,6 +252,10 @@ Ma la cosa che ho consegnato con più cura non è l'integrazione.
 È un documento. Come funziona il protocollo, per quanto ne so. Perché il primo accesso passa da un browser, e cosa succederebbe se il costruttore cambiasse quel flusso. Perché le risposte vanno mappate per nome e mai per posizione — con la storia dei numeri nella colonna sbagliata scritta per intero, così che il prossimo non debba ritrovarla da solo. Cosa non è stato costruito, e per quale ragione: non per mancanza di tempo, per scelta. Cosa andrebbe sorvegliato. Cosa resta aperto.
 
 È scritto per qualcuno a cui non sarò io a spiegarlo. Perché un'integrazione basata sull'osservazione di un sistema di terzi ha una data di scadenza che nessuno conosce: il giorno che il costruttore aggiorna il portale qualcosa smette di funzionare, e in quel momento la differenza fra un problema di mezza giornata e una riscrittura da zero è tutta lì dentro.
+
+Il cambiamento che si vede non è nei numeri: è nella fiducia. Il sistema dà riscontro mentre le cose accadono, e quello che viene prodotto si guarda quasi in tempo reale — serve a chi noleggia per sapere come stanno andando le macchine, e serve al cliente finale che ha un resoconto continuo invece di un consuntivo alla fine.
+
+E c'è una conseguenza che vale più della comodità: **i dati non vengono prodotti quando servono, vengono costruiti volta per volta secondo un processo definito.** È la differenza fra un numero che qualcuno ricostruisce a posteriori e un numero che c'era già prima che nascesse la discussione. Quando arriva una controversia, quella differenza è tutto.
 
 **Un'integrazione è finita quando qualcun altro può portarla avanti da solo, compresi i punti dove hai deciso di non arrivare.**
 

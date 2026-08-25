@@ -171,8 +171,12 @@ Lo scrivo perché è il prezzo vero, ed è meglio saperlo prima. Chi vende il mo
        prima e quanto dopo; quante richieste di quel tipo arrivavano al mese;
        quante volte si e' dovuto dire di no.
 
+      > richiedeva settimane di lavoro, anche perché comunque c'era da fare un'analisi mettere d'accordo alle persone su nome del ruolo verificare se tutto fosse effettivamente funzionante c'era molta poca fiducia su quello che era fatto
+
     2. UN FATTO OSSERVABILE, se il numero non c'e': chi ha smesso di essere
        interrotto, chi ha configurato qualcosa da solo, cosa non passa piu' da te.
+
+        > sì, ma sono molto più molto indipendente. Non dipende dalle loro referenze che devono validare in partenza la modifica ma possono accedere in modo molto autonomo. Possono definire nel senso delle regole su open effe a scrivere dei test dei criteri di valutazione e poi discutere con il manager, in questo modo, comunque loro non la possibilità di muoversi con molta più tranquillità, definendo dei criteri di oggettivi che poi vengono guardati insieme al referente questo è molto d'aiuto anche per farsi parte, guardando qualcosa di già fatto piuttosto che partendo da un un foglio bianco discutendo di ipotesi, si guarda il lavoro, il lavoro già fatto e lavorando tramite le azioni, si possono anche definire delle relazioni di base che magari sanciscono le i criteri più stringenti che devono essere mantenuti per render sbagliare molto difficile cose che non è vera con un ruolo con un nuovo ruolo molti dei controlli devono essere di fatto da zero o sono molto più pro errori, perché magari sono concatenazioni di richieste di booleane che con FBI vengono meno
 
     3. NIENTE, se non c'e' nessuna delle due. Il pezzo si chiude sulla tesi e le
        metriche di ampiezza fanno il loro lavoro. E' una scelta legittima.
@@ -215,7 +219,7 @@ C'è chi leggerà questo come un lavoro finito a metà. Lo capisco, e la mia ris
 
     CHI L'HA DETTA (ruolo, non nome):
 
-    RISPOSTA:
+    RISPOSTA: in generale sono contenti perché sono abbiamo finito i risultato flessibile con dei criteri estremamente mirati rispetto a quello che questo ruolo siamo adesso sono in grado di definire tutte le variazioni specifiche del caso o varianti che tramite semplici ruoli non erano assolutamente rappresentabili in generale anche il fatto di poter verificare o posteriori o quello che era un assegnazione di visibilità in determinato momento
 
 
                 ════════════════════════════════════════════════
@@ -250,7 +254,7 @@ C'è chi leggerà questo come un lavoro finito a metà. Lo capisco, e la mia ris
     Se e' cambiato qualcosa da quando l'hai scritto, il finale va aggiornato: e'
     l'affermazione piu' verificabile del pezzo.
 
-    RISPOSTA:
+    RISPOSTA: in realtà, con Flag non c'è più è stato mantenuto per un periodo in modo da sbucciare tra le da switchare tra le due modalità per vedere se quanto è implementato rompeva la l'archeologica perché comunque sia per quanto poco e imponibile era corretto e accettante quindi come tale doveva doveva essere mantenuta quindi sta usato per un periodo per motivi di verifiche dopo aver completato con successo la migrazione si è tenuto ovviamente solamente la versione corretta
 
 
                 ════════════════════════════════════════════════
