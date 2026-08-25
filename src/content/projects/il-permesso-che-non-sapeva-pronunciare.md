@@ -131,9 +131,9 @@ Dopo due giorni il piano è cambiato, e non perché quello vecchio avesse smesso
 
 Il passaggio che cambia tutto è corto da dirsi.
 
-**Un permesso non è un attributo di chi sei: è una relazione fra te e una cosa specifica.** Non «subappaltatore» come chiave universale, ma «questa persona, su questo capitolato, può vedere». La differenza non è filosofica: è la differenza fra una frase che il sistema sa pronunciare e una che non sa.
+**Un permesso in un modello ReBAC non è un attributo di chi sei: è una relazione fra te e una cosa specifica.** Non «subappaltatore» come chiave universale, ma «questa persona, su questo capitolato, può vedere». La differenza non è filosofica: è la differenza fra una frase che il sistema sa pronunciare e una che non sa.
 
-Il modello a relazioni — chi è collegato a cosa, e attraverso quali catene — l'ho imparato e raccontato nella [serie sui concetti di Zanzibar](/blog/verificare/openfga/01-zanzibar-concetti/), quindi qui non lo rispiego: la serie lo fa meglio, e questo pezzo parla d'altro. Parla di come si introduce quella forma in un sistema che ha gente dentro adesso.
+Il modello OpenFGA — chi è collegato a cosa, e attraverso quali catene di tupla — l'ho imparato e raccontato nella [serie sui concetti di Zanzibar](/blog/verificare/openfga/01-zanzibar-concetti/), quindi qui non lo rispiego: la serie lo fa meglio, e questo pezzo parla d'altro. Parla di come si introduce quella forma in un sistema che ha gente dentro adesso.
 
 ## L'ostacolo vero
 

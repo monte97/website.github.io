@@ -166,7 +166,7 @@ E qui comincia il lavoro vero, che non è tecnico: decidere se questa cosa si fa
 
 La prima cosa che ho provato è la prima che prova chiunque: prendere l'indirizzo del portale, cercare un endpoint di autenticazione, mandargli utente e password.
 
-Non funziona. Il grant diretto con le credenziali è disabilitato sul server di autenticazione — non per una configurazione sbagliata, per una scelta di chi ha montato il sistema. E la pagina di login non è una pagina: è un'applicazione JavaScript. Non c'è un form da inviare, c'è del codice che parla con qualcos'altro.
+Non funziona. Il password grant OAuth2 è disabilitato sull'endpoint OIDC — non per una configurazione sbagliata, per una scelta di chi ha montato il sistema. E la pagina di login non è una pagina: è un'applicazione JavaScript SPA. Non c'è un form da inviare, c'è del codice che parla con un endpoint OIDC.
 
 Ho passato qualche ora a provare varianti. È il punto in cui è facile perdere una settimana: ogni tentativo è abbastanza vicino al successo da far credere che manchi un dettaglio.
 
@@ -176,13 +176,13 @@ La svolta non è stata tecnica ma di metodo: **smetti di cercare l'API che vorre
 
 Il portale funziona. Ogni volta che qualcuno apre quel grafico, qualcosa risponde con dei numeri. Non serve indovinare l'interfaccia: basta leggere una conversazione che avviene comunque, decine di volte al giorno, ogni volta che un capocantiere controlla una macchina.
 
-Venti minuti con gli strumenti di sviluppo del browser hanno raccontato quello che il manuale non diceva in quaranta pagine. Il portale era una superficie: sotto c'era un altro prodotto, con un altro nome, che il costruttore aveva integrato e rivestito con i propri colori. Le chiamate non andavano al portale, andavano a quel sistema. E quel sistema un'interfaccia programmabile ce l'aveva — solo, non era documentata per i clienti, perché dal punto di vista commerciale non esisteva.
+Venti minuti con le DevTools del browser hanno raccontato quello che il manuale non diceva in quaranta pagine. Il portale era una superficie: sotto c'era una piattaforma OIDC, con un altro nome, che il costruttore aveva integrato e rivestito con i propri colori. Le chiamate non andavano al portale, andavano a quell'endpoint. E quell'endpoint un'interfaccia programmabile ce l'aveva — solo, non era documentata per i clienti, perché dal punto di vista commerciale non esisteva.
 
 Da lì in poi non è stato reverse engineering nel senso avventuroso del termine. È stato leggere: quali chiamate, in che ordine, con quali parametri, cosa torna indietro.
 
 ## Quindici minuti alla volta
 
-Restava il primo accesso, e la scelta è stata accettare il confine invece di forzarlo: un browser vero, senza interfaccia, che fa il login una volta e restituisce le credenziali di sessione. Da quel momento il browser non serve più — il token dura quindici minuti e si rinnova con una normale chiamata, e la catena di rinnovi regge circa otto ore.
+Restava il primo accesso, e la scelta è stata accettare il confine invece di forzarlo: un browser headless vero, senza interfaccia, che fa il login una volta e restituisce le credenziali di sessione. Da quel momento il browser non serve più — l'access token dura quindici minuti e si rinnova con polling HTTP, e la catena di rinnovi regge circa otto ore.
 
 Otto ore sono un turno. Il processo poteva partire la mattina, raccogliere tutto il giorno e chiudersi da solo.
 
@@ -194,7 +194,7 @@ Funzionava per modo di dire.
 
 Ce ne siamo accorti per una via traversa: una macchina risultava avere ore motore che non stavano in piedi rispetto ai cicli di lavoro registrati. Non un valore assurdo — un valore *strano*. Il tipo di anomalia che su una macchina vera può benissimo essere una macchina che sta lavorando male, e infatti la prima ipotesi è stata quella.
 
-Il problema era nell'integrazione, e la causa è di quelle che fanno arrabbiare per quanto sono semplici. Quando chiedi più grandezze insieme, l'endpoint non risponde nell'ordine in cui le hai chieste: le riordina secondo un criterio suo. Io avevo fatto la cosa naturale — prima grandezza chiesta, prima colonna della risposta.
+Il problema era nell'integrazione, e la causa è di quelle che fanno arrabbiare per quanto sono semplici. Quando chiedi più grandezze insieme, l'endpoint non risponde nell'ordine in cui le hai chieste: le riordina secondo un criterio suo. Io avevo fatto la cosa naturale — prima grandezza chiesta, prima colonna della risposta JSON.
 
 Così le ore motore finivano nella colonna dei cicli. Tutti valori nell'intervallo giusto. Tutti perfettamente plausibili.
 
