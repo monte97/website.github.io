@@ -38,7 +38,7 @@ Il percorso dei segnali è deliberatamente parallelo a quello del dato e non lo 
       · quanto tempo ci si perdeva
       · chi veniva chiamato quando succedeva
 
-    RISPOSTA:
+    RISPOSTA: essendo una pipeline di trasformazione dati di fatto distribuita, la parte più difficile da capire era determinare in quale punto un determinato dato subito una certa variazione diventa molto frustrante soprattutto perché bisognava ricostruire che era modificato cosa oppure se un componente si si arresta bisogna comunque anche capire il perché quel lato non arrivava alla fine se andato non arrivava alla fine era indistinguibile dal fatto che non c'erano dati da elaborare, quindi c'erano dicotomia per un concerto verso tra dato che manca perché manca davvero e dato che manca, perché abbiamo introdotto un malfunzionamento con un rilascio
 
 
                 ════════════════════════════════════════════════
@@ -80,7 +80,7 @@ La verifica prima del codice non è prudenza generica: **vale quando l'alternati
     Serve sapere quanto e' costata quella verifica — un'ora? mezza giornata? — e se
     qualcuno aveva gia' cominciato a scrivere quel codice prima che tu controllassi.
 
-    RISPOSTA:
+    RISPOSTA: in questo frangente ho lavorato da solo. La verifica e' costata relativamente poco (un paio di ore?) complessivamente certamente meno che manterne per sempre quella logica di gestione. Il codice e' una liability, minimizzarlo e' sempre bene
 
 
                 ════════════════════════════════════════════════
@@ -160,7 +160,7 @@ Il percorso critico del dato è tracciabile dall'inizio alla fine: una singola t
 
     CHI L'HA DETTA (ruolo, non nome):
 
-    RISPOSTA:
+    RISPOSTA: Detta dagli utilizzatore del software. Hanno visto una notevole riduzione nel tempo necessario per ricevere i fix e in generale una maggiore qualita' degli stessi.
 
 
                 ════════════════════════════════════════════════
@@ -177,7 +177,7 @@ Il percorso critico del dato è tracciabile dall'inizio alla fine: una singola t
       · settore reale del committente
       · e' lo stesso cliente della telemetria macchine, o un altro?
 
-    RISPOSTA:
+    RISPOSTA: stesso cliente
 
 
                 ════════════════════════════════════════════════
@@ -191,7 +191,7 @@ Il percorso critico del dato è tracciabile dall'inizio alla fine: una singola t
 
     La precisione qui e' il sostituto del numero.
 
-    RISPOSTA:
+    RISPOSTA: non penso sia applicabile, forse si puo prendere qualche cosa dalle risposte precedenti.
 
 
                 ════════════════════════════════════════════════
@@ -207,7 +207,7 @@ Il percorso critico del dato è tracciabile dall'inizio alla fine: una singola t
     Nel progetto vero c'era una di queste cose all'orizzonte?
     Questo blocco non entra nel corpo: riscrive il campo `cta` nel frontmatter.
 
-    RISPOSTA:
+    RISPOSTA: no. nasce da una iniziativa mia, mi ero stancato di non potere rispondere in modo preciso alle domande o di non potere sapere esattamente che cosa succede.
 
 
                 ════════════════════════════════════════════════
