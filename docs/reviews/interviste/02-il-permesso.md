@@ -84,7 +84,7 @@ Dopo due giorni il piano è cambiato, e non perché quello vecchio avesse smesso
 
 Il passaggio che cambia tutto è corto da dirsi.
 
-**Un permesso in un modello ReBAC non è un attributo di chi sei: è una relazione fra te e una cosa specifica.** Non «subappaltatore» come chiave universale, ma «questa persona, su questo capitolato, può vedere». La differenza non è filosofica: è la differenza fra una frase che il sistema sa pronunciare e una che non sa.
+**Un permesso in un modello ReBAC non è un attributo di chi sei: è una relazione fra te e una cosa specifica.** Non «subappaltatore» come chiave universale, ma «questa persona, su questo capitolato, può vedere». La differenza non è filosofica: è la differenza fra una frase che il sistema sa pronunciare e una che non sa. In numeri: si passa da **tre ruoli globali** a **una ottantina di relazioni distribuite su sei tipi di oggetto**. Non è complessità aggiunta per gusto — è il vocabolario che serviva per rispondere a quella richiesta di dieci parole.
 
 Il modello OpenFGA — chi è collegato a cosa, e attraverso quali catene di tupla — l'ho imparato e raccontato nella [serie sui concetti di Zanzibar](/blog/verificare/openfga/01-zanzibar-concetti/), quindi qui non lo rispiego: la serie lo fa meglio, e questo pezzo parla d'altro. Parla di come si introduce quella forma in un sistema che ha gente dentro adesso.
 
@@ -99,6 +99,8 @@ La forma che ha retto è un seam: un unico punto di controllo davanti a tutte le
 La prima **replica deliberatamente il comportamento vecchio**: guarda il ruolo globale dell'utente e risponde esattamente come avrebbe risposto il codice di ieri — stesse risposte, stessi angoli ciechi, perché in questa fase l'obiettivo non è essere migliori, è essere identici. La seconda **non fa nulla**: serve a misurare cosa succede quando nessuno risponde, e a scoprire quanti punti del sistema chiedano davvero il permesso senza che nessuno lo sappia. La terza è quella **nuova**, che interroga le relazioni.
 
 Un flag decide chi risponde. Girare il flag non è un deploy: è una scelta di traffico, reversibile in un istante, che si fa prima per un utente, poi per uno scenario, poi per tutti. Come si tiene aperta una strada mentre se costruisce una parallela l'ho già raccontato parlando di [identità e permessi che devono parlarsi senza invadere il territorio dell'altro](/blog/verificare/openfga/02-openfga-keycloak/); qui il meccanismo è lo stesso, applicato a un sistema che non si può fermare.
+
+Il costo di quella scelta si misura: il motore nuovo sta in **circa ottocento righe**, la replica del comportamento vecchio in **meno di duecento**. Un quinto dello sforzo per non rompere niente mentre il resto cambia — ed è la voce che non entra mai in nessun preventivo, perché non produce niente di visibile.
 
 Questa è la parte che un lettore con lo stesso problema può rubare: **la replica del vecchio è una feature, non un ripiego**. Finché la prima implementazione risponde, il nuovo modello può sbagliare in tutta sicurezza — e sbaglierà, perché nessun modello è uguale al vecchio il primo giorno.
 
@@ -135,7 +137,40 @@ Lo scrivo perché è il prezzo vero, ed è meglio saperlo prima. Chi vende il mo
     Serve un fatto osservabile: qualcosa che un estraneo avrebbe potuto vedere
     entrando in azienda. Chi apre cosa, quando, al posto di cosa faceva prima.
 
-    La precisione qui e' il sostituto del numero.
+    ── LE METRICHE SONO GIA' NEL TESTO ────────────────────────────────────
+
+    Il 2026-08-25 ho contato nel repo e ne ho messe tre nel pezzo, come ordini
+    di grandezza:
+
+      · tre ruoli globali  →  una ottantina di relazioni su sei tipi di oggetto
+      · circa ottocento righe il motore nuovo, meno di duecento la replica del vecchio
+      · un'ottantina di punti in una ventina di file dove decide ancora il ruolo
+
+    Sono metriche di AMPIEZZA: dicono quanto era grande il lavoro, non quanto e'
+    migliorato qualcosa. Rispondono alla domanda «il mio caso somiglia?», non
+    «quanto avete guadagnato?».
+
+    Le altre contate e non usate stanno in `_strategy/anonimizzazioni.yaml`:
+    332 test su 24 file, 45 con container veri, 2.724 righe di layer, 24 chiamate
+    ai gate, 889 file .cs nel prodotto.
+
+    ── COSA SERVE ANCORA DA TE ────────────────────────────────────────────
+
+    Le metriche di ampiezza non rispondono a «chi sta meglio». Per quello serve
+    una di queste tre cose, in ordine di forza:
+
+    1. UN NUMERO DI ESITO, se esiste: quanto durava aggiungere un permesso nuovo
+       prima e quanto dopo; quante richieste di quel tipo arrivavano al mese;
+       quante volte si e' dovuto dire di no.
+
+    2. UN FATTO OSSERVABILE, se il numero non c'e': chi ha smesso di essere
+       interrotto, chi ha configurato qualcosa da solo, cosa non passa piu' da te.
+
+    3. NIENTE, se non c'e' nessuna delle due. Il pezzo si chiude sulla tesi e le
+       metriche di ampiezza fanno il loro lavoro. E' una scelta legittima.
+
+    Se hai un numero ma non sei sicuro, scrivilo con «circa»: un ordine di
+    grandezza vero batte una cifra precisa ricordata male.
 
     RISPOSTA:
 
@@ -147,7 +182,9 @@ Lo scrivo perché è il prezzo vero, ed è meglio saperlo prima. Chi vende il mo
 
 Il finale onesto è che il percorso vecchio è ancora lì.
 
-Dietro il flag, pronto a rispondere, e ci resterà per un po'. Non perché il nuovo non funzioni: perché su un sistema vivo lo spegnimento non è un gesto, è una conseguenza — arriva quando il nuovo ha accumulato abbastanza prove da non aver più bisogno della rete. Nessuna data promessa, e nessuna voglia di fingere che la migrazione sia finita solo perché la parte nuova esiste e risponde.
+Restano **un'ottantina di punti**, sparsi in **una ventina di file**, dove è ancora il ruolo globale a decidere. Il numero non è la parte interessante: la parte interessante è che adesso quei punti sono un elenco, mentre prima erano invisibili — e un lavoro non finito di cui conosci l'esatto perimetro è una cosa diversa da un lavoro non finito e basta.
+
+Il percorso vecchio resta dietro il flag, pronto a rispondere, e ci resterà per un po'. Non perché il nuovo non funzioni: perché su un sistema vivo lo spegnimento non è un gesto, è una conseguenza — arriva quando il nuovo ha accumulato abbastanza prove da non aver più bisogno della rete. Nessuna data promessa, e nessuna voglia di fingere che la migrazione sia finita solo perché la parte nuova esiste e risponde.
 
 C'è chi leggerà questo come un lavoro finito a metà. Lo capisco, e la mia risposta è che **la metà visibile è l'unica metà che si potesse costruire senza smettere di servire le persone che stavano lavorando**. Un seam non è un ponte da attraversare una volta: è un posto dove si abita per un periodo. E saperci abitare senza fretta — tenendo il vecchio raggiungibile, il nuovo sotto osservazione, e il flag in mano a chi risponde dei sistemi vivi — è la competenza. Non la migrazione lampo.
 
