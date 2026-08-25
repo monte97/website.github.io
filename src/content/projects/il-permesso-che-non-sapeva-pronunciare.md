@@ -98,6 +98,12 @@ openItems:
   - "Restano riferimenti al vecchio modello di ruoli sparsi in una ventina di file: codice morto che non decide più nulla, e che aspetta di essere cancellato"
   - "La ricostruzione a posteriori di chi vedeva cosa è possibile, ma non c'è ancora un'interfaccia che la renda comoda a chi non scrive interrogazioni"
   - "Il modello copre il perimetro affrontato: le aree del prodotto che non sono passate dal seam non sono state toccate"
+cta:
+  title: "Quante volte avete detto «con i ruoli non si può fare»?"
+  desc: >
+    Se la risposta è più di una, il problema non è il permesso che manca: è che il modello
+    dei permessi è stato disegnato quando gli utenti erano pochi e si conoscevano tutti.
+    Capire se si può cambiare senza fermare il sistema è un lavoro delimitato.
 thesis: "Un seam non è un ponte da attraversare una volta: è un posto dove si abita per un periodo — e saperci abitare senza fretta è la competenza, non la migrazione lampo."
 ---
 

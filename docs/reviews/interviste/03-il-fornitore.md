@@ -25,7 +25,9 @@ A dirla era il responsabile operativo di un noleggiatore di taglia media: qualch
 
 Nel gestionale c'era già tutto il resto: contratti, trasporti, manutenzioni programmate, fatturazione. Mancavano le macchine: ore motore, cicli di lavoro, allarmi, stati. Un campione ogni tre minuti, per ogni macchina connessa. Quei dati esistevano ed erano completi. Erano sul portale del costruttore, dietro un login, in una pagina con un grafico e un pulsante di esportazione.
 
-**La posta in gioco non era la comodità, era il contratto.** Il noleggio si fattura a ore di utilizzo, e le ore le dichiarava il cantiere. La manutenzione si programma sulle ore, e quelle stesse ore le trascriveva a mano qualcuno che apriva il portale, filiale per filiale, quando se ne ricordava. Ogni contestazione su una fattura diventava mezza giornata di ricostruzione. Ogni intervento saltato era una macchina che tornava rotta prima del previsto, e nessuno collegava le due cose perché non c'era un posto dove i numeri stessero insieme.
+Il punto non era la fatica in sé. Era che **la registrazione delle ore dipendeva dalla buona volontà di una persona** che aveva anche altro da fare, e a cui scrivere numeri su un foglio non piaceva né veniva rapido. Quindi slittava, regolarmente, dietro a cose più urgenti — e quando serviva, i dati erano quelli che qualcuno si era ricordato di annotare.
+
+**La posta in gioco non era la comodità, era il contratto.** Il noleggio si fattura a ore di utilizzo, e le ore le dichiarava il cantiere. La manutenzione si programma sulle ore, e quelle stesse ore le trascriveva a mano qualcuno che apriva il portale, filiale per filiale, quando se ne ricordava. Le contestazioni non erano tante. Ma arrivavano quasi sempre insieme ad altre difficoltà: quando in cantiere qualcosa va storto si discute su tutti i fronti contemporaneamente, e le ore diventano uno dei fronti. Ogni contestazione diventava mezza giornata di ricostruzione, nel momento peggiore per averla. Ogni intervento saltato era una macchina che tornava rotta prima del previsto, e nessuno collegava le due cose perché non c'era un posto dove i numeri stessero insieme.
 
 Nessuno stava misurando quel costo, perché era distribuito su chiunque capitasse.
 
@@ -77,8 +79,6 @@ Il resto è venuto in fretta. Ore motore, cicli, allarmi, stati. Nel giro di poc
 
 ## I numeri erano sbagliati
 
-> su questa parte fisserai un errore veramente di distrazione piuttosto che che di altro racconterei semplicemente il fatto che bisogna stare attenti a determinate cose che si possono scoprire in determinati modo in determinati modi direttamente alla soluzione soluzione corretta, senza raccontare di di sbagli o di avere lasciato passare o prendere per buoni dei dati senza verificare se leggessi una cosa così mi verrebbe da ridere più e questa persona consapevolezza di quello che fa
-
 Funzionava per modo di dire.
 
 Ce ne siamo accorti per una via traversa: una macchina risultava avere ore motore che non stavano in piedi rispetto ai cicli di lavoro registrati. Non un valore assurdo — un valore *strano*. Il tipo di anomalia che su una macchina vera può benissimo essere una macchina che sta lavorando male, e infatti la prima ipotesi è stata quella.
@@ -100,8 +100,6 @@ Solo il sistema vero riordina. Solo il sistema vero si comporta in un modo che n
 Non è un argomento contro i test, è un argomento su cosa provano. Un'integrazione con un sistema di terzi ha una classe di errori che vive interamente nello spazio fra quello che credi che l'altro faccia e quello che l'altro fa. Quello spazio si copre in un modo solo: guardando i dati veri e chiedendosi se hanno senso. Da noi ha funzionato un controllo di coerenza fisica — ore di funzionamento che devono stare in un certo rapporto con i cicli — non un test.
 
 ## L'endpoint che ho lasciato lì
-> questa parte qui non mi interessa la andrai a nascondere anche perché non so se ci sono dei vincoli normativi o cose che non raccontare per quanto riguarda la scrittura lasciamo stare
-> Piuttosto diciamo che le informazioni raccolte vengono ora condivise con il cliente man mano in modo che possa essere lui a potere anche segnalare cose strane e per dare maggiore visibilita' a quello che sta succedendo
 
 Mentre leggevo il traffico per capire la lettura, ho visto anche il resto.
 
@@ -167,6 +165,10 @@ Ma la cosa che ho consegnato con più cura non è l'integrazione.
 È un documento. Come funziona il protocollo, per quanto ne so. Perché il primo accesso passa da un browser, e cosa succederebbe se il costruttore cambiasse quel flusso. Perché le risposte vanno mappate per nome e mai per posizione — con la storia dei numeri nella colonna sbagliata scritta per intero, così che il prossimo non debba ritrovarla da solo. Cosa non è stato costruito, e per quale ragione: non per mancanza di tempo, per scelta. Cosa andrebbe sorvegliato. Cosa resta aperto.
 
 È scritto per qualcuno a cui non sarò io a spiegarlo. Perché un'integrazione basata sull'osservazione di un sistema di terzi ha una data di scadenza che nessuno conosce: il giorno che il costruttore aggiorna il portale qualcosa smette di funzionare, e in quel momento la differenza fra un problema di mezza giornata e una riscrittura da zero è tutta lì dentro.
+
+Il cambiamento che si vede non è nei numeri: è nella fiducia. Il sistema dà riscontro mentre le cose accadono, e quello che viene prodotto si guarda quasi in tempo reale — serve a chi noleggia per sapere come stanno andando le macchine, e serve al cliente finale che ha un resoconto continuo invece di un consuntivo alla fine.
+
+E c'è una conseguenza che vale più della comodità: **i dati non vengono prodotti quando servono, vengono costruiti volta per volta secondo un processo definito.** È la differenza fra un numero che qualcuno ricostruisce a posteriori e un numero che c'era già prima che nascesse la discussione. Quando arriva una controversia, quella differenza è tutto.
 
 **Un'integrazione è finita quando qualcun altro può portarla avanti da solo, compresi i punti dove hai deciso di non arrivare.**
 

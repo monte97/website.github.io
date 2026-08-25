@@ -138,6 +138,30 @@ Non è un difetto che si aggiusta con un filtro: è una scelta di forma, e va fa
 
 Lo scrivo perché è il prezzo vero, ed è meglio saperlo prima. Chi vende il modello a relazioni come «stesso servizio, funzioni in più» sta vendendo anche questo, senza dirlo.
 
+## Il flag che non c'è più
+
+Il flag è stato tolto.
+
+È rimasto acceso per un periodo, e non per prudenza generica: serviva a passare avanti e indietro fra le due modalità e guardare se il modello nuovo rompeva qualcosa che prima funzionava. Perché il comportamento vecchio, per quanto limitato, **era corretto e accettato** — la gente ci lavorava e otteneva quello che si aspettava. Un modello nuovo che risponde diversamente non è automaticamente migliore: prima devi dimostrare che le differenze sono quelle che volevi, non quelle che ti sono sfuggite.
+
+Quando le due modalità hanno smesso di divergere su qualcosa che non fosse voluto, la vecchia è stata rimossa. Non c'è stata una data promessa in anticipo: c'è stato un momento in cui non serviva più.
+
+Quello che resta è del codice morto — riferimenti al vecchio modello di ruoli sparsi in una ventina di file, che non decidono più niente e aspettano solo di essere cancellati. È un residuo, non un ripiego: la differenza è che adesso è un elenco, e prima era una ragnatela.
+
+## Cosa si può fare adesso che prima non si poteva
+
+Due cose, e la seconda non me l'aspettavo.
+
+La prima è quella per cui il lavoro è nato: si definiscono varianti mirate — questa persona, su questo cantiere, con questo capitolato — che con i ruoli non erano semplicemente scomode da scrivere, erano **non rappresentabili**. Non esisteva una combinazione di ruoli che le esprimesse.
+
+La seconda è arrivata come conseguenza, e vale per un pubblico diverso: **si può ricostruire a posteriori chi vedeva cosa in un dato momento.** Con tre ruoli globali quella domanda non aveva risposta — l'unica ricostruzione possibile era chiedere a qualcuno se si ricordava. Con le relazioni la risposta è un'interrogazione. Non è una funzionalità che qualcuno aveva chiesto: è quello che succede quando i permessi smettono di essere una proprietà delle persone e diventano fatti registrati.
+
+C'è chi leggerà una migrazione durata così come un lavoro fatto lentamente. Lo capisco, e la mia risposta è che **la lentezza era il metodo, non il sintomo**: il vecchio raggiungibile finché è servito, il nuovo sotto osservazione finché non ha smesso di sorprendere, e il flag in mano a chi risponde dei sistemi vivi. Un seam non è un ponte da attraversare una volta: è un posto dove si abita per un periodo, e poi si smonta.
+
+---
+
+*Il caso è reale, il dominio no: piattaforma di gestione cantieri edili al posto di quello originale, terminologia sostituita per intero. Il direttore lavori è un personaggio composito di richieste arrivate in momenti diversi; tempi e scene sono compressi, e la svolta è raccontata dove diventa comprensibile, non dove è stata capita. Restano fedeli le cose che contano: nessun record è stato migrato, le relazioni nuove si sintetizzano da ciò che il sistema già sa, e il percorso vecchio è stato rimosso solo dopo che le due modalità hanno smesso di divergere.*
+
                 ════════════════════════════════════════════════
                 ▶ DA COMPILARE — 4 · CHI STA MEGLIO, E COME SI VEDE
                 ════════════════════════════════════════════════
@@ -188,21 +212,6 @@ Lo scrivo perché è il prezzo vero, ed è meglio saperlo prima. Chi vende il mo
 
 
                 ════════════════════════════════════════════════
-
-
-## Dietro il flag
-
-Il finale onesto è che il percorso vecchio è ancora lì.
-
-Restano **un'ottantina di punti**, sparsi in **una ventina di file**, dove è ancora il ruolo globale a decidere. Il numero non è la parte interessante: la parte interessante è che adesso quei punti sono un elenco, mentre prima erano invisibili — e un lavoro non finito di cui conosci l'esatto perimetro è una cosa diversa da un lavoro non finito e basta.
-
-Il percorso vecchio resta dietro il flag, pronto a rispondere, e ci resterà per un po'. Non perché il nuovo non funzioni: perché su un sistema vivo lo spegnimento non è un gesto, è una conseguenza — arriva quando il nuovo ha accumulato abbastanza prove da non aver più bisogno della rete. Nessuna data promessa, e nessuna voglia di fingere che la migrazione sia finita solo perché la parte nuova esiste e risponde.
-
-C'è chi leggerà questo come un lavoro finito a metà. Lo capisco, e la mia risposta è che **la metà visibile è l'unica metà che si potesse costruire senza smettere di servire le persone che stavano lavorando**. Un seam non è un ponte da attraversare una volta: è un posto dove si abita per un periodo. E saperci abitare senza fretta — tenendo il vecchio raggiungibile, il nuovo sotto osservazione, e il flag in mano a chi risponde dei sistemi vivi — è la competenza. Non la migrazione lampo.
-
----
-
-*Il caso è reale, il dominio no: piattaforma di gestione cantieri edili al posto di quello originale, terminologia sostituita per intero. Il direttore lavori è un personaggio composito di richieste arrivate in momenti diversi; tempi e scene sono compressi, e la svolta è raccontata dove diventa comprensibile, non dove è stata capita. Restano fedeli le cose che contano: nessun record è stato migrato, le relazioni nuove si sintetizzano da ciò che il sistema già sa, e il percorso vecchio è ancora attivo dietro un flag.*
 
                 ════════════════════════════════════════════════
                 ▶ DA COMPILARE — 1 · LA FRASE DEL CLIENTE

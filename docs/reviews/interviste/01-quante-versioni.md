@@ -28,6 +28,12 @@ Il conto si ferma intorno alla decina, e già così è più di quanto chiunque s
 
 Nessuna di queste varianti era stata decisa da un architetto. Erano state tutte concesse in trattativa, una alla volta, ognuna in un momento in cui dire di sì costava meno che dire di no.
 
+E c'è un dettaglio che cambia la natura del problema: **chi installa non è uno sviluppatore.** In azienda c'è una decina di persone che scrivono codice, e nessuna segue solo quel prodotto. Ma accanto a loro ci sono figure il cui mestiere è preparare l'ambiente per il cliente — background vario, non informatico — che si trovavano davanti a errori che non erano in grado di interpretare. Ogni configurazione in più non era solo una riga di manutenzione: era una situazione nuova in cui qualcuno poteva restare bloccato senza saper dire perché.
+
+Il momento in cui la cosa ha smesso di essere un fastidio interno ha una data e un nome: **una brutta figura davanti a un cliente.** L'installazione non era verificata come credevamo, e la messa in servizio è diventata un rimpallo — chiedi una verifica, aspetti, ne chiedi un'altra, aspetti ancora. È costato tempo, ma soprattutto è costato la faccia di un'azienda che quel prodotto lo vende.
+
+Fino a quel giorno il costo delle configurazioni era distribuito e invisibile. Da quel giorno aveva un volto.
+
                 ════════════════════════════════════════════════
                 ▶ DA COMPILARE — 3 · DOVE SI VEDEVA IL COSTO
                 ════════════════════════════════════════════════
@@ -107,6 +113,14 @@ I numeri, quando la griglia è stata compilata per la prima volta: **quasi la me
 
 Il prodotto utile di questo lavoro non è la copertura: **è la mappa dei buchi**. Una percentuale sarebbe stata più comoda da mostrare e inutile da usare, perché non dice quale configurazione è scoperta — e le configurazioni non sono intercambiabili. Sapere che sei coperto al settanta per cento non serve a nessuno se il trenta scoperto è quello del cliente più grosso.
 
+## Chi può fare il lavoro, adesso
+
+Il primo effetto non è stato sulla qualità: è stato su **chi può fare il lavoro**.
+
+Con le configurazioni scritte e i controlli dichiarati, non serve più ricordarsi se un caso è nuovo o già visto: si guarda. E persone con meno anzianità hanno cominciato a gestire installazioni che prima richiedevano qualcuno che «se le ricordava» — comprese quelle figure non tecniche il cui mestiere è preparare l'ambiente, che davanti a un errore adesso hanno un posto dove cercare.
+
+La conoscenza ha smesso di stare nelle teste. È il cambiamento che un estraneo avrebbe potuto vedere entrando in azienda, e l'unico che continua a valere anche se domani nessuno tocca più quella matrice.
+
 ## Il conto torna al commerciale
 
 A questo punto la matrice ha smesso di essere un documento tecnico.
@@ -145,6 +159,12 @@ L'ultima richiesta arrivò quando la matrice esisteva già.
 Era ragionevole quanto le altre, tecnicamente fattibile in pochi giorni, e chiedeva una combinazione nuova che nessun'altra installazione aveva. Con la griglia sul tavolo, però, la conversazione fu diversa: non si discusse se si potesse fare, ma quanto sarebbe costato tenerla in piedi per la durata del contratto, e chi l'avrebbe provata a ogni rilascio.
 
 La risposta al cliente non fu no. Fu che quella combinazione si poteva avere accostandola a una riga che esisteva già, rinunciando a un dettaglio che nella pratica non gli cambiava la giornata. Il cliente accettò senza pensarci troppo: era un dettaglio, per l'appunto. Nessuno l'aveva mai potuto proporre prima, perché prima nessuno sapeva che l'alternativa costava una riga in più per sempre.
+
+E questa non è rimasta una volta sola. È diventato il modo di lavorare: davanti a una richiesta si guarda se ricade in qualcosa che esiste già, o se ci si può far ricadere adattandola. Non è dire di no — è **smettere di dire sì per riflesso**, che è una cosa diversa e molto più difendibile al tavolo.
+
+La frase che riassume tutto non l'ha detta un cliente: è uscita in una revisione interna, dal team che quel prodotto lo installa.
+
+> *«Sembrava che un'installazione per un cliente nuovo fosse un progetto a sé stante, invece di dare un comando ed eseguire un applicativo, come ci si aspetterebbe.»*
 
 **La flessibilità che vendi in trattativa non è una feature: è una riga di manutenzione che qualcuno pagherà ogni mese — e finché non la scrivi da qualche parte, quel qualcuno non lo sa nessuno.**
 
