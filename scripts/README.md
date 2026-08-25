@@ -1,92 +1,37 @@
-# Scripts
+# scripts/
 
-Questa directory contiene strumenti per la gestione del blog.
+Strumenti a mano. **Nessuno di questi fa parte di `npm run build`**: si lanciano
+quando servono, e i loro output (dove ci sono) sono asset committati.
 
-## 📁 Cover Generator
+| Script | Cosa fa |
+|---|---|
+| `post-facts.py` | Scheda meccanica di un articolo: modo, lunghezza di titolo e description, numeri del frontmatter non ancorati al corpo, marcatori di lavorazione, doppioni strutturali, drift con la versione EN. Conta, non giudica. |
+| `og/generate-og.py` | Card Open Graph delle sezioni del sito, in `public/og/*.png`. |
+| `og/generate-post-og.py` | Card Open Graph di ogni articolo, IT ed EN, in `public/og/posts/**`. Da rilanciare quando cambiano i titoli. |
+| `smoke.sh` | Verifica che la produzione (o un'istanza locale) serva davvero il contenuto atteso. Build verde non vuol dire contenuto online. |
 
-Strumenti per generare automaticamente copertine per gli articoli.
-
-### Documentazione
-
-Vedi [`cover-generator/README.md`](cover-generator/README.md) per la documentazione completa.
-
-### Comandi Rapidi
-
-```bash
-# Genera copertine per un singolo articolo
-npm run cover:gen -- content/posts/kafka/01-intro
-
-# Con template specifico
-npm run cover:gen -- content/posts/kafka/01-intro --template dark
-
-# Genera per tutta una serie
-npm run cover:all -- kafka
-
-# Genera serie con template specifico
-npm run cover:all -- kafka --template neon
-```
-
-### Template Disponibili
-
-| Template | Descrizione |
-|----------|-------------|
-| `minimal` | Minimal Gradient (default) |
-| `dark` | Dark Geometric |
-| `split` | Split Color |
-| `glass` | Glassmorphism |
-| `neon` | Neon Cyber |
-| `magazine` | Magazine Style |
-| `code` | Code Editor |
-| `mesh` | Gradient Mesh |
-
-### Struttura
-
-```
-scripts/
-├── cover-generator/                    # Strumenti cover generator
-│   ├── generate-cover.js               # Generatore singolo
-│   ├── generate-all-covers.js          # Generatore batch
-│   ├── template-generators.js          # Funzioni template (export)
-│   ├── export-templates.js             # Export HTML statici
-│   ├── templates/                      # Template HTML
-│   │   ├── README.md
-│   │   ├── cover-template.html
-│   │   ├── examples/                   # Anteprime ed esempi
-│   │   │   ├── README.md
-│   │   │   ├── alternative-templates.html
-│   │   │   └── cover-design-final.html
-│   │   └── html/                       # Template statici (git)
-│   │       ├── README.md
-│   │       ├── index.html
-│   │       └── 01-*.html ... 08-*.html
-│   ├── README.md                       # Documentazione completa
-│   ├── COVER_GENERATOR.md              # Guida dettagliata
-│   └── QUICKSTART.md                   # Referenza rapida
-├── cover-gen.js                        # Wrapper per cover:gen
-├── cover-all.js                        # Wrapper per cover:all
-└── README.md                           # Questo file
-```
-
-## 📁 Content Management
-
-Script per la creazione di nuovi contenuti:
-
-- `new_post.sh` - Crea un nuovo articolo
-- `new_project.sh` - Crea un nuovo progetto
-- `new_note.sh` - Crea una nuova nota
-- `content_index.sh` - Genera l'indice dei contenuti
-
-## 🔧 Utilizzo
-
-Tutti gli script sono eseguibili direttamente o tramite npm:
+## Uso
 
 ```bash
-# Tramite npm
-npm run cover:gen -- <options>
-npm run cover:all -- <options>
+python3 scripts/post-facts.py                      # tabella su tutti gli articoli
+python3 scripts/post-facts.py 01-keycloak-intro    # scheda di un articolo
 
-# Direttamente
-node scripts/cover-gen.js <options>
-node scripts/cover-all.js <options>
-./scripts/new_post.sh <title>
+python3 scripts/og/generate-og.py                  # tutte le card di sezione
+python3 scripts/og/generate-post-og.py             # tutte le card articolo
+python3 scripts/og/generate-post-og.py kafka       # solo i path che contengono "kafka"
+
+bash scripts/smoke.sh                              # contro https://montelli.dev
+bash scripts/smoke.sh http://localhost:4321        # contro una build locale
 ```
+
+Gli script `og/` richiedono `playwright` (python) con Chromium in cache.
+`post-facts.py` richiede `pyyaml`.
+
+## Rimossi
+
+`new_post.sh`, `new_project.sh`, `new_note.sh`, `content_index.sh` e
+`migrate-content.ts` scrivevano o leggevano sotto `content/`, l'albero
+pre-migrazione Hugo rimosso il 2026-08-25. Per creare contenuti si usano le skill
+in `.claude/skills/` (`add-blog-post`, `add-series`, `add-case-study`).
+I wrapper `cover-gen.js` e `cover-all.js` puntavano a un generatore di copertine
+che non esisteva più.

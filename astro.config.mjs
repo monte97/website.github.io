@@ -10,6 +10,9 @@ export default defineConfig({
   output: 'static',
   redirects: {
     '/blog/series/observability/': '/blog/verificare/observability/',
+    // 01-intro diviso in due articoli il 2026-08-25
+    '/blog/verificare/testing/01-intro/': '/blog/verificare/testing/performance-senza-baseline/',
+    '/en/blog/verificare/testing/01-intro/': '/en/blog/verificare/testing/performance-senza-baseline/',
     '/cv': '/files/Francesco_Montelli_CV.pdf',
     '/cv-europass': '/files/Francesco_Montelli_CV_Europass.pdf',
     '/cv-eu': '/files/Francesco_Montelli_CV_Europass.pdf',

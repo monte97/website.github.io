@@ -70,8 +70,6 @@ In pratica, l'utente fa login *una sola volta* su Keycloak e, da quel momento, t
 
 Le applicazioni non toccano più le credenziali — si limitano a verificare che il token sia valido e firmato dall'IdP. Se il codice non gestisce password, non può gestirle male. Un dipendente lascia l'azienda? Lo disabiliti in un punto solo e perde accesso a tutto.
 
-<!-- TODO: link a sezione theory quando importata nel blog -->
-
 ---
 
 ## Qui entra in gioco Keycloak
@@ -117,7 +115,7 @@ L'applicazione non tocca mai le credenziali. Riceve un **JWT** (JSON Web Token) 
 
 > L'app non deve avere un form di login proprio. Se raccogli username e password nel frontend, le credenziali passano attraverso il codice — e torni al punto di partenza: devi proteggerle, trasmetterle in modo sicuro e gestire i casi d'errore. Il redirect a Keycloak esiste proprio per evitarlo.
 
-<!-- TODO: link a theory/02-authorization-code-flow quando importata -->
+Il flusso completo, con PKCE e la configurazione di client e middleware, è il tema del [prossimo articolo della serie](/blog/progettare/keycloak/02-authorization-code-pkce/).
 
 ---
 

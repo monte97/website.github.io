@@ -77,6 +77,8 @@ def facts(path):
         "words": len(body.split()),
         "mode": fm.get("mode"),
         "title": str(fm.get("title", "")),
+        # e' il seoTitle a finire nel <title>, quando c'e'
+        "serp": str(fm.get("seoTitle") or fm.get("title", "")),
         "desc": str(fm.get("description", "")),
         "summary": len(fm.get("summary") or []),
         "openItems": len(fm.get("openItems") or []),
@@ -99,9 +101,11 @@ def card(f):
     p(f"\n\033[1m{f['path']}\033[0m")
     p(f"  parole       {f['words']}")
     p(f"  mode         {f['mode'] or 'NON DICHIARATO'}")
-    tl = len(f["title"])
+    tl = len(f["serp"])
     p(f"  title        {tl} char" + (f"   OLTRE il budget SERP di ~{TITLE_BUDGET}" if tl > TITLE_BUDGET else "   ok"))
     p(f"               \"{f['title']}\"")
+    if f["serp"] != f["title"]:
+        p(f"    via seoTitle \"{f['serp']}\"")
     dl = len(f["desc"])
     lo, hi = DESC_RANGE
     verdict = "corta" if dl < lo else ("lunga" if dl > hi else "ok")
@@ -147,7 +151,7 @@ def table(files):
             flags.append(f"drift-en:{f['en_headings'] - len(f['headings']):+d}")
         if len(f["en_hint"]) >= 3:
             flags.append(f"heading-en:{len(f['en_hint'])}")
-        t = len(f["title"])
+        t = len(f["serp"])
         d = len(f["desc"])
         print(f"{f['path'][:58]:58} {f['words']:>5} "
               f"{t:>4}{'!' if t > TITLE_BUDGET else ' '}"
