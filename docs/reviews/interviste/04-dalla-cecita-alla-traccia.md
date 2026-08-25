@@ -6,6 +6,13 @@
 > Scrivi sulla riga `RISPOSTA:`. Se non hai niente, scrivi `NIENTE`: il blocco sparisce,
 > non viene annacquato. Un campo assente batte sempre un campo vago.
 >
+>
+> I blocchi marcati `DA COMPILARE` stanno **nel punto in cui la tua risposta andrà a finire**.
+> Quelli in fondo al file sono i tre che non appartengono a un punto preciso del testo:
+> la frase del cliente (diventa una citazione prima della tesi), il cambiamento osservabile
+> (entra nel risultato) e il momento in cui il problema diventa urgente (riscrive la CTA,
+> che vive nel frontmatter e non nel corpo).
+>
 > Il testo intorno e' quello reale: se leggendolo vuoi cambiare una frase, cambiala qui.
 
 ---
