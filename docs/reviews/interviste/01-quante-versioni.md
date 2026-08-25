@@ -24,7 +24,7 @@ Il commerciale rispose come rispondono i commerciali quando la richiesta è ragi
 
 Mesi dopo mi trovai a fare un conto che nessuno aveva mai fatto: quante versioni diverse di quel prodotto erano vive, in quel momento, presso i clienti che l'avevano comprato.
 
-Non è una domanda con una risposta ovvia, perché le configurazioni non si sommano. Si moltiplicano. Una struttura porta le proprie utenze dal proprio Keycloak, un altro le lascia gestire al prodotto. Un sede ha la rete isolata verso l'esterno, un altro no. Qui i laboratori sono tre sulla stessa installazione, là uno solo. Ogni scelta è indipendente dalle altre, e ogni combinazione è una cosa che deve funzionare.
+Il conto si ferma intorno alla decina, e già così è più di quanto chiunque si aspettasse. Ma il numero da solo dice poco: quelle configurazioni mettono in gioco **una tredicina di servizi diversi**, in combinazioni che vanno da due a tutti. Non è una domanda con una risposta ovvia, perché le configurazioni non si sommano. Si moltiplicano. Una struttura porta le proprie utenze dal proprio Keycloak, un altro le lascia gestire al prodotto. Un sede ha la rete isolata verso l'esterno, un altro no. Qui i laboratori sono tre sulla stessa installazione, là uno solo. Ogni scelta è indipendente dalle altre, e ogni combinazione è una cosa che deve funzionare.
 
 Nessuna di queste varianti era stata decisa da un architetto. Erano state tutte concesse in trattativa, una alla volta, ognuna in un momento in cui dire di sì costava meno che dire di no.
 
@@ -103,6 +103,8 @@ Tre livelli, scritti esplicitamente. *Esiste*: il container è su, la porta risp
 
 Il risultato non è un cruscotto tutto verde. È una griglia in cui il bianco si vede, e si vede soprattutto nella terza colonna.
 
+I numeri, quando la griglia è stata compilata per la prima volta: **quasi la metà delle configurazioni restava fuori dal giro automatico** — testabile solo chiedendolo esplicitamente, cosa che nessuno faceva. Sempre quasi la metà non aveva alcun controllo sul flusso applicativo, e per un paio il controllo si riduceva a verificare che i container fossero accesi.
+
 Il prodotto utile di questo lavoro non è la copertura: **è la mappa dei buchi**. Una percentuale sarebbe stata più comoda da mostrare e inutile da usare, perché non dice quale configurazione è scoperta — e le configurazioni non sono intercambiabili. Sapere che sei coperto al settanta per cento non serve a nessuno se il trenta scoperto è quello del cliente più grosso.
 
 ## Il conto torna al commerciale
@@ -110,6 +112,8 @@ Il prodotto utile di questo lavoro non è la copertura: **è la mappa dei buchi*
 A questo punto la matrice ha smesso di essere un documento tecnico.
 
 Ogni riga è una configurazione che qualcuno deve tenere viva: quando esce una versione va provata su quella riga, quando cambia una dipendenza va ricontrollata su quella riga, e quando il cliente rinnova qualcosa dalla sua parte è su quella riga che si rompe. Ha un costo mensile, e quel costo esisteva già da anni. Semplicemente non era scritto da nessuna parte, e quello che non è scritto non entra in nessun preventivo.
+
+Il costo di tenerla in piedi è misurabile e non è spaventoso: **circa un migliaio di righe** fra il file dichiarativo, i due esecutori e i loro test. È una cifra che vale la pena dire a chi teme che mettere ordine costi più del disordine.
 
 **La matrice è il listino vero.** Non quello dei moduli: quello delle combinazioni.
 

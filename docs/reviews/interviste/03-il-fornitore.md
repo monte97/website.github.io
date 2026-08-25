@@ -53,7 +53,7 @@ E qui comincia il lavoro vero, che non è tecnico: decidere se questa cosa si fa
 
 La prima cosa che ho provato è la prima che prova chiunque: prendere l'indirizzo del portale, cercare un endpoint di autenticazione, mandargli utente e password.
 
-Non funziona. Il password grant OAuth2 è disabilitato sull'endpoint OIDC — non per una configurazione sbagliata, per una scelta di chi ha montato il sistema. E la pagina di login non è una pagina: è un'applicazione JavaScript SPA. Non c'è un form da inviare, c'è del codice che parla con un endpoint OIDC.
+Non funziona. Il password grant OAuth2 è disabilitato sull'endpoint OIDC — il server risponde che il client non è abilitato agli accessi diretti — non per una configurazione sbagliata, per una scelta di chi ha montato il sistema. E la pagina di login non è una pagina: è un'applicazione JavaScript SPA. Non c'è un form da inviare, c'è del codice che parla con un endpoint OIDC.
 
 Ho passato qualche ora a provare varianti. È il punto in cui è facile perdere una settimana: ogni tentativo è abbastanza vicino al successo da far credere che manchi un dettaglio.
 
@@ -69,7 +69,7 @@ Da lì in poi non è stato reverse engineering nel senso avventuroso del termine
 
 ## Quindici minuti alla volta
 
-Restava il primo accesso, e la scelta è stata accettare il confine invece di forzarlo: un browser headless, che fa il login una volta e restituisce le credenziali di sessione. Da quel momento il browser non serve più — l'access token dura quindici minuti e si rinnova con polling HTTP, e la catena di rinnovi regge circa otto ore.
+Restava il primo accesso, e la scelta è stata accettare il confine invece di forzarlo: un browser headless — Chromium pilotato da Playwright — che fa il login una volta e restituisce le credenziali di sessione. Da quel momento il browser non serve più — l'access token dura quindici minuti e si rinnova con polling HTTP, e la catena di rinnovi regge circa otto ore.
 
 Otto ore sono un turno. Il processo poteva partire la mattina, raccogliere tutto il giorno e chiudersi da solo.
 
