@@ -21,14 +21,17 @@ cambiala direttamente lì. Le modifiche si raccolgono dal diff.
 | `03-il-fornitore.md` | Il fornitore non ha un'API. Il portale sì. | 6 | 0 |
 | `04-dalla-cecita-alla-traccia.md` | Dalla cecità alla traccia | 6 | 0 |
 | `05-tracking-mobile.md` | Tracking live dei mezzi su mappa | 4 | 0 |
+| `06-terminale.md` | Software per chi non apre il terminale | 5 | 0 |
+| `07-estrarre.md` | Estrarre prima che scada | 5 | 0 |
 
 Il numero è l'ordine di resa, non di importanza narrativa: si parte dal pezzo più avanti
 (`01`, già a metà) e si scende verso quello che ha meno bisogno di risposte (`05`, che è
 un dimostratore e non ha un cliente da citare).
 
-I due draft — `software-per-chi-non-apre-il-terminale` e `estrarre-prima-che-scada` —
-non hanno un'intervista: sono bozze scritte da un agente, e vanno prima riscritte.
-Intervistarsi su un testo che non è tuo non ha senso.
+**`06` e `07` sono di natura diversa.** Sono bozze scritte da un agente leggendo i tuoi
+repo, non testi tuoi: non chiedono la prova sociale ma **se quello che c'è scritto è vero**.
+Il primo blocco di entrambe è «È vero?», e viene prima di qualunque considerazione di stile.
+Un episodio inventato non si migliora: si toglie.
 
 ## Perché le domande sono diverse fra un pezzo e l'altro
 
@@ -44,3 +47,15 @@ Non è lo stesso questionario copiato cinque volte.
 
 Quest'ultima categoria è la più importante: sono le frasi che un lettore ostile
 potrebbe controllare, e le uniche che invecchiano male se cambia qualcosa nel progetto.
+
+## Rigenerare dopo aver toccato un case study
+
+Ogni volta che un case study cambia, la sua intervista invecchia in silenzio. Per
+riallinearle tutte preservando le risposte già scritte:
+
+```bash
+python3 docs/reviews/interviste/_rigenera.py
+```
+
+Stampa quante risposte ha preservato per file. Se dice `0` su un file dove avevi
+risposto, **non committare**: qualcosa è andato storto.
