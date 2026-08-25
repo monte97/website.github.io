@@ -10,16 +10,16 @@ eyebrow: "Analisi tecnica · autorizzazione di un sistema in esercizio"
 tags: [Autorizzazione, Legacy, ReBAC, Strangler fig]
 oggetto: >
   L'autorizzazione di una piattaforma di gestione cantieri per un'impresa di costruzioni:
-  tre ruoli globali nati quindici anni prima, controlli sparsi nel codice, e una richiesta
+  tre ruoli globali portati da Keycloak, controlli sparsi nel codice .NET, e una richiesta
   che il vocabolario del sistema non riusciva a esprimere.
 metodo: >
   Un solo punto di controllo davanti alle domande sui permessi, con tre implementazioni
   dietro — una che replica deliberatamente il comportamento vecchio, una vuota, una nuova —
-  e un flag che decide chi risponde. Le relazioni nuove si sintetizzano da ciò che il
+  e un flag che decide chi risponde. Le tuple OpenFGA si sintetizzano da ciò che il
   sistema già sa: nessun record migrato, nessun cutover notturno.
 esito: >
-  L'autorizzazione per singola risorsa e' diventata esprimibile, senza migrare un solo
-  record: i permessi vecchi non erano dati, erano condizioni sparse nel codice. Il
+  L'autorizzazione per singola risorsa e' diventata esprimibile in OpenFGA, senza migrare
+  un solo record: i permessi vecchi non erano dati, erano condizioni sparse nel codice. Il
   percorso precedente resta attivo dietro un flag, ed e' la parte onesta del risultato.
 anonimizzazione: >
   Il dominio è sostituito: piattaforma di gestione cantieri edili al posto di quello

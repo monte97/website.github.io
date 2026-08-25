@@ -1,6 +1,7 @@
 ---
 import '@/styles/global.css';
 import { ClientRouter } from 'astro:transitions';
+import Lightbox from '@/components/interactive/Lightbox.astro';
 
 interface Props {
   title: string;
@@ -140,6 +141,7 @@ const websiteJsonLd = {
 </head>
 <body class="bg-base-light dark:bg-base-dark text-text-dark dark:text-text-light min-h-screen transition-colors duration-300">
   <slot />
+  <Lightbox />
 
   <!-- Teleport target for Vue modals (must be outside component tree) -->
   <div id="modal-root"></div>

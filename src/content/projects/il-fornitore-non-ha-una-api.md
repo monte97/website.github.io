@@ -182,7 +182,7 @@ Da lì in poi non è stato reverse engineering nel senso avventuroso del termine
 
 ## Quindici minuti alla volta
 
-Restava il primo accesso, e la scelta è stata accettare il confine invece di forzarlo: un browser headless vero, senza interfaccia, che fa il login una volta e restituisce le credenziali di sessione. Da quel momento il browser non serve più — l'access token dura quindici minuti e si rinnova con polling HTTP, e la catena di rinnovi regge circa otto ore.
+Restava il primo accesso, e la scelta è stata accettare il confine invece di forzarlo: un browser headless, che fa il login una volta e restituisce le credenziali di sessione. Da quel momento il browser non serve più — l'access token dura quindici minuti e si rinnova con polling HTTP, e la catena di rinnovi regge circa otto ore.
 
 Otto ore sono un turno. Il processo poteva partire la mattina, raccogliere tutto il giorno e chiudersi da solo.
 
