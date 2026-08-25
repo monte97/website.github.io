@@ -1,11 +1,10 @@
 # Dalla cecità alla traccia: strumentare una pipeline esistente
 
 > **Questo è il testo integrale dell'articolo**, così com'è oggi sul sito, con dentro
-> Cerca `DA COMPILARE` per saltare da uno all'altro.
+> **6 blocchi da compilare**. Cerca `DA COMPILARE` per saltare da uno all'altro.
 >
 > Scrivi sulla riga `RISPOSTA:`. Se non hai niente, scrivi `NIENTE`: il blocco sparisce,
 > non viene annacquato. Un campo assente batte sempre un campo vago.
->
 >
 > I blocchi marcati `DA COMPILARE` stanno **nel punto in cui la tua risposta andrà a finire**.
 > Quelli in fondo al file sono i tre che non appartengono a un punto preciso del testo:
