@@ -20,8 +20,8 @@ metodo: >
   e un flag che decide chi risponde. Le tuple OpenFGA si sintetizzano da ciò che il
   sistema già sa: nessun record migrato, nessun cutover notturno.
 esito: >
-  L'autorizzazione per singola risorsa e' diventata esprimibile in OpenFGA, senza migrare
-  un solo record: i permessi vecchi non erano dati, erano condizioni sparse nel codice. Il
+  L'autorizzazione per singola risorsa e' diventata esprimibile in OpenFGA — da tre ruoli
+  globali a un'ottantina di relazioni su sei tipi — senza migrare un solo record: i permessi vecchi non erano dati, erano condizioni sparse nel codice. Il
   percorso precedente resta attivo dietro un flag, ed e' la parte onesta del risultato.
 anonimizzazione: >
   Il dominio è sostituito: piattaforma di gestione cantieri edili al posto di quello
@@ -117,6 +117,8 @@ Prima di cercare un colpevole, vale la pena guardare quei tre ruoli per quello c
 
 Quindici anni prima erano la scelta giusta, e non con occhio benevolo: con i criteri di allora. Cinque utenti, tutti interni, tutti conosciuti per nome. Chi entrava nella piattaforma aveva un mestiere — chi amministrava, chi progettava, chi eseguiva — e il mestiere bastava a decidere quello che poteva toccare. **Il permesso era una proprietà della persona perché le persone si conoscevano.** Non c'era bisogno di una relazione fra un utente e un cantiere: la relazione c'era già fuori dal software, si chiamava ufficio tecnico, e funzionava.
 
+C'è però una seconda ragione, ed è meno comoda della prima. Quel modello dei permessi era stato disegnato durante l'analisi dei requisiti da persone che non erano quelle che poi avrebbero usato il prodotto, e senza coinvolgere tutti quelli che andavano coinvolti. Non è una colpa: è una cosa che succede quasi sempre, e si paga anni dopo. Quando la richiesta del direttore lavori è arrivata, non stava scoprendo un limite del software — stava dicendo per la prima volta una cosa che nessuno aveva mai chiesto a chi di dovere.
+
 Per anni quella forma ha retto, e ha retto bene. Non è debito contratto con leggerezza: è una decisione presa quando il costo di quella forma era zero, e quel costo è cresciuto piano, un cantiere alla volta, senza mai presentare la fattura. Chi ha scelto tre ruoli globali ha fatto quello che si faceva. Il problema non è quello che hanno deciso: è che il mondo intorno è cambiato senza che nessuna singola modifica sembrasse giustificare una riscrittura.
 
 ## Il ruolo che funziona sempre
@@ -126,6 +128,12 @@ La risposta naturale alla richiesta del direttore lavori era aggiungere il quart
 Funzionava. Si aggiungeva il ruolo, si metteva l'utente dentro, il subappaltatore vedeva quello che gli serviva. Poi è arrivata la richiesta per il collaudatore, e si è fatto lo stesso: nuovo ruolo, nuovo utente, tutto a posto. Anche quello funzionava.
 
 Ed è qui che la trappola va descritta per bene, perché non è la trappola ovvia. **La soluzione sbagliata non fallisce mai.** Ogni ruolo nuovo funziona la mattina stessa in cui lo aggiungi. Nessun errore, nessun incidente, nessuna mail di protesta: solo un'altra chiave globale che apre tutte le porte allo stesso modo. Il conto non arriva mai in una data precisa — arriva distribuito, in decennali piccole concessioni, finché i ruoli non sono più una descrizione delle persone ma una lista di eccezioni con nome proprio.
+
+E c'è la parte che il conteggio dei ruoli non racconta: **il costo non era aggiungere il ruolo, era verificarlo**. Ogni ruolo nuovo si traduce in molte modifiche piccole sparse nel codice, e ognuna va provata — perché sono fattori di sicurezza, e sbagliare significa mostrare a qualcuno qualcosa che non deve vedere.
+
+Non solo. In quella piattaforma certe funzioni non dovevano essere nascoste: **non dovevano essere note nella loro esistenza**. Un utente non autorizzato non doveva vedere il pulsante disabilitato — non doveva sapere che quel pulsante esiste. Che è un requisito diverso, e molto più difficile: costringe a verificare anche l'interfaccia, non solo la logica, e trasforma ogni ruolo nuovo in una campagna di prove che tocca schermate e permessi insieme.
+
+Passare da tre ruoli a quattro è un conto. Ragionare su dove infilare l'ennesimo, quando ce ne sono già una ventina e ognuno porta con sé la sua campagna di verifica, è un'altra cosa.
 
 Dopo due giorni il piano è cambiato, e non perché quello vecchio avesse smesso di funzionare. Proprio il contrario: perché funzionava ogni singola volta, e quindi non c'era nessun momento naturale in cui fermarsi e chiedersi dove si stesse andando. Il quarto ruolo avrebbe funzionato anche lui. E il quinto. E la domanda del direttore lavori, nel frattempo, restava senza una risposta vera: il subappaltatore avrebbe visto *tutti* i cantieri, non il suo.
 
