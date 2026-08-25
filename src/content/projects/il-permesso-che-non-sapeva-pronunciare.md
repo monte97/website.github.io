@@ -137,6 +137,8 @@ Funzionava. Si aggiungeva il ruolo, si metteva l'utente dentro, il subappaltator
 
 Ed è qui che la trappola va descritta per bene, perché non è la trappola ovvia. **La soluzione sbagliata non fallisce mai.** Ogni ruolo nuovo funziona la mattina stessa in cui lo aggiungi. Nessun errore, nessun incidente, nessuna mail di protesta: solo un'altra chiave globale che apre tutte le porte allo stesso modo. Il conto non arriva mai in una data precisa — arriva distribuito, in decennali piccole concessioni, finché i ruoli non sono più una descrizione delle persone ma una lista di eccezioni con nome proprio.
 
+Il costo si misurava in **settimane**. Non di sviluppo: di analisi, di riunioni per mettere d'accordo le persone anche solo sul nome del ruolo, e di verifiche per capire se davvero funzionava. Alla fine di tutto questo, la fiducia in quello che era stato fatto restava bassa.
+
 E c'è la parte che il conteggio dei ruoli non racconta: **il costo non era aggiungere il ruolo, era verificarlo**. Ogni ruolo nuovo si traduce in molte modifiche piccole sparse nel codice, e ognuna va provata — perché sono fattori di sicurezza, e sbagliare significa mostrare a qualcuno qualcosa che non deve vedere.
 
 Non solo. In quella piattaforma certe funzioni non dovevano essere nascoste: **non dovevano essere note nella loro esistenza**. Un utente non autorizzato non doveva vedere il pulsante disabilitato — non doveva sapere che quel pulsante esiste. Che è un requisito diverso, e molto più difficile: costringe a verificare anche l'interfaccia, non solo la logica, e trasforma ogni ruolo nuovo in una campagna di prove che tocca schermate e permessi insieme.
@@ -204,6 +206,16 @@ Il flag è stato tolto.
 Quando le due modalità hanno smesso di divergere su qualcosa che non fosse voluto, la vecchia è stata rimossa. Non c'è stata una data promessa in anticipo: c'è stato un momento in cui non serviva più.
 
 Quello che resta è del codice morto — riferimenti al vecchio modello di ruoli sparsi in una ventina di file, che non decidono più niente e aspettano solo di essere cancellati. È un residuo, non un ripiego: la differenza è che adesso è un elenco, e prima era una ragnatela.
+
+## Chi lavora, adesso, senza chiedere il permesso
+
+Il cambiamento più visibile non riguarda gli utenti della piattaforma: riguarda chi ci lavora sopra.
+
+Prima, toccare i permessi voleva dire passare da chi di dovere **prima** di cominciare: la modifica andava validata in partenza, perché sbagliarla era costoso e nessuno sapeva dire con certezza cosa avrebbe rotto. Adesso uno sviluppatore scrive le regole, scrive i test che le verificano, definisce i criteri con cui giudicare il risultato — e poi porta al referente qualcosa di fatto.
+
+**La revisione ha cambiato oggetto: da un'ipotesi discussa su un foglio bianco a un lavoro che si guarda.** È una differenza che chiunque abbia condotto una riunione di allineamento riconosce.
+
+C'è anche una ragione tecnica sotto, e vale la pena dirla. Le relazioni permettono di scolpire una volta i vincoli più stringenti — quelli che non devono mai cadere — e da lì in poi è difficile sbagliare. Con un ruolo nuovo, invece, molti controlli andavano riscritti da capo: concatenazioni di condizioni booleane, ognuna un'occasione per dimenticarsene una.
 
 ## Cosa si può fare adesso che prima non si poteva
 

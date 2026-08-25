@@ -40,7 +40,7 @@ actions:
   - "Primo accesso con un browser headless, poi otto ore di raccolta su rinnovo del token via HTTP"
   - "Individuazione di un riordino silenzioso delle risposte che spostava i valori nella colonna sbagliata senza produrre nessun errore"
   - "Controllo di coerenza fisica sui dati raccolti, al posto di test su un sistema simulato che avrebbe confermato il modello sbagliato"
-  - "Perimetro limitato alla lettura: il canale di configurazione, che tocca i parametri del limitatore di carico, è stato lasciato al costruttore"
+  - "Perimetro limitato alla lettura: il canale che configura la macchina è stato lasciato al costruttore, con la sua responsabilità"
 result:
   - "Ore, cicli e allarmi nel gestionale senza più trascrizioni manuali: le contestazioni sulle fatture si chiudono guardando una schermata, la manutenzione si programma sui numeri veri"
   - "Un documento di protocollo che descrive ogni scelta, il suo perché, cosa succede quando il costruttore cambierà il portale, e cosa non è stato costruito e per quale ragione"
@@ -119,7 +119,7 @@ decisions:
     appeal: "È l'ordine che hai in testa mentre scrivi la richiesta: due righe, e sembra ovvio."
   - title: "Canale di configurazione"
     chosen: "Fermarsi alla lettura, la scrittura resta al costruttore"
-    chosenWhy: "La lettura è reversibile: se sbaglio, il danno è un grafico storto e me ne accorgo."
+    chosenWhy: "La lettura è reversibile e verificabile: se sbaglio, il danno è un grafico storto, e me ne accorgo io. La scrittura no."
     rejected: "Ricostruire anche la scrittura e portare la configurazione nel gestionale"
     appeal: "Era la parte facile — stessa struttura, stesso token. E il cliente l'avrebbe voluta."
   - title: "Perimetro del servizio"
@@ -229,7 +229,7 @@ Non è un argomento contro i test, è un argomento su cosa provano. Un'integrazi
 
 Mentre leggevo il traffico per capire la lettura, ho visto anche il resto.
 
-Il portale non serve solo a guardare: serve a configurare. Fra le cose configurabili c'erano i parametri del limitatore di carico — chiamate come le altre, sullo stesso sistema, con lo stesso token che avevo già in mano.
+Il portale non serve solo a guardare: serve anche a configurare la macchina. Erano chiamate come le altre, sullo stesso sistema, con lo stesso token che avevo già in mano.
 
 Non le ho ricostruite, e la decisione è arrivata prima di provarci, non dopo aver fallito.
 
@@ -239,7 +239,7 @@ La differenza fra le due cose non è la difficoltà. È che una è reversibile e
 
 Leggere quei dati è un'operazione che il cliente ha già il diritto di fare: sono le sue macchine, sono i suoi numeri, li sta già guardando su quel portale tutti i giorni. L'ho solo automatizzata.
 
-Il limitatore di carico è il dispositivo che impedisce a una macchina di sollevare più di quanto può reggere. In cantiere, sotto una macchina, ci sono delle persone.
+Scrivere una configurazione su una macchina che non è mia, attraverso un canale che nessuno mi ha dato e che nessuno mi garantisce, è un'operazione che non posso verificare e non posso disfare. Non è questione di quanto sia difficile: è che se sbaglio non me ne accorgo io, se ne accorge qualcun altro, altrove, e in un momento che non scelgo.
 
 Non è un limite tecnico che non ho saputo aggirare. È il punto in cui il lavoro finisce — e dirlo al cliente fa parte del lavoro quanto il resto. La risposta è stata: quella configurazione continuerà a farla il costruttore, dal suo portale, con la sua responsabilità.
 
