@@ -244,7 +244,7 @@ C'è chi leggerà una migrazione durata così come un lavoro fatto lentamente. L
     Nel progetto vero c'era una di queste cose all'orizzonte?
     Questo blocco non entra nel corpo: riscrive il campo `cta` nel frontmatter.
 
-    RISPOSTA:
+    RISPOSTA: il bisogno di sistemare e' nato in modo piu organico come risposta ad una richiesta. IL prodotto era in sviluppo quindi intervenire e' stato molto piu facile
 
 
                 ════════════════════════════════════════════════
