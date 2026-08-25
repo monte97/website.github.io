@@ -56,7 +56,7 @@ Il risultato: il conftest diventa l'immagine speculare del codice. Ogni connessi
 
 Nei tre servizi che ho refactorizzato, il conftest totale era di 228 righe -- quasi la metà del codice applicativo. Il conftest non aveva test propri: se un mock era configurato in modo errato, nessuno se ne accorgeva. I due file evolvevano in sincrono, ma il contratto era implicito e non documentato.
 
-I dettagli di questi problemi -- le quattro trappole del mocking con `sys.modules`, i mock su librerie C-backed, la contaminazione tra test -- sono descritti in [Il tuo servizio Flask è impossibile da testare](/posts/testing/unit-testing/02-mock-traps-python-flask/). Il refactoring completo dei tre servizi è in [Microservizi Flask testabili](/posts/testing/unit-testing/03-flask-factory-testabile/). Qui mi concentro sul pattern sottostante: la dependency injection.
+I dettagli di questi problemi -- le quattro trappole del mocking con `sys.modules`, i mock su librerie C-backed, la contaminazione tra test -- sono descritti in [Il tuo servizio Flask è impossibile da testare](/blog/verificare/testing/02-mock-traps-python-flask/). Il refactoring completo dei tre servizi è in [Microservizi Flask testabili](/blog/verificare/testing/03-flask-factory-testabile/). Qui mi concentro sul pattern sottostante: la dependency injection.
 
 ---
 
@@ -303,7 +303,7 @@ Nella mia esperienza, il 90% dei servizi Python che ho visto in produzione si fe
 
 ## Risorse
 
-- **Serie unit testing** -- I dettagli del refactoring Flask: [Il tuo servizio Flask è impossibile da testare](/posts/testing/unit-testing/02-mock-traps-python-flask/) e [Microservizi Flask testabili](/posts/testing/unit-testing/03-flask-factory-testabile/)
+- **Serie unit testing** -- I dettagli del refactoring Flask: [Il tuo servizio Flask è impossibile da testare](/blog/verificare/testing/02-mock-traps-python-flask/) e [Microservizi Flask testabili](/blog/verificare/testing/03-flask-factory-testabile/)
 - **dependency-injector** -- Documentazione ufficiale: [python-dependency-injector.ets-labs.org](https://python-dependency-injector.ets-labs.org/)
 - **Flask Application Factory** -- Pattern ufficiale Flask: [flask.palletsprojects.com/en/2.3.x/patterns/appfactories/](https://flask.palletsprojects.com/en/2.3.x/patterns/appfactories/)
 - **PEP 544 -- Protocols** -- La PEP che ha introdotto Protocol in Python: [peps.python.org/pep-0544/](https://peps.python.org/pep-0544/)

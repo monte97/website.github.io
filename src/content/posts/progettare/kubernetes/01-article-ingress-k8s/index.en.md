@@ -14,7 +14,7 @@ tags:
 lang: en
 reviewed: human
 series: kubernetes-fondamenti
-seriesOrder: 20
+seriesOrder: 10
 ---
 
 ## The Problem: Accessing Services in a Local Development Environment

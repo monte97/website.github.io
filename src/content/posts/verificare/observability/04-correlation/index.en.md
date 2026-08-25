@@ -27,7 +27,7 @@ lang: en
 reviewed: machine
 ---
 
-You have instrumented your application with OpenTelemetry, traces and logs are flowing into a central backend — now what? The practical question remains: how do you actually use this telemetry to diagnose problems? This tutorial answers with three concrete debug scenarios. If you are unfamiliar with core OpenTelemetry concepts (spans, traces, context propagation), it is worth reading the [Observability intro article](/posts/otel-website-material/01-observability/) first.
+You have instrumented your application with OpenTelemetry, traces and logs are flowing into a central backend — now what? The practical question remains: how do you actually use this telemetry to diagnose problems? This tutorial answers with three concrete debug scenarios. If you are unfamiliar with core OpenTelemetry concepts (spans, traces, context propagation), it is worth reading the [Observability intro article](/blog/verificare/observability/) first.
 
 **Article structure:**
 1. Quick Start — spin up the demo

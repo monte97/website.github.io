@@ -11,7 +11,7 @@ featured: false
 tags: ["k6", "JavaScript", "Grafana", "Docker", "Jenkins"]
 links:
   github: https://github.com/monte97/workshop-k6
-  blog: /posts/testing/01-intro/
+  blog: /blog/verificare/testing/performance-senza-baseline/
 weight: 75
 actions:
   - "Design degli scenari di carico: come modellare traffico realistico invece di chiamate uniformi"

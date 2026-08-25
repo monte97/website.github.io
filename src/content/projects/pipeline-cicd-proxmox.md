@@ -10,7 +10,7 @@ featured: false
 tags: ["Jenkins", "OpenTofu", "Ansible", "Semaphore", "Proxmox", "Docker"]
 links:
   github: https://github.com/monte97/proxmox-cicd-demo
-  blog: /posts/devops/pipeline-proxmox-opentofu-ansible/
+  blog: /blog/automatizzare/devops/pipeline-proxmox-opentofu-ansible/
 weight: 65
 actions:
   - "Provisioning delle VM via OpenTofu e cloud-init, con configurazione versionata su Git"

@@ -9,7 +9,7 @@ context: "Laboratorio personale ospitato su un piccolo cluster Proxmox. L'ho cos
 featured: true
 tags: ["Kubernetes", "Cluster API", "ArgoCD", "n8n", "Grafana", "Docker", "Proxmox"]
 links:
-  blog: /posts/kubernetes/01-capi-part1-intro/
+  blog: /blog/progettare/kubernetes/01-capi-part1-intro/
 weight: 70
 actions:
   - "Provisioning del cluster Kubernetes con Cluster API, declarativo e ricostruibile da zero"

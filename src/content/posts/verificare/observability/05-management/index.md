@@ -45,7 +45,7 @@ openNote: "Le assunzioni dietro i numeri, e i rischi che il campionamento non to
 mode: how-to
 ---
 
-Nel [tutorial precedente](https://montelli.dev/posts/otel-website-material/04-correlation/) abbiamo strumentato un e-commerce con OpenTelemetry e risolto tre scenari di debug: silent failure, latency spike, fan-out. Tutto funzionava: trace complete, errori visibili, latenza misurabile.
+Nel [tutorial precedente](https://montelli.dev/blog/verificare/observability/04-correlation/) abbiamo strumentato un e-commerce con OpenTelemetry e risolto tre scenari di debug: silent failure, latency spike, fan-out. Tutto funzionava: trace complete, errori visibili, latenza misurabile.
 
 C'è un dettaglio che però non abbiamo affrontato: ogni singola request generava una trace che viene salvata in modo indefinito all'interno del sistema. In sviluppo è il comportamento accettabile ma in un contesto reale? È un problema.
 
@@ -293,7 +293,7 @@ Gli scenari 1-2-3 del tutorial precedente usano lo stack base. Questo articolo u
 
 ### Setup
 
-> **Prerequisito**: il repo MockMart deve essere clonato e funzionante. Se non lo si ha già dal [tutorial precedente](/posts/otel-website-material/04-correlation/):
+> **Prerequisito**: il repo MockMart deve essere clonato e funzionante. Se non lo si ha già dal [tutorial precedente](/blog/verificare/observability/04-correlation/):
 > ```bash
 > git clone https://github.com/monte97/MockMart
 > cd MockMart

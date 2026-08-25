@@ -23,7 +23,7 @@ When you run `kubectl apply -f deployment.yaml`, Pods appear in the cluster. You
 
 The controller pattern is the fundamental mechanism on which the entire platform rests. Every resource you apply — Deployment, Service, Ingress — is managed by a dedicated controller that observes, compares, and acts in a continuous loop. Despite this, it is often treated as a black box.
 
-This article explores the theory behind Kubernetes controllers, from their internal architecture to building a custom controller with `controller-runtime`. The [Cluster API series](/posts/kubernetes/homelab-capi-article/capi-part1-intro/) introduces concepts like *reconciliation loop* and *controller pattern* — here they are examined in depth.
+This article explores the theory behind Kubernetes controllers, from their internal architecture to building a custom controller with `controller-runtime`. The [Cluster API series](/blog/progettare/kubernetes/01-capi-part1-intro/) introduces concepts like *reconciliation loop* and *controller pattern* — here they are examined in depth.
 
 The complete code for the example is in the repository: [monte97/k8s-controller-demo](https://github.com/monte97/k8s-controller-demo)
 
@@ -205,7 +205,7 @@ The ReplicaSet Controller has a simpler but equally critical task: ensure that t
 
 ### The Pattern Repeats
 
-This schema — observe, compare, act — repeats in every corner of Kubernetes. The [Ingress Controller](/posts/kubernetes/fondamenti/article-ingress-k8s/) observes Ingress resources and reconfigures the reverse proxy. [Cluster API controllers](/posts/kubernetes/homelab-capi-article/capi-part2-internals/) observe Custom Resources that describe clusters and machines, and reconcile the underlying infrastructure. The pattern is the same; only the observed resources and the actions taken differ.
+This schema — observe, compare, act — repeats in every corner of Kubernetes. The [Ingress Controller](/blog/progettare/kubernetes/01-article-ingress-k8s/) observes Ingress resources and reconfigures the reverse proxy. [Cluster API controllers](/blog/progettare/kubernetes/02-capi-part2-internals/) observe Custom Resources that describe clusters and machines, and reconcile the underlying infrastructure. The pattern is the same; only the observed resources and the actions taken differ.
 
 ---
 
@@ -531,8 +531,8 @@ The complete EchoConfig Controller code is available in the repository:
 
 * **[Custom Resource Definitions - Official Documentation](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)**: Complete guide to CRDs, from schema definition to validation.
 
-* **[CAPI Part 1: From Chaos to Automation](/posts/kubernetes/homelab-capi-article/capi-part1-intro/)**: The first article in the Cluster API series, which extensively uses the controller pattern.
+* **[CAPI Part 1: From Chaos to Automation](/blog/progettare/kubernetes/01-capi-part1-intro/)**: The first article in the Cluster API series, which extensively uses the controller pattern.
 
-* **[CAPI Part 2: Anatomy of Cluster API](/posts/kubernetes/homelab-capi-article/capi-part2-internals/)**: Deep dive into the internal architecture of CAPI and its controllers.
+* **[CAPI Part 2: Anatomy of Cluster API](/blog/progettare/kubernetes/02-capi-part2-internals/)**: Deep dive into the internal architecture of CAPI and its controllers.
 
-* **[From port-forward to Ingress](/posts/kubernetes/fondamenti/article-ingress-k8s/)**: How the Ingress Controller works — another practical example of the pattern described in this article.
+* **[From port-forward to Ingress](/blog/progettare/kubernetes/01-article-ingress-k8s/)**: How the Ingress Controller works — another practical example of the pattern described in this article.

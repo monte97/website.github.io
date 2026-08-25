@@ -10,7 +10,7 @@ featured: false
 tags: ["Keycloak", ".NET", "C#", "Docker", "PostgreSQL", "OAuth2"]
 links:
   github: https://github.com/monte97/MockMart
-  blog: /posts/keycloak/01-keycloak-intro/
+  blog: /blog/progettare/keycloak/01-keycloak-intro/
 weight: 80
 actions:
   - "Mappatura del modello di autenticazione esistente per capire cosa Keycloak avrebbe sostituito e cosa no"

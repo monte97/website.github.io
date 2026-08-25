@@ -42,7 +42,7 @@ Il test E2E fallisce con un timeout, lo screenshot mostra uno spinner infinito, 
 Collegare i test Playwright alle trace OpenTelemetry ci permette di rompere quella black box: quando un test fallisce, apriamo la trace in Grafana e identifichiamo esattamente quale microservizio è il colpevole.
 
 👉 [Articolo Introduttivo Playwright](https://theredcode.it/testing/testing-e2e-perche-iniziare-con-playwright/).
-👉 [Articolo Introduttivo OpenTelemetry](https://montelli.dev/posts/otel-website-material/04-correlation/)
+👉 [Articolo Introduttivo OpenTelemetry](https://montelli.dev/blog/verificare/observability/04-correlation/)
 
 **Cosa copriamo:**
 1. Setup rapido MockMart (ambiente demo)

@@ -14,7 +14,7 @@ tags:
 lang: en
 reviewed: human
 series: homelab-capi
-seriesOrder: 20
+seriesOrder: 30
 ---
 
 ## The Immutable OS Paradigm for Kubernetes

@@ -14,7 +14,7 @@ tags:
 lang: en
 reviewed: human
 series: homelab-capi
-seriesOrder: 25
+seriesOrder: 40
 ---
 
 # Part 4: Practical Setup - Day 1 Operations

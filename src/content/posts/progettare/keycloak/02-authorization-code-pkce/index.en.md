@@ -16,7 +16,7 @@ series: keycloak
 seriesOrder: 2
 ---
 
-Keycloak configured, realm created, client registered. The next step is wiring a React frontend and an Express backend to the Identity Provider. The [introductory article]({{< ref "/posts/keycloak/01-keycloak-intro" >}}) covers the concept of delegating authentication. This one implements the practical piece.
+Keycloak configured, realm created, client registered. The next step is wiring a React frontend and an Express backend to the Identity Provider. The [introductory article]({{< ref "/blog/progettare/keycloak/01-keycloak-intro/" >}}) covers the concept of delegating authentication. This one implements the practical piece.
 
 The implementation uses **Authorization Code Flow with PKCE** in MockMart, a demo e-commerce app. The result: the user clicks "Login," is redirected to Keycloak, enters their credentials, and returns to the app with a JWT that the backend validates on every request. The application never touches passwords.
 
@@ -37,7 +37,7 @@ By the end of this tutorial:
 
 - Docker and Docker Compose installed
 - [MockMart](https://github.com/monte97/MockMart) cloned locally
-- Keycloak running (see [introductory article]({{< ref "/posts/keycloak/01-keycloak-intro" >}}))
+- Keycloak running (see [introductory article]({{< ref "/blog/progettare/keycloak/01-keycloak-intro/" >}}))
 
 ---
 
@@ -537,7 +537,7 @@ The authentication flow covered in this article:
 
 The application code never touches credentials. The frontend has no secret. The backend has no user database. Everything is delegated to Keycloak.
 
-The next articles cover authenticating services to each other without a user ([Client Credentials]({{< ref "/posts/keycloak/03-keycloak-m2m" >}})) and the real-world problems that surface when the integration meets production ([6 Real Problems]({{< ref "/posts/keycloak/04-keycloak-e2e" >}})).
+The next articles cover authenticating services to each other without a user ([Client Credentials]({{< ref "/blog/progettare/keycloak/03-keycloak-m2m/" >}})) and the real-world problems that surface when the integration meets production ([6 Real Problems]({{< ref "/blog/progettare/keycloak/04-keycloak-e2e/" >}})).
 
 ---
 

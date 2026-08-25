@@ -14,7 +14,7 @@ tags:
 lang: en
 reviewed: human
 series: homelab-capi
-seriesOrder: 15
+seriesOrder: 10
 ---
 ## The Problem of Manual Kubernetes Management
 

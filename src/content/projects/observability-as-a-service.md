@@ -10,7 +10,7 @@ featured: true
 tags: ["OpenTelemetry", "C#/.NET", "Loki", "Grafana", "Tempo", "Mimir"]
 links:
   github: https://github.com/monte97/otel-demo
-  blog: /posts/observability/01-observability/
+  blog: /blog/verificare/observability/
 weight: 50
 actions:
   - "Progettazione dello stack — Grafana, Loki (log), Tempo (trace), Mimir (metriche) — con OpenTelemetry come unico ingresso"

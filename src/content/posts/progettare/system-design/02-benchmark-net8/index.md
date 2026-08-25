@@ -39,7 +39,7 @@ mode: explanation
 
 In ogni code review C# prima o poi qualcuno dice "qui LINQ è troppo lento, usa un for". Ma nessuno tira fuori un benchmark. Oggi lo facciamo -- su .NET 8, con BenchmarkDotNet, e con i pattern reali dell'articolo precedente.
 
-Nel [primo articolo della serie](/posts/dotnet/linq/01-errori-produzione/) abbiamo visto quattro pattern LINQ trovati in un dispatcher per flotta commerciale. Le fix erano semplici -- `ToHashSet`, `GroupBy`, `ToLookup`, `foreach`. Ma *quanto* cambia in pratica? Dire "passa da O(n^2) a O(n)" è corretto sul piano teorico. Sul piano pratico, la domanda del tech lead è un'altra: "Quanti microsecondi risparmiamo? Quanta memoria in meno? Vale la pena del refactoring?". Oggi mettiamo i numeri.
+Nel [primo articolo della serie](/blog/progettare/system-design/01-errori-produzione/) abbiamo visto quattro pattern LINQ trovati in un dispatcher per flotta commerciale. Le fix erano semplici -- `ToHashSet`, `GroupBy`, `ToLookup`, `foreach`. Ma *quanto* cambia in pratica? Dire "passa da O(n^2) a O(n)" è corretto sul piano teorico. Sul piano pratico, la domanda del tech lead è un'altra: "Quanti microsecondi risparmiamo? Quanta memoria in meno? Vale la pena del refactoring?". Oggi mettiamo i numeri.
 
 ---
 

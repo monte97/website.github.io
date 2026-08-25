@@ -38,7 +38,7 @@ openNote: "Quello che questo strumento non decide, e che va pesato prima di port
 mode: how-to
 ---
 
-Nei tre articoli precedenti abbiamo visto [cosa sbagliare](/posts/dotnet/linq/01-errori-produzione), [quanto costa](/posts/dotnet/linq/02-benchmark-net8) e [cosa succede sotto il cofano](/posts/dotnet/linq/03-compilatore-state-machine). Abbiamo parlato di complessità computazionale, state machine, allocazioni e streaming. Ma finora era tutto teoria e numeri. Tabelle di benchmark, diagrammi ASCII, ragionamenti sulla deferred execution.
+Nei tre articoli precedenti abbiamo visto [cosa sbagliare](/blog/progettare/system-design/01-errori-produzione/), [quanto costa](/blog/progettare/system-design/02-benchmark-net8/) e [cosa succede sotto il cofano](/blog/progettare/system-design/03-compilatore-state-machine/). Abbiamo parlato di complessità computazionale, state machine, allocazioni e streaming. Ma finora era tutto teoria e numeri. Tabelle di benchmark, diagrammi ASCII, ragionamenti sulla deferred execution.
 
 E se potessi *vedere* ogni elemento attraversare la tua pipeline LINQ -- operatore per operatore -- in una dashboard? Non una tabella statica, non un breakpoint nel debugger, ma una cascata temporale che mostra esattamente quando ogni stage inizia, quanto dura, e come gli elementi fluiscono da un operatore all'altro?
 
@@ -456,9 +456,9 @@ Il progetto `src/LinqDeepDive.Tracing/` contiene tutti gli extension method e le
 
 ### Articoli della serie
 
-* [Articolo 1: 4 errori LINQ che ho trovato in produzione](/posts/dotnet/linq/01-errori-produzione)
-* [Articolo 2: Quanto costa davvero LINQ? Benchmark su .NET 8](/posts/dotnet/linq/02-benchmark-net8)
-* [Articolo 3: Cosa genera il compilatore quando scrivi una Where()](/posts/dotnet/linq/03-compilatore-state-machine)
+* [Articolo 1: 4 errori LINQ che ho trovato in produzione](/blog/progettare/system-design/01-errori-produzione/)
+* [Articolo 2: Quanto costa davvero LINQ? Benchmark su .NET 8](/blog/progettare/system-design/02-benchmark-net8/)
+* [Articolo 3: Cosa genera il compilatore quando scrivi una Where()](/blog/progettare/system-design/03-compilatore-state-machine/)
 
 ### Documentazione ufficiale
 

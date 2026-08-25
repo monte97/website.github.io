@@ -11,7 +11,7 @@ featured: false
 tags: ["Playwright", "Docker", "Jenkins", "PostgreSQL", "Vue.js"]
 links:
   github: https://github.com/monte97/workshop-playwright
-  blog: /posts/testing/01-guida-completa-e2e/
+  blog: /blog/verificare/testing/01-guida-completa-e2e/
 weight: 60
 actions:
   - "Fondamenti di Playwright: locator, waiting strategy, debugging — partendo dai pattern che funzionano davvero"

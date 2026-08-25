@@ -18,7 +18,7 @@ series: linq
 seriesOrder: 40
 ---
 
-In the three previous articles we saw [what to get wrong](/posts/dotnet/linq/01-errori-produzione), [how much it costs](/posts/dotnet/linq/02-benchmark-net8), and [what happens under the hood](/posts/dotnet/linq/03-compilatore-state-machine). We talked about computational complexity, state machines, allocations, and streaming. But so far everything was theory and numbers — benchmark tables, ASCII diagrams, reasoning about deferred execution.
+In the three previous articles we saw [what to get wrong](/blog/progettare/system-design/01-errori-produzione/), [how much it costs](/blog/progettare/system-design/02-benchmark-net8/), and [what happens under the hood](/blog/progettare/system-design/03-compilatore-state-machine/). We talked about computational complexity, state machines, allocations, and streaming. But so far everything was theory and numbers — benchmark tables, ASCII diagrams, reasoning about deferred execution.
 
 What if you could *see* each element traverse your LINQ pipeline — operator by operator — on a dashboard? Not a static table, not a debugger breakpoint, but a temporal waterfall showing exactly when each stage starts, how long it takes, and how elements flow from one operator to the next?
 
@@ -436,9 +436,9 @@ The `src/LinqDeepDive.Tracing/` project contains all extension methods and demos
 
 ### Series Articles
 
-* [Article 1: 4 LINQ errors I found in production](/posts/dotnet/linq/01-errori-produzione)
-* [Article 2: What does LINQ actually cost? Benchmarks on .NET 8](/posts/dotnet/linq/02-benchmark-net8)
-* [Article 3: What the compiler generates when you write a Where()](/posts/dotnet/linq/03-compilatore-state-machine)
+* [Article 1: 4 LINQ errors I found in production](/blog/progettare/system-design/01-errori-produzione/)
+* [Article 2: What does LINQ actually cost? Benchmarks on .NET 8](/blog/progettare/system-design/02-benchmark-net8/)
+* [Article 3: What the compiler generates when you write a Where()](/blog/progettare/system-design/03-compilatore-state-machine/)
 
 ### Official Documentation
 

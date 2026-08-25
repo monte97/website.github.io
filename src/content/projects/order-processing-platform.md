@@ -10,7 +10,7 @@ featured: true
 tags: ["Go", "Kafka", "PostgreSQL", "Kubernetes", "OpenTelemetry"]
 links:
   github: https://github.com/monte97/kafka-pekko
-  blog: /posts/kafka/01-intro/
+  blog: /blog/progettare/kafka/01-intro/
 weight: 20
 actions:
   - "Progettazione dei contratti tra microservizi con eventi Kafka e Schema Registry"

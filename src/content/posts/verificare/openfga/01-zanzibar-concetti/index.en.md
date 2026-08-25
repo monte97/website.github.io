@@ -482,5 +482,5 @@ The complete code for the minimal setup and the VaultDrive model is available in
 - [OpenFGA on CNCF](https://www.cncf.io/projects/openfga/)
 
 **Related articles:**
-- [Next: OpenFGA + Keycloak]({{< ref "/posts/openfga/02-openfga-keycloak" >}})
-- [Authorization with OPA and Keycloak]({{< ref "/posts/keycloak/05-keycloak-opa" >}})
+- [Next: OpenFGA + Keycloak]({{< ref "/blog/verificare/openfga/02-openfga-keycloak/" >}})
+- [Authorization with OPA and Keycloak]({{< ref "/blog/progettare/keycloak/05-keycloak-opa/" >}})

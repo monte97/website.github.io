@@ -36,7 +36,7 @@ openNote: "Il prezzo di ogni strategia emerge quando i permessi devono cambiare 
 mode: explanation
 ---
 
-Nell'[articolo precedente]({{< ref "/posts/openfga/04-gerarchie-query" >}}) abbiamo visto il pattern fast/slow path: usare un JOIN SQL per i casi comuni (accesso derivato dall'organizzazione) e ListObjects solo per le condivisioni dirette. È una buona euristica. Ma non è sempre sufficiente.
+Nell'[articolo precedente]({{< ref "/blog/verificare/openfga/04-gerarchie-query/" >}}) abbiamo visto il pattern fast/slow path: usare un JOIN SQL per i casi comuni (accesso derivato dall'organizzazione) e ListObjects solo per le condivisioni dirette. È una buona euristica. Ma non è sempre sufficiente.
 
 Sistemi con milioni di documenti, gerarchie profonde, o molte condivisioni peer-to-peer vedono ListObjects diventare il collo di bottiglia primario. Questo articolo affronta il problema con tre strategie: caching del risultato, pre-materializzazione del grafo di accesso, e BatchCheck come alternativa per certi pattern. Non sono mutualmente esclusive: in produzione si usano in combinazione.
 
@@ -538,7 +538,7 @@ Tre strumenti, tre problemi distinti:
 - [OpenFGA - ListUsers API](https://openfga.dev/docs/interacting/relationship-queries#listusers)
 
 **Articoli della serie:**
-- [Zanzibar per tutti: concetti e modello]({{< ref "/posts/openfga/01-zanzibar-concetti" >}})
-- [OpenFGA + Keycloak]({{< ref "/posts/openfga/02-openfga-keycloak" >}})
-- [Multitenancy con OpenFGA]({{< ref "/posts/openfga/03-multitenancy" >}})
-- [Gerarchie profonde e ListObjects]({{< ref "/posts/openfga/04-gerarchie-query" >}})
+- [Zanzibar per tutti: concetti e modello]({{< ref "/blog/verificare/openfga/01-zanzibar-concetti/" >}})
+- [OpenFGA + Keycloak]({{< ref "/blog/verificare/openfga/02-openfga-keycloak/" >}})
+- [Multitenancy con OpenFGA]({{< ref "/blog/verificare/openfga/03-multitenancy/" >}})
+- [Gerarchie profonde e ListObjects]({{< ref "/blog/verificare/openfga/04-gerarchie-query/" >}})

@@ -686,7 +686,7 @@ export default defineConfig({
 });
 ```
 
-Per pipeline complete su GitHub Actions, GitLab CI, strategie di sharding e ottimizzazioni avanzate, vedi l'articolo dedicato: [CI/CD, Strategie Avanzate e Futuro del Testing]({{< relref "/posts/testing/playwright/03-cicd-strategie-avanzate" >}}).
+Per pipeline complete su GitHub Actions, GitLab CI, strategie di sharding e ottimizzazioni avanzate, vedi l'articolo dedicato: [CI/CD, Strategie Avanzate e Futuro del Testing]({{< relref "/blog/verificare/testing/03-cicd-strategie-avanzate/" >}}).
 
 ---
 
@@ -835,7 +835,7 @@ Per approfondimenti pratici, il [workshop repository](https://github.com/monte97
 
 L'ecosistema Playwright è in rapida evoluzione con release frequenti e community attiva. Per rimanere aggiornati, vale la pena seguire il [blog ufficiale](https://playwright.dev/community/blog) e partecipare alle discussioni su Discord e GitHub.
 
-Il prossimo articolo della serie approfondisce un aspetto complementare: [collegare i test E2E alle trace OpenTelemetry]({{< relref "/posts/testing/playwright/02-opentelemetry-trace-correlation" >}}) per identificare il microservizio responsabile quando un test fallisce.
+Il prossimo articolo della serie approfondisce un aspetto complementare: [collegare i test E2E alle trace OpenTelemetry]({{< relref "/blog/verificare/testing/02-opentelemetry-trace-correlation/" >}}) per identificare il microservizio responsabile quando un test fallisce.
 
 Foto di <a href="https://unsplash.com/it/@inset_agency?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Paul Knight</a> su <a href="https://unsplash.com/it/foto/maschera-grigia-gTbRw_XcYpE?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
       

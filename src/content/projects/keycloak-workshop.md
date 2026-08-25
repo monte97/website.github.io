@@ -10,7 +10,7 @@ context: "Percorso formativo costruito come serie articoli + demo, pensato per c
 featured: true
 tags: ["Keycloak", "OAuth2", "OpenID Connect", "LDAP", "Docker"]
 links:
-  blog: /posts/keycloak/01-keycloak-intro/
+  blog: /blog/progettare/keycloak/01-keycloak-intro/
 weight: 10
 actions:
   - "I protocolli (OAuth 2.0, OIDC) spiegati in funzione delle decisioni che richiedono — non in funzione delle RFC"

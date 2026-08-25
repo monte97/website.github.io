@@ -27,7 +27,7 @@ lang: en
 reviewed: machine
 ---
 
-In the [previous tutorial](/posts/otel-website-material/04-correlation/) we instrumented a mock e-commerce with OpenTelemetry and worked through three debug scenarios: silent failure, latency spike, fan-out. Everything worked: complete traces, errors visible, latency measurable.
+In the [previous tutorial](/blog/verificare/observability/04-correlation/) we instrumented a mock e-commerce with OpenTelemetry and worked through three debug scenarios: silent failure, latency spike, fan-out. Everything worked: complete traces, errors visible, latency measurable.
 
 There is one detail we left unaddressed: every single request generated a trace that was stored indefinitely. In development that is acceptable, but in a real system it is a problem.
 
@@ -274,7 +274,7 @@ Scenarios 1–3 from the previous article use the base stack. This article uses 
 
 ### Setup
 
-> **Prerequisite**: The MockMart repo must be cloned and working. If you do not have it from the [previous tutorial](/posts/otel-website-material/04-correlation/):
+> **Prerequisite**: The MockMart repo must be cloned and working. If you do not have it from the [previous tutorial](/blog/verificare/observability/04-correlation/):
 > ```bash
 > git clone https://github.com/monte97/MockMart
 > cd MockMart

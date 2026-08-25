@@ -18,7 +18,7 @@ reviewed: machine
 
 Every SaaS application eventually reaches the same point: the first customer works, the second too, but by the third it becomes clear that tenant isolation is not an implementation detail — it is the architecture itself. With traditional RBAC, the typical solution is a `WHERE tenant_id = ?` on every query, middleware that injects tenant context, and the constant risk that a bug leaks data between organizations. With ReBAC the problem is approached differently: isolation is not applicative but **structural**. If a user has no relationships with an organization, they cannot access anything within it. No `WHERE` clause required.
 
-The two strategies for managing multi-tenancy with OpenFGA build on the concepts introduced in the [first article]({{< ref "/posts/openfga/01-zanzibar-concetti" >}}) of this series.
+The two strategies for managing multi-tenancy with OpenFGA build on the concepts introduced in the [first article]({{< ref "/blog/verificare/openfga/01-zanzibar-concetti/" >}}) of this series.
 
 ---
 
@@ -411,6 +411,6 @@ The next article covers deep hierarchies and complex queries with OpenFGA, addre
 - [OpenFGA - Configuration Language (DSL)](https://openfga.dev/docs/configuration-language)
 
 **Related articles:**
-- [Previous: Zanzibar and the core concepts]({{< ref "/posts/openfga/01-zanzibar-concetti" >}})
-- [OpenFGA + Keycloak]({{< ref "/posts/openfga/02-openfga-keycloak" >}})
-- [Next: Deep hierarchies and inverse queries]({{< ref "/posts/openfga/04-gerarchie-query" >}})
+- [Previous: Zanzibar and the core concepts]({{< ref "/blog/verificare/openfga/01-zanzibar-concetti/" >}})
+- [OpenFGA + Keycloak]({{< ref "/blog/verificare/openfga/02-openfga-keycloak/" >}})
+- [Next: Deep hierarchies and inverse queries]({{< ref "/blog/verificare/openfga/04-gerarchie-query/" >}})

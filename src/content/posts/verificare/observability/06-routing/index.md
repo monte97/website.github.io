@@ -37,7 +37,7 @@ mode: how-to
 
 Immaginate di ricevere una richiesta dal team compliance: "Servono i log di audit degli ultimi tre anni." Aprite Grafana, cercate in Loki e scoprite che la retention massima è 30 giorni. I log di audit sono stati cancellati insieme ai debug log, perché vivevano tutti nello stesso backend. Nessuna separazione, nessuna policy dedicata.
 
-L'[articolo precedente](https://montelli.dev/posts/otel-website-material/05-management/) affronta il primo problema della produzione: il **volume**. Con tail sampling e retention, il volume si riduce del 90% senza perdere visibilità sugli errori. Ma resta una domanda: i dati che restano, **dove finiscono?**
+L'[articolo precedente](https://montelli.dev/blog/verificare/observability/05-management/) affronta il primo problema della produzione: il **volume**. Con tail sampling e retention, il volume si riduce del 90% senza perdere visibilità sugli errori. Ma resta una domanda: i dati che restano, **dove finiscono?**
 
 Oggi tutto finisce nello stesso backend: log di debug, errori applicativi e audit trail vivono nella stessa istanza Loki. In sviluppo funziona. In produzione potrebbe essere un problema di compliance o di gestione.
 
@@ -353,7 +353,7 @@ Il punto chiave: separare fisicamente la destinazione permette di applicare **re
 
 ## Ogni rotta ha il suo lifecycle
 
-Separare le destinazioni non basta: ogni destinazione deve avere una **strategia di persistenza** coerente con il tipo di dato che riceve. L'[articolo precedente](/posts/otel-website-material/05-management/) mostra come configurare una retention unica (Tempo, 7 giorni) per tutte le trace. Con il routing, si possono applicare policy diverse per ogni flusso.
+Separare le destinazioni non basta: ogni destinazione deve avere una **strategia di persistenza** coerente con il tipo di dato che riceve. L'[articolo precedente](/blog/verificare/observability/05-management/) mostra come configurare una retention unica (Tempo, 7 giorni) per tutte le trace. Con il routing, si possono applicare policy diverse per ogni flusso.
 
 ### Mappa completa: rotta, destinazione, persistenza
 
@@ -447,7 +447,7 @@ Dopo l'export, i record cold possono essere rimossi da PostgreSQL (disabilitando
 
 ### Collegamento con il tail sampling
 
-Le strategie di persistenza si integrano con il [tail sampling dell'articolo precedente](/posts/otel-website-material/05-management/) in una pipeline completa:
+Le strategie di persistenza si integrano con il [tail sampling dell'articolo precedente](/blog/verificare/observability/05-management/) in una pipeline completa:
 
 ```text
 Applicazione
@@ -678,7 +678,7 @@ Se tutti i check passano, il routing è pronto per il roll-out.
 - [OTel Collector Configuration](https://opentelemetry.io/docs/collector/configuration/)
 
 **Articoli correlati:**
-- [Tail Sampling e Retention](/posts/otel-website-material/05-management/) - Ridurre il volume prima del routing
+- [Tail Sampling e Retention](/blog/verificare/observability/05-management/) - Ridurre il volume prima del routing
 
 ---
 

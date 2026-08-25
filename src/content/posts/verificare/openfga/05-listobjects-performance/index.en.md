@@ -16,7 +16,7 @@ lang: en
 reviewed: machine
 ---
 
-In the [previous article]({{< ref "/posts/openfga/04-gerarchie-query" >}}) we introduced the fast/slow path pattern: use a SQL JOIN for common cases (organizationally-derived access) and ListObjects only for direct shares. It is a good heuristic. But it is not always enough.
+In the [previous article]({{< ref "/blog/verificare/openfga/04-gerarchie-query/" >}}) we introduced the fast/slow path pattern: use a SQL JOIN for common cases (organizationally-derived access) and ListObjects only for direct shares. It is a good heuristic. But it is not always enough.
 
 Systems with millions of documents, deep hierarchies, or heavy peer-to-peer sharing see ListObjects become the primary bottleneck. This article addresses the problem with three strategies: result caching, access graph pre-materialization, and BatchCheck as an alternative for certain patterns. These strategies are not mutually exclusive — in production they are used in combination.
 
@@ -518,7 +518,7 @@ Three tools, three distinct problems:
 - [OpenFGA - ListUsers API](https://openfga.dev/docs/interacting/relationship-queries#listusers)
 
 **Series articles:**
-- [Zanzibar for Everyone: concepts and model]({{< ref "/posts/openfga/01-zanzibar-concetti" >}})
-- [OpenFGA + Keycloak]({{< ref "/posts/openfga/02-openfga-keycloak" >}})
-- [Multi-tenancy with OpenFGA]({{< ref "/posts/openfga/03-multitenancy" >}})
-- [Deep hierarchies and ListObjects]({{< ref "/posts/openfga/04-gerarchie-query" >}})
+- [Zanzibar for Everyone: concepts and model]({{< ref "/blog/verificare/openfga/01-zanzibar-concetti/" >}})
+- [OpenFGA + Keycloak]({{< ref "/blog/verificare/openfga/02-openfga-keycloak/" >}})
+- [Multi-tenancy with OpenFGA]({{< ref "/blog/verificare/openfga/03-multitenancy/" >}})
+- [Deep hierarchies and ListObjects]({{< ref "/blog/verificare/openfga/04-gerarchie-query/" >}})

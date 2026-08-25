@@ -80,7 +80,7 @@ from usage import app
 
 Il modulo è un file da 469 righe. Il conftest per renderlo importabile ne richiede 94. Ogni nuova connessione aggiunta al modulo richiede una riga corrispondente nel conftest. I due file evolvono in sincrono, ma il conftest non ha test propri: se un mock è configurato in modo errato, i test passano lo stesso.
 
-I problemi specifici del mocking con librerie C-backed come `confluent_kafka` sono descritti in [Il tuo servizio Flask è impossibile da testare](/posts/testing/unit-testing/02-mock-traps-python-flask/).
+I problemi specifici del mocking con librerie C-backed come `confluent_kafka` sono descritti in [Il tuo servizio Flask è impossibile da testare](/blog/verificare/testing/02-mock-traps-python-flask/).
 
 ---
 

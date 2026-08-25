@@ -100,6 +100,12 @@ shots:
 shotsNote: "Cosa si vede senza aver scritto codice."
 openItems:
   - "Poi il resto: anagrafiche, rapportini, perimetro — pianificati, non ancora in esercizio"
+cta:
+  title: "Sapete dire, adesso, dove si è fermato un dato che non è arrivato?"
+  desc: >
+    Se la risposta richiede di aprire i log di quattro servizi e incrociarli a mano, il
+    problema non è il guasto: è che «non è arrivato niente» e «l'abbiamo perso» hanno lo
+    stesso aspetto. Strumentare il percorso critico è un lavoro delimitato.
 thesis: "La verifica prima del codice non è prudenza generica: vale quando l'alternativa è codice permanente in punti di passaggio. Un'ora di controllo contro sei file da mantenere."
 ---
 
@@ -114,6 +120,12 @@ Accanto al percorso del dato ne corre uno secondo, quello dei segnali:
 - **Tracce · metriche · log** — uno stack di osservabilità già esistente presso il committente, non introdotto da questo lavoro.
 
 Il percorso dei segnali è deliberatamente parallelo a quello del dato e non lo attraversa: **nessun servizio parla direttamente con le destinazioni finali**. Cambiare backend è una modifica alla configurazione del collector, non ai nove servizi.
+
+C'è una forma di cecità che pesa più delle altre, e non è non vedere: è **non poter distinguere**.
+
+Quando un dato non arriva in fondo, ci sono due spiegazioni possibili — non c'era niente da elaborare, oppure qualcosa l'ha perso per strada — e dall'esterno sono **indistinguibili**. Un'API che restituisce poco ha lo stesso aspetto in entrambi i casi. Peggio: dopo un rilascio, quella stessa ambiguità diventa la domanda «abbiamo rotto qualcosa?», a cui nessuno sa rispondere senza andare a guardare a mano.
+
+E quando invece un dato arriva ma sbagliato, il problema è un altro: capire **in quale punto della catena ha cambiato forma**. Con quattro servizi e tre topic in mezzo, ricostruire chi ha modificato cosa era un lavoro di archeologia, ogni volta da capo.
 
 ## Le decisioni
 
@@ -140,6 +152,10 @@ La strada prevista era propagare il contesto a mano su ogni confine Kafka, da su
 Le tracce sono risultate collegate attraverso i topic senza alcun intervento sul codice: gli header di contesto viaggiano fuori dal payload, quindi gli schemi dei messaggi non sono stati toccati e i consumatori non strumentati li ignorano. Sei modifiche pianificate non sono state fatte — e non perché siano state rinviate, ma perché la verifica ha mostrato che non servivano. Il costo di quella verifica è stato una traccia guardata in faccia; il costo di non farla sarebbe stato codice di trasporto sparso in sei file, da mantenere per sempre.
 
 La verifica prima del codice non è prudenza generica: **vale quando l'alternativa è codice permanente in punti di passaggio**. Un'ora di controllo contro sei file da mantenere.
+
+La verifica è costata **un paio d'ore**. Il codice che avrebbe evitato, invece, sarebbe rimasto per sempre in sei punti di passaggio, da leggere e mantenere a ogni modifica futura.
+
+È il calcolo che vale la pena esplicitare, perché non è ovvio quando si è di fretta: **il codice è una passività, non un patrimonio.** Ogni riga che non scrivi è una riga che non devi capire fra due anni. Due ore di controllo contro sei file da mantenere non è un buon affare: è l'unico affare.
 
 ## Configurazione
 
@@ -188,6 +204,14 @@ Una strumentazione si giudica da cosa permette di chiedere. Per ciascun segnale 
 3. **Arrivo all'API** — `enriched receive` in `api-storico`, centinaia di microsecondi, chiude la catena.
 
 Anche la correlazione fra log e tracce è arrivata senza codice: l'iniezione di `trace_id` e `span_id` nel formato di log è una funzione della strumentazione automatica, non una modifica ai punti in cui l'applicazione scrive.
+
+## Cosa è cambiato per chi usa il software
+
+Il riscontro non è arrivato da un cruscotto: è arrivato da chi il software lo usa tutti i giorni.
+
+**I tempi per ricevere una correzione si sono ridotti in modo evidente, e le correzioni stesse sono migliorate.** Non è un effetto misterioso: quando una segnalazione arriva, la domanda «dove si è fermato» ha una risposta in minuti invece che in mezze giornate, e la correzione parte dal punto giusto invece che dal punto più probabile.
+
+Vale la pena dire da dove nasce tutto questo, perché non è la storia che ci si aspetta: **nessuno l'aveva chiesto.** Non c'è stato un incidente, un audit, un cliente arrabbiato. C'era solo il fastidio crescente di non poter rispondere con precisione a domande semplici, e di non sapere davvero cosa stesse succedendo dentro un sistema che pure funzionava.
 
 ## Esito dell'analisi
 

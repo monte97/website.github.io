@@ -49,7 +49,7 @@ Tre problemi emergono quando il modello cresce: gerarchie a N livelli, il costo 
 
 ## Gerarchie a N Livelli
 
-Nel [primo articolo]({{< ref "/posts/openfga/01-zanzibar-concetti" >}}) abbiamo definito la relazione `parent` tra folder e documento. Nel [articolo sul multitenancy]({{< ref "/posts/openfga/03-multitenancy" >}}) abbiamo aggiunto l'organizzazione come radice del grafo. Ma cosa succede quando le folder sono annidate?
+Nel [primo articolo]({{< ref "/blog/verificare/openfga/01-zanzibar-concetti/" >}}) abbiamo definito la relazione `parent` tra folder e documento. Nel [articolo sul multitenancy]({{< ref "/blog/verificare/openfga/03-multitenancy/" >}}) abbiamo aggiunto l'organizzazione come radice del grafo. Ma cosa succede quando le folder sono annidate?
 
 Il DSL di OpenFGA gestisce la ricorsione in modo naturale. Una folder può avere come parent un'altra folder:
 
@@ -550,11 +550,11 @@ A questo punto VaultDrive usa tre sistemi per l'autorizzazione. Ogni sistema ris
 
 Il confine è chiaro:
 
-- **Keycloak** si occupa dell'identità: chi sei, quali claim hai nel token. Ne abbiamo parlato nell'[articolo sull'integrazione con Keycloak]({{< ref "/posts/openfga/02-openfga-keycloak" >}}).
+- **Keycloak** si occupa dell'identità: chi sei, quali claim hai nel token. Ne abbiamo parlato nell'[articolo sull'integrazione con Keycloak]({{< ref "/blog/verificare/openfga/02-openfga-keycloak/" >}}).
 - **OpenFGA** si occupa delle relazioni: chi può fare cosa su quale risorsa. Il modello ReBAC copre accesso gerarchico, condivisioni, team.
 - **Data Masking** si occupa della granularità a livello di campo: non è una relazione, è una classificazione.
 
-Chi ha esperienza con OPA (ne ho scritto nell'[articolo su OPA e Keycloak]({{< ref "/posts/keycloak/05-keycloak-opa" >}})) noterà una differenza fondamentale: OPA valuta policy arbitrarie su input arbitrario, ReBAC valuta relazioni in un grafo. Sono strumenti diversi per problemi diversi. OpenFGA è più vincolato, ma quel vincolo è anche il suo punto di forza: il modello è ispezionabile, testabile, e la risoluzione ha garanzie di performance note.
+Chi ha esperienza con OPA (ne ho scritto nell'[articolo su OPA e Keycloak]({{< ref "/blog/progettare/keycloak/05-keycloak-opa/" >}})) noterà una differenza fondamentale: OPA valuta policy arbitrarie su input arbitrario, ReBAC valuta relazioni in un grafo. Sono strumenti diversi per problemi diversi. OpenFGA è più vincolato, ma quel vincolo è anche il suo punto di forza: il modello è ispezionabile, testabile, e la risoluzione ha garanzie di performance note.
 
 ---
 
@@ -654,8 +654,8 @@ Nel prossimo articolo affronteremo i test: come scrivere test di autorizzazione 
 - [OpenFGA Playground](https://play.fga.dev/)
 
 **Articoli correlati:**
-- [Zanzibar e i concetti fondamentali]({{< ref "/posts/openfga/01-zanzibar-concetti" >}})
-- [OpenFGA + Keycloak]({{< ref "/posts/openfga/02-openfga-keycloak" >}})
-- [Multitenancy con OpenFGA]({{< ref "/posts/openfga/03-multitenancy" >}})
-- [ListObjects in produzione: caching, pre-materializzazione e BatchCheck]({{< ref "/posts/openfga/05-listobjects-performance" >}})
-- [Autorizzazione con OPA e Keycloak]({{< ref "/posts/keycloak/05-keycloak-opa" >}})
+- [Zanzibar e i concetti fondamentali]({{< ref "/blog/verificare/openfga/01-zanzibar-concetti/" >}})
+- [OpenFGA + Keycloak]({{< ref "/blog/verificare/openfga/02-openfga-keycloak/" >}})
+- [Multitenancy con OpenFGA]({{< ref "/blog/verificare/openfga/03-multitenancy/" >}})
+- [ListObjects in produzione: caching, pre-materializzazione e BatchCheck]({{< ref "/blog/verificare/openfga/05-listobjects-performance/" >}})
+- [Autorizzazione con OPA e Keycloak]({{< ref "/blog/progettare/keycloak/05-keycloak-opa/" >}})

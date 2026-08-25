@@ -23,7 +23,7 @@ Connecting Playwright tests to OpenTelemetry traces breaks that black box: when 
 
 Related reading:
 - [Playwright Introduction](https://theredcode.it/testing/testing-e2e-perche-iniziare-con-playwright/)
-- [OpenTelemetry Introduction](https://montelli.dev/posts/otel-website-material/04-correlation/)
+- [OpenTelemetry Introduction](https://montelli.dev/blog/verificare/observability/04-correlation/)
 
 **What we cover:**
 1. Quick MockMart setup (demo environment)
