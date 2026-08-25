@@ -215,6 +215,14 @@ I numeri, quando la griglia è stata compilata per la prima volta: **quasi la me
 
 Il prodotto utile di questo lavoro non è la copertura: **è la mappa dei buchi**. Una percentuale sarebbe stata più comoda da mostrare e inutile da usare, perché non dice quale configurazione è scoperta — e le configurazioni non sono intercambiabili. Sapere che sei coperto al settanta per cento non serve a nessuno se il trenta scoperto è quello del cliente più grosso.
 
+## Chi può fare il lavoro, adesso
+
+Il primo effetto non è stato sulla qualità: è stato su **chi può fare il lavoro**.
+
+Con le configurazioni scritte e i controlli dichiarati, non serve più ricordarsi se un caso è nuovo o già visto: si guarda. E persone con meno anzianità hanno cominciato a gestire installazioni che prima richiedevano qualcuno che «se le ricordava» — comprese quelle figure non tecniche il cui mestiere è preparare l'ambiente, che davanti a un errore adesso hanno un posto dove cercare.
+
+La conoscenza ha smesso di stare nelle teste. È il cambiamento che un estraneo avrebbe potuto vedere entrando in azienda, e l'unico che continua a valere anche se domani nessuno tocca più quella matrice.
+
 ## Il conto torna al commerciale
 
 A questo punto la matrice ha smesso di essere un documento tecnico.
