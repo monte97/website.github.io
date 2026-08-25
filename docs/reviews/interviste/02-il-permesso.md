@@ -39,7 +39,7 @@ Il direttore lavori non stava chiedendo una feature. Stava pronunciando una fras
     Era un caso isolato o una domanda ricorrente? Chi la faceva: clienti, commerciale,
     supporto? Cosa si rispondeva prima che il seam esistesse?
 
-    RISPOSTA:
+    RISPOSTA: era un caso tutto sommato isolato perché era emerso in una delle prime fasi di vita del prodotto per fortuna chi aveva fatto la l'analisi dei requisiti non era la stessa persona che poi doveva utilizzarlo comunque non aveva coinvolto tutte le persone che doveva coinvolgere, quindi poi anche parlando altre cose come questa sono sull'emerse. Quando dico prima fase delle visite del prodotto, intendo più che altro delle nuove finiture che venivano sviluppate sul sul prodotto vecchio.
 
 
                 ════════════════════════════════════════════════
@@ -74,7 +74,7 @@ Dopo due giorni il piano è cambiato, e non perché quello vecchio avesse smesso
       · chi doveva essere coinvolto ogni volta
       · cosa si rompeva quando si toccava
 
-    RISPOSTA:
+    RISPOSTA: tante tante piccole modifiche sparse per il codice che da testare diventavano problematiche soprattutto andavano testa anche perché sono fattori di sicurezza non si potevano esporre determinate informazioni agli utenti sbagliati. Inoltre, doveva essere testato anche dal punto di vista grafico non solo di disequazione perché determinate funzioni dell'applicativo non dovevano neanche essere fatte conoscere a livello di esistenza a certi utenti quindi tutte le le procedure di verifica diventavano molto molto articolate e anche decidi i ruoli iniziava a diventare articolato quando si passa dal 34 un conto quando inizia a fare dei ragionamenti su come inserire il 27º ruolo ovviamente inizia a diventare tutto molto più complicato
 
 
                 ════════════════════════════════════════════════

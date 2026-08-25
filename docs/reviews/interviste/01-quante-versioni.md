@@ -128,7 +128,7 @@ E cambia la domanda che si fa al tavolo della trattativa. Non più «si può far
     La precisione qui e' il sostituto del numero: «il commerciale apre la matrice
     prima di rispondere» vale piu' di «il processo e' migliorato».
 
-    RISPOSTA:
+    RISPOSTA: È diventato molto più facile gestire il prodotto, anche perché tutte le volte non dovevamo ricordarci se era un caso nuovo o un caso vecchio sapevamo molto meglio come intervenire il tema aveva molta più confidenza e anche persone con una signore di più bassa erano in grado di gestire la configura le varie configurazioni e le varie installazioni, perché era tutto documentato e standardizzato è stato rivisto anche il processo con cui queste modifiche venivano costruite anziché dire sì in modo, cioè coatto si vedeva di fare ricadere la necessità del cliente in qualcosa che in una qualche misura esisteva già o adattandolo al all'esistente per minimizzare le effettive customizzazioni
 
 
                 ════════════════════════════════════════════════
@@ -159,7 +159,7 @@ La risposta al cliente non fu no. Fu che quella combinazione si poteva avere acc
     Basta un ordine di grandezza: «una decina di sviluppatori», «una trentina».
     Andra' inserito qui sopra, nel primo paragrafo.
 
-    RISPOSTA: 5/10 dev
+    RISPOSTA: era un contesto misto perché avevamo una decina di sviluppatori tra tutto che però non seguivano in maniera esclusiva il prodotto oltre alle figure degli sviluppatori c'erano poi delle figure volte alla stoni e del prodotto, visto che comunque era un prodotto in un qualche modo estremamente configurabile avevamo poi delle figure specifiche che hanno lo scopo di preparare l'ambiente per il cliente e queste figure non hanno una competenza informatica specifica ma non background molto variegato di quello di sviluppat quindi tutte le modifiche e gli adattamenti dovevano venire incontro anche loro perché spesso si trovavano di fronte a degli errori che non erano in grado di comprendere appieno
 
 
                 ════════════════════════════════════════════════
@@ -178,7 +178,7 @@ La risposta al cliente non fu no. Fu che quella combinazione si poteva avere acc
 
     CHI L'HA DETTA (ruolo, non nome):
 
-    RISPOSTA:
+    RISPOSTA: qui più che dal cliente la frase viene quasi dall'interno nel senso il cliente è il mio cliente non il cliente finale per il cliente finale è andato tutto bene perché tanto il software andava buona notte limite aveva poteva avere un periodo di setup iniziale più breve, però, nel nella somma complessiva di tutto quello che comporta l'adozione di quel prodotto non era rilevante un giorno in +1 giorno in meno qui il grosso è stato migliorare la vita degli di sviluppatori comunque dell'azienda che vende il prodotto durante le discussioni le revisioni con il resto del tema al tavolo spesso fuori che era complicato installare e configurare c'era poca confidenza perché sembrava che un'installazione per un nuovo cliente, fosse un progetto a sestante anziché dovere, semplicemente da un comando piuttosto che eseguire un'applicativo, come ci si aspetterebbe
 
 
                 ════════════════════════════════════════════════
@@ -201,7 +201,7 @@ La risposta al cliente non fu no. Fu che quella combinazione si poteva avere acc
 
     Questo blocco non entra nel corpo: riscrive il campo `cta` nel frontmatter.
 
-    RISPOSTA:
+    RISPOSTA: qui in particolare, sta fatto una volta una brutta figura con un cliente, perché il processo di installazione non era ben verificato ci sono stati diversi rimpalli avanti e indietro per richiedere verifiche di volta in volta ha portato lì molto tempo ma più che altro la faccia dell'azienda che avendo il prodotto
 
 
                 ════════════════════════════════════════════════
