@@ -1,5 +1,6 @@
 ---
 title: "PII Filtering in OpenTelemetry: Proteggere i Dati Sensibili di Keycloak"
+seoTitle: "PII filtering in OpenTelemetry: Keycloak"
 date: 2026-02-05T09:00:00.000Z
 description: Come instrumentare Keycloak e servizi third-party con dati sensibili, riducendo il rischio PII tramite filtering nell'OTel Collector. Tecniche GDPR-compliant.
 pillar: verificare

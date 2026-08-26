@@ -1,5 +1,6 @@
 ---
 title: "OpenTelemetry in Produzione: Tail Sampling e Retention"
+seoTitle: "OpenTelemetry: tail sampling e retention"
 date: 2026-02-05T09:00:00.000Z
 description: Come ridurre il volume dati del 90% senza perdere visibilità sugli errori. Guida pratica con config template e scenario demo.
 pillar: verificare

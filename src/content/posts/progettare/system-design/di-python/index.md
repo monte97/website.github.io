@@ -1,5 +1,6 @@
 ---
 title: "Dependency Injection in Python: dal codice non testabile all'architettura pulita"
+seoTitle: "Dependency Injection in Python"
 date: 2026-02-26T08:00:00.000Z
 description: DI in Python senza framework, con Protocol e constructor injection, e quando usare dependency-injector. Dalla teoria al refactoring reale di 3 servizi Flask.
 pillar: progettare

@@ -1,5 +1,6 @@
 ---
 title: "Da port-forward a Ingress: Come configurare un ambiente Kubernetes locale professionale con NGINX"
+seoTitle: "Ingress NGINX su kind: setup locale"
 date: 2025-10-21T09:00:00.000Z
 description: Guida completa alla configurazione di un Ingress Controller NGINX su un cluster Kubernetes locale (kind) per esporre servizi in modo stabile e professionale.
 pillar: automatizzare

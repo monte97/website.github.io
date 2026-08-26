@@ -1,5 +1,6 @@
 ---
 title: "Tutorial: Distributed Tracing con OpenTelemetry e LGTM Stack"
+seoTitle: "Distributed tracing con OpenTelemetry e LGTM"
 date: 2026-01-29T09:00:00.000Z
 description: "Guida pratica al distributed tracing con OpenTelemetry e LGTM stack. Tre scenari di debug: silent failure, latency spike, fan-out."
 pillar: verificare

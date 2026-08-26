@@ -1,7 +1,8 @@
 ---
 title: "RTK e tokensave: ridurre i costi dei token nell'AI coding"
+seoTitle: "RTK e tokensave: meno token nell'AI coding"
 date: 2026-05-27T09:00:00.000Z
-description: "RTK comprime l'output verboso dei comandi CLI prima che entri nel contesto. tokensave sostituisce gli agenti Explore con un knowledge graph locale. Due tool Rust ortogonali."
+description: "Due tool Rust ortogonali: RTK comprime l'output verboso della CLI, tokensave indicizza il codice in un knowledge graph. Circa -80% e -93% di token."
 pillar: automatizzare
 category: developer-tools
 tags: [Claude Code, MCP, Rust, Developer Tools, AI, RTK, tokensave]

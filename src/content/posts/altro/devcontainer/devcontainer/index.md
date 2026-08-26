@@ -1,7 +1,8 @@
 ---
 title: "DevContainers: Ambiente di Sviluppo Portatile e Riproducibile"
+seoTitle: "DevContainers: l'ambiente in un file"
 date: 2026-08-17T09:00:00.000Z
-description: Come funzionano i DevContainers, cosa contiene la cartella .devcontainer e come evitare il problema dei file di proprietà di root che colpisce chi sviluppa su Linux
+description: "Come funzionano i DevContainers, e il problema dei file di proprietà di root su Linux: si risolve nominando l'utente con `remoteUser`."
 pillar: automatizzare
 category: devcontainer
 tags:

@@ -1,5 +1,6 @@
 ---
 title: Il tuo servizio Flask è impossibile da testare (e non è colpa dei mock)
+seoTitle: "Flask e i mock: quattro trappole nei test"
 date: 2026-02-24T11:00:00.000Z
 description: 88 test, tre servizi Flask, mutation score al 19%. Il problema non è nel mocking - è nel codice che crea connessioni Kafka e MongoDB al momento dell'import.
 pillar: verificare

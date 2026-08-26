@@ -1,5 +1,6 @@
 ---
 title: "CAPI Parte 3: Talos Linux - Il Sistema Operativo per Kubernetes"
+seoTitle: "Cluster API e Talos: l'OS immutabile"
 date: 2025-08-05T09:30:00.000Z
 description: Guida completa al deployment e gestione di cluster Kubernetes utilizzando Cluster API (CAPI) per l'automazione dell'infrastruttura
 pillar: automatizzare

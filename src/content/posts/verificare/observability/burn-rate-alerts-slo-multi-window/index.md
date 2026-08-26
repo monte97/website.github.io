@@ -1,5 +1,6 @@
 ---
 title: "Burn-rate alerts: quando l'error budget brucia più veloce del previsto"
+seoTitle: "Burn-rate alert su SLO multi-window"
 date: 2026-04-22T09:00:00.000Z
 description: "Multi-window multi-burn-rate alerting da SRE Workbook cap. 5: alertare sul ritmo di consumo dell'error budget, non sulla soglia statica."
 pillar: verificare

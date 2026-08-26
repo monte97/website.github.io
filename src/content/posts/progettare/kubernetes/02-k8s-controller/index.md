@@ -1,5 +1,6 @@
 ---
 title: "Controller Kubernetes: Come Funziona il Cuore di K8s"
+seoTitle: "Controller Kubernetes: come funzionano"
 date: 2026-02-12T08:00:00.000Z
 description: Guida al funzionamento dei controller Kubernetes, dal reconciliation loop alla costruzione di un controller custom con controller-runtime
 pillar: automatizzare

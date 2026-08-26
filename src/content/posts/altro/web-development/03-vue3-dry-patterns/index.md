@@ -1,7 +1,8 @@
 ---
 title: 3 pattern (+1 anti-pattern) per eliminare la duplicazione in Vue 3
+seoTitle: "Vue 3: tre pattern contro la duplicazione"
 date: 2026-02-18T09:00:00.000Z
-description: Tre pattern Vue 3 per eliminare la duplicazione nelle SPA enterprise, più un anti-pattern su quando fermarsi
+description: "Tre pattern Vue 3 contro la duplicazione nelle SPA: composable, wrapper con slot e utility. Più l'anti-pattern del componente iper-configurabile."
 pillar: progettare
 category: web-development
 tags:

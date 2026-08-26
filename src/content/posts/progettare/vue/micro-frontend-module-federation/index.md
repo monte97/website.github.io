@@ -1,7 +1,8 @@
 ---
 title: "Micro-frontend in Vue 3 con Module Federation: Shell, Contratto e Deploy Indipendente"
+seoTitle: "Micro-frontend Vue 3 con Module Federation"
 date: 2026-03-14T09:00:00.000Z
-description: "Module Federation in Vue 3 con Vite: contratto shell/remote, dipendenze singleton e deploy indipendente per team."
+description: "Module Federation in Vue 3 con Vite: il contratto shell/remoto va dichiarato a mano, e vue, vue-router e pinia devono essere singleton."
 pillar: progettare
 category: vue
 tags:

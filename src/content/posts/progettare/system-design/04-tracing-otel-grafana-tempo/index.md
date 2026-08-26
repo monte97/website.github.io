@@ -1,7 +1,8 @@
 ---
 title: "Vedere LINQ in Azione: Tracing con OpenTelemetry e Grafana Tempo"
+seoTitle: "Tracciare LINQ con OpenTelemetry e Tempo"
 date: 2026-03-14T08:00:00.000Z
-description: Rendiamo visibile l'esecuzione di LINQ con OpenTelemetry e Grafana Tempo. Extension methods per tracciare pipeline, multiple enumeration e nesting esplosivo su una dashboard.
+description: "Rendere visibile l'esecuzione di LINQ con OpenTelemetry e Grafana Tempo: la waterfall mostra lo streaming, e OrderBy nel mezzo lo spezza."
 pillar: progettare
 category: system-design
 tags:

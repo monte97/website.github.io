@@ -1,5 +1,6 @@
 ---
 title: "Unit test in Nuxt 3: 72 test senza montare un singolo componente"
+seoTitle: "Unit test in Nuxt 3 senza montare la UI"
 date: 2026-02-23T09:00:00.000Z
 description: "72 unit test in Nuxt 3 testando solo logica pura: store Pinia, composable, helper API. Zero dipendenze aggiunte, zero componenti montati."
 pillar: verificare

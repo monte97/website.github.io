@@ -1,7 +1,8 @@
 ---
 title: Quanto Costa Davvero LINQ? Benchmark su .NET 8 con i Numeri
+seoTitle: "Quanto costa LINQ: benchmark su .NET 8"
 date: 2026-02-28T08:00:00.000Z
-description: "Benchmark reali con BenchmarkDotNet su .NET 8: List vs HashSet, scan vs GroupBy, allocazioni LINQ vs foreach, e il costo nascosto di AsParallel su collezioni piccole."
+description: "Benchmark con BenchmarkDotNet su .NET 8: List contro HashSet fino a 63x, pipeline lazy con il 60% di allocazioni in meno, e il costo fisso di AsParallel."
 pillar: progettare
 category: system-design
 tags:

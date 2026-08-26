@@ -1,5 +1,6 @@
 ---
 title: "Da EventBus a Pinia: migrazione progressiva dello stato in Vue 3"
+seoTitle: "Da EventBus a Pinia in Vue 3"
 date: 2026-02-14T09:00:00.000Z
 description: "Pattern concreti per sostituire EventBus con Pinia in un progetto Vue 3: cache con deduplication, persistenza selettiva, approccio ibrido"
 pillar: progettare

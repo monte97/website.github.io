@@ -1,5 +1,6 @@
 ---
 title: "Dopo che l'Alert Scatta: Severity, Routing e il Contratto con Chi lo Riceve"
+seoTitle: "Alertmanager: severity, routing e inhibit"
 date: 2026-04-08T09:00:00.000Z
 description: "Severity come contratto di routing, inhibit rules e runbook_url nel payload: i tre mattoni minimi che rendono un alert Alertmanager azionabile."
 pillar: verificare

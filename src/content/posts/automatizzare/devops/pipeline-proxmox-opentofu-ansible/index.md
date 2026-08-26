@@ -1,5 +1,6 @@
 ---
 title: "Pipeline CI/CD su Proxmox: Provisioning con OpenTofu e Deploy con Ansible via Semaphore"
+seoTitle: "CI/CD su Proxmox con OpenTofu e Ansible"
 date: 2026-02-14T11:00:00.000Z
 description: Architettura di una pipeline CI/CD che provisiona VM su Proxmox con OpenTofu e automatizza il deploy con Ansible orchestrato da Semaphore
 pillar: automatizzare

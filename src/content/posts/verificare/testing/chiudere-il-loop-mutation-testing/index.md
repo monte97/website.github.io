@@ -1,7 +1,8 @@
 ---
 title: "Gli agenti scrivono i test. Chi controlla che funzionino davvero?"
+seoTitle: "Mutation testing sui test scritti dall'AI"
 date: 2026-07-10T09:00:00.000Z
-description: "Gli LLM moltiplicano codice e test, ma più test verdi non significa più garanzie. Come il mutation testing diventa l'arbitro che lascia agli agenti chiudere il loop, e i primi numeri di produzione: Meta ACH e Just-in-Time testing."
+description: "Il mutation score correla con i bug reali a R² ≈ 0,70, la line coverage si ferma a 0,25. Come diventa l'arbitro dei test scritti dagli agenti."
 pillar: verificare
 category: testing
 tags:

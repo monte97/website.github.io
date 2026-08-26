@@ -1,7 +1,8 @@
 ---
 title: "CAPI Parte 5: Ubuntu su Proxmox - Image Builder e Deploy"
+seoTitle: "Cluster API: Ubuntu con Image Builder"
 date: 2025-10-23T13:00:00.000Z
-description: Guida completa al deployment di cluster Kubernetes su Proxmox utilizzando Ubuntu, Image Builder e Cluster API - Dalla creazione dell'immagine al cluster funzionante
+description: "Deploy di un cluster Kubernetes su Proxmox con Ubuntu al posto di Talos: Image Builder, Cluster API, e la CNI Calico da applicare a mano."
 pillar: automatizzare
 category: kubernetes
 tags:

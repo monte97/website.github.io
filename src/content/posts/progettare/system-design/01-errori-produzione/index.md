@@ -1,7 +1,8 @@
 ---
 title: 4 Errori LINQ che Ho Trovato in Produzione (e Come Costavano 1000x)
+seoTitle: "LINQ: quattro errori trovati in produzione"
 date: 2026-02-21T08:00:00.000Z
-description: Quattro pattern LINQ comuni che trasformano operazioni lineari in quadratiche. Analisi di casi reali da un servizio di dispatch per flotta commerciale su .NET 8.
+description: "Quattro pattern LINQ che trasformano operazioni lineari in quadratiche, da un audit su un dispatcher di flotta con budget di latenza sotto i 100ms."
 pillar: progettare
 category: system-design
 tags:

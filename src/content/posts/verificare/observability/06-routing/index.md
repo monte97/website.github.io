@@ -1,5 +1,6 @@
 ---
 title: "OpenTelemetry in Produzione: Routing dei Dati per Compliance e Costi"
+seoTitle: "OpenTelemetry: routing per compliance"
 date: 2026-02-12T09:00:00.000Z
 description: Separare log audit da log tecnici con il routing connector dell'OTel Collector. Demo, compliance GDPR/SOC 2 e retention differenziata.
 pillar: verificare

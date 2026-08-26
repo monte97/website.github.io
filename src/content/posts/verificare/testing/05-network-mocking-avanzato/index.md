@@ -1,7 +1,8 @@
 ---
 title: "Playwright: Mock Fixture, HAR Replay e Composizione per Test Scalabili"
+seoTitle: "Playwright: mock fixture e HAR replay"
 date: 2026-03-04T09:00:00.000Z
-description: "Come scalare il network mocking con fixture riusabili, HAR replay e composizione di scenari complessi"
+description: "Fixture MockApi, HAR replay e composizione: inline per un test solo, fixture dai tre in su, HAR per i flussi con troppe API da mockare a mano."
 pillar: verificare
 category: testing
 tags:

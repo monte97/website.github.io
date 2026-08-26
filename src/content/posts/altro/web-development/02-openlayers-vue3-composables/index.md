@@ -1,7 +1,8 @@
 ---
 title: "OpenLayers e Vue 3: integrazione con composables e TypeScript"
+seoTitle: "OpenLayers e Vue 3 con i composables"
 date: 2026-02-14T09:00:00.000Z
-description: Pattern concreti per integrare OpenLayers in Vue 3 con shallowRef, composables tipizzati e lifecycle management
+description: "Pattern per integrare OpenLayers in Vue 3: shallowRef tiene la mappa fuori dal sistema reattivo, i composables fanno da ponte e incapsulano il cleanup."
 pillar: progettare
 category: web-development
 tags:

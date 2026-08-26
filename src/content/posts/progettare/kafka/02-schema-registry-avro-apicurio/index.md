@@ -1,5 +1,6 @@
 ---
 title: "Schema Registry con Apache Kafka: da JSON selvaggio ad Avro con Apicurio"
+seoTitle: "Kafka Schema Registry: Avro con Apicurio"
 date: 2026-03-02T09:00:00.000Z
 description: "Migrazione da JSON senza schema ad Avro con Apicurio Registry: infrastruttura, producer Node.js, consumer Python, schema evolution"
 pillar: progettare

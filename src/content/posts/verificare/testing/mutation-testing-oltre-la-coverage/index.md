@@ -1,7 +1,8 @@
 ---
 title: "Come il mutation testing mi ha fatto capire che la mia suite stava mentendo"
+seoTitle: "Mutation testing: oltre la code coverage"
 date: 2026-06-26T09:00:00.000Z
-description: "I test verdi e il 93% di coverage non dicono che i test verifichino davvero qualcosa. Come il mutation testing con Stryker.NET mi ha mostrato che un terzo dei miei test non controllava niente, e come sono passato dal 65% al 92% di mutation score."
+description: "93% di coverage, tutti verdi, e un terzo dei test non verificava niente. Cosa ha mostrato Stryker.NET, e come sono passato dal 65% al 92%."
 pillar: verificare
 category: testing
 tags:

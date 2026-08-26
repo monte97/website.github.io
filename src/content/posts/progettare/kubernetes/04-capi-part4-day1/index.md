@@ -1,5 +1,6 @@
 ---
 title: "CAPI Parte 4: Setup Pratico - Day 1 Operations"
+seoTitle: "Cluster API su Proxmox: il primo cluster"
 date: 2025-08-05T09:30:00.000Z
 description: Guida completa al deployment iniziale di cluster Kubernetes utilizzando Cluster API (CAPI) - Da Zero a Cluster Funzionante
 pillar: automatizzare

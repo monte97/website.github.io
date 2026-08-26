@@ -1,5 +1,6 @@
 ---
 title: "Kafka crash recovery: tre strategie per tre tipi di stato"
+seoTitle: "Kafka: tre strategie di crash recovery"
 date: 2026-03-02T09:00:00.000Z
 description: "Tre strategie di recovery per consumer Kafka con stato diverso: replay completo per idempotenti, checkpoint per additivi, nessun recovery per stateless"
 pillar: progettare

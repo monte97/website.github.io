@@ -1,5 +1,6 @@
 ---
 title: "Microservizi Flask testabili: application factory, DI e zero sys.modules hack"
+seoTitle: "Flask testabile: application factory e DI"
 date: 2026-02-24T13:00:00.000Z
 description: Tre servizi Flask con connessioni Kafka e MongoDB al top-level, refactoring a application factory con dependency injection. Da 228 righe di conftest a 148.
 pillar: verificare

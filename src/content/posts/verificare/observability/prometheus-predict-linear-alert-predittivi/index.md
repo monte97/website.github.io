@@ -1,5 +1,6 @@
 ---
 title: "Prometheus predict_linear: alert predittivi di saturation in pratica"
+seoTitle: "Prometheus predict_linear: alert predittivi"
 date: 2026-04-15T09:00:00.000Z
 description: "Come usare predict_linear in Prometheus per alert di saturation predittivi. USE vs Golden Signals, esempi reali (JVM, TLS, Kafka) e demo Docker Compose."
 pillar: verificare
