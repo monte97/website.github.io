@@ -9,9 +9,10 @@ tags:
   - quality
   - testing
 lang: en
-reviewed: human
+reviewed: false
 series: playwright
 seriesOrder: 10
+draft: true   # stub con testo segnaposto, mai scritto: fuori dalla pubblicazione dal 2026-08-26
 ---
 
 ## Introduction

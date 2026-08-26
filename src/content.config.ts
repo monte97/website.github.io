@@ -96,6 +96,25 @@ const projects = defineCollection({
     })).optional(),
     decisionsNote: z.string().optional(),  // il filo che tiene insieme i bivi
     // Figura: matrice di copertura, con le caselle vuote in evidenza
+    inventory: z.object({
+      label: z.string().optional(),
+      items: z.array(z.object({ name: z.string(), mark: z.boolean().default(false) })),
+      legend: z.object({ plain: z.string().optional(), mark: z.string().optional() }).optional(),
+      caption: z.string().optional(),
+      note: z.string().optional(),
+    }).optional(),
+    beforeAfter: z.object({
+      label: z.string().optional(),
+      beforeLabel: z.string().optional(),
+      afterLabel: z.string().optional(),
+      rows: z.array(z.object({
+        label: z.string(),
+        before: z.string(),
+        after: z.string(),
+      })),
+      caption: z.string().optional(),
+      note: z.string().optional(),
+    }).optional(),
     timeline: z.object({
       label: z.string().optional(),
       steps: z.array(z.object({

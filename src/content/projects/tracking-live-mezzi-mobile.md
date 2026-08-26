@@ -141,13 +141,13 @@ readingNote: >
   Processo prima del prodotto: le decisioni contano quanto il codice, e le alternative
   scartate sono parte del risultato.
 shots:
-  - src: "/img/case-study/tracking-mobile/01-tracking.png"
+  - src: "/img/case-study/tracking-mobile/01-tracking.webp"
     caption: "Tracking live sulla mappa nativa"
-  - src: "/img/case-study/tracking-mobile/02-flyout.png"
+  - src: "/img/case-study/tracking-mobile/02-flyout.webp"
     caption: "Navigazione: una sola voce, nessun bottone sulla mappa"
-  - src: "/img/case-study/tracking-mobile/03-elenco-mezzi.png"
+  - src: "/img/case-study/tracking-mobile/03-elenco-mezzi.webp"
     caption: "Elenco mezzi, stessa sorgente della mappa"
-  - src: "/img/case-study/tracking-mobile/04-dettaglio.png"
+  - src: "/img/case-study/tracking-mobile/04-dettaglio.webp"
     caption: "Dettaglio, raggiunto da entrambi i punti d'ingresso"
 shotsNote: "Schermate reali, iOS Simulator. Nessun mockup: sono catture dell'app in esecuzione."
 openItems:

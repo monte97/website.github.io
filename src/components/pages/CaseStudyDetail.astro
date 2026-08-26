@@ -9,6 +9,7 @@ import SwapFigure from '@/components/ui/SwapFigure.astro';
 import MatrixFigure from '@/components/ui/MatrixFigure.astro';
 import TimelineFigure from '@/components/ui/TimelineFigure.astro';
 import BeforeAfterFigure from '@/components/ui/BeforeAfterFigure.astro';
+import InventoryFigure from '@/components/ui/InventoryFigure.astro';
 import FlowDiagram from '@/components/ui/FlowDiagram.astro';
 import { pillarStyles } from '@/data/pillar-styles';
 import { getPillarLabel } from '@/data/pillars';
@@ -22,6 +23,11 @@ const { project, lang = 'it' } = Astro.props;
 const prefix = lang === 'en' ? '/en' : '';
 const { Content } = await render(project);
 const d = project.data;
+
+// le figure si numerano da sole nell'ordine in cui compaiono:
+// prima decisioni e timeline dicevano entrambe G1 sullo stesso pezzo
+let _fig = 0;
+const nextFig = () => `G${++_fig}`;
 
 const pillarKey = d.pillarApplied ?? d.pillar;
 const pillarStyle = pillarKey ? pillarStyles[pillarKey] : null;
@@ -168,13 +174,18 @@ const metaCells = [
       )}
 
       {d.beforeAfter?.rows?.length > 0 && (
-        <BeforeAfterFigure figureId="G0" label={d.beforeAfter.label}
+        <BeforeAfterFigure figureId={nextFig()} label={d.beforeAfter.label}
           beforeLabel={d.beforeAfter.beforeLabel} afterLabel={d.beforeAfter.afterLabel}
           rows={d.beforeAfter.rows} caption={d.beforeAfter.caption} note={d.beforeAfter.note} />
       )}
 
+      {d.inventory?.items?.length > 0 && (
+        <InventoryFigure figureId={nextFig()} label={d.inventory.label} items={d.inventory.items}
+          legend={d.inventory.legend} caption={d.inventory.caption} note={d.inventory.note} />
+      )}
+
       {d.flow?.nodes?.length > 0 && (
-        <FlowDiagram label={d.flow.label} caption={d.flow.caption} nodes={d.flow.nodes} />
+        <FlowDiagram figureId={nextFig()} label={d.flow.label} caption={d.flow.caption} nodes={d.flow.nodes} />
       )}
 
       {d.actions?.length > 0 && (
@@ -210,22 +221,22 @@ const metaCells = [
     {d.decisions?.length > 0 && (
       <section class="mb-14">
         <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-6">{t.decisions}</h2>
-        <Decisions decisions={d.decisions} figureId="G1" note={d.decisionsNote} lang={lang} />
+        <Decisions decisions={d.decisions} figureId={nextFig()} note={d.decisionsNote} lang={lang} />
       </section>
     )}
 
     {d.timeline?.steps?.length > 0 && (
-      <TimelineFigure figureId="G1" label={d.timeline.label} steps={d.timeline.steps}
+      <TimelineFigure figureId={nextFig()} label={d.timeline.label} steps={d.timeline.steps}
         caption={d.timeline.caption} note={d.timeline.note} />
     )}
 
     {d.matrix && (
-      <MatrixFigure figureId="G2" label={d.matrix.label} columns={d.matrix.columns} rows={d.matrix.rows}
+      <MatrixFigure figureId={nextFig()} label={d.matrix.label} columns={d.matrix.columns} rows={d.matrix.rows}
         legend={d.matrix.legend} caption={d.matrix.caption} note={d.matrix.note} />
     )}
 
     {d.swap && (
-      <SwapFigure figureId="G2" label={d.swap.label} requested={d.swap.requested} order={d.swap.order}
+      <SwapFigure figureId={nextFig()} label={d.swap.label} requested={d.swap.requested} order={d.swap.order}
         requestedLabel={d.swap.requestedLabel} receivedLabel={d.swap.receivedLabel}
         caption={d.swap.caption} note={d.swap.note} />
     )}

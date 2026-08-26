@@ -89,13 +89,13 @@ specs:
     value: "Identificativo iniettato automaticamente nei log Python e in quelli della macchina virtuale"
     note: "Cosa è stato scritto durante quella specifica richiesta, senza cercare per orario"
 shots:
-  - src: "/img/case-study/observability/trace-end-to-end.png"
+  - src: "/img/case-study/observability/trace-end-to-end.webp"
     caption: "Albero degli span di una singola traccia, dal prelievo esterno all'arrivo nell'API di consultazione, ogni riga porta la propria durata"
-  - src: "/img/case-study/observability/service-graph.png"
+  - src: "/img/case-study/observability/service-graph.webp"
     caption: "La topologia dedotta dalle tracce: nessuno l'ha disegnata, è ciò che i servizi hanno dichiarato di fare"
-  - src: "/img/case-study/observability/metriche-jvm.png"
+  - src: "/img/case-study/observability/metriche-jvm.webp"
     caption: "Quattro ore di memoria del servizio di arricchimento: il dente di sega è il garbage collector sano, ed è la linea di base contro cui un giorno si riconoscerà un'anomalia"
-  - src: "/img/case-study/observability/log-con-trace-id.png"
+  - src: "/img/case-study/observability/log-con-trace-id.webp"
     caption: "L'identificativo di traccia dentro la riga di log applicativa: da qui si apre la traccia corrispondente, e viceversa"
 shotsNote: "Cosa si vede senza aver scritto codice."
 openItems:

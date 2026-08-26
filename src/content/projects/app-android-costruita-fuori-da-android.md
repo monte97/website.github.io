@@ -80,6 +80,59 @@ specs:
     value: "Rete, messaggi binari con lunghezza in testa"
     note: "Provato contro un server finto, non contro il sensore"
 
+inventory:
+  label: "I venti moduli, e l'unico che dichiara la piattaforma"
+  items:
+    - name: "guida acustica"
+    - name: "calibrazione"
+    - name: "coordinate"
+    - name: "persistenza"
+    - name: "invio messaggi"
+    - name: "esportazione"
+    - name: "importazione"
+    - name: "filtri sul segnale"
+    - name: "posizione"
+    - name: "riferimento esterno"
+    - name: "misure"
+    - name: "foto"
+    - name: "profili"
+    - name: "rapporto"
+    - name: "impaginazione rapporto"
+    - name: "impostazioni"
+    - name: "validazione"
+    - name: "collegamento al sensore"
+    - name: "lettura codice"
+    - name: "lettura codice · fotocamera"
+      mark: true
+  legend:
+    plain: "progetti autonomi, ognuno col proprio ciclo di prova"
+    mark: "dipende dalla piattaforma, e lo dice nel nome"
+  caption: "l'eccezione è una, ed è nominata"
+  note: >
+    Il modulo marcato esiste in due versioni: una che decide cosa fare di un codice letto,
+    verificabile ovunque, e una che accende la fotocamera. Sono separate apposta, così la
+    dipendenza resta confinata in metà del problema invece che in tutto.
+
+flow:
+  label: "Dove passa il confine"
+  nodes:
+    - kind: "La piattaforma"
+      name: "Il telefono"
+      desc: "Posizione, suono, fotocamera: le sole cose che senza un dispositivo non esistono."
+      edge: "entra da"
+    - kind: "Il confine"
+      name: "Un'interfaccia dichiarata"
+      desc: "«Emetti questo tono.» Una riga, nessuna decisione."
+      key: true
+      edge: "usata da"
+    - kind: "Il modulo"
+      name: "Dove stanno le scelte"
+      desc: "Zone, soglie, quando emettere il tono e con quale pausa. Qui stanno anche gli errori."
+      edge: "provato da"
+    - kind: "La verifica"
+      name: "Sulla macchina virtuale"
+      desc: "Millisecondi, nessun telefono, nessun sensore da prenotare."
+
 beforeAfter:
   label: "Le due strade, riga per riga"
   beforeLabel: "La strada ovvia"
