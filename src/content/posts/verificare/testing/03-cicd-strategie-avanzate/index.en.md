@@ -293,19 +293,17 @@ Tools like [Claude Code](https://claude.ai/claude-code), [Cursor](https://cursor
 
 ---
 
-## Conclusion
+## What running the suite in CI is worth
 
-This article covered the full path from integrating Playwright in CI/CD to advanced testing strategies. Key takeaways:
+An E2E suite that only runs locally is a suite somebody has to remember to run, and sooner or later nobody does. Moving it into CI does not make it better: **it makes it unavoidable**, which is the only property that matters for a regression test.
 
-1. **CI as a first-class concern**: a well-configured GitHub Actions workflow, with retries, timeouts, and reports as artifacts, is the foundation for automatic feedback on every commit.
-2. **Sharding to scale**: when the suite grows, distributing tests across multiple machines with the blob reporter and a merge job is the strategy for maintaining acceptable feedback times.
-3. **Mobile emulation without physical devices**: Playwright simulates iOS (WebKit) and Android (Chromium) devices directly in the pipeline, expanding coverage without additional infrastructure.
-4. **API testing as an accelerator**: using APIs for E2E test setup reduces time and flakiness, making the suite more robust.
-5. **Semantic tests for the future**: role-based and accessibility-based selectors prepare the codebase for agent-driven automation, transforming tests into executable documentation.
+Sharding is what makes that unavoidability bearable: 200 tests across four shards drop to roughly a quarter of the time, and that is the difference between a check you wait for and one you skip.
 
-With this series we've built a path from E2E testing fundamentals all the way to production pipeline integration.
+**In terms that reach whoever watches release timelines:** a regression caught in the pipeline costs the pipeline's minutes; the same regression caught by a customer costs a report, an investigation and an emergency release — plus the trust, which does not come in minutes.
 
----
+## To try tomorrow
+
+Take the slowest test in the suite and put it on a shard of its own. If total time drops, you have the case ready for whoever decides how CI time gets spent.
 
 ## Resources
 

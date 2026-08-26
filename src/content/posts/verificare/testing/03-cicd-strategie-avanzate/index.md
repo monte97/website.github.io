@@ -310,19 +310,17 @@ Strumenti come [Claude Code](https://claude.ai/claude-code), [Cursor](https://cu
 
 ---
 
-## Conclusione
+## Quanto vale far girare la suite in CI
 
-In questo articolo abbiamo coperto il percorso completo dall'integrazione di Playwright in CI/CD fino alle strategie avanzate di testing. Ecco i punti chiave:
+Una suite E2E che gira solo in locale è una suite che qualcuno deve ricordarsi di lanciare, e prima o poi nessuno se lo ricorda. Portarla in CI non la rende migliore: **la rende inevitabile**, che è la sola proprietà che conta per un test di regressione.
 
-1. **CI come prima classe**: un workflow GitHub Actions ben configurato, con retry, timeout e report come artefatti, è la base per feedback automatico a ogni commit.
-2. **Sharding per scalare**: quando la suite cresce, distribuire i test su più macchine con il blob reporter e un job di merge è la strategia per mantenere tempi di feedback accettabili.
-3. **Emulazione mobile senza device fisici**: Playwright simula dispositivi iOS (WebKit) e Android (Chromium) direttamente nella pipeline, allargando la copertura senza infrastruttura aggiuntiva.
-4. **API testing come acceleratore**: usare le API per il setup dei test E2E riduce tempi e flakiness, rendendo la suite più robusta.
-5. **Test semantici per il futuro**: selettori basati su ruoli e accessibilità preparano la codebase all'automazione agent-driven, trasformando i test in documentazione eseguibile.
+Lo sharding serve a rendere quella inevitabilità sopportabile: 200 test su quattro shard scendono a circa un quarto del tempo, ed è la differenza fra un controllo che si aspetta e uno che si salta.
 
-Con questa serie abbiamo costruito un percorso che va dalle fondamenta del testing E2E fino all'integrazione in pipeline di produzione.
+**Tradotto per chi guarda i tempi di rilascio:** una regressione trovata in pipeline costa i minuti della pipeline; la stessa regressione trovata da un cliente costa una segnalazione, un'indagine e un rilascio d'emergenza — più la fiducia, che non si misura in minuti.
 
----
+## Da provare domani
+
+Prendete il test più lento della suite e mettetelo su uno shard suo. Se il tempo totale scende, avete il caso pronto da portare a chi decide come si spende il tempo di CI.
 
 ## Risorse Utili
 
@@ -352,15 +350,3 @@ cd ../demo && npm install && npx playwright test --ui
 ```
 
 ---
-
-## Quanto vale far girare la suite in CI
-
-Una suite E2E che gira solo in locale è una suite che qualcuno deve ricordarsi di lanciare, e prima o poi nessuno se lo ricorda. Portarla in CI non la rende migliore: **la rende inevitabile**, che è la sola proprietà che conta per un test di regressione.
-
-Lo sharding serve a rendere quella inevitabilità sopportabile: 200 test su quattro shard scendono a circa un quarto del tempo, ed è la differenza fra un controllo che si aspetta e uno che si salta.
-
-**Tradotto per chi guarda i tempi di rilascio:** una regressione trovata in pipeline costa i minuti della pipeline; la stessa regressione trovata da un cliente costa una segnalazione, un'indagine e un rilascio d'emergenza — più la fiducia, che non si misura in minuti.
-
-## Da provare domani
-
-Prendete il test più lento della suite e mettetelo su uno shard suo. Se il tempo totale scende, avete il caso pronto da portare a chi decide come si spende il tempo di CI.

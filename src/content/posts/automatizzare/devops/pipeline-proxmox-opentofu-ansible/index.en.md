@@ -18,17 +18,15 @@ series: cicd
 seriesOrder: 10
 ---
 
-## Context
+Updating the staging environment takes: open the Proxmox UI, clone the VM, configure SSH, copy the configuration files, start the containers. Twenty minutes when it goes well, and it usually goes well.
 
-An application composed of multiple containerized services: a backend API, a frontend, a PostgreSQL database, and an identity provider (Keycloak). Each environment (staging, production) runs on a dedicated VM, provisioned on a Proxmox hypervisor. Deployment happens via Docker Compose.
+The problem is not the half hour. It is that those steps live in the head of whoever performed them last, and that every environment ends up drifting from the others in ways nobody decided. With two environments and frequent updates, the cost is not time: it is **no longer being able to say with confidence what runs on which machine**.
 
-The manual workflow: create the VM from the Proxmox UI, configure SSH, copy configuration files, start the containers. For a single environment this is manageable. For two environments with frequent updates, the cost of each manual deploy accumulates — along with the risk of configuration errors and drift between environments.
+## What runs, and why hands end up on it
 
-The goal is a pipeline that, given a new set of images, provisions the infrastructure if needed and deploys the application without manual intervention.
+The application is made of several containerized services — backend API, frontend, PostgreSQL, and Keycloak as the identity provider — and each environment, staging and production, sits on a dedicated VM on a Proxmox hypervisor.
 
-The complete project code is available in the `demo/` folder alongside this article.
-
------
+The goal is a pipeline that, given a new set of images, provisions the infrastructure when needed and releases the application without anyone touching anything. The full code is in the `demo/` folder alongside this article.
 
 ## The Architecture: Three Tools, Three Responsibilities
 
@@ -461,20 +459,19 @@ The health check only verifies HTTP reachability. In a more mature context, veri
 
 -----
 
-## Summary
+## Why the three layers stay separate
 
-The described architecture covers:
+One property holds the whole architecture together: **each tool has one responsibility and one interface, and none of them knows what the others do.** Jenkins orchestrates, OpenTofu provisions, Ansible configures, Docker Compose runs.
 
-1. **Automatic detection** of new images via polling on the container registry
-2. **Provisioning** of Proxmox VMs from a template with OpenTofu and cloud-init
-3. **Deployment** via Ansible orchestrated by Semaphore, with parametric Docker Compose templates
-4. **Separation** between source and deployment repositories
-5. **Secret isolation** between Jenkins Credentials and Semaphore Environment
-6. **Local development** via Makefile and standalone Docker Compose
+The way to measure it is to ask what replacing one of them costs. Moving from Jenkins to GitLab CI touches the orchestration layer and nothing else: provisioning and deployment never notice. If that replacement also required rewriting the others, the layers would be separate on paper only.
 
-Each component has a single responsibility and well-defined interfaces. Replacing one tool (for example, Jenkins with GitLab CI) requires changes only at the orchestration layer, without affecting provisioning or deployment.
+The price of that separation has to be stated: four tools to know, keep updated and wire together, against one script that would do all of it. Below a certain scale — a single environment that rarely changes — that price does not pay for itself.
 
-No more manual deploys, no more environment drift, no more "it worked on staging." A `git push` and everything else happens automatically.
+**Above that scale, the bill reads like this:** no more manual deploys, no more environment drift, no more *"it worked on staging."* A `git push`, and everything else happens on its own — with the consequence that rebuilding an environment from scratch stops being a project and becomes a wait.
+
+## Where to start
+
+Not with Jenkins. With the lowest layer: move into OpenTofu the creation of **one** VM you currently click together in the UI. It is the step that pays for itself, and it tells you whether the rest of this architecture is something you actually need.
 
 -----
 

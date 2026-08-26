@@ -27,15 +27,13 @@ lang: en
 reviewed: machine
 ---
 
-You have instrumented your application with OpenTelemetry, traces and logs are flowing into a central backend — now what? The practical question remains: how do you actually use this telemetry to diagnose problems? This tutorial answers with three concrete debug scenarios. If you are unfamiliar with core OpenTelemetry concepts (spans, traces, context propagation), it is worth reading the [Observability intro article](/blog/verificare/observability/) first.
+Checkout returns `200`. The customer sees the order confirmation. The notification never goes out, and nobody notices until the support ticket arrives — two days later, when reconstructing what happened that afternoon is already archaeology.
 
-**Article structure:**
-1. Quick Start — spin up the demo
-2. Three debug scenarios — silent failure, latency spike, fan-out
-3. When NOT to use distributed tracing — limits and alternatives
-4. **Appendix** — detailed setup (optional, for replication in your own project)
+That is the silent failure: nothing in the checkout logs, because checkout did its job. The error belongs to another service, in another log, with nothing tying the two together.
 
----
+Instrumenting with OpenTelemetry is meant to fix exactly this, but having traces and logs in one place is not enough: you need to know what to look at. This article shows it on three reproducible scenarios — the silent failure above, a latency spike, and a fan-out across four services.
+
+The detailed setup lives in the appendix: it is for people who want to replay the demo, not for people reading to understand.
 
 ## Demo Architecture
 
@@ -505,46 +503,22 @@ With 2–3 services in a linear chain (A→B→C) and a team that knows the syst
 
 ---
 
-## Limitations of This Tutorial
+## Two numbers to run before taking this to production
 
-### What's Not Covered
+The `openItems` at the bottom say what this demo does not cover. Two of those entries do not fit in a single line, though, because they are numbers and you need to see them.
 
-1. **Production deployment**: The LGTM all-in-one image does not scale. Production deployments require:
-   - Persistent storage (S3, GCS for Tempo/Loki)
-   - Retention policies
-   - High availability
-   - Authentication and authorization
+**How much it weighs.** A span takes roughly 500 bytes compressed on disk. At 100 requests per second with five spans per request:
 
-2. **Sampling**: In production, storing 100% of traces is not feasible. You need:
-   - Head sampling (fixed percentage)
-   - Tail sampling (100% errors, sample the rest)
-   - Rate limiting
+```text
+100 req/s x 5 spans x 500 B x 86400 s = ~21.6 GB per day
+at 10% sampling:                        ~2.16 GB per day
+```
 
-3. **Cost and storage**: Data volumes grow quickly. Budget:
-   - ~500 bytes per span (average compressed on disk)
-   - 100 req/s × 5 span/req × 500B × 86400s = ~21.6 GB/day
-   - With 10% sampling: ~2.16 GB/day
+The factor of ten between those two lines is why sampling is not an optimisation but an architectural decision. How you choose *what* to keep is the subject of [tail sampling and retention](/blog/verificare/observability/05-management/), where these numbers turn into a twelve-month projection.
 
-4. **Security**: Never log:
-   - Tokens and credentials
-   - PII (emails, names, addresses)
-   - Sensitive data in span attributes
+**What must never end up in there.** Tokens and credentials, personal data — emails, names, addresses — and anything that, once inside a span, becomes a compliance problem instead of a diagnostic one. Filtering happens in the Collector, before storage, and it is the subject of [PII filtering](/blog/verificare/observability/07-keycloak-pii/).
 
-### Simulations vs. Reality
-
-The demo scenarios use controlled simulations:
-- The "slow premium template" is a `setTimeout(3000)`
-- The "invalid email" is a configuration flag
-- The "slow services" in the fan-out are `/config/simulate-slow` endpoints that inject artificial delays
-
-In production, real problems are:
-- Harder to reproduce
-- Often intermittent
-- Caused by combinations of factors
-
-OTel helps precisely because it captures these scenarios when they occur in production, without requiring reproduction in development.
-
----
+For the rest, the note at the bottom holds: **the scenarios above are controlled simulations.** The slow template is a `setTimeout(3000)`, the invalid email is a configuration flag. In production the same problems are intermittent and come from combinations of factors — which is precisely why the instrumentation matters: it catches the case when it happens, without you having to reproduce it.
 
 ## Appendix: OpenTelemetry Setup
 
@@ -859,11 +833,12 @@ Auto-instrumentation captures:
 
 ---
 
-## Next in This Series
+## What you have now that you did not before
 
-- **Sampling strategies**: Head vs. tail sampling, when to use each
-- **Production deployment**: LGTM in Kubernetes with persistent storage
-- **Cost optimization**: Calculating and controlling observability costs
-- **Security**: Filtering PII and sensitive data from traces
+Three scenarios, and the same thing in all three: **the question moves from "which service failed" to "where did this request's time go"**, and the second one has an answer you read off a chart instead of reconstructing it by cross-referencing four logs by hand.
 
----
+The value is not technical. A silent failure like the one this article opens with, without tracing, surfaces from a support ticket two days later; with tracing, it surfaces from an alert, while the context can still be reconstructed. **The difference between the two is how long the problem stays invisible**, and that is the stretch the customer lives through.
+
+## From here
+
+The two numbers above are the subjects of the next pieces: [tail sampling and retention](/blog/verificare/observability/05-management/) for volume, [PII filtering](/blog/verificare/observability/07-keycloak-pii/) for sensitive data. And if audit logs need a different path from technical ones, there is [routing](/blog/verificare/observability/06-routing/).

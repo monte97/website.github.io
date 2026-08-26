@@ -166,11 +166,11 @@ async function main() {
 }
 ```
 
-### Deep Dive: `async/await` and the Production Loop
+### Two producer details worth knowing
 
 Two aspects of this code deserve attention:
 
-1. **`await producer.send(...)`**: Unlike libraries that use callbacks or fire-and-forget, kafkajs exposes a **Promise**-based API. The `await` suspends execution of the `async` function until the broker confirms receipt. This makes the code sequential and readable, but it also means each message is sent one at a time. For high-throughput scenarios, kafkajs supports batching via `producer.sendBatch()`.
+1. **`await producer.send(...)` sends one message at a time.** Waiting for the broker's acknowledgement keeps the code readable, but it serialises the writes: at high throughput you want `producer.sendBatch()`.
 
 > **Note**: kafkajs has not received significant updates since 2023 and is considered unmaintained. Confluent has released an official JavaScript client ([`@confluentinc/kafka-javascript`](https://github.com/confluentinc/confluent-kafka-javascript)) based on librdkafka. For new projects it is worth evaluating this alternative.
 
@@ -239,7 +239,7 @@ finally:
     consumer.close()  # releases partitions and commits offsets
 ```
 
-### Deep Dive: the Polling Cycle and Clean Shutdown
+### Why the consumer asks instead of receiving
 
 The consumer pattern is worth a closer look:
 
@@ -251,17 +251,17 @@ The consumer pattern is worth a closer look:
 
 ---
 
-## Conclusions
+## What it actually guarantees, and under what conditions
 
-The Apache Kafka fundamentals covered in this article:
+Kafka does not promise that messages arrive in order. It promises that **messages sharing a key arrive in order relative to each other**, and only as long as the partition count does not change. That is a narrower guarantee than most people assume, and it is the one you design against.
 
-1. **The event model**: the difference between synchronous commands and immutable facts, and why Kafka is an event streaming platform rather than a queue
-2. **Partitions and segments**: the internal structure that enables efficient retention, fast seek through memory-mapped indexes, and zero-copy optimization
-3. **The role of the key**: how the partitioner guarantees per-key ordering (provided the number of partitions stays constant)
-4. **Replication and ISR**: the leader-follower model, `acks` semantics (`acks=all` as the default since Kafka 3.0), and the role of `min.insync.replicas`
-5. **Practical implementation**: Node.js producer with kafkajs and Python consumer with confluent-kafka, both with Avro serialization via Schema Registry
+The other two that matter take the same shape: retention is cheap because whole segments get deleted rather than individual records, and durability depends on `acks` together with `min.insync.replicas` — not on either one alone.
 
-The next article in the series will explore **Consumer Groups**, offset commit strategies, and patterns for handling partition rebalancing.
+**Put in terms that do not require code: moving to events does not make the system faster, it makes it less coupled.** A slow service stops slowing down the ones calling it, and a service that is down stops taking them with it — which means a failure in one piece stops being a failure of the product.
+
+The price is paid elsewhere, and that is what the rest of this series is about: ordering only holds per key, consumer state becomes your problem, and debugging now crosses one more component.
+
+The [next article](/blog/progettare/kafka/02-schema-registry-avro-apicurio/) starts exactly there: what happens when two services disagree about what a message contains.
 
 ---
 

@@ -22,22 +22,9 @@ The implementation uses **Authorization Code Flow with PKCE** in MockMart, a dem
 
 ---
 
-## Goal
+By the end of this walkthrough the `techstore` realm will have a public client configured for PKCE, the React frontend will redirect to Keycloak for login, the Express backend will validate the tokens it receives, and a user will be able to sign in, browse products and reach checkout.
 
-By the end of this tutorial:
-
-- Keycloak will have a `techstore` realm with a public client configured for PKCE
-- The React frontend (`shop-ui`) will redirect to Keycloak for login
-- The Express backend (`shop-api`) will validate JWT tokens on each incoming request
-- The user will be able to log in, browse products, and complete checkout
-
----
-
-## Prerequisites
-
-- Docker and Docker Compose installed
-- [MockMart](https://github.com/monte97/MockMart) cloned locally
-- Keycloak running (see [introductory article](/blog/progettare/keycloak/01-keycloak-intro/))
+You need very little to follow along: Docker with Compose, [MockMart](https://github.com/monte97/MockMart) cloned locally, and Keycloak running as in the [introductory article](/blog/progettare/keycloak/01-keycloak-intro/).
 
 ---
 
