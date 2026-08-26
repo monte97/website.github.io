@@ -35,7 +35,7 @@ openItems:
 openNote: "Dove i default di Keycloak e le comodità di localhost smettono di valere"
 ---
 
-Keycloak configurato, realm creato, client registrato. Il passo successivo è collegare concretamente un frontend React e un backend Express all'Identity Provider. L'[articolo introduttivo]({{< ref "/blog/progettare/keycloak/01-keycloak-intro/" >}}) copre il concetto di delegare l'autenticazione. Qui si implementa il pezzo pratico.
+Keycloak configurato, realm creato, client registrato. Il passo successivo è collegare concretamente un frontend React e un backend Express all'Identity Provider. L'[articolo introduttivo](/blog/progettare/keycloak/01-keycloak-intro/) copre il concetto di delegare l'autenticazione. Qui si implementa il pezzo pratico.
 
 L'implementazione usa **Authorization Code Flow con PKCE** in MockMart, un e-commerce demo. Il risultato: l'utente clicca "Login", viene reindirizzato a Keycloak, inserisce le credenziali, e torna nell'app con un token JWT che il backend valida ad ogni richiesta. L'applicazione non tocca mai le password.
 
@@ -56,7 +56,7 @@ Al termine di questo tutorial:
 
 - Docker e Docker Compose installati
 - [MockMart](https://github.com/monte97/MockMart) clonato in locale
-- Keycloak avviato (vedi [articolo introduttivo]({{< ref "/blog/progettare/keycloak/01-keycloak-intro/" >}}))
+- Keycloak avviato (vedi [articolo introduttivo](/blog/progettare/keycloak/01-keycloak-intro/))
 
 ---
 
@@ -556,7 +556,7 @@ Il flusso di autenticazione coperto in questo articolo:
 
 Il codice dell'applicazione non tocca mai le credenziali. Il frontend non ha secret. Il backend non ha un database utenti. Tutto è delegato a Keycloak.
 
-Nei prossimi articoli vedremo come autenticare servizi tra loro senza utente ([Client Credentials]({{< ref "/blog/progettare/keycloak/03-keycloak-m2m/" >}})) e i problemi reali che emergono quando l'integrazione incontra la produzione ([6 Problemi Reali]({{< ref "/blog/progettare/keycloak/04-keycloak-e2e/" >}})).
+Nei prossimi articoli vedremo come autenticare servizi tra loro senza utente ([Client Credentials](/blog/progettare/keycloak/03-keycloak-m2m/)) e i problemi reali che emergono quando l'integrazione incontra la produzione ([6 Problemi Reali](/blog/progettare/keycloak/04-keycloak-e2e/)).
 
 ---
 

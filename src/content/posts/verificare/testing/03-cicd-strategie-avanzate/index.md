@@ -352,6 +352,6 @@ cd ../demo && npm install && npx playwright test --ui
 ---
 
 *Serie Playwright:*
-1. [Playwright: Testing E2E Moderno e Affidabile]({{< relref "/blog/verificare/testing/01-guida-completa-e2e/" >}})
-2. [Dal test E2E al debug del backend: Playwright + OpenTelemetry]({{< relref "/blog/verificare/testing/02-opentelemetry-trace-correlation/" >}})
+1. [Playwright: Testing E2E Moderno e Affidabile](/blog/verificare/testing/01-guida-completa-e2e/)
+2. [Dal test E2E al debug del backend: Playwright + OpenTelemetry](/blog/verificare/testing/02-opentelemetry-trace-correlation/)
 3. **Playwright in CI/CD: Sharding, Mobile Testing e Automazione Agent-Driven** (questo articolo)

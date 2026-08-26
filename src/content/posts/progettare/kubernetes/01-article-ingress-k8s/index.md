@@ -559,5 +559,3 @@ Ricordare di rimuovere `miodominio.local` dal file `hosts`.
 
 ---
 
-Foto di <a href="https://unsplash.com/it/@carrier_lost?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Ian Taylor</a> su <a href="https://unsplash.com/it/foto/nave-da-carico-blu-e-rossa-in-mare-durante-il-giorno-jOqJbvo1P9g?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
-      

@@ -268,4 +268,3 @@ With the working cluster, you can:
 
 ---
 
-Photo by <a href="https://unsplash.com/it/@6heinz3r?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Gabriel Heinzer</a> on <a href="https://unsplash.com/it/foto/testo-4Mw7nkQDByk?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>

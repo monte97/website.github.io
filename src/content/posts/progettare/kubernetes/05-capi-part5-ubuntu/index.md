@@ -287,4 +287,3 @@ Con il cluster funzionante, puoi:
 
 ---
 
-Foto di <a href="https://unsplash.com/it/@6heinz3r?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Gabriel Heinzer</a> su <a href="https://unsplash.com/it/foto/testo-4Mw7nkQDByk?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
