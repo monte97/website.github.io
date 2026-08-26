@@ -1,6 +1,6 @@
 ---
 title: "Quante versioni del tuo prodotto stai mantenendo davvero?"
-description: "Ogni «sì, si può fare» detto in trattativa diventa un'installazione diversa da tenere in piedi per sempre. Le abbiamo contate — e poi abbiamo scoperto che i controlli che dovevano coprirle rispondevano verde da mesi senza guardare."
+description: "Ogni «sì, si può fare» detto in trattativa diventa un'installazione diversa da tenere in piedi per sempre. Le abbiamo contate, e poi abbiamo scoperto che i controlli che dovevano coprirle rispondevano verde da mesi senza guardare."
 type: case-study
 pillar: progettare
 pillarApplied: progettare
@@ -28,7 +28,7 @@ anonimizzazione: >
   servizi, gli indirizzi, gli esiti attesi e il numero delle configurazioni: l'elenco
   completo è l'inventario delle varianti che il cliente vende, e non è mio.
 problem: >
-  Il prodotto è lo stesso ovunque. A rompersi è l'installazione, non l'applicazione — e
+  Il prodotto è lo stesso ovunque. A rompersi è l'installazione, non l'applicazione, e
   nessuno sapeva quante installazioni diverse esistessero, perché non erano scritte da
   nessuna parte.
 context: >
@@ -59,7 +59,7 @@ decisions:
     chosen: "Un solo file YAML, letto sia dallo smoke test sia dalla suite pytest"
     chosenWhy: "Due esecutori che leggono la stessa fonte non possono divergere in silenzio."
     rejected: "Un elenco per esecutore, ciascuno con il proprio formato"
-    appeal: "Ognuno resta semplice e indipendente — finché i due elenchi non si separano senza che nessuno lo noti."
+    appeal: "Ognuno resta semplice e indipendente, finché i due elenchi non si separano senza che nessuno lo noti."
   - title: "Cosa significa «verde»"
     chosen: "Tre livelli dichiarati per riga, e per ognuna si scrive quale raggiunge"
     chosenWhy: "Un verde che non dice cosa ha verificato è indistinguibile da un verde che non ha verificato niente."
@@ -129,12 +129,12 @@ readingNote: >
 openItems:
   - "La verifica non gira da sola a ogni modifica: si lancia quando qualcuno decide di lanciarla, ed è il limite più grosso che resta"
   - "Le righe scoperte restano scoperte: la mappa dice dove sono i buchi, non li chiude"
-  - "Il terzo livello — «funziona davvero» — è quello più costoso da scrivere, e infatti è quello con più bianco"
+  - "Il terzo livello («funziona davvero») è quello più costoso da scrivere, e infatti è quello con più bianco"
   - "Nessuno ha ancora messo un prezzo alla riga di matrice: la contabilità esiste, la tariffa no"
 cta:
   title: "Quanto costa, oggi, l'ultima installazione andata storta?"
   desc: "Se la risposta richiede più di trenta secondi, il costo esiste già: semplicemente non è scritto, quindi non è né a bilancio né in preventivo. Contarle è un lavoro delimitato."
-thesis: "Ogni flessibilità concessa in trattativa è una riga di manutenzione che qualcuno pagherà ogni mese — e finché non la scrivi da qualche parte, quel qualcuno non lo sa nessuno."
+thesis: "Ogni flessibilità concessa in trattativa è una riga di manutenzione che qualcuno pagherà ogni mese, e finché non la scrivi da qualche parte, quel qualcuno non lo sa nessuno."
 ---
 
 ## Il conto che nessuno teneva
@@ -143,7 +143,7 @@ La call durò quaranta minuti, e la frase che conta arrivò al trentacinquesimo.
 
 «Il nostro Keycloak ce l'abbiamo già. Gli utenti li gestiamo noi, il vostro sistema deve solo fidarsi.»
 
-Il commerciale rispose come rispondono i commerciali quando la richiesta è ragionevole e il contratto è grosso: «certo, si può fare». Aveva ragione. Si poteva fare, si era già fatto altrove, e la stima buttata lì quel giorno — due giorni-uomo — era anche corretta, per la prima volta.
+Il commerciale rispose come rispondono i commerciali quando la richiesta è ragionevole e il contratto è grosso: «certo, si può fare». Aveva ragione. Si poteva fare, si era già fatto altrove, e la stima buttata lì quel giorno (due giorni-uomo) era anche corretta, per la prima volta.
 
 Mesi dopo mi trovai a fare un conto che nessuno aveva mai fatto: quante versioni diverse di quel prodotto erano vive, in quel momento, presso i clienti che l'avevano comprato.
 
@@ -151,9 +151,9 @@ Il conto si ferma intorno alla decina, e già così è più di quanto chiunque s
 
 Nessuna di queste varianti era stata decisa da un architetto. Erano state tutte concesse in trattativa, una alla volta, ognuna in un momento in cui dire di sì costava meno che dire di no.
 
-E c'è un dettaglio che cambia la natura del problema: **chi installa non è uno sviluppatore.** In azienda c'è una decina di persone che scrivono codice, e nessuna segue solo quel prodotto. Ma accanto a loro ci sono figure il cui mestiere è preparare l'ambiente per il cliente — background vario, non informatico — che si trovavano davanti a errori che non erano in grado di interpretare. Ogni configurazione in più non era solo una riga di manutenzione: era una situazione nuova in cui qualcuno poteva restare bloccato senza saper dire perché.
+E c'è un dettaglio che cambia la natura del problema: **chi installa non è uno sviluppatore.** In azienda c'è una decina di persone che scrivono codice, e nessuna segue solo quel prodotto. Ma accanto a loro ci sono figure il cui mestiere è preparare l'ambiente per il cliente (background vario, non informatico) che si trovavano davanti a errori che non erano in grado di interpretare. Ogni configurazione in più non era solo una riga di manutenzione: era una situazione nuova in cui qualcuno poteva restare bloccato senza saper dire perché.
 
-Il momento in cui la cosa ha smesso di essere un fastidio interno ha una data e un nome: **una brutta figura davanti a un cliente.** L'installazione non era verificata come credevamo, e la messa in servizio è diventata un rimpallo — chiedi una verifica, aspetti, ne chiedi un'altra, aspetti ancora. È costato tempo, ma soprattutto è costato la faccia di un'azienda che quel prodotto lo vende.
+Il momento in cui la cosa ha smesso di essere un fastidio interno ha una data e un nome: **una brutta figura davanti a un cliente.** L'installazione non era verificata come credevamo, e la messa in servizio è diventata un rimpallo: chiedi una verifica, aspetti, ne chiedi un'altra, aspetti ancora. È costato tempo, ma soprattutto è costato la faccia di un'azienda che quel prodotto lo vende.
 
 Fino a quel giorno il costo delle configurazioni era distribuito e invisibile. Da quel giorno aveva un volto.
 
@@ -169,7 +169,7 @@ Il motivo è che **l'applicazione è la stessa ovunque**. Lo stesso identico cod
 
 L'oggetto da verificare non era il software. Era **l'installazione**, con la sua configurazione, dentro il suo ambiente.
 
-Questo sposta il problema in un posto scomodo. Un test sul prodotto lo lanci sulla tua macchina. Un test sull'installazione ha bisogno di un'installazione — e le installazioni vivono dentro le sedi dei clienti dove non entri quando ti pare, e in alcuni casi non entri affatto.
+Questo sposta il problema in un posto scomodo. Un test sul prodotto lo lanci sulla tua macchina. Un test sull'installazione ha bisogno di un'installazione, e le installazioni vivono dentro le sedi dei clienti dove non entri quando ti pare, e in alcuni casi non entri affatto.
 
 ## Una fonte, due esecutori
 
@@ -179,13 +179,13 @@ Un solo file YAML elenca le configurazioni supportate. È un elenco, non codice.
 
 Quel file viene letto da **due esecutori diversi**. Il primo è uno smoke test in shell che non installa niente: serve dove non puoi installare, ambienti chiusi, macchine di qualcun altro, situazioni in cui hai il permesso di guardare e non di toccare. Il secondo è una suite pytest che porta su l'ambiente con Ansible, da zero, e poi guarda cosa succede.
 
-La parte che conta è che **leggono la stessa fonte**. Due elenchi separati, uno per esecutore, sarebbero stati più semplici da scrivere e avrebbero divergito nel giro di qualche mese senza che nessuno se ne accorgesse — perché due elenchi che divergono non producono nessun errore, producono due verdi.
+La parte che conta è che **leggono la stessa fonte**. Due elenchi separati, uno per esecutore, sarebbero stati più semplici da scrivere e avrebbero divergito nel giro di qualche mese senza che nessuno se ne accorgesse, perché due elenchi che divergono non producono nessun errore, producono due verdi.
 
 ## Il rosso che aveva torto
 
 Poi arrivò il rosso.
 
-Una configurazione falliva. Non a intermittenza, sempre. Passai quaranta minuti sui log a cercare quale pezzo dell'installazione fosse rotto, con quella sensazione crescente che qualcosa non tornasse — perché era una configurazione vecchia, in esercizio da anni, senza una sola segnalazione dal campo.
+Una configurazione falliva. Non a intermittenza, sempre. Passai quaranta minuti sui log a cercare quale pezzo dell'installazione fosse rotto, con quella sensazione crescente che qualcosa non tornasse, perché era una configurazione vecchia, in esercizio da anni, senza una sola segnalazione dal campo.
 
 Alla fine entrai a mano. Aprii il sistema, feci le cose che il controllo diceva di fare, e le vidi funzionare tutte.
 
@@ -201,7 +201,7 @@ Uno controllava il flusso di autenticazione OIDC e accettava come successo **qua
 
 E c'era il secondo pezzo, peggiore del primo perché più banale: **diverse configurazioni avevano la casella dei controlli semplicemente vuota**. Nessun controllo scritto. Nel cruscotto non comparivano come mancanti: non comparivano affatto.
 
-Sommate le due cose, la matrice mostrava una fila di verdi che significavano tre cose diverse — questa funziona, questa non è stata guardata bene, questa non è stata guardata per niente — tutte disegnate uguali.
+Sommate le due cose, la matrice mostrava una fila di verdi che significavano tre cose diverse: questa funziona, questa non è stata guardata bene, questa non è stata guardata per niente. Tutte disegnate uguali.
 
 È la stessa domanda che mi ero già fatto quando i test hanno cominciato a scriverli gli agenti: [chi controlla che funzionino davvero](/blog/verificare/testing/chiudere-il-loop-mutation-testing/)? Qui non li aveva scritti un modello, li avevo scritti io, e il risultato era identico. Un controllo che nessuno verifica è un controllo di cui non sai niente, a prescindere da chi tiene la penna.
 
@@ -213,15 +213,15 @@ Tre livelli, scritti esplicitamente. *Esiste*: il container è su, la porta risp
 
 Il risultato non è un cruscotto tutto verde. È una griglia in cui il bianco si vede, e si vede soprattutto nella terza colonna.
 
-I numeri, quando la griglia è stata compilata per la prima volta: **quasi la metà delle configurazioni restava fuori dal giro automatico** — testabile solo chiedendolo esplicitamente, cosa che nessuno faceva. Sempre quasi la metà non aveva alcun controllo sul flusso applicativo, e per un paio il controllo si riduceva a verificare che i container fossero accesi.
+I numeri, quando la griglia è stata compilata per la prima volta: **quasi la metà delle configurazioni restava fuori dal giro automatico**, testabile solo chiedendolo esplicitamente, cosa che nessuno faceva. Sempre quasi la metà non aveva alcun controllo sul flusso applicativo, e per un paio il controllo si riduceva a verificare che i container fossero accesi.
 
-Il prodotto utile di questo lavoro non è la copertura: **è la mappa dei buchi**. Una percentuale sarebbe stata più comoda da mostrare e inutile da usare, perché non dice quale configurazione è scoperta — e le configurazioni non sono intercambiabili. Sapere che sei coperto al settanta per cento non serve a nessuno se il trenta scoperto è quello del cliente più grosso.
+Il prodotto utile di questo lavoro non è la copertura: **è la mappa dei buchi**. Una percentuale sarebbe stata più comoda da mostrare e inutile da usare, perché non dice quale configurazione è scoperta, e le configurazioni non sono intercambiabili. Sapere che sei coperto al settanta per cento non serve a nessuno se il trenta scoperto è quello del cliente più grosso.
 
 ## Chi può fare il lavoro, adesso
 
 Il primo effetto è stato su **chi può fare il lavoro**.
 
-Con le configurazioni scritte e i controlli dichiarati, non serve più ricordarsi se un caso è nuovo o già visto: si guarda. E persone con meno anzianità hanno cominciato a gestire installazioni che prima richiedevano qualcuno che «se le ricordava» — comprese quelle figure non tecniche il cui mestiere è preparare l'ambiente, che davanti a un errore adesso hanno un posto dove cercare.
+Con le configurazioni scritte e i controlli dichiarati, non serve più ricordarsi se un caso è nuovo o già visto: si guarda. E persone con meno anzianità hanno cominciato a gestire installazioni che prima richiedevano qualcuno che «se le ricordava»: comprese quelle figure non tecniche il cui mestiere è preparare l'ambiente, che davanti a un errore adesso hanno un posto dove cercare.
 
 La conoscenza ha smesso di stare nelle teste. È il cambiamento che un estraneo avrebbe potuto vedere entrando in azienda, e l'unico che continua a valere anche se domani nessuno tocca più quella matrice.
 
@@ -246,13 +246,13 @@ Era ragionevole quanto le altre, tecnicamente fattibile in pochi giorni, e chied
 
 La risposta al cliente non fu no. Fu che quella combinazione si poteva avere accostandola a una riga che esisteva già, rinunciando a un dettaglio che nella pratica non gli cambiava la giornata. Il cliente accettò senza pensarci troppo: era un dettaglio, per l'appunto. Nessuno l'aveva mai potuto proporre prima, perché prima nessuno sapeva che l'alternativa costava una riga in più per sempre.
 
-E questa non è rimasta una volta sola. È diventato il modo di lavorare: davanti a una richiesta si guarda se ricade in qualcosa che esiste già, o se ci si può far ricadere adattandola. Non è dire di no — è **smettere di dire sì per riflesso**, che è una cosa diversa e molto più difendibile al tavolo.
+E questa non è rimasta una volta sola. È diventato il modo di lavorare: davanti a una richiesta si guarda se ricade in qualcosa che esiste già, o se ci si può far ricadere adattandola. Non è dire di no: è **smettere di dire sì per riflesso**, che è una cosa diversa e molto più difendibile al tavolo.
 
 La frase che riassume tutto non l'ha detta un cliente: è uscita in una revisione interna, dal team che quel prodotto lo installa.
 
 > *«Sembrava che un'installazione per un cliente nuovo fosse un progetto a sé stante, invece di dare un comando ed eseguire un applicativo, come ci si aspetterebbe.»*
 
-**Ogni flessibilità concessa in trattativa è una riga di manutenzione che qualcuno pagherà ogni mese — e finché non la scrivi da qualche parte, quel qualcuno non lo sa nessuno.**
+**Ogni flessibilità concessa in trattativa è una riga di manutenzione che qualcuno pagherà ogni mese, e finché non la scrivi da qualche parte, quel qualcuno non lo sa nessuno.**
 
 ---
 

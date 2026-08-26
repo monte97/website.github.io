@@ -9,8 +9,7 @@ weight: 5
 eyebrow: "Analisi tecnica · la consegna come problema di progettazione"
 tags: [Distribuzione, Utenti non tecnici, Windows, Python]
 oggetto: >
-  Uno strumento desktop per ridurre le nuvole di punti prodotte dagli scanner laser 3D —
-  file E57 che arrivano alle decine di gigabyte — destinato a professionisti del rilievo
+  Uno strumento desktop per ridurre le nuvole di punti prodotte dagli scanner laser 3D: file E57 che arrivano alle decine di gigabyte, destinato a professionisti del rilievo
   che usano bene i software di settore ma non apriranno mai un terminale.
 metodo: >
   Un solo punto d'ingresso: un launcher che al primo doppio click cerca Python, installa
@@ -20,7 +19,7 @@ metodo: >
 anonimizzazione: >
   Non c'è nulla da anonimizzare: lo strumento nasce come progetto personale, senza
   committenti. Nessun nome è stato omesso perché nessun nome compare nelle fonti; i
-  prodotti terzi citati — scanner e software di visualizzazione — sono quelli che la
+  prodotti terzi citati (scanner e software di visualizzazione) sono quelli che la
   documentazione originale indica come compatibili.
 problem: >
   Sulla macchina di chi ha scritto il programma funzionava già tutto. Sul computer
@@ -57,7 +56,7 @@ decisions:
     chosen: "Nascosto nell'avvio normale, riaperto con i log quando qualcosa fallisce"
     chosenWhy: "La finestra nera non aggiunge nulla a un avvio riuscito, e diventa l'unica cosa leggibile quando l'avvio fallisce."
     rejected: "Console sempre visibile, davanti all'utente"
-    appeal: "Debug immediato e sensazione di trasparenza — per chi ha passato la vita nel terminale."
+    appeal: "Debug immediato e sensazione di trasparenza, per chi ha passato la vita nel terminale."
   - title: "Gli avvisi di Windows"
     chosen: "Documentarli uno per uno e insegnare a verificare il contenuto dello script"
     chosenWhy: "L'utente non li eviterà comunque: l'unica variabile è se sa cosa sta succedendo."
@@ -65,11 +64,11 @@ decisions:
     appeal: "Nessuna schermata blu, nessuna spiegazione da scrivere."
 decisionsNote: >
   Il filo che tiene insieme i tre bivi è lo stesso: ogni scelta sposta conoscenza dal
-  lato dell'utente a quello del prodotto — prima che l'attrite arrivi, non mentre lo
+  lato dell'utente a quello del prodotto: prima che l'attrite arrivi, non mentre lo
   sta attraversando.
 flow:
   label: "Il primo avvio"
-  caption: "Dal doppio click alla finestra del programma — tutto ciò che l'utente non deve vedere"
+  caption: "Dal doppio click alla finestra del programma, tutto ciò che l'utente non deve vedere"
   nodes:
     - kind: "Ingresso"
       name: "Doppio click sul launcher"
@@ -128,24 +127,24 @@ result:
 openItems:
   - "Il launcher resta senza firma digitale: ogni nuovo computer e ogni nuovo download rivede la schermata di SmartScreen, e la mitigazione è una pagina di documentazione, non una soluzione"
   - "Nel caso peggiore dell'installazione l'utente vede comunque il messaggio di Visual C++ prima che la guida prenda il sopravvento"
-  - "Alcuni antivirus bloccano il primo avvio: la soluzione suggerita — eccezione o sospensione temporanea — è un compromesso dichiarato, non una correzione"
+  - "Alcuni antivirus bloccano il primo avvio: la soluzione suggerita (eccezione o sospensione temporanea) è un compromesso dichiarato, non una correzione"
   - "I file oltre i 30 GB richiedono macchine con almeno 32 GB di RAM: il programma non copre esattamente la fascia in cui il problema di partenza è più grosso"
-thesis: "Un software è consegnato quando attraversa il computer di qualcun altro senza chiedergli di diventare tecnico — non quando funziona sulla tua macchina."
+thesis: "Un software è consegnato quando attraversa il computer di qualcun altro senza chiedergli di diventare tecnico, non quando funziona sulla tua macchina."
 ---
 
 ## La parte che non si vede
 
-Il programma in sé non è complicato. Legge un file E57 — la nuvola di punti che esce da uno scanner laser, a volte decine di gigabyte — divide lo spazio in cubetti di pochi millimetri e tiene un punto per cubetto. Poi scrive un file più leggero, nello stesso formato o in LAS/LAZ, senza toccare l'originale. La logica sta in un modulo, e la tecnica è descritta ovunque.
+Il programma in sé non è complicato. Legge un file E57: la nuvola di punti che esce da uno scanner laser, a volte decine di gigabyte. Divide lo spazio in cubetti di pochi millimetri e tiene un punto per cubetto. Poi scrive un file più leggero, nello stesso formato o in LAS/LAZ, senza toccare l'originale. La logica sta in un modulo, e la tecnica è descritta ovunque.
 
 Il resto del progetto è tutto ciò che sta prima e dopo quella funzione: far sì che il programma arrivi sul computer di chi fa rilievi per mestiere e produca un risultato al primo tentativo. Su una macchina dove Python non c'è, il PATH è una parola senza significato, e il sistema operativo stesso tratta il launcher come una possibile minaccia.
 
-Chi usa questo strumento passa la giornata fra CloudCompare, QGIS e i software del proprio mestiere: sa riconoscere una sezione sbagliata a colpo d'occhio, non sa — e non deve sapere — cosa significa «aggiungere Python al PATH». La differenza fra il software che funziona e quello che si usa abita tutta lì.
+Chi usa questo strumento passa la giornata fra CloudCompare, QGIS e i software del proprio mestiere: sa riconoscere una sezione sbagliata a colpo d'occhio, non sa (e non deve sapere) cosa significa «aggiungere Python al PATH». La differenza fra il software che funziona e quello che si usa abita tutta lì.
 
 ## Il sistema operativo non ti conosce
 
 Il primo incontro con il programma è una schermata blu di SmartScreen che dice che Windows ha protetto il PC. Poi magari un antivirus che blocca il download delle librerie. Poi la richiesta dei permessi di amministratore.
 
-Nessuno di questi avvisi si toglie con la buona volontà: il launcher è un file `.bat` scaricato da internet, senza firma digitale, ed è trattato di conseguenza. La scelta è stata dichiarare il problema dentro il prodotto: la documentazione dedica una sezione a ogni avviso, dice che sono normali, mostra cosa cliccare, e offre qualcosa di più raro — un modo per verificare da soli che non c'è niente di losco. Il launcher è un file di testo: tasto destro, Modifica, e si legge tutto quello che fa. Le librerie che scarica sono open source, pubblicate su PyPI, usate da migliaia di professionisti del settore.
+Nessuno di questi avvisi si toglie con la buona volontà: il launcher è un file `.bat` scaricato da internet, senza firma digitale, ed è trattato di conseguenza. La scelta è stata dichiarare il problema dentro il prodotto: la documentazione dedica una sezione a ogni avviso, dice che sono normali, mostra cosa cliccare, e offre qualcosa di più raro, un modo per verificare da soli che non c'è niente di losco. Il launcher è un file di testo: tasto destro, Modifica, e si legge tutto quello che fa. Le librerie che scarica sono open source, pubblicate su PyPI, usate da migliaia di professionisti del settore.
 
 È l'unica strada rimasta quando non hai un marchio che risponde per te.
 
@@ -153,9 +152,9 @@ Nessuno di questi avvisi si toglie con la buona volontà: il launcher è un file
 
 Poi c'è l'installazione di Python, che nella testa di chi scrive software è un dettaglio e nella pratica è il muro più alto del percorso.
 
-L'installer ufficiale ha una casella, in basso: «Add Python to PATH». Se resta vuota — e resta vuota, sta in basso e nessuno te lo dice — il programma non troverà mai l'interprete. La guida non si fida: mette la casella in grassetto, spiega cosa succede se la salti, e arriva a dire di disinstallare e reinstallare se l'hai già fatta senza. Chiede anche di riavviare il computer, e dice perché.
+L'installer ufficiale ha una casella, in basso: «Add Python to PATH». Se resta vuota (e resta vuota, sta in basso e nessuno te lo dice) il programma non troverà mai l'interprete. La guida non si fida: mette la casella in grassetto, spiega cosa succede se la salti, e arriva a dire di disinstallare e reinstallare se l'hai già fatta senza. Chiede anche di riavviare il computer, e dice perché.
 
-Il launcher intanto fa la sua parte: cerca `python`, poi `python3`, poi i percorsi tipici delle installazioni Windows, versione dopo versione. Solo quando non trova nulla si arrende — e invece di un messaggio d'errore mostra le istruzioni numerate per installarlo.
+Il launcher intanto fa la sua parte: cerca `python`, poi `python3`, poi i percorsi tipici delle installazioni Windows, versione dopo versione. Solo quando non trova nulla si arrende, e invece di un messaggio d'errore mostra le istruzioni numerate per installarlo.
 
 Resta il caso peggiore: una delle librerie ha componenti in C++ che vengono compilati durante l'installazione, e se sulla macchina non ci sono gli strumenti giusti l'errore arriva in inglese e parla di compilatori. Per chi fa rilievi è rumore. La documentazione lo traduce: quel messaggio significa scaricare certi Build Tools, selezionare una voce precisa durante l'installazione, riprovare.
 
@@ -165,24 +164,24 @@ La riga di comando espone il programma com'è dentro: voxel in metri, frazione d
 
 L'interfaccia grafica fa la stessa domanda in un'altra lingua. Quattro opzioni, ognuna descritta dal risultato nel dominio: dettagli architettonici fini; rilievo architettonico, consigliato per edifici, con sezioni pulite e spessori misurabili; dimensioni generali; solo volumetrie e ingombri. Il millimetro c'è ancora, ma tra parentesi: la scelta si fa su quello che resterà a vedere nelle sezioni, non sull'unità di misura.
 
-Intorno ai quattro livelli ci sono le piccole cose che tolgono paura: la stima della dimensione del risultato prima di lanciare l'elaborazione, la barra di avanzamento con un log leggibile durante, e ripetuto dovunque — fino alla nota tecnica — che il file originale non viene mai modificato né cancellato. Chi consegna una nuvola di punti consegna lavoro fatto sul campo: «non tocca l'originale» è la condizione perché il programma venga aperto.
+Intorno ai quattro livelli ci sono le piccole cose che tolgono paura: la stima della dimensione del risultato prima di lanciare l'elaborazione, la barra di avanzamento con un log leggibile durante, e ripetuto dovunque (fino alla nota tecnica) che il file originale non viene mai modificato né cancellato. Chi consegna una nuvola di punti consegna lavoro fatto sul campo: «non tocca l'originale» è la condizione perché il programma venga aperto.
 
 ## Il terminale che non si vede
 
-Quando tutto è installato, il launcher avvia l'interfaccia con l'eseguibile pensato per le applicazioni grafiche: nessuna finestra nera che resta aperta sotto il programma. Ma l'avvio silenzioso ha un costo noto: se qualcosa fallisce, fallisce senza dire nulla — la finestra si apre e si chiude subito, e sembra un programma rotto.
+Quando tutto è installato, il launcher avvia l'interfaccia con l'eseguibile pensato per le applicazioni grafiche: nessuna finestra nera che resta aperta sotto il programma. Ma l'avvio silenzioso ha un costo noto: se qualcosa fallisce, fallisce senza dire nulla, la finestra si apre e si chiude subito, e sembra un programma rotto.
 
-La soluzione sta nel launcher: se l'avvio silenzioso non va a buon fine, il programma riparte nella variante che mostra gli errori, e la console resta aperta finché qualcuno non ha letto. E il caso limite — capire perché non parte — ha una sezione dedicata nella guida: apri il prompt dei comandi, lancia il file a mano, leggi il messaggio prima che sparisca.
+La soluzione sta nel launcher: se l'avvio silenzioso non va a buon fine, il programma riparte nella variante che mostra gli errori, e la console resta aperta finché qualcuno non ha letto. E il caso limite (capire perché non parte) ha una sezione dedicata nella guida: apri il prompt dei comandi, lancia il file a mano, leggi il messaggio prima che sparisca.
 
 È la regola generale del progetto in miniatura: il terminale si nasconde quando non aggiunge niente, e riappare nell'unico momento in cui è l'unica cosa che conta.
 
 ## Cosa resta aperto
 
-Gli attriti non eliminati restano dichiarati. Senza firma digitale, ogni nuovo computer e ogni nuovo download rivede SmartScreen: la mitigazione è una pagina di documentazione, non una soluzione. Alcuni antivirus bloccano comunque il primo avvio, e la guida suggerisce un'eccezione o una sospensione temporanea — un compromesso detto ad alta voce. Nel caso peggiore dell'installazione, l'utente incontra comunque il messaggio di Microsoft prima che la guida prenda il sopravvento. E i file più grossi chiedono macchine con tanta memoria: il programma non gira esattamente dove il problema di partenza è più grande.
+Gli attriti non eliminati restano dichiarati. Senza firma digitale, ogni nuovo computer e ogni nuovo download rivede SmartScreen: la mitigazione è una pagina di documentazione, non una soluzione. Alcuni antivirus bloccano comunque il primo avvio, e la guida suggerisce un'eccezione o una sospensione temporanea: un compromesso detto ad alta voce. Nel caso peggiore dell'installazione, l'utente incontra comunque il messaggio di Microsoft prima che la guida prenda il sopravvento. E i file più grossi chiedono macchine con tanta memoria: il programma non gira esattamente dove il problema di partenza è più grande.
 
 Sono i costi della strada scelta, scritti accanto alla strada.
 
-**Un software è consegnato quando attraversa il computer di qualcun altro senza chiedergli di diventare tecnico — non quando funziona sulla tua macchina.**
+**Un software è consegnato quando attraversa il computer di qualcun altro senza chiedergli di diventare tecnico, non quando funziona sulla tua macchina.**
 
 ---
 
-*Bozza derivata dal repository dello strumento: launcher, interfaccia e guide sono la fonte di ogni dettaglio citato, e ogni voce della guida corrisponde a un punto documentato del percorso. I prodotti terzi menzionati — scanner e software di visualizzazione — compaiono come nella documentazione originale, cioè come formati e strumenti compatibili.*
+*Bozza derivata dal repository dello strumento: launcher, interfaccia e guide sono la fonte di ogni dettaglio citato, e ogni voce della guida corrisponde a un punto documentato del percorso. I prodotti terzi menzionati (scanner e software di visualizzazione) compaiono come nella documentazione originale, cioè come formati e strumenti compatibili.*
