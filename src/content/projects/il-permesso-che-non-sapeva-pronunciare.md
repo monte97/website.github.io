@@ -43,7 +43,7 @@ sections:
     summary: "La soluzione sbagliata non fallisce mai: è questo il problema"
   - n: "04"
     title: "Il salto"
-    summary: "Il permesso non è un attributo: è una relazione"
+    summary: "Il permesso come relazione, non come proprietà della persona"
   - n: "05"
     title: "L'ostacolo vero"
     summary: "Il sistema è vivo, e non c'è il permesso di sbagliare"
@@ -104,7 +104,7 @@ cta:
     Se la risposta è più di una, il problema non è il permesso che manca: è che il modello
     dei permessi è stato disegnato quando gli utenti erano pochi e si conoscevano tutti.
     Capire se si può cambiare senza fermare il sistema è un lavoro delimitato.
-thesis: "Un seam non è un ponte da attraversare una volta: è un posto dove si abita per un periodo — e saperci abitare senza fretta è la competenza, non la migrazione lampo."
+thesis: "Un seam è un posto dove si abita per un periodo, e poi si smonta: saperci stare senza fretta vale più di una migrazione lampo."
 ---
 
 ## La richiesta da dieci parole
@@ -125,9 +125,9 @@ Prima di cercare un colpevole, vale la pena guardare quei tre ruoli per quello c
 
 Quindici anni prima erano la scelta giusta, e non con occhio benevolo: con i criteri di allora. Cinque utenti, tutti interni, tutti conosciuti per nome. Chi entrava nella piattaforma aveva un mestiere — chi amministrava, chi progettava, chi eseguiva — e il mestiere bastava a decidere quello che poteva toccare. **Il permesso era una proprietà della persona perché le persone si conoscevano.** Non c'era bisogno di una relazione fra un utente e un cantiere: la relazione c'era già fuori dal software, si chiamava ufficio tecnico, e funzionava.
 
-C'è però una seconda ragione, ed è meno comoda della prima. Quel modello dei permessi era stato disegnato durante l'analisi dei requisiti da persone che non erano quelle che poi avrebbero usato il prodotto, e senza coinvolgere tutti quelli che andavano coinvolti. Non è una colpa: è una cosa che succede quasi sempre, e si paga anni dopo. Quando la richiesta del direttore lavori è arrivata, non stava scoprendo un limite del software — stava dicendo per la prima volta una cosa che nessuno aveva mai chiesto a chi di dovere.
+C'è però una seconda ragione, ed è meno comoda della prima. Quel modello dei permessi era stato disegnato durante l'analisi dei requisiti da persone che non erano quelle che poi avrebbero usato il prodotto, e senza coinvolgere tutti quelli che andavano coinvolti. Succede quasi sempre, e si paga anni dopo. Quando la richiesta del direttore lavori è arrivata, non stava scoprendo un limite del software — stava dicendo per la prima volta una cosa che nessuno aveva mai chiesto a chi di dovere.
 
-Per anni quella forma ha retto, e ha retto bene. Non è debito contratto con leggerezza: è una decisione presa quando il costo di quella forma era zero, e quel costo è cresciuto piano, un cantiere alla volta, senza mai presentare la fattura. Chi ha scelto tre ruoli globali ha fatto quello che si faceva. Il problema non è quello che hanno deciso: è che il mondo intorno è cambiato senza che nessuna singola modifica sembrasse giustificare una riscrittura.
+Per anni quella forma ha retto, e ha retto bene. È una decisione presa quando il costo di quella forma era zero, e quel costo è cresciuto piano, un cantiere alla volta, senza mai presentare la fattura. Chi ha scelto tre ruoli globali ha fatto quello che si faceva. Il problema non è quello che hanno deciso: è che il mondo intorno è cambiato senza che nessuna singola modifica sembrasse giustificare una riscrittura.
 
 ## Il ruolo che funziona sempre
 
@@ -225,7 +225,7 @@ La prima è quella per cui il lavoro è nato: si definiscono varianti mirate —
 
 La seconda è arrivata come conseguenza, e vale per un pubblico diverso: **si può ricostruire a posteriori chi vedeva cosa in un dato momento.** Con tre ruoli globali quella domanda non aveva risposta — l'unica ricostruzione possibile era chiedere a qualcuno se si ricordava. Con le relazioni la risposta è un'interrogazione. Non è una funzionalità che qualcuno aveva chiesto: è quello che succede quando i permessi smettono di essere una proprietà delle persone e diventano fatti registrati.
 
-C'è chi leggerà una migrazione durata così come un lavoro fatto lentamente. Lo capisco, e la mia risposta è che **la lentezza era il metodo, non il sintomo**: il vecchio raggiungibile finché è servito, il nuovo sotto osservazione finché non ha smesso di sorprendere, e il flag in mano a chi risponde dei sistemi vivi. Un seam non è un ponte da attraversare una volta: è un posto dove si abita per un periodo, e poi si smonta.
+C'è chi leggerà una migrazione durata così come un lavoro fatto lentamente. Lo capisco, e la mia risposta è che **la lentezza era il metodo, non il sintomo**: il vecchio raggiungibile finché è servito, il nuovo sotto osservazione finché non ha smesso di sorprendere, e il flag in mano a chi risponde dei sistemi vivi. Un seam è un posto dove si abita per un periodo, e poi si smonta.
 
 ---
 

@@ -134,7 +134,7 @@ openItems:
 cta:
   title: "Quanto costa, oggi, l'ultima installazione andata storta?"
   desc: "Se la risposta richiede più di trenta secondi, il costo esiste già: semplicemente non è scritto, quindi non è né a bilancio né in preventivo. Contarle è un lavoro delimitato."
-thesis: "La flessibilità che vendi in trattativa non è una feature: è una riga di manutenzione che qualcuno pagherà ogni mese — e finché non la scrivi da qualche parte, quel qualcuno non lo sa nessuno."
+thesis: "Ogni flessibilità concessa in trattativa è una riga di manutenzione che qualcuno pagherà ogni mese — e finché non la scrivi da qualche parte, quel qualcuno non lo sa nessuno."
 ---
 
 ## Il conto che nessuno teneva
@@ -177,7 +177,7 @@ La forma che ha retto è più semplice di quanto sembri.
 
 Un solo file YAML elenca le configurazioni supportate. Non è codice: è un elenco. Per ogni riga, quali moduli ci sono, come arrivano le utenze, cosa deve rispondere e a che livello.
 
-Quel file viene letto da **due esecutori diversi**. Il primo è uno smoke test in shell che non installa niente: serve dove non puoi installare, ambienti chiusi, macchine di qualcun altro, situazioni in cui hai il permesso di guardare e non di toccare. Il secondo è una suite pytest che porta su l'ambiente con Ansible e OpenTofu, da zero, e poi guarda cosa succede.
+Quel file viene letto da **due esecutori diversi**. Il primo è uno smoke test in shell che non installa niente: serve dove non puoi installare, ambienti chiusi, macchine di qualcun altro, situazioni in cui hai il permesso di guardare e non di toccare. Il secondo è una suite pytest che porta su l'ambiente con Ansible, da zero, e poi guarda cosa succede.
 
 La parte che conta non è nessuno dei due esecutori: è che **leggono la stessa fonte**. Due elenchi separati, uno per esecutore, sarebbero stati più semplici da scrivere e avrebbero divergito nel giro di qualche mese senza che nessuno se ne accorgesse — perché due elenchi che divergono non producono nessun errore, producono due verdi.
 
@@ -252,7 +252,7 @@ La frase che riassume tutto non l'ha detta un cliente: è uscita in una revision
 
 > *«Sembrava che un'installazione per un cliente nuovo fosse un progetto a sé stante, invece di dare un comando ed eseguire un applicativo, come ci si aspetterebbe.»*
 
-**La flessibilità che vendi in trattativa non è una feature: è una riga di manutenzione che qualcuno pagherà ogni mese — e finché non la scrivi da qualche parte, quel qualcuno non lo sa nessuno.**
+**Ogni flessibilità concessa in trattativa è una riga di manutenzione che qualcuno pagherà ogni mese — e finché non la scrivi da qualche parte, quel qualcuno non lo sa nessuno.**
 
 ---
 

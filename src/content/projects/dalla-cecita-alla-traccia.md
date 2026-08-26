@@ -121,7 +121,7 @@ Accanto al percorso del dato ne corre uno secondo, quello dei segnali:
 
 Il percorso dei segnali è deliberatamente parallelo a quello del dato e non lo attraversa: **nessun servizio parla direttamente con le destinazioni finali**. Cambiare backend è una modifica alla configurazione del collector, non ai nove servizi.
 
-C'è una forma di cecità che pesa più delle altre, e non è non vedere: è **non poter distinguere**.
+La cecità che pesa di più non riguarda il vedere: riguarda il **distinguere**.
 
 Quando un dato non arriva in fondo, ci sono due spiegazioni possibili — non c'era niente da elaborare, oppure qualcosa l'ha perso per strada — e dall'esterno sono **indistinguibili**. Un'API che restituisce poco ha lo stesso aspetto in entrambi i casi. Peggio: dopo un rilascio, quella stessa ambiguità diventa la domanda «abbiamo rotto qualcosa?», a cui nessuno sa rispondere senza andare a guardare a mano.
 
@@ -155,7 +155,7 @@ La verifica prima del codice non è prudenza generica: **vale quando l'alternati
 
 La verifica è costata **un paio d'ore**. Il codice che avrebbe evitato, invece, sarebbe rimasto per sempre in sei punti di passaggio, da leggere e mantenere a ogni modifica futura.
 
-È il calcolo che vale la pena esplicitare, perché non è ovvio quando si è di fretta: **il codice è una passività, non un patrimonio.** Ogni riga che non scrivi è una riga che non devi capire fra due anni. Due ore di controllo contro sei file da mantenere non è un buon affare: è l'unico affare.
+È il calcolo che vale la pena esplicitare, perché non è ovvio quando si è di fretta: **il codice è una passività, non un patrimonio.** Ogni riga che non scrivi è una riga che non devi capire fra due anni. Due ore di controllo contro sei file da mantenere per sempre: il conto si fa da solo.
 
 ## Configurazione
 
