@@ -1,648 +1,160 @@
 ---
-title: "CAPI Parte 2: Anatomia di Cluster API - Componenti e Meccanismi"
-date: 2025-08-05T09:30:00.000Z
-description: Guida completa al deployment e gestione di cluster Kubernetes utilizzando Cluster API (CAPI) per l'automazione dell'infrastruttura
-pillar: automatizzare
+title: "Il cluster è fermo in Provisioning. Chi sta aspettando?"
+seoTitle: "Cluster API: le CRD e il provisioning"
+date: 2025-10-23T09:00:00.000Z
+description: "Quattro CRD annidate e cinque fasi fra il kubectl apply e il cluster pronto. Sapere dove passa il controllo è l'unico modo per capire dove si è fermato."
+pillar: progettare
 category: kubernetes
+mode: explanation
 tags:
   - Kubernetes
-  - CAPI
   - Cluster API
-  - Infrastructure as Code
-  - DevOps
-  - Automazione
+  - CRD
+  - Proxmox
+  - Talos
 lang: it
-reviewed: human
+reviewed: false
 series: homelab-capi
 seriesOrder: 20
-reproducibility: true
 summary:
-  - label: "Contesto"
-    value: "Anatomia interna di CAPI: componenti specializzati e loro interazioni"
-    note: "Separazione netta fra management cluster e workload cluster"
-  - label: "Ampiezza"
-    value: "Core controller, bootstrap, control plane e infrastructure provider"
-    note: "Ogni famiglia ha implementazioni per kubeadm, Talos e Proxmox"
+  - label: "Problema"
+    value: "Un cluster resta in Provisioning e l'errore non è in un posto solo"
+    note: "Il controllo passa fra quattro controller: senza sapere dove, si cerca a caso"
   - label: "Scelta"
-    value: "Machine come infrastruttura immutabile: modificare significa sostituire"
-    note: "MachineSet e MachineDeployment gestiscono repliche e rolling update"
+    value: "Quattro CRD annidate — Cluster, MachineDeployment, MachineSet, Machine"
+    note: "Le stesse relazioni di Deployment, ReplicaSet e Pod, applicate alle macchine"
+  - label: "Strumento"
+    value: "Provider separati per infrastruttura, bootstrap e control plane"
+    note: "Cambiare da Proxmox a un altro provider non tocca le risorse Cluster e Machine"
   - label: "Risultato"
-    value: "Flusso end-to-end in cinque fasi, dal manifest al kubeconfig nel management cluster"
+    value: "Cinque fasi dal manifest al kubeconfig, ognuna con la sua risorsa da ispezionare"
 openItems:
-  - "Il reconciliation del Cluster Controller appare in pseudocodice: gli estratti spiegano la logica, non sono pensati per essere eseguiti"
-  - "Il flusso seguito è quello Proxmox e Talos: gli altri provider replicano lo stesso contratto con risorse proprie"
-  - "Alcune verifiche di bootstrap, come i log cloud-init sulla VM, richiedono accesso alla console oltre a `kubectl`"
-openNote: "Dove la trattazione resta sul generale."
+  - "Le CRD mostrate sono in `v1beta1`: campi e nomi possono cambiare nelle versioni successive dell'API"
+  - "I comandi di ispezione presuppongono il provider Proxmox: con un altro provider cambiano i nomi delle risorse di infrastruttura, non il metodo"
+  - "La teoria generale dei controller Kubernetes — informer, cache, work queue — non è trattata qui: si dà per acquisita"
+  - "Il flusso descritto è quello del percorso felice più i punti di blocco più frequenti: non è un catalogo completo dei modi in cui un provisioning può fallire"
 ---
 
-## Architettura dei Componenti CAPI
+`kubectl get cluster` dice `Provisioning`. È così da venti minuti.
 
-Cluster API implementa un'architettura modulare basata sul [pattern dei controller Kubernetes](https://kubernetes.io/docs/concepts/architecture/controller/), dove ogni componente ha responsabilità specifiche e ben definite. Questa separazione delle responsabilità garantisce estensibilità, manutenibilità e testabilità del sistema.
+La domanda non è cosa sia andato storto: è **dove guardare**. Perché in mezzo fra il `kubectl apply` e il cluster funzionante ci sono quattro controller diversi, ognuno con le proprie risorse e i propri log, e senza sapere a chi è passato il controllo si finisce a leggere i log sbagliati.
 
-### Management Cluster vs Workload Cluster
+Questo articolo è la mappa di quel percorso. Non serve a costruire niente: serve a sapere, quando si blocca, quale risorsa interrogare.
 
-La distinzione fondamentale in CAPI è la separazione tra il cluster che gestisce l'infrastruttura e i cluster che eseguono i workload applicativi.
+> La teoria generale dei controller Kubernetes — informer, cache locale, work queue, riconciliazione — è il tema di [Il meccanismo dietro kubectl apply](/blog/progettare/kubernetes/02-k8s-controller/). Qui si dà per acquisita.
 
-#### Management Cluster
+## Chi gestisce chi
 
-Il Management Cluster serve come **hub di controllo centrale** per l'infrastruttura Kubernetes. Le sue caratteristiche principali includono:
+Due ruoli, come [nella parte precedente](/blog/progettare/kubernetes/01-capi-part1-intro/): il **management cluster** ospita i controller e le risorse che descrivono la flotta, i **workload cluster** eseguono i carichi e non sanno di essere gestiti.
 
-**Responsabilità operative:**
-- Hosting dei [controller CAPI core](https://cluster-api.sigs.k8s.io/developer/architecture/controllers/)
-- Archiviazione delle Custom Resource Definitions che rappresentano lo stato desiderato
-- Orchestrazione del ciclo di vita dei Workload Cluster
-- Gestione delle credenziali di accesso all'infrastruttura
+![Il management cluster ospita i controller CAPI e i provider, e agisce sull'infrastruttura per portare i workload cluster nello stato dichiarato](/images/posts/kubernetes/02-capi-part2-internals/management-cluster.svg)
 
-**Requisiti tecnici:**
-- Cluster Kubernetes standard (può essere locale con [kind](https://kind.sigs.k8s.io/))
-- Accesso di rete ai provider di infrastruttura
-- Capacità computazionale limitata (principalmente per i controller)
-- High availability opzionale ma raccomandata per ambienti production
+Nel management cluster convivono quattro tipi di controller, e la separazione non è pedanteria: è ciò che permette di cambiare infrastruttura senza riscrivere le risorse.
 
-#### Workload Cluster
+- **Core controller** — gestisce `Cluster` e `Machine`, cioè le astrazioni indipendenti dalla piattaforma
+- **Infrastructure provider** — parla con Proxmox: crea VM, dischi, rete
+- **Bootstrap provider** — genera la configurazione che trasforma una macchina in un nodo
+- **Control plane provider** — si occupa dell'inizializzazione e della salute del control plane
 
-I Workload Cluster rappresentano i cluster Kubernetes di destinazione dove vengono deployate le applicazioni business. Caratteristiche distintive:
+Un cluster su Proxmox e uno su un cloud pubblico condividono le stesse risorse `Cluster` e `Machine`. Cambia solo chi le esegue.
 
-**Lifecycle gestito dichiarativamente:**
-```yaml
-apiVersion: cluster.x-k8s.io/v1beta1
-kind: Cluster
-metadata:
-  name: workload-cluster-01
-spec:
-  controlPlaneRef:
-    kind: TalosControlPlane
-    name: workload-cluster-01-control-plane
-  infrastructureRef:
-    kind: ProxmoxCluster 
-    name: workload-cluster-01-proxmox
-```
+## Le quattro CRD, e perché sono quattro
 
-Noi definiamo solamente le caratteristiche che desideriamo, in questo caso un control plane gestito tramite il controller `TalosControlPlane`, e il sistema si occupa di _come_ raggiungere questo stato.
+La gerarchia ricalca una che conoscete già: `Deployment → ReplicaSet → Pod`. Qui è `MachineDeployment → MachineSet → Machine`, con `Cluster` sopra a tutto.
 
-**Isolamento operativo:**
-- Nessun accesso diretto ai componenti CAPI
-- Gestione tramite `kubeconfig` generato automaticamente
-- Scaling e maintenance orchestrati dal Management Cluster
-
----
-
-## Componenti Core di CAPI
-
-![CAPI Core Components](/images/posts/kubernetes/02-capi-part2-internals/management-cluster.svg)
-
-### CAPI Core Controller
-
-Il [Core Controller](https://github.com/kubernetes-sigs/cluster-api/tree/main/controllers) rappresenta il cervello operativo di CAPI, responsabile dell'orchestrazione di alto livello del ciclo di vita dei cluster.
-
-#### Cluster Controller
-
-Il [Cluster Controller](https://cluster-api.sigs.k8s.io/developer/core/controllers/cluster) gestisce la risorsa `Cluster`, coordinando l'interazione tra infrastructure provider e control plane provider:
-
-**Funzioni principali:**
-- Validazione della configurazione del cluster
-- Orchestrazione della sequenza di provisioning
-- Gestione dello stato `controlPlaneReady` e `infrastructureReady`
-- Generazione del `kubeconfig` per l'accesso al workload cluster
-
-**Reconciliation logic:**
-```go
-// Pseudocodice del reconciliation loop
-func (r *ClusterReconciler) Reconcile(ctx context.Context, req ctrl.Request) {
-    // 1. Fetch cluster object
-    cluster := &clusterv1.Cluster{}
-    
-    // 2. Reconcile infrastructure
-    if !cluster.Status.InfrastructureReady {
-        return r.reconcileInfrastructure(ctx, cluster)
-    }
-    
-    // 3. Reconcile control plane  
-    if !cluster.Status.ControlPlaneReady {
-        return r.reconcileControlPlane(ctx, cluster)
-    }
-    
-    // 4. Generate kubeconfig
-    return r.reconcileKubeconfig(ctx, cluster)
-}
-```
-
-#### Machine Controller
-
-Il [Machine Controller](https://cluster-api.sigs.k8s.io/developer/core/controllers/machine) gestisce il ciclo di vita delle singole istanze di calcolo che compongono il cluster:
-
-**Responsabilità operative:**
-- Coordinamento con Infrastructure Provider per provisioning VM
-- Gestione del processo di bootstrap tramite Bootstrap Provider  
-- Monitoring dello stato dei nodi e recovery automatico
-- Implementazione delle politiche di sostituzione per oggetti Machine immutabili
-
-**Stati del ciclo di vita:**
-```yaml
-status:
-  phase: "Running"  # Pending, Provisioning, Provisioned, Running, Deleting, Failed
-  addresses:
-    - type: "InternalIP"
-      address: "192.168.1.100"
-  nodeRef:
-    kind: "Node"
-    name: "workload-cluster-01-control-plane-abc123"
-```
-
-### Bootstrap Provider
-
-Il "bootstrap provider" in Kubernetes Cluster API è un componente fondamentale che si occupa di inizializzare il primo nodo di un nuovo cluster Kubernetes, noto come "control plane node" o "master node". In parole semplici, è il motore che avvia il cluster. Esistono diverse implementazioni in base al "modo" in cui vogliamo che il cluster sia inizializzato
-
-#### Kubeadm Bootstrap Provider
-
-Il [provider kubeadm](https://github.com/kubernetes-sigs/cluster-api/tree/main/bootstrap/kubeadm) rappresenta l'implementazione di riferimento, utilizzando [kubeadm](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/) per l'inizializzazione dei nodi:
-
-**Generazione cloud-init:**
-```yaml
-apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
-kind: KubeadmConfig
-metadata:
-  name: worker-node-config
-spec:
-  joinConfiguration:
-    nodeRegistration:
-      kubeletExtraArgs:
-        cloud-provider: external
-  preKubeadmCommands:
-    - "swapoff -a"
-    - "modprobe br_netfilter"
-  postKubeadmCommands:
-    - "kubectl label node ${HOSTNAME} node-role.kubernetes.io/worker="
-```
-
-#### Talos Bootstrap Provider
-
-Il [Talos Bootstrap Provider](https://github.com/siderolabs/cluster-api-bootstrap-provider-talos) genera configurazioni specifiche per Talos Linux:
-
-**Configurazione Talos:**
-```yaml
-apiVersion: bootstrap.cluster.x-k8s.io/v1alpha3
-kind: TalosConfig  
-metadata:
-  name: talos-worker-config
-spec:
-  generateType: "join"
-  talosVersion: "v1.7.0"
-  configPatches:
-    - op: "add"
-      path: "/machine/network/interfaces"
-      value:
-        - interface: "eth0"
-          dhcp: true
-```
-
-### Control Plane Provider
-
-Il "control plane provider" in Kubernetes Cluster API è un componente chiave che si occupa della gestione del piano di controllo del cluster (control plane) dopo che il primo nodo è stato inizializzato. A differenza del bootstrap provider, che si limita ad avviare il primo nodo, il control plane provider gestisce l'intero ciclo di vita dei nodi del piano di controllo, garantendo che il cluster rimanga stabile e ad alta disponibilità.
-
-Come per il bootstrap provider, anche in questo caso abbiamo diverse implementazioni a seconda del caso d'uso.
-
-#### KubeadmControlPlane Provider
-
-Il [KubeadmControlPlane](https://cluster-api.sigs.k8s.io/tasks/automated-machine-management/control-plane/) provider utilizza kubeadm per gestire il control plane:
-
-**Configurazione dichiarativa:**
-```yaml
-apiVersion: controlplane.cluster.x-k8s.io/v1beta1
-kind: KubeadmControlPlane
-metadata:
-  name: cluster-control-plane
-spec:
-  replicas: 3
-  version: "v1.29.0"
-  kubeadmConfigSpec:
-    clusterConfiguration:
-      etcd:
-        local:
-          dataDir: "/var/lib/etcd"
-      networking:
-        serviceSubnet: "10.96.0.0/16"
-        podSubnet: "10.244.0.0/16"
-```
-
-**Rolling update strategy:**
-- Update sequenziali per mantenere quorum etcd
-- Validation dei componenti prima del prossimo nodo
-- Rollback automatico in caso di failure
-
-#### TalosControlPlane Provider
-
-Il [TalosControlPlane](https://github.com/siderolabs/cluster-api-control-plane-provider-talos) provider offre gestione nativa per Talos Linux:
-
-**Vantaggi specifici:**
-- Configurazione immutabile via API
-- Upgrade atomici senza downtime
-- Eliminazione di SSH e accesso shell
-- Integration nativa con [Talos API](https://www.talos.dev/v1.9/reference/api/)
-
-### Infrastructure Provider
-
-L'infrastructure provider è il componente che si occupa di dialogare con le risorse hardware, siano essere cloud o on-premise, con lo scopo di inizializzare le risorse che formeranno il cluster.
-
-A differenza del bootstrap provider e del control plane provider, che si concentrano specificamente sulla configurazione di Kubernetes, l'infrastructure provider si occupa di tutto ciò che sta "sotto" il cluster.
-
-
-
-#### Provider Pattern
-
-Tutti i provider implementano il [contratto standard CAPI](https://cluster-api.sigs.k8s.io/developer/providers/contracts/):
-
-**InfraCluster Resource:**
-```yaml
-apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
-kind: ProxmoxCluster
-spec:
-  controlPlaneEndpoint:
-    host: "192.168.1.100"
-    port: 6443
-  ipv4Config:
-    addresses: ["192.168.1.100-192.168.1.110"]
-    prefix: 24
-    gateway: "192.168.1.1"
-```
-
-**InfraMachine Resource:**
-```yaml
-apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
-kind: ProxmoxMachine
-spec:
-  sourceNode: "proxmox-node-01"
-  templateID: 8700
-  diskSize: "20G"
-  memoryMiB: 4096
-  numCores: 2
-```
-
-#### Proxmox Provider
-
-Il [Cluster API Provider Proxmox](https://github.com/ionos-cloud/cluster-api-provider-proxmox) fornisce integrazione nativa con Proxmox VE:
-
-**Funzionalità supportate:**
-- VM provisioning tramite [Proxmox API](https://pve.proxmox.com/wiki/Proxmox_VE_API)
-- Template cloning e customization
-- Network configuration automatica
-- Storage management per dischi VM
-- Integration con [cloud-init](https://cloud-init.io/) per bootstrap
-
----
-
-## Custom Resource Definitions (CRDs)
-
-Le [CRDs](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) rappresentano il linguaggio dichiarativo di CAPI, permettendo di definire infrastruttura Kubernetes attraverso manifest YAML standard.
-
-### Cluster CRD
-
-La risorsa `Cluster` serve come **entry point dichiarativo** per definire un cluster Kubernetes completo:
+**`Cluster`** è il punto d'ingresso dichiarativo. Non contiene la configurazione dell'infrastruttura: contiene i *riferimenti* a chi la gestisce.
 
 ```yaml
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: Cluster
 metadata:
   name: production-cluster
-  namespace: default
 spec:
   clusterNetwork:
     services:
       cidrBlocks: ["10.96.0.0/16"]
-    pods:  
+    pods:
       cidrBlocks: ["10.244.0.0/16"]
   controlPlaneEndpoint:
     host: "192.168.1.100"
     port: 6443
-  controlPlaneRef:
+  controlPlaneRef:                # chi gestisce il control plane
     apiVersion: controlplane.cluster.x-k8s.io/v1beta1
     kind: TalosControlPlane
     name: production-control-plane
-  infrastructureRef:
+  infrastructureRef:              # chi crea le macchine
     apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
     kind: ProxmoxCluster
     name: production-proxmox
 ```
 
-**Campi critici:**
-- `controlPlaneRef`: riferimento al provider che gestisce il control plane
-- `infrastructureRef`: riferimento al provider di infrastruttura
-- `clusterNetwork`: configurazione di rete del cluster
-- `controlPlaneEndpoint`: endpoint per l'accesso all'API server
+I due campi che contano sono `controlPlaneRef` e `infrastructureRef`. Sono il punto di innesto dei provider, ed è lì che si sostituisce Proxmox con qualcos'altro lasciando invariato tutto il resto del file.
 
-### Machine CRD
+**`Machine`** è l'astrazione di una singola istanza destinata a diventare un nodo. Una `Machine` non è una VM: è la dichiarazione che una VM deve esistere, con una certa versione di Kubernetes e una certa configurazione di bootstrap.
 
-La risorsa `Machine` rappresenta **l'astrazione di una singola istanza di calcolo** destinata a diventare un nodo Kubernetes:
+**`MachineSet`** garantisce che N `Machine` identiche esistano, esattamente come un `ReplicaSet` fa con i Pod.
 
-```yaml
-apiVersion: cluster.x-k8s.io/v1beta1
-kind: Machine
-metadata:
-  name: worker-node-01
-spec:
-  version: "v1.29.0"
-  bootstrap:
-    configRef:
-      apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
-      kind: TalosConfig
-      name: worker-bootstrap-config
-  infrastructureRef:
-    apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
-    kind: ProxmoxMachine
-    name: worker-node-01-proxmox
-status:
-  phase: "Running"
-  addresses:
-    - type: "InternalIP"
-      address: "192.168.1.101"
-  nodeRef:
-    kind: "Node"
-    name: "worker-node-01"
-```
+**`MachineDeployment`** aggiunge sopra la gestione degli aggiornamenti: cambiare la versione di Kubernetes dei worker significa modificare un campo e lasciare che le macchine vengano sostituite in modo controllato, non aggiornate sul posto.
 
-**Principio di immutabilità:**
-Le Machine sono progettate come [immutable infrastructure](https://www.hashicorp.com/resources/what-is-mutable-vs-immutable-infrastructure). Modifiche alla specifica richiedono sostituzione completa dell'istanza piuttosto che update in-place.
+**È questa la ragione dei quattro livelli**: separano *cosa deve esistere* da *quante ce ne devono essere* da *come si passa da una versione all'altra*. Confondere i tre significa tornare agli script.
 
-### MachineSet CRD
+## Dal manifest al cluster, in cinque fasi
 
-`MachineSet` implementa il pattern [ReplicaSet](https://kubernetes.io/docs/concepts/workloads/controllers/replicaset/) per gestire gruppi di Machine identiche:
+Cosa succede davvero dopo l'`apply`, e chi ha il controllo in ogni momento:
 
-```yaml
-apiVersion: cluster.x-k8s.io/v1beta1
-kind: MachineSet
-metadata:
-  name: worker-machines
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      cluster.x-k8s.io/cluster-name: "production-cluster"
-  template:
-    metadata:
-      labels:
-        cluster.x-k8s.io/cluster-name: "production-cluster"
-    spec:
-      version: "v1.29.0"
-      bootstrap:
-        configRef:
-          apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
-          kind: TalosConfig
-          name: worker-bootstrap-config
-```
+| Fase | Chi agisce | Cosa produce |
+|---|---|---|
+| 1. Creazione risorse | API server | gli oggetti esistono, nessuna infrastruttura ancora |
+| 2. Provisioning infrastruttura | Cluster controller → infrastructure provider → API Proxmox | le VM esistono |
+| 3. Bootstrap | Machine controller → bootstrap provider | la configurazione Talos è generata e consegnata |
+| 4. Inizializzazione control plane | control plane provider | il control plane risponde |
+| 5. Kubeconfig | core controller | le credenziali per parlare col nuovo cluster |
 
-**Funzionalità:**
-- Mantiene costante il numero di macchine desiderato
-- Sostiusce macchine in caso di fail  
-- Gestisce scale up/down
-- Configurazione basata su template
+Le fasi sono sequenziali e ogni passaggio di consegne è un punto in cui il processo può fermarsi. **Sapere in quale fase si è bloccato dice già quale controller interrogare**, ed è per questo che vale la pena tenerle distinte invece di pensare al provisioning come a un'unica operazione.
 
-### MachineDeployment CRD
+## Leggere lo stato quando si blocca
 
-`MachineDeployment` fornisce **update dichiarativi e rolling changes** per flotte di Machine:
+Tornando alla domanda dell'apertura. Tre livelli, nell'ordine in cui conviene guardarli.
 
-```yaml
-apiVersion: cluster.x-k8s.io/v1beta1
-kind: MachineDeployment
-metadata:
-  name: worker-deployment
-spec:
-  replicas: 5
-  selector:
-    matchLabels:
-      cluster.x-k8s.io/cluster-name: "production-cluster"
-  template:
-    # Machine template specification
-  strategy:
-    type: "RollingUpdate"
-    rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 1
-```
-
-**Rolling update process:**
-1. Crea un nuovo MachineSet con la configurazione aggiornata
-2. Scala il nuovo MachineSet in base alla strategia definita
-3. Riduci il vecchio MachineSet man mano che le nuove macchine diventano pronte
-4. Elimina il vecchio MachineSet al termine della migrazione
-
----
-
-## Reconciliation Loop e Control Theory
-
-### Principi del Control Loop
-
-CAPI implementa il [controller pattern](https://kubernetes.io/docs/concepts/architecture/controller/) di Kubernetes, basato sui principi della [teoria del controllo](https://en.wikipedia.org/wiki/Control_theory):
-
-```
-┌─────────────┐    ┌──────────────┐    ┌─────────────┐
-│   Desired   │───▶│  Controller  │───▶│   Actual    │
-│    State    │    │              │    │    State    │
-│  (Spec)     │    │              │    │  (Status)   │
-└─────────────┘    └──────────────┘    └─────────────┘
-       ▲                  ▲                     │
-       │                  │                     │
-       │            ┌──────────────┐            │
-       └────────────│  Feedback    │◀───────────┘
-                    │    Loop      │
-                    └──────────────┘
-```
-
-### Algoritmo di Reconciliation
-
-Ogni controller CAPI implementa la stessa logica base:
-
-```go
-func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-    // 1. Observe - Fetch current state
-    obj := &v1beta1.Object{}
-    if err := r.Get(ctx, req.NamespacedName, obj); err != nil {
-        return ctrl.Result{}, client.IgnoreNotFound(err)
-    }
-    
-    // 2. Analyze - Compare desired vs actual state  
-    if obj.DeletionTimestamp != nil {
-        return r.reconcileDelete(ctx, obj)
-    }
-    
-    // 3. Act - Take corrective action
-    return r.reconcileNormal(ctx, obj)
-}
-```
-
-### Idempotenza e Error Handling
-
-#### Principi di Idempotenza
-
-Le operazioni CAPI sono progettate per essere [idempotenti](https://en.wikipedia.org/wiki/Idempotence), permettendo esecuzione sicura multipla:
-
-**Esempi di operazioni idempotenti:**
-- Provisioning VM: verifica esistenza prima della creazione
-- Configuration update: apply solo se diversa dallo stato corrente  
-- Resource cleanup: ignora errori "not found" durante la cancellazione
-
-#### Gestione Errori e Retry
-
-CAPI implementa strategie di retry sofisticate per gestire errori transienti:
-
-```go
-// Exponential backoff per retry
-return ctrl.Result{
-    Requeue: true,
-    RequeueAfter: time.Duration(math.Pow(2, float64(retryCount))) * time.Second,
-}, nil
-```
-
-**Categorie di errori:**
-- **Transient errors**: network timeouts, temporary API unavailability
-- **Configuration errors**: invalid specifications, missing resources
-- **Infrastructure errors**: quota exceeded, hardware failures
-
----
-
-## Flusso End-to-End: Da Manifest a Cluster
-
-### Phase 1: Resource Creation
+**I controller sono vivi?** Se un provider non gira, tutto quello che dipende da lui resta fermo senza errori visibili sulle risorse.
 
 ```bash
-kubectl apply -f cluster-manifest.yaml
-```
-
-**Sequenza di eventi:**
-1. **API Server**: valida e persiste le risorse nel cluster
-2. **CAPI Core Controller**: rileva nuova risorsa `Cluster`
-3. **Admission Controllers**: applicano policies e defaults
-4. **Event Recording**: registra eventi per debugging
-
-### Phase 2: Infrastructure Provisioning
-
-```
-Cluster Controller ──→ Infrastructure Provider ──→ Proxmox API
-      │                        │                        │
-      │                        ▼                        ▼
-      │              ProxmoxCluster Created    VM Template Cloned
-      │                        │                        │
-      ▼                        ▼                        ▼
-  Status Update        Infrastructure Ready      VM Started
-```
-
-**Attività del Proxmox Provider:**
-- Clone VM template per ogni machine
-- Configure network interfaces
-- Inject cloud-init configuration
-- Start VM instances
-- Update ProxmoxMachine status
-
-### Phase 3: Bootstrap Process
-
-```
-Machine Controller ──→ Bootstrap Provider ──→ TalosConfig Generation
-      │                       │                        │
-      │                       ▼                        ▼
-      │              Cloud-Init Generated      Config Applied to VM
-      │                       │                        │
-      ▼                       ▼                        ▼
-  Bootstrap Ready       Node Joins Cluster    Kubernetes Ready
-```
-
-**Bootstrap Provider activities:**
-- Genera configurazioni node-specific
-- Genera token di join e certificati
-- Configura prametri kubelet
-- Setup container runtime
-- Applica policy di sicurezza
-
-### Phase 4: Control Plane Initialization
-
-Per control plane nodes, il processo include passaggi aggiuntivi:
-
-1. Primo nodo: inizializza cluster etcd 
-2. Genera certificati per il cluster  
-3. Avvia API server, controller-manager, scheduler
-4. Nodi successivi: join al cluster esistente
-5. Configura endpoint per il load balancer
-
-### Phase 5: Kubeconfig Generation
-
-Una volta che l'API server è accessibile viene generato, all'interno del management cluster, un secret che contiene il `kubeconfig` necessario per connettersi al workload cluster:
-
-```go
-// Controller genera kubeconfig
-kubeconfig := &corev1.Secret{
-    ObjectMeta: metav1.ObjectMeta{
-        Name: fmt.Sprintf("%s-kubeconfig", cluster.Name),
-        Namespace: cluster.Namespace,
-    },
-    Data: map[string][]byte{
-        "value": kubeconfigBytes,
-    },
-}
-```
-
-**Contenuto kubeconfig:**
-- Certificate Authority del cluster
-- Client certificate per admin access
-- API server endpoint configuration
-- Context configuration per `kubectl`
-
----
-
-## Debugging e Resource Inspection
-
-### Monitoring Controller Health
-
-```bash
-# Check controller pod status
 kubectl get pods -n capi-system
-kubectl get pods -n capx-system  # Infrastructure provider
+kubectl get pods -n capx-system                 # infrastructure provider
 kubectl get pods -n capi-bootstrap-talos-system
-
-# Review controller logs
-kubectl logs -n capi-system deployment/capi-controller-manager
-kubectl logs -n capx-system deployment/capx-controller-manager
 ```
 
-### Resource Status Inspection
+**Cosa dicono le risorse?** `describe` mostra le condizioni, che sono il posto in cui i controller scrivono perché non stanno procedendo.
 
 ```bash
-# Check cluster status
 kubectl get cluster production-cluster -o wide
-
-# Examine machine lifecycle
 kubectl get machines -A -o wide
-
-# Review events for troubleshooting
 kubectl describe cluster production-cluster
 kubectl get events --sort-by='.lastTimestamp' -A
 ```
 
-### Common Debugging Patterns
+**E se il blocco è a livello di infrastruttura**, si scende alle risorse del provider:
 
-**Infrastructure provisioning failures:**
 ```bash
-# Check infrastructure resources
 kubectl get proxmoxclusters,proxmoxmachines -A -o wide
 kubectl describe proxmoxmachine <machine-name>
-
-# Verify Proxmox connectivity
-curl -k -H "Authorization: PVEAPIToken=$PROXMOX_TOKEN=$PROXMOX_SECRET" \
-     "$PROXMOX_URL/version"
 ```
 
-**Bootstrap failures:**
+Se anche lì non emerge niente, restano i log del controller responsabile della fase in cui si è fermato:
+
 ```bash
-# Examine bootstrap configuration
-kubectl get talosconfigs -A -o yaml
-kubectl describe talosconfig <config-name>
-
-# Check cloud-init logs on VM
-# (requires VM console access)
-tail -f /var/log/cloud-init-output.log
+kubectl logs -n capi-system deployment/capi-controller-manager
+kubectl logs -n capx-system deployment/capx-controller-manager
 ```
 
----
+L'ordine non è casuale: si va dal generale al particolare, e ogni livello esclude una classe di cause.
 
-L'architettura modulare di CAPI, basata su controller specializzati e CRDs estensibili, fornisce un framework robusto per gestire cluster Kubernetes su qualsiasi infrastruttura. La comprensione di questi componenti e dei loro pattern di interazione è fondamentale per implementazioni production-ready.
+## Quanto vale saperlo
 
-Per approfondimenti sull'implementazione dei controller custom e l'estensione di CAPI, consultare la [Developer Guide](https://cluster-api.sigs.k8s.io/developer/guide/) e il [Kubebuilder Book](https://book.kubebuilder.io/).
+Un provisioning che si ferma senza una mappa diventa mezza giornata di tentativi, ed è mezza giornata che si ripete a ogni incidente perché nessuno ha imparato niente. **La differenza fra un'infrastruttura dichiarativa che funziona e una che il team teme è tutta qui: se quando si blocca sapete dove guardare, il modello dichiarativo è un guadagno; se non lo sapete, avete solo aggiunto uno strato fra voi e le macchine.**
 
-*La prossima parte esplorerà Talos Linux e la sua integrazione nativa con CAPI, mostrando come l'OS immutabile semplifichi la gestione dei nodi Kubernetes.*
+## Da provare adesso
+
+Su un cluster CAPI già in piedi, lanciate `kubectl get machines -A -o wide` e `kubectl describe cluster <nome>` anche quando va tutto bene. Leggere le condizioni di un cluster sano è il modo più veloce per riconoscere, la prossima volta, quale non lo è.
+
+La parte successiva entra in [Talos Linux](/blog/progettare/kubernetes/03-capi-part3-talos/) e nel motivo per cui un sistema operativo immutabile toglie di mezzo una classe intera di problemi sui nodi.

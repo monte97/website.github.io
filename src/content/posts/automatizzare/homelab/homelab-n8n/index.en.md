@@ -432,7 +432,7 @@ volumes:
 
 -----
 
-## 📚 Useful Resources
+## Useful Resources
 
   * **n8n Official Documentation**: The main resource for exploring advanced n8n features.
       * [n8n docs](https://docs.n8n.io/)

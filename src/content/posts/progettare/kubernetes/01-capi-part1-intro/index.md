@@ -2,7 +2,7 @@
 title: "Un cluster Kubernetes come risorsa Kubernetes"
 seoTitle: "Cluster API: cos'è e quando conviene"
 date: 2025-10-21T09:00:00.000Z
-description: "Lo script che aggiunge un nodo funziona finché non fallisce a metà. Cluster API rende il cluster una risorsa dichiarativa, gestita dagli stessi strumenti che usate già."
+description: "Lo script che aggiunge un nodo funziona finché non fallisce a metà. Cluster API rende il cluster una risorsa dichiarativa, con gli strumenti che usate già."
 pillar: progettare
 category: kubernetes
 mode: explanation

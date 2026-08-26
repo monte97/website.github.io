@@ -1,7 +1,8 @@
 ---
-title: "Kafka in Pratica 1: Architettura di un Flusso di Eventi"
+title: "Un evento non è una richiesta: è un fatto già successo"
+seoTitle: "Kafka: partizioni, chiavi e ordine"
 date: 2025-08-03T08:00:00.000Z
-description: Le fondamenta di Apache Kafka, dalla struttura delle partizioni al ruolo della chiave, con esempi pratici in Node.js e Python.
+description: "Partizioni, segmenti e chiavi: la struttura interna che decide cosa Kafka vi garantisce sull'ordine dei messaggi, e a quali condizioni."
 pillar: progettare
 category: kafka
 tags:
@@ -11,7 +12,8 @@ tags:
   - Architettura
   - Event Streaming
 lang: it
-reviewed: machine
+mode: explanation
+reviewed: false
 series: kafka
 seriesOrder: 10
 reproducibility: true
@@ -34,9 +36,6 @@ openItems:
   - "L'articolo copre partizioni, chiave e replicazione: consumer group e ribilanciamento non sono trattati qui"
 openNote: "Dove la garanzia d'ordine si ferma e cosa le fondamenta lasciano fuori."
 ---
-Foto di <a href="https://unsplash.com/it/@jonflobrant?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Jon Flobrant</a> su <a href="https://unsplash.com/it/foto/specchio-dacqua-tra-gli-alberi-sotto-il-cielo-nuvoloso-rB7-LCa_diU?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>
-      
-
 ## Da Chiamate Sincrone a Flussi di Eventi
 
 Nei sistemi distribuiti, la comunicazione sincrona tra componenti introduce un accoppiamento che scala male. Quando ogni servizio deve chiamare e attendere un altro, una latenza di rete o un servizio in sovraccarico si propagano a catena. Il costo cresce in modo non lineare con il numero di componenti.
@@ -188,11 +187,11 @@ async function main() {
 }
 ```
 
-### Deep Dive: `async/await` e il Loop di Produzione
+### Due dettagli del producer che vale la pena conoscere
 
 Due aspetti di questo codice meritano attenzione:
 
-1.  **`await producer.send(...)`**: A differenza di librerie che usano callback o fire-and-forget, kafkajs espone un'API basata su **Promise**. L'`await` sospende l'esecuzione della funzione `async` fino a quando il broker non conferma la ricezione del messaggio. Questo rende il codice sequenziale e leggibile, ma significa anche che ogni messaggio viene inviato uno alla volta. Per scenari ad alto throughput, kafkajs supporta il batching tramite `producer.sendBatch()`.
+1.  **`await producer.send(...)` invia un messaggio alla volta.** L'attesa della conferma del broker rende il codice leggibile, ma serializza le scritture: su throughput alti serve `producer.sendBatch()`.
 
 > **Nota**: kafkajs non riceve aggiornamenti significativi dal 2023 ed è considerato non mantenuto. Confluent ha rilasciato un client ufficiale JavaScript ([`@confluentinc/kafka-javascript`](https://github.com/confluentinc/confluent-kafka-javascript)) basato su librdkafka. Per nuovi progetti è consigliabile valutare questa alternativa.
 
@@ -261,7 +260,7 @@ finally:
     consumer.close()  # Rilascia le partizioni e committa gli offset
 ```
 
-### Deep Dive: il Ciclo di Polling e la Chiusura Pulita
+### Perché il consumer chiede invece di ricevere
 
 Il pattern del consumer merita un'analisi più attenta:
 
@@ -273,17 +272,17 @@ Il pattern del consumer merita un'analisi più attenta:
 
 ---
 
-## Conclusioni
+## Cosa vi garantisce davvero, e a quali condizioni
 
-Le fondamenta di Apache Kafka coperte in questo articolo:
+Kafka non promette che i messaggi arrivino in ordine. Promette che **i messaggi con la stessa chiave arrivino in ordine fra loro**, e solo finché il numero di partizioni non cambia. È una garanzia più stretta di quella che la gente assume, ed è quella su cui si progetta.
 
-1. **Il modello a eventi**: la differenza tra comandi sincroni e fatti immutabili, e perché Kafka è una piattaforma di event streaming, non una coda
-2. **Partizioni e segmenti**: la struttura interna che abilita retention efficiente, ricerca rapida tramite indici memory-mapped e ottimizzazione zero-copy
-3. **Il ruolo della chiave**: come il partitioner garantisce ordinamento per chiave (a patto che il numero di partizioni resti costante)
-4. **Replicazione e ISR**: il modello leader-follower, la semantica di `acks` (con `acks=all` come default da Kafka 3.0) e il ruolo di `min.insync.replicas`
-5. **Implementazione pratica**: producer Node.js con kafkajs e consumer Python con confluent-kafka, entrambi con serializzazione Avro via Schema Registry
+Le altre due che contano stanno nella stessa forma: la retention è economica perché si cancellano segmenti interi e non record, e la durabilità dipende da `acks` insieme a `min.insync.replicas` — non da uno dei due da solo.
 
-Nel prossimo articolo della serie esploreremo i **Consumer Group**, le strategie di commit degli offset e i pattern per gestire il ribilanciamento delle partizioni.
+**Detto a chi non scrive codice: passare agli eventi non rende il sistema più veloce, lo rende meno accoppiato.** Un servizio lento smette di rallentare quelli che lo chiamano, e un servizio fermo smette di fermarli — il che significa che un guasto su un pezzo non diventa un guasto sul prodotto.
+
+Il prezzo lo si paga altrove, ed è il tema del resto della serie: l'ordine vale solo per chiave, lo stato del consumer diventa un problema vostro, e il debug attraversa un componente in più.
+
+Il [prossimo articolo](/blog/progettare/kafka/02-schema-registry-avro-apicurio/) parte proprio da lì: cosa succede quando due servizi non sono d'accordo su cosa contiene un messaggio.
 
 ---
 

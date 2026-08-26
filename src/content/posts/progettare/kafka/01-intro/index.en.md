@@ -15,8 +15,6 @@ reviewed: machine
 series: kafka
 seriesOrder: 10
 ---
-Photo by <a href="https://unsplash.com/@jonflobrant?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Jon Flobrant</a> on <a href="https://unsplash.com/photos/mirror-of-water-between-trees-under-cloudy-sky-rB7-LCa_diU?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash">Unsplash</a>
-
 ## From Synchronous Calls to Event Streams
 
 In distributed systems, synchronous communication between components introduces coupling that does not scale well. When every service must call and wait for another, a network hiccup or an overloaded service propagates failures down the chain. The cost grows non-linearly with the number of components.
