@@ -45,7 +45,7 @@ specs:
     value: ".NET 9 · .NET MAUI 9 nativa · CommunityToolkit.Mvvm · ASP.NET Core Minimal API"
   - label: "Target"
     value: "Android e iOS, stesso codice applicativo"
-    note: "Single project multi-target: cambiano solo build, signing e manifest"
+    note: "Single project multi-target: cambiano solo build, signing e manifest. Provato in esecuzione su iOS, compilato per Android"
   - label: "Dati"
     value: "Interamente mock, generati in locale da un simulatore in-process"
   - label: "Fuori scope"
