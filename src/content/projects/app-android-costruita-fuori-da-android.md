@@ -150,7 +150,7 @@ beforeAfter:
     - label: "Il rischio"
       before: "Errori di logica scoperti tardi, perché provarli costa"
       after: "Spostato sull'integrazione dei venti pezzi, che resta da fare"
-  caption: "G0 · il riassunto in quattro righe"
+  caption: "il riassunto in quattro righe"
   note: >
     L'ultima riga è quella che rende onesto il quadro: questa forma non elimina il
     rischio, lo sposta da dove costava di più a dove si può guardare tutto insieme.
@@ -177,7 +177,7 @@ matrix:
     full: "il modulo lo contiene"
     partial: "in parte"
     empty: "assente"
-  caption: "G1 · l'ultima colonna è quasi tutta vuota"
+  caption: "l'ultima colonna è quasi tutta vuota"
   note: >
     L'unica riga con la terza colonna piena è quella che ha bisogno della fotocamera, e
     quel modulo porta la piattaforma nel proprio nome. È la sola eccezione su venti, ed è

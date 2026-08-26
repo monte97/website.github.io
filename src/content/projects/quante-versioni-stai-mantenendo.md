@@ -86,7 +86,7 @@ beforeAfter:
     - label: "La domanda in trattativa"
       before: "«Si può fare?»"
       after: "«Quale riga aggiungiamo, e chi la mantiene?»"
-  caption: "G0 · il riassunto in tre righe"
+  caption: "il riassunto in tre righe"
   note: >
     La terza riga è l'unica che conta per chi paga: le prime due sono il lavoro tecnico
     che serve a rendere possibile quel cambio di domanda.

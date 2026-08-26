@@ -123,7 +123,7 @@ timeline:
         Un seam non è una struttura permanente: quando la terza implementazione è
         l'unica che risponde, le altre due e il punto di controllo che le sceglieva
         diventano codice da togliere.
-  caption: "G1 · le quattro fasi del seam"
+  caption: "le quattro fasi del seam"
   note: >
     La fase che costa e non si vede è la seconda: la replica del comportamento vecchio
     sta in meno di duecento righe contro le ottocento del motore nuovo, e non produce
