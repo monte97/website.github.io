@@ -1,5 +1,6 @@
 ---
 title: "Zanzibar per Tutti: Concetti e Modello di Autorizzazione"
+seoTitle: "Zanzibar: tuple, DSL e le tre domande"
 date: 2026-03-07T09:00:00.000Z
 description: "Da RBAC a Zanzibar: come funziona il modello a tuple di OpenFGA, il DSL per le relazioni, e le tre domande fondamentali dell'autorizzazione."
 pillar: verificare
@@ -63,7 +64,7 @@ Il problema emerge quando le risorse hanno relazioni tra loro. In un sistema di 
 
 Con RBAC, ogni relazione diventa un ruolo. Tre cartelle con cinque documenti ciascuna e tre livelli di accesso (owner, editor, viewer) producono già decine di ruoli. Aggiungi team, organizzazioni e condivisione per link, e il numero di ruoli cresce in modo combinatorio.
 
-Nell'[articolo su OPA]({{< ref "/blog/progettare/keycloak/05-keycloak-opa/" >}}) abbiamo visto come separare autenticazione e autorizzazione usando policy Rego. OPA risolve il problema della *logica* di autorizzazione (regole flessibili, deny-by-default, dati esterni), ma il modello resta basato su attributi: l'input contiene ruoli, proprietario della risorsa, e condizioni da valutare. Le relazioni tra risorse non sono un concetto nativo.
+Nell'[articolo su OPA](/blog/progettare/keycloak/05-keycloak-opa/) abbiamo visto come separare autenticazione e autorizzazione usando policy Rego. OPA risolve il problema della *logica* di autorizzazione (regole flessibili, deny-by-default, dati esterni), ma il modello resta basato su attributi: l'input contiene ruoli, proprietario della risorsa, e condizioni da valutare. Le relazioni tra risorse non sono un concetto nativo.
 
 Serve un modello diverso: uno che tratti le relazioni come dati di prima classe.
 
@@ -509,5 +510,5 @@ Il codice completo del setup minimale e del modello VaultDrive è disponibile ne
 - [OpenFGA su CNCF](https://www.cncf.io/projects/openfga/)
 
 **Articoli correlati:**
-- [Prossimo articolo: OpenFGA + Keycloak]({{< ref "/blog/verificare/openfga/02-openfga-keycloak/" >}})
-- [Autorizzazione con OPA e Keycloak]({{< ref "/blog/progettare/keycloak/05-keycloak-opa/" >}})
+- [Prossimo articolo: OpenFGA + Keycloak](/blog/verificare/openfga/02-openfga-keycloak/)
+- [Autorizzazione con OPA e Keycloak](/blog/progettare/keycloak/05-keycloak-opa/)

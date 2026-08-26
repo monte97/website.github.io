@@ -1,5 +1,6 @@
 ---
 title: "OpenFGA + Keycloak: Identità e Permessi si Parlano"
+seoTitle: "OpenFGA + Keycloak: JWT e sincronizzazione"
 date: 2026-03-21T09:00:00.000Z
 description: "Come integrare OpenFGA con Keycloak: sincronizzazione utenti, JWT come ponte, contextual tuples e strategie per tenere identità e autorizzazione allineate."
 pillar: verificare
@@ -41,13 +42,13 @@ caseStudy:
     nato per questo.
 ---
 
-Un identity provider gestisce utenti, ruoli e login. Un authorization engine decide chi può fare cosa su quale risorsa. Il problema non è farli funzionare: è farli parlare senza che uno invada il territorio dell'altro. Nell'[articolo precedente]({{< ref "/blog/verificare/openfga/01-zanzibar-concetti/" >}}) abbiamo costruito un modello di autorizzazione relationship-based con OpenFGA. Ora lo colleghiamo a Keycloak, usando [VaultDrive](https://github.com/monte97/VaultDrive) come progetto di riferimento: una demo costruita per questa serie con setup containerizzato e codice riproducibile.
+Un identity provider gestisce utenti, ruoli e login. Un authorization engine decide chi può fare cosa su quale risorsa. Il problema non è farli funzionare: è farli parlare senza che uno invada il territorio dell'altro. Nell'[articolo precedente](/blog/verificare/openfga/01-zanzibar-concetti/) abbiamo costruito un modello di autorizzazione relationship-based con OpenFGA. Ora lo colleghiamo a Keycloak, usando [VaultDrive](https://github.com/monte97/VaultDrive) come progetto di riferimento: una demo costruita per questa serie con setup containerizzato e codice riproducibile.
 
 ---
 
 ## Separazione delle responsabilità
 
-Se hai letto l'[articolo introduttivo su Keycloak]({{< ref "/blog/progettare/keycloak/01-keycloak-intro/" >}}) o quello su [Authorization Code + PKCE]({{< ref "/blog/progettare/keycloak/02-authorization-code-pkce/" >}}), il principio è familiare: Keycloak autentica, qualcun altro autorizza. Nell'articolo su OPA il "qualcun altro" era un policy engine con regole Rego. Qui il modello cambia: non sono più policy dichiarative che valutano un input JSON, ma relazioni tra entità memorizzate in un grafo.
+Se hai letto l'[articolo introduttivo su Keycloak](/blog/progettare/keycloak/01-keycloak-intro/) o quello su [Authorization Code + PKCE](/blog/progettare/keycloak/02-authorization-code-pkce/), il principio è familiare: Keycloak autentica, qualcun altro autorizza. Nell'articolo su OPA il "qualcun altro" era un policy engine con regole Rego. Qui il modello cambia: non sono più policy dichiarative che valutano un input JSON, ma relazioni tra entità memorizzate in un grafo.
 
 | Componente | Responsabilità |
 |---|---|
@@ -577,9 +578,9 @@ Nel prossimo articolo vedremo come gestire la multi-tenancy: più organizzazioni
 - [Keycloak - Client Scopes](https://www.keycloak.org/docs/latest/server_admin/#_client_scopes)
 
 **Articoli correlati:**
-- [Articolo precedente: Zanzibar e i concetti fondamentali]({{< ref "/blog/verificare/openfga/01-zanzibar-concetti/" >}})
-- [Autorizzazione granulare con OPA e Keycloak]({{< ref "/blog/progettare/keycloak/05-keycloak-opa/" >}})
-- [Keycloak: introduzione]({{< ref "/blog/progettare/keycloak/01-keycloak-intro/" >}})
+- [Articolo precedente: Zanzibar e i concetti fondamentali](/blog/verificare/openfga/01-zanzibar-concetti/)
+- [Autorizzazione granulare con OPA e Keycloak](/blog/progettare/keycloak/05-keycloak-opa/)
+- [Keycloak: introduzione](/blog/progettare/keycloak/01-keycloak-intro/)
 
 ---
 

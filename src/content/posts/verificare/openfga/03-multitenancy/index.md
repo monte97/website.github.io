@@ -1,5 +1,6 @@
 ---
 title: "Multitenancy con OpenFGA: Isolamento Senza Moltiplicare la Complessità"
+seoTitle: "OpenFGA multitenancy: isolamento nel grafo"
 date: 2026-04-04T09:00:00.000Z
 description: "Due strategie per multitenancy con OpenFGA: store-per-tenant e type-per-tenant. Come ottenere isolamento strutturale senza WHERE tenant_id ovunque."
 pillar: verificare
@@ -39,7 +40,7 @@ mode: explanation
 
 Ogni applicazione SaaS, prima o poi, arriva allo stesso punto: il primo cliente funziona, il secondo pure, ma al terzo emerge che l'isolamento tra tenant non è un dettaglio. È l'architettura stessa. Con RBAC tradizionale, la soluzione tipica è un `WHERE tenant_id = ?` in ogni query, un middleware che inietta il contesto del tenant, e il rischio costante che un bug faccia trapelare dati da un'organizzazione all'altra. Con ReBAC il problema si affronta diversamente: l'isolamento non è applicativo, ma **strutturale**. Se un utente non ha relazioni con un'organizzazione, non può accedere a nulla al suo interno. Nessun `WHERE` necessario.
 
-Le due strategie per gestire il multitenancy con OpenFGA partono dai concetti introdotti nel [primo articolo]({{< ref "/blog/verificare/openfga/01-zanzibar-concetti/" >}}) della serie.
+Le due strategie per gestire il multitenancy con OpenFGA partono dai concetti introdotti nel [primo articolo](/blog/verificare/openfga/01-zanzibar-concetti/) della serie.
 
 ---
 
@@ -432,6 +433,6 @@ Nel prossimo articolo della serie vedremo come gestire gerarchie profonde e quer
 - [OpenFGA - Configuration Language (DSL)](https://openfga.dev/docs/configuration-language)
 
 **Articoli correlati:**
-- [Articolo precedente: Zanzibar e i concetti fondamentali]({{< ref "/blog/verificare/openfga/01-zanzibar-concetti/" >}})
-- [OpenFGA + Keycloak]({{< ref "/blog/verificare/openfga/02-openfga-keycloak/" >}})
-- [Prossimo articolo: Gerarchie profonde e query inverse]({{< ref "/blog/verificare/openfga/04-gerarchie-query/" >}})
+- [Articolo precedente: Zanzibar e i concetti fondamentali](/blog/verificare/openfga/01-zanzibar-concetti/)
+- [OpenFGA + Keycloak](/blog/verificare/openfga/02-openfga-keycloak/)
+- [Prossimo articolo: Gerarchie profonde e query inverse](/blog/verificare/openfga/04-gerarchie-query/)
