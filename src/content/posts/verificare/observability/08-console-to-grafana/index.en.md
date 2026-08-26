@@ -1,5 +1,6 @@
 ---
 title: "From console.log to Grafana: Structured and Centralized Logging with Node.js"
+seoTitle: "console.log to Grafana with Node.js"
 date: 2026-02-10T09:00:00.000Z
 description: How to move from console.log to a structured, centralized logging system using Pino, OpenTelemetry, Loki, and Grafana on Node.js — in three incremental steps.
 pillar: verificare

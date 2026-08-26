@@ -1,5 +1,6 @@
 ---
 title: "Micro-frontends in Vue 3 with Module Federation: Shell, Contract, and Independent Deploy"
+seoTitle: "Vue 3 micro-frontends: Module Federation"
 date: 2026-03-14T09:00:00.000Z
 description: "Module Federation in Vue 3 with Vite: shell/remote contract, singleton dependencies, and independent per-team deployments."
 pillar: progettare

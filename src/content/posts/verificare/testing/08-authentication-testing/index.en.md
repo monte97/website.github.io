@@ -1,5 +1,6 @@
 ---
 title: "Playwright: Authentication Testing with storageState and Keycloak"
+seoTitle: "Playwright: storageState and Keycloak"
 date: 2026-03-04T09:00:00.000Z
 description: "How to handle authentication in E2E tests: storageState to avoid repeated logins, multiple roles, session management, and composition with mocks"
 pillar: verificare

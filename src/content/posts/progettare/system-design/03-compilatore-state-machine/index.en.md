@@ -1,7 +1,8 @@
 ---
 title: "What the Compiler Generates When You Write a Where() — State Machines, Iterators, and IL"
+seoTitle: "LINQ: state machines, iterators and IL"
 date: 2026-03-07T08:00:00.000Z
-description: Behind every .Where() lives a compiler-generated state machine. We explore extension methods, lambdas, yield return, and the Enumerable.Where specializations in .NET 8.
+description: "Behind every .Where() lives a compiler-generated state machine. In .NET 8 Enumerable.Where uses specialized iterators, and a cast turns them off."
 pillar: progettare
 category: system-design
 tags:

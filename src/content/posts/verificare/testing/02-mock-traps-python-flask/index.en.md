@@ -1,7 +1,8 @@
 ---
 title: "Your Flask service is untestable (and mocks aren't the problem)"
+seoTitle: "Flask and mocks: four testing traps"
 date: 2026-02-24T11:00:00.000Z
-description: "88 tests, three Flask services, mutation score at 19%. The problem isn't in the mocking — it's in code that creates Kafka and MongoDB connections at import time."
+description: "88 tests, three Flask services, mutation score at 19%. The problem isn't the mocking: it's code that opens Kafka and MongoDB connections at import time."
 pillar: verificare
 category: testing
 tags:
