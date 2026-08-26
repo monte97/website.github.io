@@ -106,7 +106,7 @@ cta:
     Se la risposta richiede di aprire i log di quattro servizi e incrociarli a mano, il
     problema non è il guasto: è che «non è arrivato niente» e «l'abbiamo perso» hanno lo
     stesso aspetto. Strumentare il percorso critico è un lavoro delimitato.
-thesis: "La verifica prima del codice non è prudenza generica: vale quando l'alternativa è codice permanente in punti di passaggio. Un'ora di controllo contro sei file da mantenere."
+thesis: "La verifica prima del codice non è prudenza generica: vale quando l'alternativa è codice permanente in punti di passaggio. Un paio d'ore di controllo contro sei file da mantenere."
 ---
 
 ## Il quadro
@@ -151,7 +151,7 @@ La strada prevista era propagare il contesto a mano su ogni confine Kafka, da su
 
 Le tracce sono risultate collegate attraverso i topic senza alcun intervento sul codice: gli header di contesto viaggiano fuori dal payload, quindi gli schemi dei messaggi non sono stati toccati e i consumatori non strumentati li ignorano. Sei modifiche pianificate non sono state fatte — e non perché siano state rinviate, ma perché la verifica ha mostrato che non servivano. Il costo di quella verifica è stato una traccia guardata in faccia; il costo di non farla sarebbe stato codice di trasporto sparso in sei file, da mantenere per sempre.
 
-La verifica prima del codice non è prudenza generica: **vale quando l'alternativa è codice permanente in punti di passaggio**. Un'ora di controllo contro sei file da mantenere.
+La verifica prima del codice non è prudenza generica: **vale quando l'alternativa è codice permanente in punti di passaggio**. Un paio d'ore di controllo contro sei file da mantenere.
 
 La verifica è costata **un paio d'ore**. Il codice che avrebbe evitato, invece, sarebbe rimasto per sempre in sei punti di passaggio, da leggere e mantenere a ogni modifica futura.
 
