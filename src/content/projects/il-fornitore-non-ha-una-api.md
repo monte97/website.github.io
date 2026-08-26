@@ -253,4 +253,4 @@ E c'è una conseguenza che vale più della comodità: **i dati non vengono prodo
 
 ---
 
-*Il caso è reale. Sono stati rimossi i nomi del costruttore, del cliente e dei modelli coinvolti; tempi e scene sono compressi e ricostruiti. Restano fedeli il vincolo sul primo accesso, il riordino silenzioso delle risposte, e il fatto che la decisione di non toccare il canale di configurazione sia stata presa prima di guardarci dentro.*
+*Il caso è reale. Sono stati rimossi i nomi del costruttore, del cliente e dei modelli coinvolti; tempi e scene sono compressi e ricostruiti. Restano fedeli il vincolo sul primo accesso, il riordino silenzioso delle risposte, e il perimetro dichiarato nel documento consegnato.*
