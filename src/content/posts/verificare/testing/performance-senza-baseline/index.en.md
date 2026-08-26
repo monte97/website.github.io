@@ -1,116 +1,110 @@
 ---
 title: "A thousand requests per second means nothing"
+seoTitle: "Performance: a number without a baseline"
 date: 2025-07-26T08:00:00.000Z
-description: "A load test that passes does not mean the system holds. Without a baseline and without project context, a performance number is true and useless."
+description: "A load test that passes does not mean the system holds: without a baseline and without project context, a performance number is true and useless."
 pillar: verificare
 category: testing
+mode: explanation
 tags:
   - Performance Testing
   - Monitoring
   - SRE
   - Metrics
-  - Observability
 lang: en
 reviewed: false
 series: performance-engineering
 seriesOrder: 10
-mode: explanation
+summary:
+  - label: "Problem"
+    value: "The load test passes and users complain anyway"
+    note: "The number is correct: what is missing is the reference that makes it readable"
+  - label: "Choice"
+    value: "Baseline before the tests, acceptance criteria from the business"
+    note: "No tool knows which latency is acceptable for your product"
+  - label: "Real cost"
+    value: "A scenario that does not resemble real usage produces numbers that are true and useless"
+  - label: "Result"
+    value: "Test types stop being a taxonomy and become a choice"
+openItems:
+  - "A baseline ages: code changes, data changes, infrastructure changes, and a comparison against a six-month-old measurement says very little"
+  - "Defining acceptance criteria needs someone who knows the business value of the feature: it is not a decision the development team can make alone"
+  - "This article covers neither tools nor configuration: k6, JMeter, Gatling and Locust have their own constraints that change the choices"
+  - "On a system already in production the baseline can be read from real traffic, and that beats any simulation: this is about the case where that traffic does not exist yet"
 ---
 
-<!-- EN: scissione meccanica dell'articolo originale, 2026-08-25.
-     Il testo e' quello di prima: l'adattamento all'italiano riscritto e' un lavoro a parte. -->
+The load test passed. A thousand requests per second, no errors, 180 milliseconds average latency. The report is green, ship it.
 
+Two weeks later support collects the same three complaints: "the export is glacial", "you can't work at month-end", "it won't load on mobile".
 
-## Introduction
+Nobody measured wrong. A thousand requests per second is a correct number. The problem is that it is not **a measurement**: it is a number without the reference that would make it readable. We do not know whether it is better or worse than yesterday, whether it is enough for real traffic, or whether those thousand requests resemble anything users actually do.
 
-> What, how, why
+This article is about the work that comes before you launch the test. The next one, [RED tells you when it broke, USE tells you why](/blog/verificare/testing/red-use-quando-e-perche/), is about reading the numbers once you have them.
 
-Performance testing is a fundamental activity in the software development lifecycle, but often underestimated or performed suboptimally. In this guide, we will explore the theoretical and practical foundations needed to approach performance analysis effectively, starting from definition and objectives, up to the most effective measurement methods.
+## A number on its own is not a measurement
 
-### Definition
+A measurement is a number **plus a reference**. Without a reference you have statistics, not diagnostics.
 
-Performance testing is the process aimed at determining the responsiveness, throughput, reliability and scalability of a system under a given workload. It's important to note that the "system" refers to the interaction of different components, and not to a single isolated part. Sometimes, a performance issue could simply be resolved by moving the problematic block to another subsystem.
+The reference comes in three kinds, in decreasing order of reliability:
 
-### Why do we measure?
+- **Real traffic**, if the system is already in production. This is the best one: you are not simulating it, you are observing it.
+- **A baseline**, meaning the *as-is* measurement taken deliberately before changing anything. It serves two purposes: telling you whether an optimisation worked, and catching a future regression.
+- **A requirement**, when one exists. It rarely exists in a usable form.
 
-Non-performant applications generally cannot perform the function for which they were designed or intended. Performance testing represents an additional step beyond operational acceptance tests, which only verify if the application works or not.
+With none of the three, the result of a performance test is not black or white: it has to be interpreted, and interpreting without a reference means guessing which number should worry you.
 
-But what do we mean by "performance"? An application is performant when it allows a user to perform a given task without perceiving delays or irritation. Measuring performance allows us to:
+**The baseline is taken first**, not after the first problem. Taken afterwards it is contaminated: you are measuring a system somebody has already touched in a hurry, and you no longer know what you are comparing.
 
-* Be certain we are ready for release.
-* Verify infrastructure adequacy: do we have enough resources? Does the system remain stable?
-* Evaluate different deployment modes: are we certain the more expensive configuration is really worth it?
-* Define optimizations: it makes no sense to optimize elements that don't actually impact the metrics of interest.
+## No tool knows what "acceptable" means
 
-### What can we measure?
+The second half of the problem is that the number, even with a reference, does not tell you whether it is fine.
 
-The key metrics we can measure include:
+No tool can. k6 does not know that your p99 on the export can sit at eight seconds because it is an operation the user kicks off before going for coffee, while three hundred milliseconds on the search-as-you-type is already too much. That distinction lives neither in the code nor in the infrastructure: it lives in the product.
 
-* Availability
-* Response Time
-* Throughput
-* Utilization
-* Scalability
+Hence the uncomfortable part: **acceptance criteria have to come from whoever knows the business value of the feature.** It is not a decision the development team can make on its own, and it is not a decision you can postpone until the report is already green — by then the number exists and the threshold bends to fit it.
 
-### Why do performance problems exist?
+The question to bring to that conversation is not "how fast should it be". It is: *what happens to the business when this operation takes ten seconds instead of one?* The answer produces a defensible threshold; "as fast as possible" does not.
 
-As with many other problems in software development, the later a performance issue emerges, the greater the cost to resolve it. Therefore, there needs to be a "shift-left" in solving these problems, just as happens with security or other areas.
+## The scenario has to resemble real usage
 
-But why aren't these tests executed earlier? The reasons can be multiple:
+There is a way to obtain perfectly true and entirely useless numbers: test a scenario nobody runs.
 
-* Cultural issues
-* Poor perceived utility
-* Bad developer experience (complex tools, difficult to configure)
+Simulating a million concurrent users when you have three hundred is the most visible case, but not the most common. The common ones are sneakier:
 
-### What activities does it include?
+- **The wrong dataset.** The test database has ten thousand rows, production has eleven million. The queries that pass against the first are the ones that time out against the second.
+- **The wrong distribution.** The test hits every endpoint uniformly. Real traffic concentrates on three, and one of those three is the slow one.
+- **The wrong moment.** Load arrives on an idle system. In production it arrives while the nightly backup runs, or while a deploy is recreating containers.
+- **The wrong user.** Every request belongs to the same tenant, with the same warm cache. In production every tenant is a cold cache.
 
-The performance testing process includes several fundamental activities:
+None of these makes the test *wrong*. It makes it *an answer to a question nobody asked*.
 
-1.  Identifying the test environment: what do we have to work with?
-2.  Determining the acceptance criteria: how do we know we've done well?
-3.  Planning the tests: what are the scenarios? Do they resemble real product usage? It makes no sense to run tests simulating millions of users if we only have hundreds.
-4.  Setting up the environment
-5.  Implementing the tests
-6.  Execution
-7.  Test analysis
+## Test types are a consequence, not a taxonomy
 
-### Project Context
+At this point the distinction between kinds of test stops being a list to memorise and becomes the choice of a question:
 
-More than in other types of testing, the result of performance testing is not black/white but must be interpreted and the perimeter delineated. Without defining the project context, it's extremely easy to focus on wrong areas of analysis. We must take into account:
+| Question | Test |
+|---|---|
+| Does it hold the load we expect? | Load test, within design limits |
+| What breaks first when load goes beyond? | Stress test, deliberately past the estimates |
+| Is it slower than yesterday? | Comparison against baseline, in CI |
+| Does it hold the expected load for eight hours straight? | Soak test, where memory leaks surface |
 
-* **Project Vision**: the project vision defines its ultimate purpose and desired future state, allowing alignment of stakeholder strategic decisions.
-* **System Purpose**: if we don't know the system's intent, certainly we can't even hypothesize the areas on which to focus.
-* **User Expectations**: put yourself in the users' shoes. Their happiness doesn't necessarily reflect requirements written on paper by a manager.
-* **Business Objectives**: as with every other project, respect deadlines and budget.
-* **Reason why tests are being executed**: can vary during development phases, it's important to know how to question them.
-* **Value that tests bring to the project**: knowing how to map business requirements to appropriate tests and determine the value they bring.
-* Project management
-* Processes
-* Compliance criteria
-* Project schedule
+These are different questions and they produce numbers that are not comparable. A stress test that "fails" has succeeded: it found the breaking point. A load test that fails is a problem. If you do not know which of the two you are running, you do not know how to read the result either.
 
-### Types of Tests
+## Why doing it early pays
 
-There are several types of performance tests, each with a specific objective:
+The old *shift-left* rule holds: the later a performance problem surfaces, the more it costs. But performance carries an aggravating factor compared to a functional bug.
 
-* **Performance Testing**: determine speed, scalability and stability of a system. It's important to understand response times, throughput and resource usage.
-* **Load Testing**: simulate high load on the system to see how it behaves while still remaining within design limits (initial estimates on usage).
-* **Stress Testing**: go beyond design conditions. Determine what happens with little memory, insufficient space, server failures. The important thing is to understand how and why the system "crashes".
+A functional bug isolates: there is an input that produces the wrong output, you reproduce it, you fix it. A performance problem in production often is not *one* problem: it is a query, plus a cache that is not there, plus a missing index, plus an architectural choice made two years ago. And the only window in which you can change that architectural choice is before building on top of it.
 
-### Baseline Definition
+This is where the bridge to the rest of the organisation sits: **a baseline taken before the first line of code costs half a day, while discovering on a finished system that latency will not hold the expected load costs a redesign** — with the team stalled and the release date already communicated to the customer.
 
-Defining a baseline means determining the "as-is" conditions of the system in order to have a comparison for our improvements or to identify future regressions.
+## Before the next test
 
-### Risks Addressed Through Performance Testing
+Three things, in order, and none of them needs a tool:
 
-Performance testing is a fundamental process to mitigate certain business risks and identify areas of interest regarding usability, functionality and security that cannot be obtained in other ways.
+1. **Write down the reference.** If the system is in production, read real traffic. If it is not, measure current conditions and save them with the date and the version.
+2. **Take a threshold to whoever knows the product.** Not "how fast should it be", but "what happens if it takes ten seconds". Write the answer next to the threshold.
+3. **Describe the scenario before implementing it.** How many users, which endpoints, with what data, in what state of the system. If you cannot write it in five lines, the test will measure something else.
 
-* **Speed Related Risk**: related, but not limited to, end-user satisfaction. Other examples may include data consumption and output production within a certain time frame or before data becomes obsolete. It's important to try to replicate real operating conditions as much as possible, for example how the system behaves if the load occurs during an update or during a backup.
-* **Scalability Related Risk**: not only related to the number of users but also to the varying volume of processed data. We must ask ourselves:
-    * Does the application remain stable for all users?
-    * Is the application able to collect all the data of its lifecycle?
-    * Do we have a way to realize if we're approaching maximum capacity?
-    * Are functionality and security compromised with high load?
-    * Are we able to handle unexpected peaks?
-
-------
+Then you can launch. The next piece in the series, [RED tells you when it broke, USE tells you why](/blog/verificare/testing/red-use-quando-e-perche/), is about what to look at in the numbers that come out.

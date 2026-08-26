@@ -2,272 +2,165 @@
 title: "Where the cost of observability is decided"
 seoTitle: "OpenTelemetry and LGTM: architecture and cost"
 date: 2025-08-03T09:00:00.000Z
-description: "Where you put the Collector and what you index: the two choices that decide what it costs to observe a system. Topologies, OTLP transport numbers, LGTM storage model."
+description: "Where you put the Collector and what you index: the two choices that decide what observing a system costs. Topologies, OTLP transport, LGTM storage."
 pillar: verificare
 category: observability
 mode: explanation
-tags: [OpenTelemetry, Observability, Grafana, Loki, Tempo, LGTM]
+tags:
+  - OpenTelemetry
+  - Observability
+  - Grafana
+  - Loki
+  - Tempo
+  - LGTM
 lang: en
 reviewed: false
 series: observability
 seriesOrder: 10
+summary:
+  - label: "Problem"
+    value: "Telemetry costs money, and the bill arrives after you have already wired it up"
+    note: "Both levers live in the architecture, not in the configuration"
+  - label: "Choice"
+    value: "The Collector as the single exit point between application and backend"
+    note: "Changing destination becomes a line of YAML instead of a release"
+  - label: "Tool"
+    value: "OpenTelemetry to generate and transport, LGTM to store and correlate"
+  - label: "Real cost"
+    value: "OTLP compressed over gRPC goes from ~1 KB to ~200 bytes per span"
+    note: "With batches of 1000 spans the overhead drops by 95%"
+openItems:
+  - "The transport and overhead figures are indicative of the OpenTelemetry ecosystem, not benchmarks on a specific system: they need re-measuring against your own traffic"
+  - "Choosing between sidecar and gateway depends on how many services there are and who runs them: below a certain scale the gateway is the only sensible option, and that threshold is not universal"
+  - "The Loki and Tempo indexing model pays off as long as queries start from a label or a TraceID: full-text search across the whole history stays expensive"
+  - "This is about architecture and unit costs, not about how much volume you will produce: that measurement only comes from real traffic"
+openNote: "What this architecture does not decide for you."
+caseStudy:
+  slug: "dalla-cecita-alla-traccia"
+  hook: >
+    The same choices, on a system in production: nine services, three languages, a broker
+    in the middle, and a collector as the single exit point.
 ---
 
-<!-- EN: assemblaggio meccanico delle sezioni superstiti di 02 e 03, 2026-08-26.
-     Il testo e' quello di prima: l'adattamento alla versione italiana riscritta e' un lavoro a parte. -->
+There is a recurring moment in observability projects: the system is instrumented, the dashboards work, and a few months later somebody looks at the storage bill and asks whether all those traces are really necessary.
 
-## The Pre-OpenTelemetry Fragmentation Problem
+At that point there are two levers available, and both are architectural. **Where you put the collection point**, and **what your storage decides to index.** These are decisions you make at the start and pay for over years: changing them later means going back into every service.
 
-Before the advent of OpenTelemetry, the observability ecosystem was a maze of protocols, APIs, and proprietary formats. Each vendor had developed their own "dialect":
+This article is about those two choices. The rest of the series — [the debugging scenarios](/blog/verificare/observability/04-correlation/) and then [tail sampling with the cost projections](/blog/verificare/observability/05-management/) — is about what you do once you have made them.
 
-  * **Jaeger** used its own span format and ingestion protocol.
-  * **Zipkin** had a different data model and specific REST APIs.
-  * **Prometheus** required metrics in a specific format with rigid naming conventions.
-  * **AWS X-Ray**, **Google Cloud Trace**, **Azure Monitor** - each with proprietary SDKs.
+## Before OpenTelemetry every vendor had its own dialect
 
-This fragmentation created systemic problems:
+It is worth recalling why a standard exists, because it explains the shape of everything else.
 
-  * **Vendor lock-in**: Changing tools meant rewriting instrumentation.
-  * **Data silos**: It was impossible to correlate telemetry from different sources, compromising the ability to understand end-to-end behavior in a distributed system.
-  * **Learning overhead**: Each team had to master different APIs and concepts for each tool.
-  * **Duplicated effort**: The same instrumentation and integration work was repeated for each backend.
+Before OpenTelemetry, instrumenting an application meant picking a vendor and marrying it. Every platform had its own library, its own format, its own protocol. Changing backend meant going back into every service: not a configuration migration, a code migration.
 
-This situation not only caused high costs in terms of development and maintenance, but also prevented a complete and correlated view of the system's state. It was precisely to address these challenges that the community pushed for unification of standards,[ culminating in the merger of OpenTracing and OpenCensus under the CNCF umbrella to create OpenTelemetry](https://opensource.microsoft.com/blog/2019/05/23/announcing-opentelemetry-cncf-merged-opencensus-opentracing/).
+OpenTelemetry separates three things that used to be a single block:
 
------
+- **how telemetry is generated** — the SDK, inside the application
+- **how it is transported** — the OTLP protocol
+- **where it ends up** — the backend, which becomes interchangeable
 
-## OpenTelemetry: The Unifying Architecture
+![OpenTelemetry architecture: the SDK generates, the Collector receives and processes, the backend stores. The three layers are independently replaceable](imgs/otel_arch.png)
 
-![Otel Architecture](imgs/otel_arch.png)
+The practical consequence is that the storage vendor stops being an irreversible decision. That is the main reason to adopt the standard even if you are happy with your current backend.
 
-OpenTelemetry solves this fragmentation through a layered architecture that clearly separates:
+## The Collector is where the architecture decouples
 
-  * **Data generation** (SDK)
-  * **Data collection** (Collector)
-  * **Data consumption** (Backends)
+The **Collector** is a separate process that receives telemetry, processes it and forwards it. It looks like an operational detail, and it is instead the choice that determines what you will be able to change without shipping code.
 
-Thanks to its adoption by a broad coalition of companies and its promotion as a **[Graduated project from the Cloud Native Computing Foundation (CNCF)](https://www.cncf.io/blog/2021/08/26/opentelemetry-becomes-a-cncf-incubating-project/)**, OpenTelemetry has quickly established itself as the de-facto standard for cloud-native telemetry.
+Its pipeline has three stages:
 
-### The Architectural Principles
+- **receiver** — accepts incoming data, in OTLP or other formats
+- **processor** — transforms: batching, filtering, enrichment with metadata, removal of sensitive data, sampling
+- **exporter** — sends to one or more destinations
 
-**1. Separation of Concerns**
+![Collector pipeline: receiver, processor and exporter in sequence, with multiple possible destinations on the way out](imgs/otel_pipeline.png)
 
-  * The application produces standardized data.
-  * The Collector handles routing and processing.
-  * Backends only handle storage and query.
+Everything that sits in the Collector is something that does **not** sit in application code. Filtering personal data before storage, sending audit logs to a different destination from technical ones, reducing volume by sampling: these all become configuration, and they change with a restart instead of a release.
 
-**2. Protocol Standardization**
+It is also where the risk concentrates. If there is a single Collector and it goes down, you lose the telemetry of everything behind it — which leads to the next question.
 
-  * **OTLP** (OpenTelemetry Protocol) as the common language.
-  * Support for backward compatibility with legacy protocols.
-  * Extensibility for future requirements.
+## Where to put it: sidecar, gateway, or both
 
-**3. Zero-Dependency Deployment**
+Three topologies, each with a different trade-off.
 
-  * Lightweight SDKs without direct backend dependencies.
-  * Collector deployable independently from the application.
-  * "Hot-swappable" configuration without needing to restart applications.
+**Sidecar** — one Collector per service, next to the application.
 
------
+| | |
+|---|---|
+| For | resource isolation per service, independent scaling, service-specific configuration, and the application never makes network calls to the backend |
+| Against | resource consumption multiplied by every instance, and deployment complexity that grows with the number of services |
 
-## OpenTelemetry Collector Internals
+**Gateway** — one centralised Collector receiving from everyone.
 
+| | |
+|---|---|
+| For | configuration in one place, shared resources, simple network topology towards the backends |
+| Against | single point of failure, added latency between application and gateway, and a scaling bottleneck if undersized |
 
-### Component Architecture
+**Hybrid** — sidecars for local collection and batching, gateway for the expensive work: tail-based sampling, complex transformations, routing to final destinations.
 
-The Collector is built on a **pipeline-based** architecture with three types of components:
+The rule that falls out of this: **tail-based sampling requires seeing the whole trace**, so it cannot live in a sidecar that only sees its own service. If you plan to reduce volume by deciding *after* seeing how a request went — and that is almost always what you want — the gateway is not one option among three: it is a mandatory piece.
 
-**Receivers**: Input endpoints for data.
+## What transport costs
 
-  * **OTLP**: Native OpenTelemetry protocol (gRPC/HTTP).
-  * **Jaeger**: Support for legacy Jaeger protocol.
-  * **Zipkin**: Support for legacy Zipkin protocol.
-  * **Prometheus**: Scraping of metrics in Prometheus format.
-  * **StatsD**: Support for StatsD protocol.
+Order-of-magnitude numbers, useful for sizing before measuring:
 
-**Processors**: Data transformation pipelines.
+| | |
+|---|---|
+| OTLP uncompressed | ~1 KB per span |
+| OTLP over gRPC with gzip | ~200 bytes per span |
+| Batches of 1000 spans | ~95% less overhead |
 
-  * **Batch**: Performs batching to improve efficiency and throughput.
-  * **Memory Limiter**: A safety circuit for Collector resource protection.
-  * **Resource**: Adds or modifies resource attributes.
-  * **Sampling**: Implements traffic reduction strategies.
-  * **Filter**: Allows discarding unwanted data.
-  * **Transform**: Allows modification of telemetry data.
+The factor of five between compressed and uncompressed is not an optimisation for later: it is the difference between bandwidth you notice and bandwidth you do not, and it is one line of configuration.
 
-**Exporters**: Output destinations for data.
+On transport the choice is between two:
 
-  * **OTLP**: Sends to OTLP-compatible backends.
-  * **Prometheus**: Converts metrics to Prometheus format.
-  * **Jaeger**: Exports traces to Jaeger.
-  * **Logging**: Exports to structured logs.
-  * **File**: Writes to local files.
+- **gRPC** — binary serialisation, HTTP/2 multiplexing, built-in compression. This is the recommended default.
+- **HTTP/JSON** — slower and more verbose, but it goes through ports 80 and 443 and is readable by eye. You pick it for compatibility with networks that allow nothing else, or while debugging.
 
-![Pipeline Otel](imgs/otel_pipeline.png)
+## Why LGTM is cheap: you index the label, not the content
 
+Here is the second lever, and it explains the cost difference between two stacks that apparently do the same thing.
 
-### Pipeline Configuration
+Traditional log systems index every word. That is why full-text search is powerful, and it is also why the index becomes the dominant cost.
 
-```yaml
-# collector.yaml
-receivers:
-  otlp:
-    protocols:
-      grpc:
-        endpoint: 0.0.0.0:4317
-      http:
-        endpoint: 0.0.0.0:4318
+**Loki does the opposite**: it indexes only labels — `app=checkout-service`, `env=prod` — and keeps the raw logs compressed in object storage. A query filters by label first, narrowing the field to a few streams, and only then scans the content:
 
-  prometheus:
-    config:
-      scrape_configs:
-        - job_name: 'app-metrics'
-          static_configs:
-            - targets: ['app:8080']
-
-processors:
-  batch:
-    timeout: 1s
-    send_batch_size: 1024
-    send_batch_max_size: 2048
-
-  memory_limiter:
-    limit_mib: 512
-    spike_limit_mib: 128
-
-  resource:
-    attributes:
-      - key: environment
-        value: production
-        action: upsert
-
-exporters:
-  otlp/tempo:
-    endpoint: http://tempo:4317
-    tls:
-      insecure: true
-
-  prometheus:
-    endpoint: "0.0.0.0:8889"
-
-  logging:
-    loglevel: debug
-
-service:
-  pipelines:
-    traces:
-      receivers: [otlp]
-      processors: [memory_limiter, batch, resource]
-      exporters: [otlp/tempo, logging]
-
-    metrics:
-      receivers: [otlp, prometheus]
-      processors: [memory_limiter, batch, resource]
-      exporters: [prometheus]
+```
+{namespace="production", app="web-app"} |= "error" != "connection refused"
 ```
 
-### Performance Optimizations
+**Tempo applies the same principle to traces**: it indexes the `TraceID` only and stores the complete trace in object storage. Retrieving a trace whose identifier you know is immediate.
 
-**Batching Strategy**
+And here the model shows its condition of validity: **it pays off as long as you know where to start.** If you arrive with a label or a TraceID, the cost is low. If you have to search blindly across the whole history with no entry point, this model no longer helps you.
 
-```yaml
-processors:
-  batch:
-    # Optimized for throughput
-    timeout: 1s              # Maximum wait time before sending
-    send_batch_size: 1024    # Preferred batch size
-    send_batch_max_size: 2048 # Hard maximum limit for batch
-```
+Which explains why correlation is not a convenience but an architectural prerequisite: it is the metrics alert that gives you the service, it is the log that gives you the `trace_id`, and it is that `trace_id` that makes querying Tempo cheap. Without the thread tying the three signals together, storage built this way becomes exactly as awkward as it is cheap.
 
-**Memory Management**
+## The topology in Kubernetes
 
-```yaml
-processors:
-  memory_limiter:
-    limit_mib: 512           # "Soft" memory limit for the Collector
-    spike_limit_mib: 128     # Additional quota for temporary spikes
-    check_interval: 5s       # Frequency of memory checks
-```
+Putting it all together, the typical deployment:
 
-**Connection Pooling**
+![Stack components in a containerised environment: instrumented applications, Collector, storage backends and Grafana as the single point of reading](imgs/docker-image_components.png)
 
-  * Reuse of HTTP/gRPC connections.
-  * `Connection keep-alive` to reduce overhead.
-  * Circuit breakers to handle downstream system failures.
+- **SDK** inside the application, generating
+- **Collector** as a DaemonSet or sidecar, collecting
+- **Gateway Collector** as a scalable Deployment, where the expensive processing lives
+- **Loki, Tempo and Mimir** as backends, with object storage underneath
+- **Grafana** as the single point of reading, correlating the three signals
 
------
+Every component scales horizontally on its own. Object storage is the common substrate, and it is also why the bill stays predictable: you pay for the volume you keep, not for the index.
 
-## Deployment Patterns
+## What changes for whoever pays
 
-OpenTelemetry Collector can be deployed in various configurations, depending on the architecture requirements and complexity of the distributed system.
+The two choices in this article translate into a sentence that makes sense outside the engineering team: **the Collector makes the storage vendor a reversible decision, and the label-based model means keeping more telemetry costs in proportion to volume rather than to the index.** Together, they are the difference between an observability budget that grows with traffic and one that grows faster than traffic.
 
-### Agent Pattern (Sidecar)
+Which is why these decisions are worth making before instrumenting the first service: they are the only two that cost a rebuild afterwards.
 
-**Use case**: Microservices with granular control, often in containerized environments like Kubernetes.
-**Pros**:
+## What to do now
 
-  * Resource isolation per service.
-  * Independent scaling of the agent.
-  * Service-specific configuration.
-  * Eliminates the need for the application to make direct network calls to backends.
-    **Cons**:
-  * Resource overhead for each pod/instance.
-  * Increases deployment configuration complexity.
+If you are about to start: put the Collector in from the first service, even if at first it only forwards. The cost is one more container; the benefit is that the day you need to filter, sample or change destination, you do it in one place.
 
-### Gateway Pattern (Centralized)
+If you are already instrumented and the bill is climbing, the first thing to check is not sampling: it is whether compression is on and batching is configured. Two lines, and they are worth the factor of five in the table above.
 
-**Use case**: Enterprise environments with centralized operations or for aggregating telemetry from multiple sources.
-**Pros**:
-
-  * Centralized configuration management.
-  * Cost efficiency (shared resources).
-  * Simplified network topology for backends.
-    **Cons**:
-  * Potential "single point of failure".
-  * Additional network latency between the application and the gateway.
-  * Scaling bottlenecks if not properly sized.
-
-### Hybrid Pattern
-
-Combines the two approaches, leveraging the advantages of both:
-
-  * **Agent** for local data collection and basic processing (e.g. batching).
-  * **Gateway** for advanced processing (e.g. tail-based sampling, complex transformations) and routing to final backends.
-
------
-
-#
-
-### 1\. Loki: Aggregated, Scalable and Cost-Effective Logging
-
-**[Loki](https://grafana.com/oss/loki/)** is a log aggregation system inspired by Prometheus's design, but optimized for logs. Its distinctive philosophy is "Don't index the content of logs, but only the labels." This approach makes it extremely efficient in terms of storage and costs, especially for high volumes of data.
-
-  * **Operational Principle**: Instead of indexing every word or field within logs (as traditional ELK/Splunk systems do), Loki focuses on indexing only the **metadata** (labels) associated with logs. Raw logs are compressed and stored in low-cost object storage (e.g. S3, GCS) or local file systems.
-  * **Data Flow**: Logs are sent to Loki along with a set of labels (e.g. `app=checkout-service`, `env=prod`, `cluster=us-east-1`). When a query is executed, Loki first uses the labels to quickly filter the relevant log streams, and only then retrieves the raw log content to apply further textual filters or transformations.
-  * **Query Language**: **LogQL**. Similar to PromQL, LogQL allows querying logs based on labels and applying parsing, filtering and aggregation functions on the log content.
-      * Example: `{namespace="production", app="web-app"} |= "error" != "connection refused"` (search for errors in production web app logs, excluding "connection refused" ones).
-      * Aggregation example: `sum(rate({app="my-service"} |= "login failed" [1m])) by (username)` (calculate the frequency of failed logins per username in the last minute).
-  * **OpenTelemetry Integration**: The **OpenTelemetry Collector**, through the Loki exporter or a `Grafana Agent` (which includes Promtail functionality), is the ideal bridge for sending logs generated by OpenTelemetry-instrumented applications to Loki. It's crucial that logs include attributes like `trace_id` and `span_id` (through the [OpenTelemetry Semantic Conventions for logs](https://www.google.com/search?q=https://opentelemetry.io/docs/specs/semconv/general/trace-context/)) for easy correlation with Tempo.
-  * **Key Benefits**: **Cost-effectiveness** (allows handling much larger volumes of logs at lower costs), **horizontal scalability** and **simplified operability**.
-
-
-### 2\. Tempo: High-Scalability Tracing for Distributed Traces
-
-**[Tempo](https://grafana.com/oss/tempo/)** is Grafana Labs' distributed tracing backend, specifically designed to store and query an extremely high volume of traces with maximum efficiency and cost-effectiveness. Its innovation lies in being a "zero-index" (trace ID-indexed) **trace store**.
-
-  * **Operational Principle**: Unlike traditional solutions that index every attribute within each span (generating storage overhead and complexity), Tempo indexes only the `TraceID` and stores the complete trace in low-cost object storage (e.g. S3, GCS, or others).
-  * **Data Flow**: Traces (in OTLP format) are sent to the **OpenTelemetry Collector**, which in turn forwards them to Tempo. When searching for a specific trace, you provide the `TraceID` and Tempo retrieves the complete trace directly from storage.
-  * **Query Language**: Primarily search by `TraceID`. With the introduction of **TraceQL**, Tempo supports more advanced queries based on attributes, but its real power emerges when correlated with LogQL (from Loki) or PromQL (from Mimir) through Grafana. Search by TraceID is the most efficient and cost-effective mode, and for this reason cross-correlation is fundamental.
-  * **OpenTelemetry Integration**: Tempo is natively compatible with OpenTelemetry. The **OpenTelemetry Collector**, configured with the OTLP exporter, is the preferred mechanism for sending traces directly to Tempo. This is the smoothest integration, given that OpenTelemetry generates traces in the standard format desired by Tempo.
-  * **Key Benefits**: **Cost-effectiveness** (drastic reduction in storage costs for traces), **practically unlimited scalability** and **operational simplicity** thanks to the architecture without complex indexes.
-
-### Typical Architecture in Kubernetes
-
-In a Kubernetes environment, the LGTM stack and OpenTelemetry are often deployed as follows:
-
-  * **OpenTelemetry SDKs**: Integrated directly into application images (as libraries or auto-instrumentation).
-  * **OpenTelemetry Collector**:
-      * As **Sidecar** for each application pod: collects pod-specific telemetry with minimal network overhead and sends it to a central Collector Gateway.
-      * As **DaemonSet** on each node: collects node-level metrics and logs from the node (e.g. `kubelet`, `/var/log`).
-      * As **Deployment (Gateway)**: A centralized instance that receives data from all sidecar/daemonset, applies processors (e.g. tail-based sampling, complex transformations) and routes data to Loki, Tempo and Mimir.
-  * **Loki, Tempo, Mimir**: Deployed as scalable and resilient clusters. They often use S3-compatible storage (e.g. MinIO, AWS S3, Google Cloud Storage) for their durability and cost-effectiveness.
-  * **Grafana**: Deployed as a central instance that users access through a browser.
+The rest — which traces to keep and for how long — is the subject of [tail sampling and retention](/blog/verificare/observability/05-management/), where the numbers stop being orders of magnitude and become projections against concrete traffic.

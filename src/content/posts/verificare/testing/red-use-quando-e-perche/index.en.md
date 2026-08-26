@@ -1,9 +1,10 @@
 ---
 title: "RED tells you when it broke. USE tells you why."
-date: 2025-07-26T08:00:00.000Z
-description: "Average latency is flat and users still complain: the average hides the minority that suffers. Percentiles, the RED method, the USE method, and the rule for using them together."
+date: 2025-07-26T09:00:00.000Z
+description: "Averages hide the minority that suffers, by construction. Percentiles, the RED method, the USE method, and the rule for using them in the right order."
 pillar: verificare
 category: testing
+mode: explanation
 tags:
   - Performance Testing
   - Monitoring
@@ -14,158 +15,107 @@ lang: en
 reviewed: false
 series: performance-engineering
 seriesOrder: 20
-mode: explanation
+summary:
+  - label: "Problem"
+    value: "The average latency chart is flat and users complain anyway"
+    note: "An average hides, by construction, the minority having the worst time"
+  - label: "Choice"
+    value: "Percentiles instead of averages, then RED and USE as two distinct questions"
+  - label: "Key signals"
+    value: "RED on the service perspective, USE on the underlying resources"
+    note: "Rate, Errors, Duration on one side; Utilization, Saturation, Errors on the other"
+  - label: "Result"
+    value: "RED opens the investigation and says when to act, USE closes it and says where"
+openItems:
+  - "RED and USE cover latency and saturation, not correctness: a fast system returning wrong answers stays invisible to both"
+  - "The USE method assumes you know the inventory of your system's resources, and in an architecture grown by accretion that inventory often does not exist"
+  - "Percentiles are computed over a time window: the same series read at one minute or at one hour tells two different stories, and choosing the window is a decision"
+  - "None of this depends on the tooling: translating it into PromQL, dashboards and alert thresholds is a separate job"
 ---
 
-<!-- EN: scissione meccanica dell'articolo originale, 2026-08-25.
-     Il testo e' quello di prima: l'adattamento all'italiano riscritto e' un lavoro a parte. -->
+The average latency chart is a flat line at 180 milliseconds. It has been flat for weeks. Over the same period support keeps collecting slowness reports, always from the same three customers.
 
-## The Measurement Pillars: Methodology and Key Signals
+The chart is not lying: the average *is* 180 milliseconds. It is doing exactly what an average does, which is hiding the tail. If 97% of requests answer in 90 milliseconds and 3% take twelve seconds, the average stays good and that 3% is your inbox.
 
-> well, I understand it's important! what can I do?
+The previous piece in this series, [A thousand requests per second means nothing](/blog/verificare/testing/performance-senza-baseline/), is about what to decide before measuring. This one is about what to look at in the numbers once they exist.
 
-### RED Method
+## Averages lie, percentiles do not
 
-The RED (Rate, Errors, Duration) method is a user-experience-oriented monitoring framework and service behavior. It's particularly effective for microservices and request-driven applications, providing a clear view of how the workload is handled from the service perspective.
+A percentile answers: *below which value does this fraction of requests fall?* Three are enough.
 
-The RED method answers the question "What's going wrong from the user's point of view?" and is excellent for setting up meaningful alarms and measuring SLAs (Service Level Agreements).
+- **p50**, the median: the typical user's experience.
+- **p90**: the experience of the slowest 10%.
+- **p99**: the experience of the slowest 1%.
 
+The jump between p50 and p99 is the information an average destroys. A p50 at 90 milliseconds with a p99 at twelve seconds describes a system where almost everyone is fine and a stable minority is having a terrible time — which is a completely different diagnosis from "the system is slow on average", and leads to completely different work.
 
-#### Rate
+Thinking in percentiles changes three things concretely:
 
-> How much is our service being used?
+- **SLOs become writable.** "p99 under two seconds" is verifiable; "the system must be fast" is not.
+- **Degradation shows up earlier.** A growing problem appears on the p99 weeks before it moves the average.
+- **Segmenting by endpoint tells you where to act.** A high aggregate p99 says nothing; the same p99 split per endpoint usually points at a single culprit.
 
-Counts how many requests our system is handling; in the case of a web service these could be received requests, while for a database they could be received queries, for a queue manager the number of messages received, etc...
+The rest of this article assumes you are looking at distributions, not averages.
 
-![red_metric_example](imgs/red_rate.png)
+## RED: the three questions from the service side
 
-They represent the foundation for many other measurements, allowing, for example, to relate error increases to traffic increases or to better contextualize a decline in other metrics
+The RED method looks at the system from the outside, the way whoever uses it does. Three metrics, three questions.
 
-#### Errors
+**Rate — how much is it used?** The count of requests handled: HTTP requests for a web service, queries for a database, messages consumed for a queue. On its own it says little, but it is the denominator for everything else: without the rate you cannot tell whether a rise in errors is a regression or just more traffic.
 
-> How many requests are failing?
+![Rate as the foundation for the other measurements: request volume over time gives errors and latency their context](imgs/red_rate.png)
 
-This generally means every request that completes with a different result than expected, regardless of the reason (explicit error, timeout, incorrect results)
+**Errors — how many fail?** Every request that ends with something other than the expected result, whatever the reason: an explicit error, a timeout, a formally valid but wrong response. It has to be measured two ways at once, because they answer different questions: the **percentage** tells you how bad it is relative to traffic, the **absolute count** tells you how many people got angry.
 
-It's possible to measure errors both as a percentage of requests and as a number of errors per second, in order to have an absolute measure.
+**Duration — how long do they take?** This is where the percentiles from the previous section live.
 
-#### Durations
+RED answers: **what is going wrong for whoever uses the system?** It is the right thing to build alerts on, because it is the only one that corresponds to something somebody is actually experiencing. An alert on "CPU at 85%" wakes someone up for a system that may be working perfectly well; an alert on "checkout p99 above three seconds" wakes someone up because checkout is slow.
 
-> How long do requests take?
+## USE: the three questions from the resource side
 
-Typically measured in seconds or milliseconds, it allows having an estimate of performance from the users' perspective.
+Brendan Gregg's [USE method](https://www.brendangregg.com/usemethod.html) looks the other way: not at the service, but at the resources holding it up. The rule fits in one line:
 
-When capturing this type of metric, it's important to think in terms of distribution rather than average: problems, even serious ones, that affect a small number of requests are easily hidden by computing an average.
-
-The typical representation for this type of measurement is histograms grouped in percentiles:
-- 50th percentile: represents the median, i.e. the experience of a typical user
-- 90th percentile: represents the experience of the slowest 10%
-- 99th percentile: represents the experience of the slowest 1%
-
-Thinking in percentiles allows sophisticated reasoning:
-- we analyze the entire range of possible user experiences,
-- allows making decisions about SLO definition,
-- makes performance degradation more evident as it's immediately visible in the 99th percentile,
-- segmenting by endpoint allows determining the most interesting intervention areas
-
-
-#### Dashboard Suggestions
-
-> What should a good dashboard for these metrics allow?
-
-Dual need: both to have overall visibility quickly and to investigate more deeply
-
-Request rate: shows traffic volume over time, broken down by endpoint, method or other useful dimensions, to identify anomalous trends.
-
-Errors: displays both absolute number and percentage of errors, with details by error type and endpoints involved. Add alerts if they exceed SLOs.
-
-Duration: shows latency percentiles (p50, p90, p99) over time, broken down by endpoint, to identify bottlenecks and improve performance.
-
-### USE Method
-
-While the RED method focuses on the service and user perspective, the [USE method](https://www.brendangregg.com/usemethod.html) (Utilization, Saturation, Errors) focuses on the underlying infrastructure resources. Created by Brendan Gregg, it's a simple but powerful approach to analyze system performance, helping quickly identify resource bottlenecks or errors.
-
-It uses a very simple and empirical approach that can be summarized as:
 > For every resource, check utilization, saturation, and errors.
 
-Its purpose is to allow rapid identification of system bottlenecks and is based on some basic definitions:
+The step people skip most often is none of the three: it is the one before, **establishing what the resources are.** CPU, memory, disks, network — but also the imposed limits: connection pools, thread pools, API quotas, file descriptors. If the inventory is incomplete, USE will not find the bottleneck: it will look in the wrong place with great precision.
 
-- resources: system resources, whether hardware, software or imposed limits
-- utilization: average time for which resources are busy
-- saturation: degree to which resources are unable to handle load
-- errors: count of error events
+**Utilization — how busy is it?** The percentage of time a resource is occupied. Close to 100% it is almost always a bottleneck. But lower values mislead too, for two reasons: a value aggregated over five minutes hides much worse bursts, and some resources are not interruptible — a disk busy with one operation finishes it, and a more urgent one queues up regardless.
 
+**Saturation — how much work can I not absorb?** The excess work piling up: queue lengths, wait times, load average, swap usage, disk I/O queue, requests waiting in the pool. It is the most diagnostic of the three, and it has to be read against a different threshold: while 70% utilization is debatable, **for saturation any value other than zero is already a signal.** A resource can be saturated without being at 100% utilization.
 
-USE collected metrics can also be used within a simple flowchart to identify bottlenecks.
-![use_metric_flow](imgs/usemethod_flow.png)
+**Errors — how much is breaking?** Resource-level errors: network errors, filesystem errors, disk I/O errors. They do not immediately become application errors, which is why they go unnoticed until they become an outage. The value lies in correlating them: network errors rising together with network utilization tell a story neither metric tells alone.
 
-#### Resources
+![The USE method flowchart: for each resource, check errors, utilization and saturation in sequence to isolate the bottleneck](imgs/usemethod_flow.png)
 
-> What are the system components? How do they communicate with each other?
+## The rule: RED opens the investigation, USE closes it
 
-First we need to determine what resources compose our system. In this phase it's extremely useful to consult, or create, diagrams that highlight communication flows.
-Having an idea of how components interact is extremely useful for identifying bottlenecks, real or suspected.
+The two methods are not alternatives and they do not overlap. They answer two questions in sequence:
 
-#### Utilization
+| | RED | USE |
+|---|---|---|
+| Looks at | the service | the resources |
+| Answers | **when** and **how badly** it broke | **why** and **where** |
+| Used for | alerts and SLOs | diagnosis |
+| Seen by | the user | the infrastructure |
 
-> How busy are the resources?
+The order is not arbitrary, and it is the part worth taking away:
 
-Utilization: Measures the percentage of time a resource is occupied. For example, CPU, memory, disk or network utilization. High utilization (near 100%) can indicate that the resource is becoming a bottleneck.
+**Alert on RED, investigate with USE.** An alert on a resource produces noise, because a loaded resource is not a problem until somebody suffers from it. An alert on RED corresponds, by construction, to a user waiting. When that alert fires, USE tells you where to look: which resource is saturated, which one is accumulating errors.
 
-Utilization near 100% is almost always a sign of bottleneck; in this case it can be very useful to verify the presence of saturation.
-Also high values (eg: 70%) can be problematic:
-- if we're using aggregated values they might hide even worse bursts
-- some resources, such as disks, cannot be interrupted during an operation even if a second operation has higher priority. Having high resource utilization might result in higher priority tasks having to wait
+The interesting case is when the sequence breaks. **RED degrades and USE shows nothing**: no saturated resource, no errors, and yet the p99 climbs. That means the bottleneck is not in this inventory — it is downstream, in a third-party service, in an application-level lock, in a dependency you are not measuring. That silence is information, and without having looked at both sides you would not have it.
 
-#### Saturation
+![USE dashboard: utilization, saturation and errors of the infrastructure resources over time](imgs/use_dashboard.png)
 
-> How much work can't I handle right now?
+## What it costs to keep them together
 
-Saturation: Indicates the degree of additional, unmanaged work that a resource must face. It often manifests as queue lengths or waiting times. High saturation means that the resource cannot keep up with demand, even if its utilization is not 100%.
-In this case, any value different from zero represents a problem
+The reason this distinction is worth the time to learn is that it gets paid in person-hours, and always at the worst moment.
 
-If utilization measures how busy a resource is, now we're measuring how many problems we're experiencing.
+A team that alerts on resources receives notifications about systems that are working, and after a few weeks stops looking at them — so when the real one arrives, nobody sees it. A team that measures only resources knows a disk is full but does not know which customers are suffering, and cannot decide what to fix first. **Separating the two levels is what lets you say "this affects 3% of users on checkout" instead of "CPU is high", which is the difference between a prioritisation decision and an argument.**
 
-Some key metrics might be:
+## What to do tomorrow
 
-- CPU load average
-- SWAP memory usage
-- disk I/O queue
-- Thread pool queue length
+Take the service the money goes through and put three charts on it: rate, error percentage, p50/p90/p99 latency, all segmented per endpoint. That is RED, and it is half a day.
 
-#### Errors
+Then write down the resource inventory for that service, imposed limits included. You do not need to instrument them yet: you need the list ready for the day the p99 climbs and somebody has to decide where to look.
 
-> How much is breaking?
-
-Errors: In this context, it refers to resource-level errors, such as disk I/O errors, network errors or hardware errors. These errors can indicate problems that might not manifest immediately as application errors, but compromise its stability.
-
-Error metrics include:
-- network errors
-- filesystem errors
-- disk I/O errors
-
-Very important to be able to correlate them with other metrics, for example relating network errors to the degree of utilization of the same.
-
-#### Dashboard Suggestions
-
-> What should a good dashboard for these metrics allow?
-
-A complete USE dashboard provides visibility on the health and capacity of infrastructure resources
-
-Utilization: shows percentage usage over time of CPU, memory, disk space and network bandwidth, to evaluate load and predict bottlenecks.
-
-Saturation: highlights overload situations with metrics such as CPU load average, swap usage, disk and network I/O queue lengths.
-
-Errors: shows resource-level errors over time, such as memory allocation failures, network errors, disk I/O errors, to intercept hardware or systemic problems before they become critical.
-
-![use_dashboard](imgs/use_dashboard.png)
-
----
-
-## The Strategic Integration of RED and USE Metrics: A Systemic Approach to Performance Monitoring
-
-Real strength manifests when the RED and USE methods are used together. They are complementary: RED metrics tell you when something is wrong from the user's perspective, while USE metrics help you understand why it's happening at the infrastructure level. This duality offers complete understanding of system behavior, covering both user interactions and resource reactions.
-
-Start implementing RED monitoring to have immediate visibility of user-perceived performance, and when you identify a problem, use the USE method to dive deeper and identify the root cause at the resource level.
-
-Adopting these methodologies in your performance testing and monitoring strategies will allow you to build more robust, scalable and performant systems.
+Put the first alert on the p99 of a single endpoint, the one that matters most. One that fires rarely and is always right is worth more than twenty nobody reads.
