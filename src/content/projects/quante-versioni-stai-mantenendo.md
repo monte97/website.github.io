@@ -100,8 +100,8 @@ matrix:
   caption: "Configurazioni di esempio, inventate: le righe reali sono l'inventario delle varianti vendute"
   note: >
     La prima riga è quella su cui si lavora tutti i giorni, ed è l'unica coperta fino in
-    fondo. Le altre esistono in produzione da anni. La colonna che conta non è la prima:
-    è la terza, dove il bianco è quasi tutto.
+    fondo. Le altre esistono in produzione da anni. La colonna che conta è la terza, dove il
+    bianco è quasi tutto.
 sections:
   - n: "01"
     title: "Il conto che nessuno teneva"
