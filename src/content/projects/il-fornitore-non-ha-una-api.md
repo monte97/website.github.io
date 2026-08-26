@@ -17,11 +17,11 @@ metodo: >
   a un browser headless e rinnovo del token via HTTP, mappatura per nome e non per
   posizione, perimetro limitato alla sola lettura.
 esito: >
-  I dati arrivano nel gestionale senza piu' trascrizioni manuali. Lungo la strada e'
-  emerso che l'endpoint riordinava le risposte, e per due settimane i valori sono finiti
-  nella colonna sbagliata senza produrre un solo errore. Il canale che scriveva sui
-  parametri di sicurezza e' stato lasciato al costruttore: decisione presa prima di
-  provarci, e concordata.
+  I dati arrivano nel gestionale senza piu' trascrizioni manuali, e l'integrazione gira
+  ancora: il portale del costruttore e' rimasto quello, perche' e' specifico per quelle
+  macchine e cambiarlo costerebbe troppo. Lungo la strada e' emerso che l'endpoint
+  riordinava le risposte, e per due settimane i valori sono finiti nella colonna sbagliata
+  senza produrre un solo errore.
 anonimizzazione: >
   Il dominio è quello reale. Sono omessi il nome del costruttore, quello del cliente e i
   modelli delle macchine; tempi e scene sono compressi e ricostruiti.
@@ -40,11 +40,11 @@ actions:
   - "Primo accesso con un browser headless, poi otto ore di raccolta su rinnovo del token via HTTP"
   - "Individuazione di un riordino silenzioso delle risposte che spostava i valori nella colonna sbagliata senza produrre nessun errore"
   - "Controllo di coerenza fisica sui dati raccolti, al posto di test su un sistema simulato che avrebbe confermato il modello sbagliato"
-  - "Perimetro limitato alla lettura: il canale che configura la macchina è stato lasciato al costruttore, con la sua responsabilità"
+  - "Perimetro dichiarato: nessuna sorveglianza costruita, nessuna continuità promessa, e la data di scadenza scritta nel documento"
 result:
   - "Ore, cicli e allarmi nel gestionale senza più trascrizioni manuali: le contestazioni sulle fatture si chiudono guardando una schermata, la manutenzione si programma sui numeri veri"
   - "Un documento di protocollo che descrive ogni scelta, il suo perché, cosa succede quando il costruttore cambierà il portale, e cosa non è stato costruito e per quale ragione"
-  - "Il canale di scrittura resta in capo al costruttore, con la sua responsabilità: una decisione presa e concordata, non un limite subito"
+  - "Il documento di protocollo dichiara cosa non è stato costruito e perché, così chi riprende sa dove sono i confini"
 sections:
   - n: "01"
     title: "Il vincolo"
@@ -57,7 +57,7 @@ sections:
     summary: "Numeri plausibili nella colonna sbagliata, e perché nessun test lo avrebbe preso"
   - n: "04"
     title: "Il confine"
-    summary: "L'endpoint che è stato lasciato dov'era, e cosa è stato detto al cliente"
+    summary: "Su cosa poggia davvero l'integrazione, e cosa è stato dichiarato"
   - n: "05"
     title: "Il deliverable"
     summary: "Perché la cosa consegnata con più cura non è stata l'integrazione"
@@ -89,7 +89,7 @@ flow:
     - kind: "Raccolta"
       name: "Processo di ingestione"
       desc: "Otto ore di autonomia, un turno. Mappatura per nome, mai per posizione."
-      edge: "scrittura"
+      edge: "scrive"
     - kind: "Destinazione"
       name: "Gestionale del cliente"
       desc: "Ore, cicli e allarmi accanto a contratti, trasporti e fatturazione."
@@ -117,11 +117,11 @@ decisions:
     chosenWhy: "L'endpoint riordina le serie secondo un criterio suo, e sbagliare qui non produce un errore."
     rejected: "Per posizione: prima grandezza chiesta, prima colonna"
     appeal: "È l'ordine che hai in testa mentre scrivi la richiesta: due righe, e sembra ovvio."
-  - title: "Canale di configurazione"
-    chosen: "Fermarsi alla lettura, la scrittura resta al costruttore"
-    chosenWhy: "La lettura è reversibile e verificabile: se sbaglio, il danno è un grafico storto, e me ne accorgo io. La scrittura no."
-    rejected: "Ricostruire anche la scrittura e portare la configurazione nel gestionale"
-    appeal: "Era la parte facile — stessa struttura, stesso token. E il cliente l'avrebbe voluta."
+  - title: "Su cosa poggia"
+    chosen: "Dichiarare che l'integrazione osserva un sistema che non promette nulla"
+    chosenWhy: "Un limite scritto è un limite che qualcuno può gestire; un limite taciuto diventa una sorpresa per chi arriva dopo."
+    rejected: "Presentarla come un'integrazione stabile e occuparsi dei problemi quando arrivano"
+    appeal: "Nessuno chiede spiegazioni finché funziona, e funzionava."
   - title: "Perimetro del servizio"
     chosen: "Le credenziali del portale restano dentro il servizio, i client non le vedono mai"
     chosenWhy: "Il servizio parla al cloud con la propria identità: chi lo interroga non può risalire alle credenziali né usarle altrove."
@@ -225,23 +225,15 @@ Solo il sistema vero riordina. Solo il sistema vero si comporta in un modo che n
 
 Non è un argomento contro i test, è un argomento su cosa provano. Un'integrazione con un sistema di terzi ha una classe di errori che vive interamente nello spazio fra quello che credi che l'altro faccia e quello che l'altro fa. Quello spazio si copre in un modo solo: guardando i dati veri e chiedendosi se hanno senso. Da noi ha funzionato un controllo di coerenza fisica — ore di funzionamento che devono stare in un certo rapporto con i cicli — non un test.
 
-## L'endpoint che ho lasciato lì
-
-Mentre leggevo il traffico per capire la lettura, ho visto anche il resto.
-
-Il portale non serve solo a guardare: serve anche a configurare la macchina. Erano chiamate come le altre, sullo stesso sistema, con lo stesso token che avevo già in mano.
-
-Non le ho ricostruite, e la decisione è arrivata prima di provarci, non dopo aver fallito.
-
 ## Dove finisce il lavoro
 
-La differenza fra le due cose non è la difficoltà. È che una è reversibile e l'altra no.
+C'è una domanda che vale la pena farsi prima di essere contenti del risultato: **su cosa poggia tutto questo?**
 
-Leggere quei dati è un'operazione che il cliente ha già il diritto di fare: sono le sue macchine, sono i suoi numeri, li sta già guardando su quel portale tutti i giorni. L'ho solo automatizzata.
+Poggia su un'osservazione. Non su un contratto, non su una documentazione, non su un impegno di nessuno a non cambiare le cose. Il costruttore non sa che quel processo esiste, e non ha nessun obbligo verso di lui: il giorno in cui aggiorna il portale, qualcosa smette di funzionare, e nessuno avvisa.
 
-Scrivere una configurazione su una macchina che non è mia, attraverso un canale che nessuno mi ha dato e che nessuno mi garantisce, è un'operazione che non posso verificare e non posso disfare. Non è questione di quanto sia difficile: è che se sbaglio non me ne accorgo io, se ne accorge qualcun altro, altrove, e in un momento che non scelgo.
+Questo non rende il lavoro sbagliato. Lo rende **una cosa che va dichiarata per quello che è**, e la scelta successiva discende da lì: non ho costruito sorveglianza, non ho promesso continuità, non ho lasciato credere che fosse un'integrazione come le altre. Ho scritto quanto durerà, per quanto ne so, e cosa succede quando finirà.
 
-Non è un limite tecnico che non ho saputo aggirare. È il punto in cui il lavoro finisce — e dirlo al cliente fa parte del lavoro quanto il resto. La risposta è stata: quella configurazione continuerà a farla il costruttore, dal suo portale, con la sua responsabilità.
+Il modo elegante di chiudere questa storia, del resto, non è tecnico: è **chiedere al costruttore se un'interfaccia ufficiale esiste**. Costa una mail, e toglierebbe di mezzo sia l'osservazione sia il browser. È rimasto fra le cose da fare, ed è la prima.
 
 ## Il deliverable non era il codice
 

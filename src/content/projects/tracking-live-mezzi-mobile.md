@@ -6,30 +6,31 @@ pillar: progettare
 pillarApplied: progettare
 featured: true
 weight: 2
-eyebrow: "Case study · dimostratore mobile"
+eyebrow: "Analisi tecnica · un dimostratore per una richiesta vera"
 tags: [.NET MAUI, .NET 9, Mobile, Minimal API, xUnit]
 links:
   blog: "/blog/verificare/testing/01-unit-test-nuxt3-logica-pura/"
 oggetto: >
-  Un dimostratore di portfolio: companion app mobile per il tracking live dei mezzi su
-  mappa nativa, Android e iOS da un solo progetto, con backend mock generato in locale.
+  Una richiesta arrivata dal campo: un'app mobile che mostri dove sono i mezzi, integrata
+  con il gestionale che in ufficio si usa già. Prima di costruirla nel prodotto, un
+  dimostratore: mappa nativa, Android e iOS da un solo progetto, dati generati in locale.
 metodo: >
   Una sola feature portata end-to-end invece di tre abbozzate, ogni bivio deciso prima di
   scrivere il codice e registrato insieme all'alternativa scartata, verifica proporzionata
   al dimostratore e dichiarata per intero.
 esito: >
-  Una feature portata end-to-end su Android e iOS dallo stesso codice, con mappa nativa.
+  Una feature portata end-to-end dallo stesso codice, con mappa nativa: eseguita e vista
+  funzionare su iOS, compilata per Android.
   Ogni bivio e' registrato con l'alternativa scartata, e la verifica e' dichiarata per
   intero: cosa e' coperto da test, cosa e' stato provato a mano, cosa non e' verificato e
   perche'.
 anonimizzazione: >
-  Il caso di partenza è reale — una piattaforma di telemetria e gestione cantiere — ma qui
-  compare solo come scenario: la demo non usa le sue API né i suoi dati, e nessun ambiente
-  di terzi viene toccato.
+  Il committente non è nominato. Il dimostratore non tocca le API né i dati del prodotto:
+  il flusso è generato in locale, perché serviva mostrare la forma della cosa, non la cosa.
 problem: >
-  Un dimostratore deve provare come lavori, non quante funzionalità sai accendere. Tre
-  schermate superficiali non dimostrano nulla; una schermata vuota è una promessa che il
-  codice non mantiene.
+  Chi sta in cantiere voleva vedere i mezzi sul telefono, non aprire il gestionale
+  d'ufficio. Una richiesta legittima e vaga insieme: nessuno sapeva dire quanto grande
+  fosse il lavoro, né se ne valesse la pena.
 context: >
   L'obiettivo non era coprire più funzionalità possibili ma mostrare il modello di lavoro:
   come affronto lo scope, come prendo le decisioni tecniche, come verifico che quello che
@@ -75,8 +76,13 @@ decisions:
     chosenWhy: "La demo resta presentabile anche a scatti, e il rischio è isolato."
     rejected: "Custom handler nativo subito"
     appeal: "L'effetto migliore della demo — e il pezzo più rischioso sui tempi."
+  - title: "Nativo o web"
+    chosen: "Applicazione mobile nativa"
+    chosenWhy: "La mappa a schermo intero, il tocco su un mezzo e l'aggiornamento continuo si vedono per quello che sono solo su un telefono vero."
+    rejected: "Una web application ordinaria, aperta dal browser del telefono"
+    appeal: "Avrebbe risposto alla richiesta con meno lavoro, riusando quello che già c'era. Ed è la parte che vale la pena dire: la scelta nativa non era l'unica strada tecnica possibile."
 decisionsNote: >
-  Il filo che tiene insieme i cinque bivi è sempre lo stesso: cosa dimostra davvero questa
+  Il filo che tiene insieme i sei bivi è sempre lo stesso: cosa dimostra davvero questa
   scelta. Non cosa fa più effetto, non cosa è più moderno in astratto. È lo stesso criterio
   con cui, su un progetto vero, si decide dove spendere il budget di rischio.
 flow:
@@ -107,7 +113,7 @@ actions:
   - "La logica che può rompersi estratta fuori dal framework, in una funzione pura e deterministica — ed è quella con più test"
   - "Sottoscrizioni al ciclo di vita rese simmetriche e idempotenti dopo un leak emerso in code review"
 result:
-  - "Una feature che funziona end-to-end su Android e iOS dallo stesso codice applicativo, con la mappa nativa e non una webview"
+  - "Una feature che funziona end-to-end sullo stesso codice applicativo, con la mappa nativa e non una webview: provata in esecuzione su iOS, compilata per Android"
   - "Un log delle decisioni in cui ogni scelta è registrata insieme all'alternativa scartata e al motivo dello scarto"
   - "Una verifica dichiarata per intero: cosa è coperto da test automatici, cosa è stato provato a mano, e cosa non è verificato e perché"
 sections:
@@ -116,7 +122,7 @@ sections:
     summary: "Una sola feature, portata fino in fondo"
   - n: "02"
     title: "Lo scope come processo"
-    summary: "I cinque bivi, e i motivi dello scarto"
+    summary: "I sei bivi, e i motivi dello scarto"
   - n: "03"
     title: "Architettura in una vista"
     summary: "App nativa, gateway mock, contratto condiviso"
@@ -145,6 +151,7 @@ shots:
     caption: "Dettaglio, raggiunto da entrambi i punti d'ingresso"
 shotsNote: "Schermate reali, iOS Simulator. Nessun mockup: sono catture dell'app in esecuzione."
 openItems:
+  - "Su Android è verificata la compilazione, non l'interfaccia in esecuzione: l'emulatore non è mai stato installato, per scelta. Tutte le schermate mostrate vengono dal simulatore iOS"
   - "Animazione dei marker fra un poll e l'altro: stretch goal dichiarato, non implementato"
   - "Nessuna pubblicazione sugli store, nessun signing di produzione"
   - "La verifica è proporzionata a un dimostratore: i test automatici coprono il contratto del gateway e le trasformazioni pure, le build e alcune prove runtime restano manuali"
@@ -152,13 +159,21 @@ openItems:
 thesis: "Senza l'alternativa scartata, una decisione è indistinguibile da un'abitudine."
 ---
 
-Questo è un dimostratore di portfolio, non una consegna a un cliente. La differenza conta, perché cambia cosa ha senso ottimizzare: non il numero di funzionalità accese, ma quanto chiaramente si vede il modo di lavorare.
-
 ## Una feature, fino in fondo
 
 Il caso di partenza elencava tre aree candidate. Ne ho costruita una sola, portandola end-to-end: tracking live dei mezzi su mappa nativa, con due punti d'ingresso — il tap sul marker e la riga dell'elenco — che portano alla stessa pagina di dettaglio, alimentata dalla stessa sorgente in memoria.
 
 Le altre due aree non sono state abbozzate come schermate vuote. Una schermata vuota è una promessa che il codice non mantiene: fa sembrare il prodotto più completo e lo rende meno credibile appena qualcuno la tocca.
+
+## Perché un dimostratore, e non un preventivo
+
+Davanti a una richiesta così, la strada normale è stimare e discutere. Ma stimare una cosa che nessuno ha visto significa discutere di ipotesi, e le ipotesi si difendono male.
+
+Un dimostratore che funziona sposta la conversazione: non si parla più di quanto potrebbe costare, si guarda cosa succede toccando un mezzo sulla mappa e si decide se serve.
+
+C'è però una seconda ragione, e tacerla renderebbe questo pezzo meno utile: **un dimostratore serve anche a convincere.** La stessa richiesta si poteva soddisfare con una web application ordinaria, aperta dal browser del telefono, riusando gran parte di quello che c'era già. L'app nativa non era l'unica strada tecnica: era quella che si vede.
+
+Vale la pena saperlo distinguere, quando si prende una decisione del genere. Non perché sia sbagliato scegliere anche per l'effetto — a volte far vedere è il lavoro — ma perché è una ragione diversa dalle altre, e va messa sul tavolo insieme alle altre invece che nascosta dietro di esse.
 
 ## Le decisioni prima del codice
 
