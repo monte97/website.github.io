@@ -14,7 +14,7 @@ lang: it
 draft: false
 reviewed: true
 series: keycloak
-seriesOrder: 2
+seriesOrder: 20
 summary:
   - label: "Contesto"
     value: "SPA React e API Express delegate a un realm Keycloak unico"

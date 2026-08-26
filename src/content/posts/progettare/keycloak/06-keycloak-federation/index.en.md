@@ -12,7 +12,7 @@ tags:
   - SSO
   - Security
 series: keycloak
-seriesOrder: 15
+seriesOrder: 60
 lang: en
 reviewed: machine
 ---

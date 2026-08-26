@@ -23,6 +23,22 @@ const { project, lang = 'it' } = Astro.props;
 const prefix = lang === 'en' ? '/en' : '';
 const { Content } = await render(project);
 const d = project.data;
+// Le figure vanno accanto al paragrafo che spiegano, non tutte in testa.
+// Il markdown non ospita componenti, ma l'HTML gia' compilato e' una stringa:
+// la taglio sugli <h2> e infilo le figure alla fine della sezione che le dichiara.
+const _html = project.rendered?.html ?? '';
+const _chunks = _html
+  ? _html.split(/(?=<h2[\s>])/).filter((c: string) => c.trim())
+  : [];
+const _idOf = (c: string) => (c.match(/<h2[^>]*id="([^"]+)"/) || [])[1] ?? '';
+const bodyParts = _chunks.map((html: string) => ({ html, id: _idOf(html) }));
+// una figura con `at: "<id-del-titolo>"` esce li'; senza `at`, resta in testa come prima
+const figAt = (name: string) => d[name]?.at ?? null;
+const inline = new Set(
+  ['beforeAfter', 'inventory', 'flow', 'timeline', 'matrix', 'swap']
+    .filter((k) => figAt(k)),
+);
+
 
 // le figure si numerano da sole nell'ordine in cui compaiono:
 // prima decisioni e timeline dicevano entrambe G1 sullo stesso pezzo
@@ -173,18 +189,18 @@ const metaCells = [
         </section>
       )}
 
-      {d.beforeAfter?.rows?.length > 0 && (
+      {!inline.has('beforeAfter') && d.beforeAfter?.rows?.length > 0 && (
         <BeforeAfterFigure figureId={nextFig()} label={d.beforeAfter.label}
           beforeLabel={d.beforeAfter.beforeLabel} afterLabel={d.beforeAfter.afterLabel}
           rows={d.beforeAfter.rows} caption={d.beforeAfter.caption} note={d.beforeAfter.note} />
       )}
 
-      {d.inventory?.items?.length > 0 && (
+      {!inline.has('inventory') && d.inventory?.items?.length > 0 && (
         <InventoryFigure figureId={nextFig()} label={d.inventory.label} items={d.inventory.items}
           legend={d.inventory.legend} caption={d.inventory.caption} note={d.inventory.note} />
       )}
 
-      {d.flow?.nodes?.length > 0 && (
+      {!inline.has('flow') && d.flow?.nodes?.length > 0 && (
         <FlowDiagram figureId={nextFig()} label={d.flow.label} caption={d.flow.caption} nodes={d.flow.nodes} />
       )}
 
@@ -225,17 +241,17 @@ const metaCells = [
       </section>
     )}
 
-    {d.timeline?.steps?.length > 0 && (
+    {!inline.has('timeline') && d.timeline?.steps?.length > 0 && (
       <TimelineFigure figureId={nextFig()} label={d.timeline.label} steps={d.timeline.steps}
         caption={d.timeline.caption} note={d.timeline.note} />
     )}
 
-    {d.matrix && (
+    {!inline.has('matrix') && d.matrix && (
       <MatrixFigure figureId={nextFig()} label={d.matrix.label} columns={d.matrix.columns} rows={d.matrix.rows}
         legend={d.matrix.legend} caption={d.matrix.caption} note={d.matrix.note} />
     )}
 
-    {d.swap && (
+    {!inline.has('swap') && d.swap && (
       <SwapFigure figureId={nextFig()} label={d.swap.label} requested={d.swap.requested} order={d.swap.order}
         requestedLabel={d.swap.requestedLabel} receivedLabel={d.swap.receivedLabel}
         caption={d.swap.caption} note={d.swap.note} />
@@ -247,7 +263,37 @@ const metaCells = [
         prose-headings:tracking-tight
         prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-12 prose-h2:mb-4
         prose-h3:text-lg prose-h3:font-semibold prose-h3:mt-8 prose-h3:mb-3">
-        <Content />
+        {bodyParts.length === 0 && <Content />}
+        {bodyParts.map((part) => (
+          <>
+            <Fragment set:html={part.html} />
+            {d.beforeAfter?.at === part.id && (
+              <BeforeAfterFigure figureId={nextFig()} label={d.beforeAfter.label}
+                beforeLabel={d.beforeAfter.beforeLabel} afterLabel={d.beforeAfter.afterLabel}
+                rows={d.beforeAfter.rows} caption={d.beforeAfter.caption} note={d.beforeAfter.note} />
+            )}
+            {d.inventory?.at === part.id && (
+              <InventoryFigure figureId={nextFig()} label={d.inventory.label} items={d.inventory.items}
+                legend={d.inventory.legend} caption={d.inventory.caption} note={d.inventory.note} />
+            )}
+            {d.flow?.at === part.id && (
+              <FlowDiagram figureId={nextFig()} label={d.flow.label} caption={d.flow.caption} nodes={d.flow.nodes} />
+            )}
+            {d.timeline?.at === part.id && (
+              <TimelineFigure figureId={nextFig()} label={d.timeline.label} steps={d.timeline.steps}
+                caption={d.timeline.caption} note={d.timeline.note} />
+            )}
+            {d.matrix?.at === part.id && (
+              <MatrixFigure figureId={nextFig()} label={d.matrix.label} columns={d.matrix.columns}
+                rows={d.matrix.rows} legend={d.matrix.legend} caption={d.matrix.caption} note={d.matrix.note} />
+            )}
+            {d.swap?.at === part.id && (
+              <SwapFigure figureId={nextFig()} label={d.swap.label} requested={d.swap.requested} order={d.swap.order}
+                requestedLabel={d.swap.requestedLabel} receivedLabel={d.swap.receivedLabel}
+                caption={d.swap.caption} note={d.swap.note} />
+            )}
+          </>
+        ))}
       </article>
     )}
 

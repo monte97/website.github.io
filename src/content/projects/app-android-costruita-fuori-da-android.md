@@ -81,6 +81,7 @@ specs:
     note: "Provato contro un server finto, non contro il sensore"
 
 inventory:
+  at: venti-progetti
   label: "I venti moduli, e l'unico che dichiara la piattaforma"
   items:
     - name: "guida acustica"
@@ -114,6 +115,7 @@ inventory:
     dipendenza resta confinata in metà del problema invece che in tutto.
 
 flow:
+  at: il-modulo-che-non-parla-col-satellite
   label: "Dove passa il confine"
   nodes:
     - kind: "La piattaforma"
@@ -155,6 +157,7 @@ beforeAfter:
     L'ultima riga è quella che rende onesto il quadro: questa forma non elimina il
     rischio, lo sposta da dove costava di più a dove si può guardare tutto insieme.
 matrix:
+  at: il-prezzo-di-venti-build
   label: "Dove vive il codice, per cinque moduli su venti"
   columns: ["Logica", "Interfaccia", "Piattaforma"]
   rows:

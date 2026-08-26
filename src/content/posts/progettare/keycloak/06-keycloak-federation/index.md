@@ -14,7 +14,7 @@ tags:
 lang: it
 draft: false
 series: keycloak
-seriesOrder: 15
+seriesOrder: 60
 summary:
   - label: "Problema"
     value: "Identità frammentate: AD aziendale, social login dei clienti, partner su Okta"

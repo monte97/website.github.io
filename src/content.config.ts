@@ -75,6 +75,7 @@ const projects = defineCollection({
     readingNote: z.string().optional(),      // come leggere il documento
     // Percorso del dato / architettura — resa come catena di nodi
     flow: z.object({
+      at: z.string().optional(),   // id del titolo h2 dopo cui esce la figura
       label: z.string().optional(),
       caption: z.string().optional(),
       nodes: z.array(z.object({
@@ -97,6 +98,7 @@ const projects = defineCollection({
     decisionsNote: z.string().optional(),  // il filo che tiene insieme i bivi
     // Figura: matrice di copertura, con le caselle vuote in evidenza
     inventory: z.object({
+      at: z.string().optional(),   // id del titolo h2 dopo cui esce la figura
       label: z.string().optional(),
       items: z.array(z.object({ name: z.string(), mark: z.boolean().default(false) })),
       legend: z.object({ plain: z.string().optional(), mark: z.string().optional() }).optional(),
@@ -104,6 +106,7 @@ const projects = defineCollection({
       note: z.string().optional(),
     }).optional(),
     beforeAfter: z.object({
+      at: z.string().optional(),   // id del titolo h2 dopo cui esce la figura
       label: z.string().optional(),
       beforeLabel: z.string().optional(),
       afterLabel: z.string().optional(),
@@ -116,6 +119,7 @@ const projects = defineCollection({
       note: z.string().optional(),
     }).optional(),
     timeline: z.object({
+      at: z.string().optional(),   // id del titolo h2 dopo cui esce la figura
       label: z.string().optional(),
       steps: z.array(z.object({
         kind: z.string().optional(),
@@ -127,6 +131,7 @@ const projects = defineCollection({
       note: z.string().optional(),
     }).optional(),
     matrix: z.object({
+      at: z.string().optional(),   // id del titolo h2 dopo cui esce la figura
       label: z.string().optional(),
       columns: z.array(z.string()),
       rows: z.array(z.object({
@@ -144,6 +149,7 @@ const projects = defineCollection({
     }).optional(),
     // Figura: disallineamento fra ordine chiesto e ordine ricevuto
     swap: z.object({
+      at: z.string().optional(),   // id del titolo h2 dopo cui esce la figura
       label: z.string().optional(),
       requestedLabel: z.string().optional(),
       receivedLabel: z.string().optional(),

@@ -13,7 +13,7 @@ tags:
 lang: en
 reviewed: machine
 series: keycloak
-seriesOrder: 2
+seriesOrder: 20
 ---
 
 Keycloak configured, realm created, client registered. The next step is wiring a React frontend and an Express backend to the Identity Provider. The [introductory article]({{< ref "/blog/progettare/keycloak/01-keycloak-intro/" >}}) covers the concept of delegating authentication. This one implements the practical piece.
