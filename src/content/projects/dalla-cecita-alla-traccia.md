@@ -17,10 +17,10 @@ metodo: >
   Strumentazione automatica per default, un collector locale verso uno stack di
   osservabilità già esistente, rollout per fasi a partire dal percorso critico del dato.
 esito: >
-  Il percorso critico del dato e' strumentato senza toccare la logica applicativa: agent e
-  wrapper al posto del codice. Le tracce si sono rivelate gia' collegate attraverso i
+  Il percorso critico del dato è strumentato senza toccare la logica applicativa: agent e
+  wrapper al posto del codice. Le tracce si sono rivelate già collegate attraverso i
   topic, quindi sei modifiche pianificate non sono state fatte, non rinviate: dimostrate
-  non necessarie. Il resto del sistema e' dichiarato fuori perimetro.
+  non necessarie. Il resto del sistema è dichiarato fuori perimetro.
 anonimizzazione: >
   Committente, fornitori telematici e settore sono omessi; i servizi sono indicati con il
   loro ruolo, non con il loro nome.

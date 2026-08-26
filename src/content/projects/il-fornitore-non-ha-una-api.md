@@ -17,9 +17,9 @@ metodo: >
   a un browser headless e rinnovo del token via HTTP, mappatura per nome e non per
   posizione, perimetro limitato alla sola lettura.
 esito: >
-  I dati arrivano nel gestionale senza piu' trascrizioni manuali, e l'integrazione gira
-  ancora: il portale del costruttore e' rimasto quello, perche' e' specifico per quelle
-  macchine e cambiarlo costerebbe troppo. Lungo la strada e' emerso che l'endpoint
+  I dati arrivano nel gestionale senza più trascrizioni manuali, e l'integrazione gira
+  ancora: il portale del costruttore è rimasto quello, perché è specifico per quelle
+  macchine e cambiarlo costerebbe troppo. Lungo la strada è emerso che l'endpoint
   riordinava le risposte, e per due settimane i valori sono finiti nella colonna sbagliata
   senza produrre un solo errore.
 anonimizzazione: >

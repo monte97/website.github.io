@@ -21,7 +21,7 @@ esito: >
   Le configurazioni supportate sono diventate un elenco scritto, e «verde» ha smesso di
   significare tre cose diverse. Il lavoro ha rivelato controlli che dichiaravano successo
   senza aver verificato nulla e configurazioni senza alcun controllo. Il risultato
-  consegnato non e' una copertura piu' alta: e' la mappa di dove sono i buchi, e quanto
+  consegnato è la mappa di dove sono i buchi, e quanto
   costa ogni riga.
 anonimizzazione: >
   Cliente e settore sono sostituiti; lo stack è quello reale. Restano fuori i nomi dei
@@ -246,7 +246,7 @@ Era ragionevole quanto le altre, tecnicamente fattibile in pochi giorni, e chied
 
 La risposta al cliente non fu no. Fu che quella combinazione si poteva avere accostandola a una riga che esisteva già, rinunciando a un dettaglio che nella pratica non gli cambiava la giornata. Il cliente accettò senza pensarci troppo: era un dettaglio, per l'appunto. Nessuno l'aveva mai potuto proporre prima, perché prima nessuno sapeva che l'alternativa costava una riga in più per sempre.
 
-E questa non è rimasta una volta sola. È diventato il modo di lavorare: davanti a una richiesta si guarda se ricade in qualcosa che esiste già, o se ci si può far ricadere adattandola. Non è dire di no: è **smettere di dire sì per riflesso**, che è una cosa diversa e molto più difendibile al tavolo.
+E questa non è rimasta una volta sola. È diventato il modo di lavorare: davanti a una richiesta si guarda se ricade in qualcosa che esiste già, o se ci si può far ricadere adattandola. È **smettere di dire sì per riflesso**, che non è dire di no ed è una cosa diversa e molto più difendibile al tavolo.
 
 La frase che riassume tutto non l'ha detta un cliente: è uscita in una revisione interna, dal team che quel prodotto lo installa.
 

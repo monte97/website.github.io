@@ -19,11 +19,11 @@ metodo: >
   dietro: una che replica deliberatamente il comportamento vecchio, una vuota, una nuova, e un flag che decide chi risponde. Le tuple OpenFGA si sintetizzano da ciò che il
   sistema già sa: nessun record migrato, nessun cutover notturno.
 esito: >
-  L'autorizzazione per singola risorsa e' diventata esprimibile in OpenFGA: da tre ruoli
+  L'autorizzazione per singola risorsa è diventata esprimibile in OpenFGA: da tre ruoli
   globali a un'ottantina di relazioni su sei tipi: senza migrare un solo record, e con la
-  possibilita' di ricostruire a posteriori chi vedeva cosa. Il percorso vecchio e' stato
+  possibilità di ricostruire a posteriori chi vedeva cosa. Il percorso vecchio è stato
   rimosso dopo il periodo di doppia modalita': i permessi vecchi non erano dati, erano condizioni sparse nel codice. Il
-  percorso precedente resta attivo dietro un flag, ed e' la parte onesta del risultato.
+  percorso precedente resta attivo dietro un flag, ed è la parte onesta del risultato.
 anonimizzazione: >
   Il dominio è sostituito: piattaforma di gestione cantieri edili al posto di quello
   reale. Il direttore lavori è un personaggio composito di richieste arrivate in momenti
@@ -185,7 +185,7 @@ Dopo due giorni il piano è cambiato, e non perché quello vecchio avesse smesso
 
 Il passaggio che cambia tutto è corto da dirsi.
 
-**In un modello ReBAC un permesso è una relazione fra una persona e una cosa specifica, non una proprietà di chi sei.** Non «subappaltatore» come chiave universale, ma «questa persona, su questo capitolato, può vedere». La differenza è concreta: una frase che il sistema sa pronunciare, contro una che non sa. In numeri: si passa da **tre ruoli globali** a **una ottantina di relazioni distribuite su sei tipi di oggetto**. Non è complessità aggiunta per gusto: è il vocabolario che serviva per rispondere a quella richiesta di dieci parole.
+**In un modello ReBAC un permesso è una relazione fra una persona e una cosa specifica, non una proprietà di chi sei.** Non «subappaltatore» come chiave universale, ma «questa persona, su questo capitolato, può vedere». La differenza è concreta: una frase che il sistema sa pronunciare, contro una che non sa. In numeri: si passa da **tre ruoli globali** a **una ottantina di relazioni distribuite su sei tipi di oggetto**. È il vocabolario che serviva per rispondere a quella richiesta di dieci parole, non complessità aggiunta per gusto.
 
 Il modello OpenFGA (chi è collegato a cosa, e attraverso quali catene di tupla) l'ho imparato e raccontato nella [serie sui concetti di Zanzibar](/blog/verificare/openfga/01-zanzibar-concetti/), quindi qui non lo rispiego: la serie lo fa meglio, e questo pezzo parla d'altro. Parla di come si introduce quella forma in un sistema che ha gente dentro adesso.
 

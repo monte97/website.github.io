@@ -21,9 +21,9 @@ metodo: >
 esito: >
   Una feature portata end-to-end dallo stesso codice, con mappa nativa: eseguita e vista
   funzionare su iOS, compilata per Android.
-  Ogni bivio e' registrato con l'alternativa scartata, e la verifica e' dichiarata per
-  intero: cosa e' coperto da test, cosa e' stato provato a mano, cosa non e' verificato e
-  perche'.
+  Ogni bivio è registrato con l'alternativa scartata, e la verifica è dichiarata per
+  intero: cosa è coperto da test, cosa è stato provato a mano, cosa non è verificato e
+  perché.
 anonimizzazione: >
   Il committente non è nominato. Il dimostratore non tocca le API né i dati del prodotto:
   il flusso è generato in locale, perché serviva mostrare la forma della cosa, non la cosa.
