@@ -28,7 +28,7 @@ anonimizzazione: >
   servizi, gli indirizzi, gli esiti attesi e il numero delle configurazioni: l'elenco
   completo è l'inventario delle varianti che il cliente vende, e non è mio.
 problem: >
-  Il prodotto è lo stesso ovunque. A rompersi non è l'applicazione, è l'installazione — e
+  Il prodotto è lo stesso ovunque. A rompersi è l'installazione, non l'applicazione — e
   nessuno sapeva quante installazioni diverse esistessero, perché non erano scritte da
   nessuna parte.
 context: >
@@ -175,11 +175,11 @@ Questo sposta il problema in un posto scomodo. Un test sul prodotto lo lanci sul
 
 La forma che ha retto è più semplice di quanto sembri.
 
-Un solo file YAML elenca le configurazioni supportate. Non è codice: è un elenco. Per ogni riga, quali moduli ci sono, come arrivano le utenze, cosa deve rispondere e a che livello.
+Un solo file YAML elenca le configurazioni supportate. È un elenco, non codice. Per ogni riga, quali moduli ci sono, come arrivano le utenze, cosa deve rispondere e a che livello.
 
 Quel file viene letto da **due esecutori diversi**. Il primo è uno smoke test in shell che non installa niente: serve dove non puoi installare, ambienti chiusi, macchine di qualcun altro, situazioni in cui hai il permesso di guardare e non di toccare. Il secondo è una suite pytest che porta su l'ambiente con Ansible, da zero, e poi guarda cosa succede.
 
-La parte che conta non è nessuno dei due esecutori: è che **leggono la stessa fonte**. Due elenchi separati, uno per esecutore, sarebbero stati più semplici da scrivere e avrebbero divergito nel giro di qualche mese senza che nessuno se ne accorgesse — perché due elenchi che divergono non producono nessun errore, producono due verdi.
+La parte che conta è che **leggono la stessa fonte**. Due elenchi separati, uno per esecutore, sarebbero stati più semplici da scrivere e avrebbero divergito nel giro di qualche mese senza che nessuno se ne accorgesse — perché due elenchi che divergono non producono nessun errore, producono due verdi.
 
 ## Il rosso che aveva torto
 
@@ -219,7 +219,7 @@ Il prodotto utile di questo lavoro non è la copertura: **è la mappa dei buchi*
 
 ## Chi può fare il lavoro, adesso
 
-Il primo effetto non è stato sulla qualità: è stato su **chi può fare il lavoro**.
+Il primo effetto è stato su **chi può fare il lavoro**.
 
 Con le configurazioni scritte e i controlli dichiarati, non serve più ricordarsi se un caso è nuovo o già visto: si guarda. E persone con meno anzianità hanno cominciato a gestire installazioni che prima richiedevano qualcuno che «se le ricordava» — comprese quelle figure non tecniche il cui mestiere è preparare l'ambiente, che davanti a un errore adesso hanno un posto dove cercare.
 

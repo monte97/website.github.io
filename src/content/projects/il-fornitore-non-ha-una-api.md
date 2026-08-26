@@ -181,7 +181,7 @@ E qui comincia il lavoro vero, che non è tecnico: decidere se questa cosa si fa
 
 La prima cosa che ho provato è la prima che prova chiunque: prendere l'indirizzo del portale, cercare un endpoint di autenticazione, mandargli utente e password.
 
-Non funziona. Il password grant OAuth2 è disabilitato sull'endpoint OIDC — il server risponde che il client non è abilitato agli accessi diretti — non per una configurazione sbagliata, per una scelta di chi ha montato il sistema. E la pagina di login non è una pagina: è un'applicazione JavaScript SPA. Non c'è un form da inviare, c'è del codice che parla con un endpoint OIDC.
+Non funziona. Il password grant OAuth2 è disabilitato sull'endpoint OIDC — il server risponde che il client non è abilitato agli accessi diretti — non per una configurazione sbagliata, per una scelta di chi ha montato il sistema. E la pagina di login è un'applicazione JavaScript a pagina singola, non un documento da compilare e spedire. Non c'è un form da inviare, c'è del codice che parla con un endpoint OIDC.
 
 Ho passato qualche ora a provare varianti. È il punto in cui è facile perdere una settimana: ogni tentativo è abbastanza vicino al successo da far credere che manchi un dettaglio.
 
@@ -223,7 +223,7 @@ Se avessi scritto dei test su quell'integrazione — e ne avevo — sarebbero st
 
 Solo il sistema vero riordina. Solo il sistema vero si comporta in un modo che non avevi previsto — perché se l'avessi previsto, l'avresti già gestito.
 
-Non è un argomento contro i test, è un argomento su cosa provano. Un'integrazione con un sistema di terzi ha una classe di errori che vive interamente nello spazio fra quello che credi che l'altro faccia e quello che l'altro fa. Quello spazio si copre in un modo solo: guardando i dati veri e chiedendosi se hanno senso. Da noi ha funzionato un controllo di coerenza fisica — ore di funzionamento che devono stare in un certo rapporto con i cicli — non un test.
+È un argomento su cosa i test provano, non contro i test. Un'integrazione con un sistema di terzi ha una classe di errori che vive interamente nello spazio fra quello che credi che l'altro faccia e quello che l'altro fa. Quello spazio si copre in un modo solo: guardando i dati veri e chiedendosi se hanno senso. Da noi ha funzionato un controllo di coerenza fisica — ore di funzionamento che devono stare in un certo rapporto con i cicli — non un test.
 
 ## Dove finisce il lavoro
 
@@ -233,7 +233,7 @@ Poggia su un'osservazione. Non su un contratto, non su una documentazione, non s
 
 Questo non rende il lavoro sbagliato. Lo rende **una cosa che va dichiarata per quello che è**, e la scelta successiva discende da lì: non ho costruito sorveglianza, non ho promesso continuità, non ho lasciato credere che fosse un'integrazione come le altre. Ho scritto quanto durerà, per quanto ne so, e cosa succede quando finirà.
 
-Il modo elegante di chiudere questa storia, del resto, non è tecnico: è **chiedere al costruttore se un'interfaccia ufficiale esiste**. Costa una mail, e toglierebbe di mezzo sia l'osservazione sia il browser. È rimasto fra le cose da fare, ed è la prima.
+Il modo elegante di chiudere questa storia, del resto, è **chiedere al costruttore se un'interfaccia ufficiale esiste**. Costa una mail, e toglierebbe di mezzo sia l'osservazione sia il browser. È rimasto fra le cose da fare, ed è la prima.
 
 ## Il deliverable non era il codice
 
@@ -245,7 +245,7 @@ Ma la cosa che ho consegnato con più cura non è l'integrazione.
 
 È scritto per qualcuno a cui non sarò io a spiegarlo. Perché un'integrazione basata sull'osservazione di un sistema di terzi ha una data di scadenza che nessuno conosce: il giorno che il costruttore aggiorna il portale qualcosa smette di funzionare, e in quel momento la differenza fra un problema di mezza giornata e una riscrittura da zero è tutta lì dentro.
 
-Il cambiamento che si vede non è nei numeri: è nella fiducia. Il sistema dà riscontro mentre le cose accadono, e quello che viene prodotto si guarda quasi in tempo reale — serve a chi noleggia per sapere come stanno andando le macchine, e serve al cliente finale che ha un resoconto continuo invece di un consuntivo alla fine.
+Il cambiamento che si vede sta nella fiducia, non nei numeri. Il sistema dà riscontro mentre le cose accadono, e quello che viene prodotto si guarda quasi in tempo reale — serve a chi noleggia per sapere come stanno andando le macchine, e serve al cliente finale che ha un resoconto continuo invece di un consuntivo alla fine.
 
 E c'è una conseguenza che vale più della comodità: **i dati non vengono prodotti quando servono, vengono costruiti volta per volta secondo un processo definito.** È la differenza fra un numero che qualcuno ricostruisce a posteriori e un numero che c'era già prima che nascesse la discussione. Quando arriva una controversia, quella differenza è tutto.
 

@@ -134,7 +134,7 @@ result:
 esito: >
   Le panoramiche dello strumento e le fotografie scattate in cantiere vivono nello stesso
   archivio e nella stessa navigazione, in locale e senza dipendere da un abbonamento
-  attivo. Lo strumento è in uso quotidiano: non è un dimostratore, è il posto dove quelle
+  attivo. Lo strumento è in uso quotidiano, ed è il posto dove quelle
   persone vanno a guardare com'era un ambiente.
 openItems:
   - "L'archivio locale vive dove è stato messo: la conservazione nel tempo — copie, supporti, chi se ne occupa — resta una questione aperta che nessuno strumento risolve"
@@ -155,7 +155,7 @@ I rilievi tridimensionali dei cantieri finivano su un servizio in abbonamento: v
 
 Le fotografie panoramiche non sparivano: restavano dall'altra parte, irraggiungibili. E l'alternativa al perderle era pagare un canone per ogni modello dormiente, all'infinito, solo per continuare a guardare le proprie immagini.
 
-Una memoria visiva ha senso se dura più del progetto che l'ha generata. Altrimenti non è un archivio: è un servizio, e si paga come tale.
+Una memoria visiva ha senso se dura più del progetto che l'ha generata. Altrimenti quello che hai è un servizio, non un archivio, e si paga come tale.
 
 ## Prima, non quando
 
@@ -177,7 +177,7 @@ La forma che è rimasta tratta l'interruzione come condizione normale. Un job al
 
 A estrazione finita, quello che si consulta non tocca più il servizio. La galleria organizza le panoramiche per piano e stanza, con filtri e anteprime a 360 gradi. Piani, stanze e singole posizioni possono essere rinominati con nomi che hanno un significato per chi li usa — come overlay, senza toccare gli originali, che restano lì sotto come fallback. Le annotazioni si piantano sulle coordinate sferiche del panorama, con etichetta e descrizione. E per ogni piano nasce un virtual tour: ogni panorama diventa un nodo, e i collegamenti fra nodi vengono calcolati automaticamente dai vicini più prossimi sulle posizioni reali degli sweep. Si cammina negli ambienti.
 
-Quello che si conserva, insomma, non è una cartella di immagini: è la possibilità di muoversi negli spazi. Ed è questa la differenza fra possedere i dati e poterglieli usare — la stessa che decide se disattivare un modello è un risparmio o un lutto.
+Quello che si conserva, insomma, è la possibilità di muoversi in quegli spazi, non una cartella di immagini. Ed è questa la differenza fra possedere i dati e poterglieli usare — la stessa che decide se disattivare un modello è un risparmio o un lutto.
 
 ## Il confine dichiarato
 
@@ -185,11 +185,11 @@ Ci sono due cose che questo strumento non fa.
 
 La prima: non tocca il ciclo di vita dei modelli. Disattivazione e riattivazione restano sul portale del fornitore, perché là dentro c'è una relazione commerciale, non un'operazione tecnica. Automatizzare quel pulsante avrebbe chiuso il cerchio — e sarebbe stato un bottone in mano sbagliata.
 
-La seconda: non dice nulla sui termini di servizio. Che cosa sia lecito, per quale piano, con quali limiti d'uso: dipende dal contratto e dal tipo di account, va verificato caso per caso, e questo pezzo non li interpreta. Il perimetro tecnico — porte ufficiali, modello attivo, credenziali proprie — non è un parere legale: è il modo in cui lo strumento è stato costruito.
+La seconda: non dice nulla sui termini di servizio. Che cosa sia lecito, per quale piano, con quali limiti d'uso: dipende dal contratto e dal tipo di account, va verificato caso per caso, e questo pezzo non li interpreta. Il perimetro tecnico — porte ufficiali, modello attivo, credenziali proprie — descrive il modo in cui lo strumento è stato costruito, e non sostituisce un parere legale.
 
 Resta infine il costo silenzioso di ogni archivio: mantenerlo. Spazio, backup, longevità dei supporti. La dipendenza dal servizio di terzi non sparisce: si sostituisce con una dipendenza da sé stessi, che almeno si può gestire.
 
-**Con un servizio di terzi, la domanda non è se uscirà di scena: è cosa vorresti avere in mano quel giorno. E quella risposta si costruisce mentre funziona ancora.**
+**Con un servizio di terzi, prima o poi esce di scena: la domanda è cosa vorresti avere in mano quel giorno. E quella risposta si costruisce mentre funziona ancora.**
 
 ---
 

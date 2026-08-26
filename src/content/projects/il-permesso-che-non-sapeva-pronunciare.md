@@ -136,7 +136,7 @@ openItems:
 cta:
   title: "Quante volte avete detto «con i ruoli non si può fare»?"
   desc: >
-    Se la risposta è più di una, il problema non è il permesso che manca: è che il modello
+    Se la risposta è più di una, il problema è che il modello
     dei permessi è stato disegnato quando gli utenti erano pochi e si conoscevano tutti.
     Capire se si può cambiare senza fermare il sistema è un lavoro delimitato.
 thesis: "Un seam è un posto dove si abita per un periodo, e poi si smonta: saperci stare senza fretta vale più di una migrazione lampo."
@@ -162,7 +162,7 @@ Quindici anni prima erano la scelta giusta, e non con occhio benevolo: con i cri
 
 C'è però una seconda ragione, ed è meno comoda della prima. Quel modello dei permessi era stato disegnato durante l'analisi dei requisiti da persone che non erano quelle che poi avrebbero usato il prodotto, e senza coinvolgere tutti quelli che andavano coinvolti. Succede quasi sempre, e si paga anni dopo. Quando la richiesta del direttore lavori è arrivata, non stava scoprendo un limite del software — stava dicendo per la prima volta una cosa che nessuno aveva mai chiesto a chi di dovere.
 
-Per anni quella forma ha retto, e ha retto bene. È una decisione presa quando il costo di quella forma era zero, e quel costo è cresciuto piano, un cantiere alla volta, senza mai presentare la fattura. Chi ha scelto tre ruoli globali ha fatto quello che si faceva. Il problema non è quello che hanno deciso: è che il mondo intorno è cambiato senza che nessuna singola modifica sembrasse giustificare una riscrittura.
+Per anni quella forma ha retto, e ha retto bene. È una decisione presa quando il costo di quella forma era zero, e quel costo è cresciuto piano, un cantiere alla volta, senza mai presentare la fattura. Chi ha scelto tre ruoli globali ha fatto quello che si faceva. Il problema è che il mondo intorno è cambiato senza che nessuna singola modifica sembrasse giustificare una riscrittura.
 
 ## Il ruolo che funziona sempre
 
@@ -186,21 +186,21 @@ Dopo due giorni il piano è cambiato, e non perché quello vecchio avesse smesso
 
 Il passaggio che cambia tutto è corto da dirsi.
 
-**Un permesso in un modello ReBAC non è un attributo di chi sei: è una relazione fra te e una cosa specifica.** Non «subappaltatore» come chiave universale, ma «questa persona, su questo capitolato, può vedere». La differenza non è filosofica: è la differenza fra una frase che il sistema sa pronunciare e una che non sa. In numeri: si passa da **tre ruoli globali** a **una ottantina di relazioni distribuite su sei tipi di oggetto**. Non è complessità aggiunta per gusto — è il vocabolario che serviva per rispondere a quella richiesta di dieci parole.
+**In un modello ReBAC un permesso è una relazione fra una persona e una cosa specifica, non una proprietà di chi sei.** Non «subappaltatore» come chiave universale, ma «questa persona, su questo capitolato, può vedere». La differenza è concreta: una frase che il sistema sa pronunciare, contro una che non sa. In numeri: si passa da **tre ruoli globali** a **una ottantina di relazioni distribuite su sei tipi di oggetto**. Non è complessità aggiunta per gusto — è il vocabolario che serviva per rispondere a quella richiesta di dieci parole.
 
 Il modello OpenFGA — chi è collegato a cosa, e attraverso quali catene di tupla — l'ho imparato e raccontato nella [serie sui concetti di Zanzibar](/blog/verificare/openfga/01-zanzibar-concetti/), quindi qui non lo rispiego: la serie lo fa meglio, e questo pezzo parla d'altro. Parla di come si introduce quella forma in un sistema che ha gente dentro adesso.
 
 ## L'ostacolo vero
 
-Perché non si butta giù il nuovo modello, si collega, e si cambia? Perché il sistema non è un esercizio: è vivo. Ha gente dentro adesso — direttore lavori, progettisti, operativi, ora anche subappaltatori — che apre la piattaforma ogni mattina per lavorare. Non c'è una versione di laboratorio su cui provare, non c'è il permesso di sbagliare, e non c'è una finestra in cui «per un'ora il sistema fa i capricci» sia una frase accettabile.
+Perché non si butta giù il nuovo modello, si collega, e si cambia? Perché il sistema è vivo. Ha gente dentro adesso — direttore lavori, progettisti, operativi, ora anche subappaltatori — che apre la piattaforma ogni mattina per lavorare. Non c'è una versione di laboratorio su cui provare, non c'è il permesso di sbagliare, e non c'è una finestra in cui «per un'ora il sistema fa i capricci» sia una frase accettabile.
 
 L'ostacolo vero, quindi, non era modellare le relazioni. Era **come si cambia la serratura senza chiudere la porta**.
 
 La forma che ha retto è un seam: un unico punto di controllo davanti a tutte le domande «può?», con tre implementazioni dietro la stessa interfaccia.
 
-La prima **replica deliberatamente il comportamento vecchio**: guarda il ruolo globale dell'utente e risponde esattamente come avrebbe risposto il codice di ieri — stesse risposte, stessi angoli ciechi, perché in questa fase l'obiettivo non è essere migliori, è essere identici. La seconda **non fa nulla**: serve a misurare cosa succede quando nessuno risponde, e a scoprire quanti punti del sistema chiedano davvero il permesso senza che nessuno lo sappia. La terza è quella **nuova**, che interroga le relazioni.
+La prima **replica deliberatamente il comportamento vecchio**: guarda il ruolo globale dell'utente e risponde esattamente come avrebbe risposto il codice di ieri — stesse risposte, stessi angoli ciechi, perché in questa fase l'obiettivo è essere identici, non migliori. La seconda **non fa nulla**: serve a misurare cosa succede quando nessuno risponde, e a scoprire quanti punti del sistema chiedano davvero il permesso senza che nessuno lo sappia. La terza è quella **nuova**, che interroga le relazioni.
 
-Un flag decide chi risponde. Girare il flag non è un deploy: è una scelta di traffico, reversibile in un istante, che si fa prima per un utente, poi per uno scenario, poi per tutti. Come si tiene aperta una strada mentre se costruisce una parallela l'ho già raccontato parlando di [identità e permessi che devono parlarsi senza invadere il territorio dell'altro](/blog/verificare/openfga/02-openfga-keycloak/); qui il meccanismo è lo stesso, applicato a un sistema che non si può fermare.
+Un flag decide chi risponde. Girare il flag è una scelta di traffico, non un deploy: reversibile in un istante, che si fa prima per un utente, poi per uno scenario, poi per tutti. Come si tiene aperta una strada mentre se costruisce una parallela l'ho già raccontato parlando di [identità e permessi che devono parlarsi senza invadere il territorio dell'altro](/blog/verificare/openfga/02-openfga-keycloak/); qui il meccanismo è lo stesso, applicato a un sistema che non si può fermare.
 
 Il costo di quella scelta si misura: il motore nuovo sta in **circa ottocento righe**, la replica del comportamento vecchio in **meno di duecento**. Un quinto dello sforzo per non rompere niente mentre il resto cambia — ed è la voce che non entra mai in nessun preventivo, perché non produce niente di visibile.
 
@@ -218,7 +218,7 @@ I permessi vecchi non erano dati: erano `if` sparsi nel codice. Alcune decine di
 
 E questo ribalta il problema, nel senso buono. Le relazioni nuove non si trasferiscono: **si sintetizzano** da ciò che il sistema già sa. Chi lavora su quale ordine di lavoro, chi è responsabile di quale cantiere, chi ha toccato per ultimo quale capitolato: quelle informazioni esistevano già, da quindici anni, usate per decine di scopi che non erano i permessi. Bastava leggerle come relazioni.
 
-La differenza fra sintetizzare e migrare non è tecnica, è di rischio. Un record migrato sbagliato resta scritto: è una verità congelata che nessuno ricalcola, e la scopri quando qualcuno non riesce a lavorare. Una sintesi sbagliata si ricalcola: correggi la regola, e la prossima risposta è giusta. Su un sistema vivo, questa differenza è tutto.
+La differenza fra sintetizzare e migrare sta nel rischio. Un record migrato sbagliato resta scritto: è una verità congelata che nessuno ricalcola, e la scopri quando qualcuno non riesce a lavorare. Una sintesi sbagliata si ricalcola: correggi la regola, e la prossima risposta è giusta. Su un sistema vivo, questa differenza è tutto.
 
 ## Il prezzo dell'unione
 
@@ -228,7 +228,7 @@ Poi arriva la prima richiesta del tipo: «questo utente **non** deve».
 
 Il subappaltatore del cantiere 12, appunto — o il suo equivalente del mese successivo. E negare è la cosa che l'unione non sa fare, perché negando rompi la proprietà più bella del modello: che ogni risposta si spiega guardando le relazioni in gioco. Con un'eccezione in mezzo, **non si ragiona più per somma**, e la domanda «perché lui non può?» smette di avere una risposta locale: la risposta vive in una regola speciale, non in una relazione.
 
-Non è un difetto che si aggiusta con un filtro: è una scelta di forma, e va fatta sapendo quello che si lascia. Delle gerarchie che si complicano e delle query che smettono di risolversi guardando solo il vicinato ho scritto in [gerarchie profonde e query inverse](/blog/verificare/openfga/04-gerarchie-query/); è lo stesso confine, visto dal lato delle prestazioni. Qui il conto si paga in espressività: guadagni un vocabolario che finalmente sa pronunciare la frase del direttore lavori, e perdi la semplicità di un mondo dove tutto era unione.
+È una scelta di forma, non un difetto che si aggiusta con un filtro, e va fatta sapendo quello che si lascia. Delle gerarchie che si complicano e delle query che smettono di risolversi guardando solo il vicinato ho scritto in [gerarchie profonde e query inverse](/blog/verificare/openfga/04-gerarchie-query/); è lo stesso confine, visto dal lato delle prestazioni. Qui il conto si paga in espressività: guadagni un vocabolario che finalmente sa pronunciare la frase del direttore lavori, e perdi la semplicità di un mondo dove tutto era unione.
 
 Lo scrivo perché è il prezzo vero, ed è meglio saperlo prima. Chi vende il modello a relazioni come «stesso servizio, funzioni in più» sta vendendo anche questo, senza dirlo.
 
@@ -258,7 +258,7 @@ Due cose, e la seconda non me l'aspettavo.
 
 La prima è quella per cui il lavoro è nato: si definiscono varianti mirate — questa persona, su questo cantiere, con questo capitolato — che con i ruoli non erano semplicemente scomode da scrivere, erano **non rappresentabili**. Non esisteva una combinazione di ruoli che le esprimesse.
 
-La seconda è arrivata come conseguenza, e vale per un pubblico diverso: **si può ricostruire a posteriori chi vedeva cosa in un dato momento.** Con tre ruoli globali quella domanda non aveva risposta — l'unica ricostruzione possibile era chiedere a qualcuno se si ricordava. Con le relazioni la risposta è un'interrogazione. Non è una funzionalità che qualcuno aveva chiesto: è quello che succede quando i permessi smettono di essere una proprietà delle persone e diventano fatti registrati.
+La seconda è arrivata come conseguenza, e vale per un pubblico diverso: **si può ricostruire a posteriori chi vedeva cosa in un dato momento.** Con tre ruoli globali quella domanda non aveva risposta — l'unica ricostruzione possibile era chiedere a qualcuno se si ricordava. Con le relazioni la risposta è un'interrogazione. Nessuno l'aveva chiesta: è quello che succede quando i permessi smettono di essere una proprietà delle persone e diventano fatti registrati.
 
 C'è chi leggerà una migrazione durata così come un lavoro fatto lentamente. Lo capisco, e la mia risposta è che **la lentezza era il metodo, non il sintomo**: il vecchio raggiungibile finché è servito, il nuovo sotto osservazione finché non ha smesso di sorprendere, e il flag in mano a chi risponde dei sistemi vivi. Un seam è un posto dove si abita per un periodo, e poi si smonta.
 

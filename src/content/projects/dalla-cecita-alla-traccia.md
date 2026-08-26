@@ -104,7 +104,7 @@ cta:
   title: "Sapete dire, adesso, dove si è fermato un dato che non è arrivato?"
   desc: >
     Se la risposta richiede di aprire i log di quattro servizi e incrociarli a mano, il
-    problema non è il guasto: è che «non è arrivato niente» e «l'abbiamo perso» hanno lo
+    problema è che «non è arrivato niente» e «l'abbiamo perso» hanno lo
     stesso aspetto. Strumentare il percorso critico è un lavoro delimitato.
 thesis: "La verifica prima del codice non è prudenza generica: vale quando l'alternativa è codice permanente in punti di passaggio. Un paio d'ore di controllo contro sei file da mantenere."
 ---
@@ -207,7 +207,7 @@ Anche la correlazione fra log e tracce è arrivata senza codice: l'iniezione di 
 
 ## Cosa è cambiato per chi usa il software
 
-Il riscontro non è arrivato da un cruscotto: è arrivato da chi il software lo usa tutti i giorni.
+Il riscontro è arrivato da chi il software lo usa tutti i giorni, non da un cruscotto.
 
 **I tempi per ricevere una correzione si sono ridotti in modo evidente, e le correzioni stesse sono migliorate.** Non è un effetto misterioso: quando una segnalazione arriva, la domanda «dove si è fermato» ha una risposta in minuti invece che in mezze giornate, e la correzione parte dal punto giusto invece che dal punto più probabile.
 

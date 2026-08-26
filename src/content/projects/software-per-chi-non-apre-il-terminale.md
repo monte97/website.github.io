@@ -143,11 +143,11 @@ Chi usa questo strumento passa la giornata fra CloudCompare, QGIS e i software d
 
 ## Il sistema operativo non ti conosce
 
-Il primo incontro con il programma non è la sua interfaccia: è una schermata blu di SmartScreen che dice che Windows ha protetto il PC. Poi magari un antivirus che blocca il download delle librerie. Poi la richiesta dei permessi di amministratore.
+Il primo incontro con il programma è una schermata blu di SmartScreen che dice che Windows ha protetto il PC. Poi magari un antivirus che blocca il download delle librerie. Poi la richiesta dei permessi di amministratore.
 
 Nessuno di questi avvisi si toglie con la buona volontà: il launcher è un file `.bat` scaricato da internet, senza firma digitale, ed è trattato di conseguenza. La scelta è stata dichiarare il problema dentro il prodotto: la documentazione dedica una sezione a ogni avviso, dice che sono normali, mostra cosa cliccare, e offre qualcosa di più raro — un modo per verificare da soli che non c'è niente di losco. Il launcher è un file di testo: tasto destro, Modifica, e si legge tutto quello che fa. Le librerie che scarica sono open source, pubblicate su PyPI, usate da migliaia di professionisti del settore.
 
-Non è eleganza: è l'unica strada rimasta quando non hai un marchio che risponde per te.
+È l'unica strada rimasta quando non hai un marchio che risponde per te.
 
 ## La casella a metà schermo
 
@@ -165,7 +165,7 @@ La riga di comando espone il programma com'è dentro: voxel in metri, frazione d
 
 L'interfaccia grafica fa la stessa domanda in un'altra lingua. Quattro opzioni, ognuna descritta dal risultato nel dominio: dettagli architettonici fini; rilievo architettonico, consigliato per edifici, con sezioni pulite e spessori misurabili; dimensioni generali; solo volumetrie e ingombri. Il millimetro c'è ancora, ma tra parentesi: la scelta si fa su quello che resterà a vedere nelle sezioni, non sull'unità di misura.
 
-Intorno ai quattro livelli ci sono le piccole cose che tolgono paura: la stima della dimensione del risultato prima di lanciare l'elaborazione, la barra di avanzamento con un log leggibile durante, e ripetuto dovunque — fino alla nota tecnica — che il file originale non viene mai modificato né cancellato. Chi consegna una nuvola di punti consegna lavoro fatto sul campo: «non tocca l'originale» non è una feature, è la condizione perché il programma venga aperto.
+Intorno ai quattro livelli ci sono le piccole cose che tolgono paura: la stima della dimensione del risultato prima di lanciare l'elaborazione, la barra di avanzamento con un log leggibile durante, e ripetuto dovunque — fino alla nota tecnica — che il file originale non viene mai modificato né cancellato. Chi consegna una nuvola di punti consegna lavoro fatto sul campo: «non tocca l'originale» è la condizione perché il programma venga aperto.
 
 ## Il terminale che non si vede
 
