@@ -502,19 +502,28 @@ Con una semplice modifica alla nostra risorsa `Ingress`, abbiamo cambiato comple
 
 ---
 
-## Conclusioni
+## Cosa cambia quando l'ambiente locale somiglia a quello vero
 
-Abbiamo trasformato un caotico flusso di lavoro basato su `port-forward` in un ambiente di sviluppo locale pulito, stabile e professionale che rispecchia un setup di produzione.
+Il guadagno non è risparmiare i terminali del `port-forward`. È che **l'indirizzo con cui raggiungi un servizio smette di dipendere da chi lo sta eseguendo**: `miodominio.local/app` vale per tutti, e vale anche quando il servizio si sposta su un altro nodo.
 
-Abbiamo visto come:
-1.  Il problema principale dello sviluppo locale è l'accesso instabile e scomodo ai servizi.
-2.  La soluzione è un **Ingress Controller**, che fornisce routing a Layer 7 sfruttando il modello dichiarativo di Kubernetes.
-3.  L'implementazione corretta su `kind` richiede una mappazione di porte stabile tramite un **`Service` di tipo `NodePort` statico**.
-4.  Grazie alle astrazioni come `Service` e `Deployment`, possiamo gestire le nostre applicazioni senza preoccuparci della loro posizione fisica nel cluster.
+Da lì discendono le cose che si notano dopo: un servizio nuovo si espone aggiungendo una regola invece che una procedura, la configurazione TLS si prova prima di scoprirla in staging, e un collega che arriva sul progetto non ha bisogno di sapere quali porte tenere aperte.
 
-Con questo setup, gli script `port-forward` non sono più necessari.
+**Detto fuori dal team infrastrutturale:** ogni differenza fra ambiente locale e produzione è un posto in cui un bug può nascondersi fino al rilascio. Toglierne una — l'accesso ai servizi — non elimina la categoria, ma ne restringe la superficie.
 
-Per ulteriori approfondimenti su questi concetti, ti consiglio di consultare la [documentazione ufficiale di Kubernetes](https://kubernetes.io/docs/home/).
+## Da dove partire
+
+Contate i `port-forward` che avete aperti adesso. Se sono più di due, la mezz'ora di questo articolo si ripaga nella settimana.
+
+### Pulizia
+
+Quando hai finito, elimina tutto con un singolo comando:
+
+```bash
+kind delete cluster --name kind-lb-demo
+```
+Ricordare di rimuovere `miodominio.local` dal file `hosts`.
+
+---
 
 ## Troubleshooting
 
@@ -549,27 +558,3 @@ Per approfondire gli argomenti trattati in questa guida, ecco alcune risorse uff
 *   **[cert-manager](https://cert-manager.io/)**: Strumento per gestire automaticamente i certificati SSL/TLS in Kubernetes, utile per ottenere certificati da Let's Encrypt.
 
 *   **[Documentazione ufficiale di Kubernetes - Controllers](https://kubernetes.io/docs/concepts/architecture/controller/)**: Spiegazione approfondita del pattern dei controller, fondamentale per comprendere il funzionamento dichiarativo di Kubernetes.
-
-## Cosa cambia quando l'ambiente locale somiglia a quello vero
-
-Il guadagno non è risparmiare i terminali del `port-forward`. È che **l'indirizzo con cui raggiungi un servizio smette di dipendere da chi lo sta eseguendo**: `miodominio.local/app` vale per tutti, e vale anche quando il servizio si sposta su un altro nodo.
-
-Da lì discendono le cose che si notano dopo: un servizio nuovo si espone aggiungendo una regola invece che una procedura, la configurazione TLS si prova prima di scoprirla in staging, e un collega che arriva sul progetto non ha bisogno di sapere quali porte tenere aperte.
-
-**Detto fuori dal team infrastrutturale:** ogni differenza fra ambiente locale e produzione è un posto in cui un bug può nascondersi fino al rilascio. Toglierne una — l'accesso ai servizi — non elimina la categoria, ma ne restringe la superficie.
-
-## Da dove partire
-
-Contate i `port-forward` che avete aperti adesso. Se sono più di due, la mezz'ora di questo articolo si ripaga nella settimana.
-
-### Pulizia
-
-Quando hai finito, elimina tutto con un singolo comando:
-
-```bash
-kind delete cluster --name kind-lb-demo
-```
-Ricordare di rimuovere `miodominio.local` dal file `hosts`.
-
----
-

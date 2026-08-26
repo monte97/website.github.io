@@ -1,9 +1,11 @@
 ---
-title: "Keycloak: What It Is and Why You Should Use It"
+title: "The login you wrote isn't the problem. The second one is."
+seoTitle: "Keycloak: why centralize identity"
 date: 2026-02-10T09:00:00.000Z
-description: What Keycloak is, how delegated login works, and why a centralized Identity Provider makes your life easier.
+description: "Writing authentication once is cheap. The bill arrives with the second application, and it shows up the day somebody leaves the company."
 pillar: progettare
 category: keycloak
+mode: explanation
 tags:
   - Keycloak
   - OAuth2
@@ -11,94 +13,112 @@ tags:
   - Security
   - Authentication
 lang: en
-reviewed: machine
+reviewed: false
 series: keycloak
 seriesOrder: 10
+reproducibility: true
+summary:
+  - label: "Problem"
+    value: "Every app manages its own credentials, with no Single Sign-On"
+    note: "Duplicated passwords, inconsistent security: disabling an employee touches N systems"
+  - label: "Choice"
+    value: "A centralized Identity Provider: apps receive signed tokens"
+    note: "If the code never handles passwords, it cannot mishandle them"
+  - label: "Tool"
+    value: "Keycloak, open-source IdP born at Red Hat, Apache 2.0"
+    note: "A standalone service, not a framework to embed in your code"
+  - label: "Result"
+    value: "Realm, client, users and a first login in minutes via Docker"
+openItems:
+  - "The login flow is described in its three high-level steps: the full client and protocol configuration stays outside this introduction"
+  - "LDAP federation, social login and roles appear as available capabilities: none of them is configured here"
+  - "The startup example pins version 26.0 of the Docker image: commands and admin console may vary in other releases"
+  - "`start-dev` is for trying it only: HTTP without TLS and a local H2 database make it unsuitable beyond development"
+  - "Centralizing identity moves the risk rather than removing it: the IdP becomes a single point of failure, and has to be designed accordingly"
+openNote: "What an introductory overview deliberately leaves out"
 ---
 
-If you have ever built a login system from scratch — registration, password reset, session management, credential hashing — you know how much time it takes. And no matter how thoroughly you test it, that nagging feeling remains: *are you actually handling passwords securely?*
+Writing a login system from scratch is boring, but it gets done. Registration, password reset, credential hashing, session handling: a week, maybe two, and it works.
 
-Then comes the second project, and you find yourself writing the same thing all over again. Same tables, same logic, same doubts — except now you have duplicate password handling spread across multiple codebases, often implemented differently each time.
+The bill arrives with the second application. Because the second one does not reuse the first: it rewrites the same tables, repeats the same doubts, and adds a second place where one person's passwords are stored — possibly different from the first.
 
-There is a better way: use an **Identity Provider**. This article covers what that means, how it works, and why [Keycloak](https://www.keycloak.org/) is one of the most solid choices for web applications and microservices.
+And the moment that bill becomes visible to everyone is a precise one: **it is the day somebody leaves the company.** Because at that point disabling them is not one operation, it is N operations across N systems, each of which can be forgotten. And the forgotten one makes no noise.
 
----
+## Why identity silos get paid later, not now
 
-## The Problem: Identity Silos
+Three applications inside an organisation — an HR tool, a CRM, an email client — each managing its own credentials.
 
-Imagine three applications in your organization: an HR tool, a CRM, and an email client. Each one manages its own credentials independently.
+![Three applications, three separate user databases: the same person exists three times, with three passwords that are not the same one](imgs/silos-identita.webp)
 
-![Each application has its own user database — the user must remember three different passwords](imgs/silos-identita.webp)
+While there are three of them it looks manageable. The costs that grow are four others, and none of them shows up on day one:
 
-The problems with this model are well known:
+- **Passwords get duplicated.** The user reuses the same one everywhere — and then one compromise opens all of them — or uses three different ones and forgets two, which becomes load for whoever runs support.
+- **There is no Single Sign-On.** A separate login for every application, every time.
+- **Security diverges.** MFA, lockout after N failed attempts, access auditing: every app implements them its own way, or does not. Nobody knows which one is worst off.
+- **Deactivation is N interventions.** The one above.
 
-- **Duplicate passwords**: users reuse the same password everywhere, or forget some of them
-- **No Single Sign-On**: a separate login for every application
-- **Fragmented management**: when an employee leaves, they need to be disabled across *N* different systems
-- **Inconsistent security**: each application implements (or doesn't implement) MFA, lockout, and audit logging in its own way
+And today's architectures make the bill worse, not better. A single product can have an SPA, a REST API, five microservices and a mobile app: each of them needs to know who is calling. Rewriting authentication in each is not laborious, it is unsustainable.
 
-Modern architectures compound the problem. A typical project today might have a SPA, a REST API, five microservices, and a mobile app. Each one needs to know who is calling it. Reimplementing authentication logic in every component is not sustainable.
+## If the code never touches passwords, it cannot mishandle them
 
----
+The fix is to take authentication out of the applications and put it in a dedicated component — an **Identity Provider**. Apps stop handling credentials: they receive a **signed token** and verify its signature.
 
-## The Solution: A Centralized Identity Provider
+The point is not convenience. It is that **the risk moves into a single place**, and a single place can actually be guarded: you patch it when a fix ships, you configure MFA once, you look at one access log instead of four.
 
-The idea is straightforward: remove authentication from your applications and centralize it in a dedicated component. Applications no longer manage credentials — they receive **signed tokens** from the Identity Provider and validate them.
+Two consequences follow, and they are the ones that count:
 
-In practice, the user logs in *once* to Keycloak, and from that point on, every connected application receives a token confirming who the user is and what they are allowed to do. This is the principle of **Single Sign-On (SSO)**.
+- The user logs in **once** and reaches everything. That is Single Sign-On.
+- An employee leaves? **You disable them in one place** and they lose access everywhere.
 
-Applications never touch credentials — they only verify that the token is valid and was signed by the IdP. Code that never handles passwords cannot mishandle them. An employee leaves the company? Disable them in one place and they lose access everywhere.
+The other side has to be said too: that single place is also a single point of failure. If the IdP does not answer, nobody authenticates anywhere. That is a risk you design for — replicas, token caching, tolerance for expiry — not one you ignore.
 
----
+## What you delegate to Keycloak, and what stays yours
 
-## Enter Keycloak
+[Keycloak](https://www.keycloak.org/) is an open-source Identity Provider born at Red Hat, Apache 2.0 licensed. It is not a library to integrate: it is a **standalone service** you run alongside your applications.
 
-[Keycloak](https://www.keycloak.org/) is an open source Identity Provider, originally built at Red Hat and released under the Apache 2.0 license. It is not a framework to embed in your code — it is a **standalone service**. You start it, configure it, and it takes care of authentication, authorization, and user management.
+![Keycloak capabilities: OAuth 2.0 and OIDC authorization server, user federation, social login, single sign-on and admin console](imgs/keycloak-capabilities.webp)
 
-![Keycloak capabilities: Authorization Server, Identity Provider, User Federation, Social Login, Single Sign-On](imgs/keycloak-capabilities.webp)
+What stops being your code:
 
-What it offers in concrete terms:
+- **Authorization server** — it implements OAuth 2.0 and OpenID Connect. Apps delegate through open standards, not a protocol invented in-house.
+- **User federation** — if an LDAP or Active Directory with thousands of users already exists, Keycloak connects to it and uses them. No migration.
+- **Social login** — Google, GitHub and the rest are configured from the console, without writing anything.
+- **User management** — registration, password reset, sessions, MFA.
 
-- **Authorization Server**: implements OAuth 2.0 and OpenID Connect (OIDC). Applications delegate authentication to Keycloak following open standards.
-- **User Federation**: already have an LDAP or Active Directory with thousands of users? Keycloak connects to it and uses it without migration.
-- **Social Login**: login with Google, GitHub, Facebook — configurable from the admin console, no custom code required.
-- **Single Sign-On**: one login for all apps. Log out from one, log out from all.
-- **Admin Console**: a full web interface for managing users, roles, clients, and configurations.
+What stays yours, and it needs saying because it is the part that surprises people: **deciding what a user is allowed to do.** Keycloak says *who they are* and carries the roles; it is your application that decides what those roles open. Where authentication ends and authorization begins is a line you draw by hand, and it is the subject of [OPA as a policy engine](/blog/progettare/keycloak/05-keycloak-opa/).
 
-> Keycloak is container-ready: you can start it with [Docker](https://www.keycloak.org/getting-started/getting-started-docker) in under a minute. It also has an official [Kubernetes Operator](https://www.keycloak.org/operator/installation) for production environments.
+## Realm, client, role: the three concepts that shape the project
 
----
+Before touching anything, three words. Three, because they are the three decisions that are expensive to change later.
 
-## Key Concepts
+- **Realm** — the isolated container: its own users, roles and configuration. One per project, or one per environment. Two realms cannot see each other, and that is exactly what makes them useful.
+- **Client** — every application that connects. The React frontend is a client, the API behind it is another. This is not bureaucracy: it is what lets you say a token issued for one is not valid for the other.
+- **Role** — the permissions that end up in the token and that the app will use to decide.
 
-Before writing any code, four concepts worth knowing:
+A concrete example: realm `techstore`, two clients `shop-ui` and `shop-api`, users Mario and Admin, and the `admin` role assigned only to the second. When Mario logs in, his token tells the application who he is and what he is allowed to do, without the application having to ask anyone.
 
-- **Realm**: the top-level container, roughly a "tenant." Each realm has its own users, roles, and configurations, isolated from others. You create one per project.
-- **Client**: any application that connects to Keycloak. A React frontend is one client; an Express API is another.
-- **User**: the people in the system. Keycloak handles registration, credentials, profiles, and sessions.
-- **Role**: permissions. You define them based on what your project needs. They end up in the JWT and the application uses them to decide what to show.
+## Login, in three steps
 
-Example: you create the `techstore` realm, register two clients (`shop-ui` and `shop-api`), add users Mario and Admin. You assign the `admin` role only to the second. When Mario logs in, his token tells the application exactly what he can and cannot do.
+The standard flow for a web application is called **Authorization Code Flow**, and from the user's point of view it is three things:
 
----
+1. they click "Login" in the app and get redirected to Keycloak's page
+2. they enter their credentials **on Keycloak**, not on the app
+3. they come back to the app with a **JWT token** carrying identity, roles and expiry
 
-## How Login Works
+Keycloak signs that token with its private key; the app validates it by fetching the public key. If anyone modifies it, the signature no longer matches and the token is rejected.
 
-The standard flow for a web application is called the **Authorization Code Flow**. It sounds complex, but from the user's perspective it is three steps:
+Step 2 is the one people get wrong most often: **the app must not have a login form of its own.** If you collect username and password in your frontend, those credentials travel through your code again — and you are back where you started, with all the problems the IdP was supposed to remove. The redirect exists precisely to avoid that.
 
-1. The user clicks "Login" in the app → they are redirected to Keycloak's login page
-2. The user enters their credentials **on Keycloak** (not on the app)
-3. Keycloak redirects the user back to the app with a **JWT** containing identity and roles
+The complete flow, with PKCE and the client and middleware configuration, is the subject of the [next article in the series](/blog/progettare/keycloak/02-authorization-code-pkce/).
 
-The application never touches the credentials. It receives a **JWT** (JSON Web Token) that contains who the user is, their roles, and an expiry time. Keycloak signs it with its private key; the app validates it by downloading the corresponding public key. If anyone tampers with the token, the signature no longer matches and the token is rejected.
+## The four day-one traps
 
-> The app should not have its own login form. If you collect usernames and passwords in the frontend, credentials flow through your code — and you are back to square one: you need to protect them, transmit them securely, and handle every error case. The redirect to Keycloak exists precisely to avoid this.
+- **A login form in the app.** The one above. It is the mistake that cancels the point of the whole exercise.
+- **`start-dev` in production.** Convenient for trying it, unsuitable beyond that: it enables HTTP without TLS, uses a local H2 database and relaxes several security settings. Production needs `start`, with PostgreSQL and HTTPS.
+- **Ignoring roles.** Keycloak has a complete role system. Reinventing authorization with custom logic in the backend means bringing back into the code exactly what you had just taken out.
+- **Hardcoded URLs.** Keycloak's address changes between local, staging and production. If it is not configurable from day one, the first deploy outside localhost greets you with an unexplained 401.
 
----
-
-## Try It in One Minute
-
-One Docker command and you are up and running:
+## Try it in one minute
 
 ```bash
 docker run -p 8080:8080 \
@@ -107,35 +127,16 @@ docker run -p 8080:8080 \
   quay.io/keycloak/keycloak:26.0 start-dev
 ```
 
-Open `http://localhost:8080`, log in with `admin/admin`, and you have the admin console in front of you. From there you can create a realm, add users, and configure your first client.
+At `http://localhost:8080`, with `admin/admin`, you get the console. From there: a realm, a public client with the app's redirect URI, a user. On the application side you need a client library — `keycloak-js` for the frontend, a JWT middleware for the backend — but the authentication logic stays over there.
 
-On the Keycloak side, getting a working first login takes just a few steps from the web interface: create a realm, add a public client with the app's redirect URI, and create a user. On the application side, you need to integrate a client library — for example `keycloak-js` for the frontend or a JWT middleware for the backend — but the actual authentication logic lives entirely in Keycloak.
+## What it is worth, said to someone who does not write code
 
-> `start-dev` launches Keycloak in development mode. **Do not use it in production**: it enables HTTP without TLS, uses a local H2 database unsuitable for real load, and relaxes several security settings.
+The benefit is not "one less thing to write", which is a developer's argument. It is this: **a person leaving the company goes from N interventions across N systems, each of them forgettable, to a single switch** — and along with it, MFA and access auditing become one decision taken once instead of N implementations written by different people at different times.
 
----
+Which translates into the question an engineering leadership should be able to answer: *how long is it, today, between someone leaving and them no longer being able to get into anything?* If answering requires opening a list of systems and ticking them off by hand, you do not know the number.
 
-## Common Mistakes to Avoid
+## Where to start
 
-When getting started with Keycloak, these are the most common traps:
+Count the places where a `users` table exists across your projects. If there is more than one, you already have this article's problem — you just have not paid for it yet.
 
-- **Login form in the app**: if you collect usernames and passwords in the frontend, you are bypassing the entire point of an IdP. Always use the redirect to Keycloak.
-- **`start-dev` in production**: convenient for experimenting, but production requires `start` with an external database (PostgreSQL) and HTTPS configured.
-- **Ignoring roles**: Keycloak provides a complete role system. Use it. Do not reinvent authorization with custom logic in the backend.
-- **Hardcoding URLs**: the Keycloak URL differs between local, staging, and production environments. Make it configurable from day one, in both the backend and the frontend. Otherwise the first non-localhost deploy greets you with an unexplained 401.
-
----
-
-## Conclusion
-
-Keycloak is not "another thing to learn": it is **one less thing to build**. Login, registration, password reset, SSO, MFA, user management — all handled by a dedicated, battle-tested component maintained by an active community.
-
-If an application has users, it needs authentication. And authentication is too critical to reinvent every time.
-
----
-
-**Resources:**
-- [Keycloak Documentation](https://www.keycloak.org/documentation) — the official starting point
-- [Keycloak Getting Started Guide](https://www.keycloak.org/getting-started/getting-started-docker) — first setup with Docker
-- [OAuth 2.0 Simplified](https://www.oauth.com/) — an accessible guide to OAuth 2.0
-- [OpenID Connect Specification](https://openid.net/connect/) — the standard behind delegated login
+Then run the command above and create a realm with two clients. Ten minutes is enough to tell whether the three concepts in the previous section fit your case, which is the only question that matters before adopting it.

@@ -482,19 +482,17 @@ With a simple modification to our `Ingress` resource, we've completely changed t
 
 ---
 
-## Conclusions
+## What changes when the local environment resembles the real one
 
-We have transformed a chaotic workflow based on `port-forward` into a clean, stable, and professional local development environment that reflects a production setup.
+The gain is not saving the `port-forward` terminals. It is that **the address you reach a service at stops depending on who is running it**: `miodominio.local/app` holds for everyone, and it holds even when the service moves to another node.
 
-We have seen how:
-1.  The main problem of local development is unstable and awkward access to services.
-2.  The solution is an **Ingress Controller**, which provides Layer 7 routing leveraging Kubernetes's declarative model.
-3.  Correct implementation on `kind` requires stable port mapping via a **static `NodePort` service**.
-4.  Thanks to abstractions like `Service` and `Deployment`, we can manage our applications without worrying about their physical location in the cluster.
+From there follow the things you notice later: a new service is exposed by adding a rule instead of a procedure, TLS configuration gets tested before you discover it in staging, and a colleague joining the project does not need to know which ports to keep open.
 
-Now you can throw away all those `port-forward` scripts.
+**Said outside the infrastructure team:** every difference between the local environment and production is a place a bug can hide until release. Removing one — service access — does not eliminate the category, but it narrows its surface.
 
-For further insights into these concepts, I recommend consulting the [official Kubernetes documentation](https://kubernetes.io/docs/home/).
+## Where to start
+
+Count the `port-forward` sessions you have open right now. If there are more than two, the half hour in this article pays for itself within the week.
 
 ## Troubleshooting
 

@@ -16,20 +16,11 @@ reviewed: human
 series: homelab-capi
 seriesOrder: 40
 ---
+Between an empty Proxmox and a working Kubernetes cluster there is a list of things that all have to be right at once: a user with the exact permissions, a token that has not expired, a template that clones, a network bridge that answers, a generator producing coherent manifests.
 
-# Part 4: Practical Setup - Day 1 Operations
+If a single one is wrong, the cluster does not fail: **it sits in `Provisioning`**, which is the most expensive failure mode because it does not tell you what is missing. And the time it takes to find out grows with how far you got before noticing.
 
-*Fourth article in the series "Deploy Kubernetes with Cluster API: Automated Cluster Management"*
-
----
-
-In previous parts we explored the theoretical foundations of Cluster API, component architecture, and integration with Talos Linux. It's now time to put these concepts into practice through a complete implementation of **Day 1 Operations**.
-
-This part will guide through every step of the initial deployment process: from Proxmox infrastructure configuration to the first functional and verified workload cluster, using the Python generator to automate the generation of parametric configurations.
-
-The goal is to obtain a **minimally functional and verified Kubernetes cluster**, ready for advanced configurations that will be covered in Part 5 (Day 2 Operations).
-
----
+This article is the day-one sequence in the order it has to be run, with the check that closes each step before moving to the next. The [previous part](/blog/progettare/kubernetes/02-capi-part2-internals/) explains which controllers are involved and how to read their state: that is exactly what you need when one of these checks does not pass.
 
 ## Proxmox VE Configuration
 
@@ -591,3 +582,17 @@ kubectl --kubeconfig kubeconfig-homelab top nodes --kubeconfig kubeconfig-homela
 # Check for any resource constraints
 kubectl --kubeconfig kubeconfig-homelab get events --field-selector type=Warning -A
 ```
+
+## The cluster exists. What that actually means
+
+A cluster in `Provisioned` with the basic checks passing is not a production cluster: it is a **verified** cluster, which is a different and more useful thing. It means every prerequisite was tested rather than assumed, and that if something breaks tomorrow you will know it is none of the items on this list.
+
+Everything that makes a cluster usable by somebody else is still missing: persistent storage, ingress, observability, access policies. Those are Day 2 Operations, and they start here.
+
+**Said to someone who does not write `kubectl`:** the difference between this sequence and a script doing the same things is that here every step leaves evidence. When the cluster has to be rebuilt in six months — because hardware dies, or because a second identical one is needed — rebuilding is a repeatable procedure instead of a day of archaeology.
+
+## Before moving on
+
+Re-run the last three checks against a cluster you *know* is healthy, and read what they return. Recognising the output of a cluster in good shape is the only way to quickly recognise one that is not.
+
+The [next part](/blog/progettare/kubernetes/05-capi-part5-ubuntu/) changes the nodes' operating system: Ubuntu instead of Talos, with Image Builder, and why that is sometimes the better call.
