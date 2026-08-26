@@ -2,6 +2,11 @@
 title: "Estrarre prima che scada"
 description: "Quando un abbonamento scade, con lui smettono di funzionare anche le fotografie dei tuoi cantieri. Questo strumento esiste perché quel problema non si scopra al momento sbagliato."
 type: case-study
+hold:
+  reason: >
+    Possibile conflitto con i termini di servizio del fornitore. Il pezzo resta in
+    lavorazione ma non viene pubblicato finché la questione non è chiarita.
+  since: 2026-08-26
 pillar: progettare
 pillarApplied: progettare
 featured: false
@@ -9,28 +14,33 @@ weight: 6
 eyebrow: "Analisi tecnica · dipendenza da un servizio di terzi"
 tags: [Dipendenze, Archiviazione, Dati propri, Web app]
 oggetto: >
-  Una web application che estrae le fotografie panoramiche di modelli tridimensionali
-  ospiti di un servizio in abbonamento e le conserva in locale — con annotazioni,
-  etichette e virtual tour — perché restino navigabili anche dopo la disattivazione del
-  modello o la scadenza dell'abbonamento.
+  Un archivio visivo di cantiere che mette insieme due sorgenti che nessuno teneva
+  insieme: le panoramiche prodotte da uno strumento di rilievo, ospiti di un servizio in
+  abbonamento, e le fotografie scattate sul posto dalle persone che ci lavorano. Con
+  annotazioni, etichette e percorsi di navigazione, e in locale — perché restino
+  consultabili anche quando il modello viene disattivato o l'abbonamento scade.
 metodo: >
-  Estrazione batch attraverso le interfacce ufficiali del servizio, con credenziali
-  proprie, mentre il modello è ancora attivo: coda sequenziale riprendibile, conversione
-  in immagini equirettangolari, archivio locale di immagini e metadati. Nessun
+  Le panoramiche si portano fuori dal servizio finché il modello è attivo, attraverso le
+  interfacce ufficiali e con credenziali proprie: coda sequenziale riprendibile,
+  conversione in immagini equirettangolari, archivio locale di immagini e metadati.
+  Le foto di cantiere entrano nello stesso archivio e nella stessa navigazione. Nessun
   aggiramento di limiti o protezioni.
 anonimizzazione: >
   Il fornitore del servizio non è nominato per scelta: il soggetto del pezzo è la
-  dipendenza da un servizio di terzi, non il caso particolare. Lo strumento nasce come
-  progetto personale, senza committenti da oscurare.
+  dipendenza da un servizio di terzi, non il caso particolare. Il lavoro è reale; la
+  pipeline di estrazione, però, è stata verificata end-to-end contro un ambiente
+  simulato, perché provarla richiede un modello attivo sull'account del cliente.
 problem: >
-  Le fotografie panoramiche dei cantieri vivevano dietro un rinnovo: la licenza del
-  servizio è agganciata ai modelli attivi, e quando un modello viene disattivato o
-  l'abbonamento scade, visualizzatore e accesso programmatico smettono di funzionare.
-  Tenere viva una memoria visiva sarebbe costato un canone a tempo indeterminato.
+  La memoria visiva di un cantiere stava in due posti che non si parlavano: le
+  panoramiche dello strumento, dietro un abbonamento che le tiene in vita solo finché
+  paghi, e le fotografie fatte a mano dalle persone, sparse fra telefoni e cartelle
+  condivise. La prima metà aveva una scadenza, la seconda non aveva un ordine.
 context: >
-  I dati erano propri ma lontani: per rileggere un ambiente serviva il servizio acceso,
-  il modello attivo, l'account valido. Ogni modello dormiente pagava affitto, e
-  l'alternativa al canone era perderne l'accesso.
+  Le panoramiche erano dati propri ma lontani: per rileggere un ambiente serviva il
+  servizio acceso, il modello attivo, l'account valido, e ogni modello dormiente pagava
+  affitto. Le foto scattate in cantiere erano vicine ma inutilizzabili: nessuno sapeva a
+  quale punto dello spazio appartenessero, e ritrovare quella giusta significava chiedere
+  a chi l'aveva fatta.
 specs:
   - label: "Perimetro"
     value: "Estrazione e conservazione locale delle panoramiche, con tutto ciò che serve a navegarle"

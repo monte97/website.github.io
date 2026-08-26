@@ -33,7 +33,7 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
     title: 'Observability nei Sistemi Distribuiti',
     subtitle: 'Da console.log a distributed tracing con OpenTelemetry e LGTM stack',
     description:
-      'Una guida pratica in 8 articoli per implementare observability in un sistema distribuito. ' +
+      'Una guida pratica per implementare observability in un sistema distribuito. ' +
       'Si parte dalla distinzione tra monitoring e observability, si costruisce lo stack LGTM completo, ' +
       'si arriva a gestire tail sampling, routing compliance e PII filtering in produzione. ' +
       'Ogni articolo è accompagnato da codice funzionante su GitHub e scenari di debug reali.',
@@ -48,7 +48,6 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
       'su misura per il tuo sistema: dal setup iniziale alla gestione in produzione, ' +
       'con focus su costi, compliance e time-to-debug.',
     learningGoals: [
-      'Distinguere monitoring e observability e scegliere quando serve ciascuno',
       'Configurare OpenTelemetry su Node.js senza modificare il codice applicativo',
       'Costruire lo stack LGTM (Loki, Grafana, Tempo, Mimir) con Docker Compose',
       'Debuggare scenari distribuiti reali con distributed tracing e correlazione log',

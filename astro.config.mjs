@@ -10,6 +10,14 @@ export default defineConfig({
   output: 'static',
   redirects: {
     '/blog/series/observability/': '/blog/verificare/observability/',
+    // observability 01/02/03 ristrutturati il 2026-08-26:
+    // la tesi del 01 e' passata nella landing di serie, 02 e 03 sono stati fusi
+    '/blog/verificare/observability/01-observability/': '/blog/verificare/observability/',
+    '/en/blog/verificare/observability/01-observability/': '/blog/verificare/observability/',
+    '/blog/verificare/observability/02-opentelenetry/': '/blog/verificare/observability/dalla-strumentazione-allo-storage/',
+    '/en/blog/verificare/observability/02-opentelenetry/': '/en/blog/verificare/observability/dalla-strumentazione-allo-storage/',
+    '/blog/verificare/observability/03-lgtm/': '/blog/verificare/observability/dalla-strumentazione-allo-storage/',
+    '/en/blog/verificare/observability/03-lgtm/': '/en/blog/verificare/observability/dalla-strumentazione-allo-storage/',
     // 01-intro diviso in due articoli il 2026-08-25
     '/blog/verificare/testing/01-intro/': '/blog/verificare/testing/performance-senza-baseline/',
     '/en/blog/verificare/testing/01-intro/': '/en/blog/verificare/testing/performance-senza-baseline/',

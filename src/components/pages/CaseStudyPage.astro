@@ -18,7 +18,7 @@ const prefix = lang === 'en' ? '/en' : '';
 
 const allProjects = await getCollection('projects');
 const caseStudies = allProjects
-  .filter((p) => p.data.type === 'case-study')
+  .filter((p) => p.data.type === 'case-study' && !p.data.hold)
   .sort((a, b) => a.data.weight - b.data.weight);
 
 const mailLink = 'mailto:francesco@montelli.dev';

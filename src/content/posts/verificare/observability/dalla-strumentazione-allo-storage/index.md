@@ -2,7 +2,7 @@
 title: "Il costo dell'observability si decide in due punti"
 seoTitle: "OpenTelemetry e LGTM: architettura e costi"
 date: 2025-08-03T09:00:00.000Z
-description: "Dove metti il Collector e cosa indicizzi: sono le due scelte che decidono quanto costa osservare un sistema. Topologie a confronto, numeri del trasporto OTLP, modello di storage LGTM."
+description: "Dove metti il Collector e cosa indicizzi: le due scelte che decidono quanto costa osservare un sistema. Topologie, trasporto OTLP, storage LGTM."
 pillar: verificare
 category: observability
 mode: explanation

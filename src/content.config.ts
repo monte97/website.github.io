@@ -130,6 +130,11 @@ const projects = defineCollection({
     })).optional(),
     // Cosa resta aperto — confini dichiarati
     openItems: z.array(z.string()).optional(),
+    // Blocco alla pubblicazione: il pezzo esiste ma non deve comparire da nessuna parte
+    hold: z.object({
+      reason: z.string(),
+      since: z.coerce.date().optional(),
+    }).optional(),
     // CTA specifica del pezzo: sovrascrive quella generica in fondo alla pagina
     cta: z.object({
       title: z.string(),

@@ -6,7 +6,7 @@ import CaseStudyDetail from '@/components/pages/CaseStudyDetail.astro';
 export const getStaticPaths = (async () => {
   const projects = await getCollection('projects');
   return projects
-    .filter((p) => p.data.type === 'case-study')
+    .filter((p) => p.data.type === 'case-study' && !p.data.hold)
     .map((project) => ({
       params: { slug: project.id },
       props: { project },

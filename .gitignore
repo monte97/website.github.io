@@ -1,6 +1,7 @@
 resources/*
 node_modules/*
 public/*
+!public/img/
 !public/images/
 !public/android-chrome-192x192.png
 !public/android-chrome-512x512.png
