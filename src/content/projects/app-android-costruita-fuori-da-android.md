@@ -140,7 +140,12 @@ openItems:
 
 thesis: "Gran parte di quello che sembra codice di piattaforma è aritmetica travestita, e l'aritmetica si verifica senza aprire l'emulatore."
 
-cta: "Se il vostro ciclo di verifica passa da un emulatore o da un pezzo di hardware, il conto della sezione 04 si può fare sul vostro progetto in mezz'ora."
+cta:
+  title: "Quante volte, questa settimana, avete aspettato un pezzo di hardware per sapere se una cosa funzionava?"
+  desc: >
+    Se la risposta non è zero, il conto della sezione 04 si può fare sul vostro progetto.
+    Serve sapere due cose: quanto dura il ciclo di verifica oggi, e quanta parte del
+    codice ha davvero bisogno della piattaforma per essere messa alla prova.
 ---
 
 ## Dieci minuti per salire
