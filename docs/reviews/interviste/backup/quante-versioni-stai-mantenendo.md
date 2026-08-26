@@ -155,7 +155,7 @@ E c'è un dettaglio che cambia la natura del problema: **chi installa non è uno
 
 Il momento in cui la cosa ha smesso di essere un fastidio interno ha una data e un nome: **una brutta figura davanti a un cliente.** L'installazione non era verificata come credevamo, e la messa in servizio è diventata un rimpallo — chiedi una verifica, aspetti, ne chiedi un'altra, aspetti ancora. È costato tempo, ma soprattutto è costato la faccia di un'azienda che quel prodotto lo vende.
 
-Fino a quel giorno il costo delle configurazioni era distribuito e invisibile. Da quel giorno aveva un volto. Ogni rilascio richiedeva prove manuali su ambienti che nessuno sapeva elencare. Un guasto compariva presso un cliente solo e non era riproducibile altrove. Una persona sapeva «come si fa da quel cliente» e senza di lei ci si fermava. Nessuno rispondeva in trattativa senza chiedere prima a uno sviluppatore. Era tutto vero, e nessuna di queste cose era scritta da nessuna parte.
+Fino a quel giorno il costo delle configurazioni era distribuito e invisibile. Da quel giorno aveva un volto.
 
 ## La suite verde che non c'entrava
 
@@ -222,8 +222,6 @@ Il primo effetto non è stato sulla qualità: è stato su **chi può fare il lav
 Con le configurazioni scritte e i controlli dichiarati, non serve più ricordarsi se un caso è nuovo o già visto: si guarda. E persone con meno anzianità hanno cominciato a gestire installazioni che prima richiedevano qualcuno che «se le ricordava» — comprese quelle figure non tecniche il cui mestiere è preparare l'ambiente, che davanti a un errore adesso hanno un posto dove cercare.
 
 La conoscenza ha smesso di stare nelle teste. È il cambiamento che un estraneo avrebbe potuto vedere entrando in azienda, e l'unico che continua a valere anche se domani nessuno tocca più quella matrice.
-
- È stato rivisto anche il processo con cui le modifiche venivano costruite: anziché dire sì in modo coatto, si cominciò a fare ricadere la necessità del cliente in qualcosa che in una qualche misura esisteva già, o adattandola all'esistente per minimizzare le effettive customizzazioni.
 
 ## Il conto torna al commerciale
 

@@ -96,7 +96,7 @@ flow:
 specs:
   - label: "Perimetro"
     value: "Sola lettura dei dati di utilizzo — ore motore, cicli, allarmi, stati"
-    note: "Il canale di configurazione resta al costruttore: decisione presa e concordata"
+    note: "Il perimetro è dichiarato nel documento consegnato, non lasciato implicito"
   - label: "Accesso"
     value: "Browser headless per il primo login, poi rinnovo del token via HTTP"
     note: "Otto ore di autonomia, quanto un turno"
@@ -105,7 +105,7 @@ specs:
   - label: "Destinazione"
     value: "Il gestionale del cliente, accanto a contratti, trasporti e fatturazione"
   - label: "Fuori scope"
-    value: "Scrittura di parametri, configurazione remota, qualunque azione sulla macchina"
+    value: "Qualunque automazione che agisca sul sistema del costruttore: il perimetro è la sola lettura"
 decisions:
   - title: "Primo accesso"
     chosen: "Browser headless una volta sola, poi rinnovo via HTTP"
