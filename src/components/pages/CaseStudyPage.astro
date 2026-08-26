@@ -5,7 +5,6 @@ import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import FinalCta from '@/components/ui/FinalCta.astro';
 import PageHero from '@/components/ui/PageHero.astro';
-import CaseStudyFilterable from '@/components/case-study/CaseStudyFilterable.vue';
 import { pillarStyles } from '@/data/pillar-styles';
 import { pillarLabels } from '@/data/pillars';
 
@@ -23,17 +22,6 @@ const caseStudies = allProjects
 
 const mailLink = 'mailto:francesco@montelli.dev';
 
-const serialized = caseStudies.map((cs) => ({
-  id: cs.id,
-  title: cs.data.title,
-  description: cs.data.description,
-  eyebrow: cs.data.eyebrow,
-  pillar: cs.data.pillar,
-  tags: cs.data.tags,
-  problem: cs.data.problem,
-  result: Array.isArray(cs.data.result) ? cs.data.result[0] : cs.data.result,
-  href: `${prefix}/case-study/${cs.id}/`,
-}));
 
 const t = lang === 'en'
   ? {
@@ -42,10 +30,12 @@ const t = lang === 'en'
       eyebrow: 'Case studies',
       heroTitle: 'What was decided, and why',
       heroSubtitle: 'Analyses of real projects on systems that already had people working inside them. Client names are omitted; the decisions are not.',
-      intro: 'Each piece starts from the constraint that created the work, walks through the choices one by one — including the rejected ones and the reason — and says what the client was left with. If you are looking at a similar problem, what transfers is the reasoning: the technologies change from one project to the next.',
-      readLabel: 'Read the analysis',
+      intro: 'Each piece starts from the constraint that created the work, walks through the choices one by one (including the rejected ones, and why), and says what the client was left with. If you are looking at a similar problem, what transfers is the reasoning: the technologies change from one project to the next.',
       emptyTitle: 'Nothing published yet',
       emptyDesc: 'The first analyses are being written.',
+      readLabel: 'Read the analysis',
+      constraint: 'The constraint',
+      outcome: 'The outcome',
       ctaTitle: 'Holding a similar situation?',
       ctaDesc: 'Tell me how the system looks today and which decision you are stuck on. Half an hour to see whether there is a problem I can be useful on, no commitment.',
       ctaPrimary: 'Book a discovery call',
@@ -57,10 +47,12 @@ const t = lang === 'en'
       eyebrow: 'Case study',
       heroTitle: 'Cosa è stato deciso, e perché',
       heroSubtitle: 'Analisi di progetti reali su sistemi che avevano già gente dentro. I nomi dei committenti sono omessi, le decisioni no.',
-      intro: 'Ogni pezzo parte dal vincolo che ha generato il lavoro, ripercorre le scelte una per una — comprese quelle scartate e il motivo — e dice cosa è rimasto in mano a chi ha pagato. Se stai guardando un problema simile, quello che si trasferisce sono i motivi: le tecnologie cambiano da un progetto all’altro.',
-      readLabel: 'Leggi l’analisi',
+      intro: 'Ogni pezzo parte dal vincolo che ha generato il lavoro, ripercorre le scelte una per una (comprese quelle scartate, col motivo), e dice cosa è rimasto in mano a chi ha pagato. Se stai guardando un problema simile, quello che si trasferisce sono i motivi: le tecnologie cambiano da un progetto all’altro.',
       emptyTitle: 'Ancora niente di pubblicato',
       emptyDesc: 'Le prime analisi sono in scrittura.',
+      readLabel: 'Leggi l’analisi',
+      constraint: 'Il vincolo',
+      outcome: 'L’esito',
       ctaTitle: 'Hai in mano una situazione simile?',
       ctaDesc: 'Raccontami com’è fatto il sistema adesso e qual è la decisione che siete fermi a prendere. Mezz’ora per capire se c’è un problema su cui posso essere utile, senza impegno.',
       ctaPrimary: 'Prenota una discovery call',
@@ -85,7 +77,53 @@ const t = lang === 'en'
             <p class="text-text-muted text-sm">{t.emptyDesc}</p>
           </div>
         ) : (
-          <CaseStudyFilterable client:load items={serialized} lang={lang} />
+          <div class="space-y-5 md:space-y-6">
+            {caseStudies.map((cs) => (
+              <a href={`${prefix}/case-study/${cs.id}/`}
+                class="group block rounded-2xl border border-border/60 dark:border-border-dark/60 bg-white dark:bg-surface-dark p-6 md:p-8 shadow-sm hover:shadow-md hover:border-accent/40 transition-all duration-200">
+
+                <div class="flex items-start justify-between gap-4 mb-4">
+                  {cs.data.eyebrow && (
+                    <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-text-muted/80">{cs.data.eyebrow}</p>
+                  )}
+                  <span class={`text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full whitespace-nowrap shrink-0 ${pillarStyles[cs.data.pillar].badge}`}>
+                    {pillarLabels[cs.data.pillar][lang]}
+                  </span>
+                </div>
+
+                <h2 class="text-xl md:text-2xl font-bold text-text-dark dark:text-text-light mb-3 group-hover:text-accent transition-colors text-balance">
+                  {cs.data.title}
+                </h2>
+                <p class="text-text-muted text-sm md:text-base leading-relaxed mb-5 max-w-2xl">{cs.data.description}</p>
+
+                {(cs.data.problem || cs.data.esito) && (
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 mb-5">
+                    {cs.data.problem && (
+                      <div class="border-l-2 border-border dark:border-border-dark pl-4">
+                        <p class="text-[10px] font-mono uppercase tracking-[0.15em] text-text-muted/70 mb-1.5">{t.constraint}</p>
+                        <p class="text-sm text-text-muted leading-relaxed">{cs.data.problem}</p>
+                      </div>
+                    )}
+                    {cs.data.esito && (
+                      <div class="border-l-2 border-accent pl-4">
+                        <p class="text-[10px] font-mono uppercase tracking-[0.15em] text-accent mb-1.5">{t.outcome}</p>
+                        <p class="text-sm text-text-muted leading-relaxed">{cs.data.esito}</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+                  <span class="text-sm font-semibold text-accent">{t.readLabel} &rarr;</span>
+                  <div class="flex flex-wrap gap-1.5">
+                    {cs.data.tags.slice(0, 5).map((tg) => (
+                      <span class="text-[11px] text-text-muted/80 bg-text-muted/8 px-1.5 py-0.5 rounded">{tg}</span>
+                    ))}
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
         )}
       </div>
     </section>
