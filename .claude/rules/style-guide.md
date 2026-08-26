@@ -30,10 +30,13 @@ tassonomia è [Diátaxis](https://diataxis.fr/).
 | `reference` | consultare | un fatto trovato in fretta |
 
 **Il corpus usa due modi su quattro**: 21 `explanation`, 22 `how-to`, zero
-`tutorial`, zero `reference`. Non è un caso. Un pezzo che sta diventando
-`tutorial` o `reference` di solito segnala che si sta scrivendo per il lettore
-sbagliato — quello che deve ancora imparare la tecnologia, invece di quello che
-deve decidere se adottarla.
+`tutorial`, zero `reference`. Non è un vincolo tecnico, è il registro: questo blog
+punta al lettore che deve *decidere*, non a quello che deve ancora imparare la
+tecnologia. `tutorial` e `reference` servono un altro lettore e stanno altrove —
+nella documentazione di un progetto, non qui.
+
+Se un pezzo sta scivolando verso quei due modi, non è un errore da correggere a
+tutti i costi: è il segnale che vale la pena chiedersi per chi si sta scrivendo.
 
 **La regola operativa**: se un paragrafo appartiene a un modo diverso da quello
 dichiarato, non si cancella e basta — si decide dove va. In `openItems`, in un
@@ -59,11 +62,30 @@ Quello che hanno in comune: entro tre frasi il lettore sa **cosa si rompe** e
 
 **Lunghezza**: 2-4 paragrafi. Poi si entra.
 
-**Niente indice in prosa.** `observability/05` apre con una lista "Struttura
-dell'articolo" — è l'unico dei sei a farlo, e non va imitato: il componente `TOC`
-è già nel layout, a destra.
+**Niente indice in prosa, in nessun caso.** Il componente `TOC` è già nel layout,
+a destra, e si aggiorna da solo. Ripetere la mappa in apertura ruba le righe che
+dovrebbero agganciare il lettore.
 
-## 2. La tesi
+Vietato l'elenco delle sezioni, vietata anche la sua forma breve — «da qui in
+avanti: A, poi B, poi C». `observability/05` apre con una lista "Struttura
+dell'articolo": è l'unico dei sei campioni a farlo, e non va imitato.
+
+## 2. Lunghezza
+
+**Tetto morbido: ~2000 parole.** Non è un limite, è una soglia oltre la quale
+serve una ragione.
+
+Le ragioni buone sono due: un `how-to` in cui il codice occupa spazio reale, o un
+`explanation` che regge una tesi complessa senza digressioni. La ragione cattiva è
+una sola, ed è la più frequente: **sono due articoli.**
+
+È il criterio che ha diviso `testing/01-intro` in due — 2233 parole che erano un
+pezzo sul contesto di misura e uno sui metodi RED e USE, incollati.
+
+Sotto le 2000 nessuna regola: `mutation-testing` sta in 1312 parole ed è fra i
+migliori del corpus.
+
+## 3. La tesi
 
 Ogni articolo ne ha una, ed è **una posizione, non un argomento**. «X è utile» non
 è una tesi. «X invece di Y, perché Z» lo è.
@@ -77,7 +99,7 @@ Deve essere identificabile in una frase, e di solito sta in una sezione sua:
 
 Se scrivendo non trovi la tesi, il pezzo non è pronto: è una raccolta di appunti.
 
-## 3. Il ponte con il business
+## 4. Il ponte con il business
 
 **Una frase per articolo**, nella tesi o nella chiusura. Non due.
 
@@ -93,7 +115,7 @@ Le tre leve legittime: velocità del team, riduzione dei guasti, costo
 infrastrutturale. `observability/05` sceglie la terza e arriva a proiettare i
 costi di storage a 12 mesi.
 
-## 4. Heading
+## 5. Heading
 
 **Affermano qualcosa, non etichettano una categoria.** È la differenza più visibile
 fra i pezzi buoni e quelli vecchi.
@@ -115,7 +137,7 @@ Regole meccaniche:
 - **Niente marcatori di lavorazione** pubblicati: `TODO`, `TO BE TESTED`,
   `[NUMERO DA FORNIRE]` non escono mai in produzione.
 
-## 5. Rapporto con il frontmatter
+## 6. Rapporto con il frontmatter
 
 Tre blocchi sono resi automaticamente dal layout. **Non vanno riscritti nel corpo.**
 
@@ -134,7 +156,20 @@ non starebbero. È corretto così.
 Quello che non va è **ripetere in prosa ciò che `openItems` già dice**, o intitolare
 la sezione "Limiti di questo tutorial" quando il campo esiste già.
 
-## 6. Numeri e specificità
+### Il campo `reviewed`
+
+Ha un significato stretto e verificabile: **`human` vuol dire che l'autore ha
+riletto il testo dopo l'ultima modifica.** Nient'altro.
+
+- Qualsiasi modifica al corpo lo riporta a `false`, chiunque l'abbia fatta.
+- `machine` è una bozza passata sotto la style guide ma non ancora letta dall'autore.
+- Solo l'autore mette `human`.
+
+Serve a rispondere a una domanda sola: cosa è passato davvero sotto i suoi occhi.
+Un campo che dice `human` su un articolo con due `TODO` pubblicati — com'era
+`01-keycloak-intro` — non è un'informazione, è rumore.
+
+## 7. Numeri e specificità
 
 **Vincolo di verità: nessun numero che non sia vero.** Niente benchmark
 verosimili, niente "circa il 30%", niente tempi inventati.
@@ -148,7 +183,7 @@ verosimili, niente "circa il 30%", niente tempi inventati.
 
 Usa il separatore decimale in modo coerente dentro lo stesso articolo.
 
-## 7. Prosa
+## 8. Prosa
 
 Da [Google Technical Writing](https://developers.google.com/tech-writing/one/short-sentences):
 
@@ -164,7 +199,7 @@ Seconda persona plurale o impersonale, come nel corpus. Non c'è una regola cont
 la prima persona: le storie vere (`system-design/01`, `mutation-testing`) sono in
 prima persona ed è giusto così.
 
-## 8. Codice
+## 9. Codice
 
 - Blocco con il linguaggio dichiarato. `promql` non è supportato da Shiki: usare
   `plaintext`.
@@ -173,7 +208,27 @@ prima persona ed è giusto così.
   righe di rumore.
 - Backtick inline per identificatori, comandi brevi, nomi di file.
 
-## 9. Chiusura
+## 10. Immagini
+
+**Nessuna regola sul numero.** I due mutation-testing non ne hanno nessuna e sono
+fra i pezzi migliori; `04-correlation` ne ha otto e servono tutte. Un'immagine entra
+se mostra qualcosa che il testo non può dire: uno schema di architettura, un
+waterfall, un prima/dopo con numeri sopra.
+
+**Una regola sull'`alt`, e vale sempre.** L'alt descrive **cosa mostra l'immagine e
+cosa il lettore dovrebbe notarci**. Non è un'etichetta, non è il nome del file, non
+ripete la didascalia.
+
+| Sì | No |
+|---|---|
+| `Rappresentazione della gerarchia fra processi nel namespace PID: lo stesso processo ha identificativi diversi a seconda del livello da cui viene osservato` | `Gerchia PID` |
+| `Dashboard Stryker con score 65%, 12 mutanti sopravvissuti su 10 test, e le barre per i tre servizi` | `stryker-65` |
+| `Pipeline del Collector: receiver, processor ed exporter in sequenza, con più destinazioni in uscita` | `otel_pipeline` |
+
+Serve a chi usa uno screen reader, e serve a te: un alt che non riesci a scrivere
+di solito segnala un'immagine che non stava aggiungendo niente.
+
+## 11. Chiusura
 
 Non finisce sull'ultimo blocco di codice. Due forme, entrambe valide:
 
@@ -186,7 +241,30 @@ Non finisce sull'ultimo blocco di codice. Due forme, entrambe valide:
 In entrambi i casi, nell'ultimo tratto sta la frase di business, e non c'è nessuna
 CTA: la mette il layout.
 
-## 10. Versione inglese
+## 12. Articoli in serie
+
+**Il pezzo N può aprire richiamando dove eravamo rimasti.** Chi legge una serie la
+legge in ordine, e fingere che ogni articolo nasca dal nulla costa al lettore un
+riorientamento a ogni puntata.
+
+Il richiamo però non sostituisce l'apertura: viene **dopo** il sintomo, non al posto
+suo. Prima si dice cosa si rompe, poi si dice da dove veniamo.
+
+- Fa da modello `05-management`: «Nel tutorial precedente abbiamo strumentato un
+  e-commerce e risolto tre scenari di debug. C'è un dettaglio che però non abbiamo
+  affrontato: ogni request genera una trace che viene salvata in modo indefinito.»
+- Il rimando in avanti si mette dove serve, non in fondo per dovere: «quella misura
+  è il tema di [tail sampling e retention](...)».
+
+**Se la serie ha una landing** — come `observability` — quella fa da cappello, e i
+pezzi possono appoggiarcisi invece di ripetere le premesse. Se non ce l'ha, ogni
+pezzo si porta i propri prerequisiti con un link nel corpo, dove servono.
+
+**Un prerequisito si dichiara con un link interno.** Mandare il lettore fuori sito
+per capire il proprio articolo — come faceva `04-correlation` — significa che il
+pezzo che glielo spiega non esiste, o che nessuno l'ha collegato.
+
+## 13. Versione inglese
 
 `index.en.md` nella stessa cartella. Non è una traduzione letterale ma un
 adattamento — le regole stanno in `_strategy/writing-rules/personal.md` del vault.
