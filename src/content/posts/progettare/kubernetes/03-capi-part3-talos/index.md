@@ -32,6 +32,7 @@ openItems:
   - "La sezione su monitoring e alerting è segnata dall'articolo stesso come ancora da testare"
   - "Solo `/var` resta scrivibile: dati persistenti e storage vanno pianificati a parte"
   - "Le cifre citate (~1847 pacchetti, ~50 servizi) descrivono un'installazione Ubuntu tipica, non un benchmark comparativo"
+  - "L'integrazione con Prometheus e Grafana non è stata verificata su questo setup: Talos espone metriche, ma il percorso di scraping e le dashboard restano da provare sul proprio cluster"
 openNote: "Aspetti da pesare prima di scegliere Talos."
 ---
 
@@ -659,19 +660,6 @@ extensions:
   - "ghcr.io/siderolabs/qemu-guest-agent:9.0.0"      # Proxmox integration
   - "ghcr.io/siderolabs/util-linux-tools:2.39.2"     # Debug utilities
   - "ghcr.io/siderolabs/iscsi-tools:0.1.6"          # Storage integration
-```
-
-### 4. Monitoring e Alerting (⚠️ TO BE TESTED ⚠️)
-
-Integrazione con sistemi di monitoring tradizionali:
-
-```bash
-# Talos metrics export
-talosctl -n 192.168.1.100 get service prometheus-node-exporter
-# Prometheus scraping endpoint: :9100/metrics
-
-# Integration con Grafana dashboards
-# Dashboard ID: 15172 (Talos Linux Dashboard)
 ```
 
 ---

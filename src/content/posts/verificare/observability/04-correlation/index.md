@@ -46,11 +46,7 @@ openNote: "Quello che la demo non copre, e che distingue uno scenario simulato d
 
 Chi ha strumentato un'applicazione con OpenTelemetry ha trace e log centralizzati. Resta una domanda pratica: come si usa concretamente questa telemetria per risolvere problemi? Questo tutorial risponde con tre scenari di debug reali. Per chi non ha familiarita con i concetti base di OTel (spans, traces, context propagation), si consiglia prima la lettura di [Introduzione a OpenTelemetry](https://theredcode.it/devops/observability-monitoring-intro/).
 
-**Struttura dell'articolo:**
-1. Quick Start - avvia la demo
-2. Tre scenari di debug - silent failure, latency spike, fan-out
-3. Quando NON usare OTel - limiti e alternative
-4. **Appendice** - setup dettagliato (opzionale, per chi vuole replicare)
+Il setup dettagliato sta in appendice: serve solo a chi vuole replicare la demo, non a chi legge per capire.
 
 ---
 

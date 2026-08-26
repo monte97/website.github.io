@@ -12,7 +12,7 @@ tags:
   - HashSet
   - ToLookup
 lang: it
-draft: true
+draft: false
 reviewed: true
 series: linq
 seriesOrder: 10

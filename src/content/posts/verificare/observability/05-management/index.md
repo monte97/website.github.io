@@ -49,16 +49,6 @@ Nel [tutorial precedente](https://montelli.dev/blog/verificare/observability/04-
 
 C'è un dettaglio che però non abbiamo affrontato: ogni singola request generava una trace che viene salvata in modo indefinito all'interno del sistema. In sviluppo è il comportamento accettabile ma in un contesto reale? È un problema.
 
-**Struttura dell'articolo:**
-1. Il problema: volume e crescita infinita
-2. Tail Sampling: decidere cosa tenere
-3. Retention: raggiungere lo steady state
-4. Scenario demo: verificare che funzioni
-5. Monitoring: verificare il funzionamento
-6. Cardinality explosion: un rischio da considerare
-7. Sostenibilità: con e senza data management
-8. Checklist finale
-
 ---
 
 ## Il Problema: Volume e Crescita Infinita

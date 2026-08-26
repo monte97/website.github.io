@@ -80,6 +80,27 @@ specs:
     value: "Rete, messaggi binari con lunghezza in testa"
     note: "Provato contro un server finto, non contro il sensore"
 
+beforeAfter:
+  label: "Le due strade, riga per riga"
+  beforeLabel: "La strada ovvia"
+  afterLabel: "Quella presa"
+  rows:
+    - label: "Dove vive il codice"
+      before: "Un progetto mobile solo, come si fa quasi sempre"
+      after: "Venti progetti autonomi, la piattaforma dietro interfacce"
+    - label: "Il ciclo di verifica"
+      before: "Passa da un emulatore e da un sensore che sta dal committente"
+      after: "Gira sulla macchina di chi scrive, senza prenotare niente"
+    - label: "Il codice di piattaforma"
+      before: "Sparso ovunque, perché ovunque è dentro la piattaforma"
+      after: "Due file, in un modulo che la dichiara nel nome"
+    - label: "Il rischio"
+      before: "Errori di logica scoperti tardi, perché provarli costa"
+      after: "Spostato sull'integrazione dei venti pezzi, che resta da fare"
+  caption: "G0 · il riassunto in quattro righe"
+  note: >
+    L'ultima riga è quella che rende onesto il quadro: questa forma non elimina il
+    rischio, lo sposta da dove costava di più a dove si può guardare tutto insieme.
 matrix:
   label: "Dove vive il codice, per cinque moduli su venti"
   columns: ["Logica", "Interfaccia", "Piattaforma"]

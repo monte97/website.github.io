@@ -74,6 +74,22 @@ decisionsNote: >
   Il filo comune è che ogni scelta rende visibile qualcosa che prima era implicito. Il
   costo di una configurazione non era nascosto: semplicemente non era scritto da nessuna
   parte, e quello che non è scritto non entra in nessun preventivo.
+beforeAfter:
+  label: "Cosa è cambiato, in tre righe"
+  rows:
+    - label: "Le configurazioni"
+      before: "Non erano scritte da nessuna parte"
+      after: "Sono un elenco che chiunque può aprire"
+    - label: "Il significato di «verde»"
+      before: "Un colore solo, per tre situazioni diverse"
+      after: "Tre livelli dichiarati, riga per riga"
+    - label: "La domanda in trattativa"
+      before: "«Si può fare?»"
+      after: "«Quale riga aggiungiamo, e chi la mantiene?»"
+  caption: "G0 · il riassunto in tre righe"
+  note: >
+    La terza riga è l'unica che conta per chi paga: le prime due sono il lavoro tecnico
+    che serve a rendere possibile quel cambio di domanda.
 matrix:
   label: "La mappa dei buchi"
   columns: ["Esiste", "Risponde", "Funziona"]

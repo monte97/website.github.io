@@ -13,7 +13,7 @@ tags:
   - Infrastructure as Code
   - DevOps
 lang: it
-draft: true
+draft: false
 reviewed: true
 series: cicd
 seriesOrder: 10

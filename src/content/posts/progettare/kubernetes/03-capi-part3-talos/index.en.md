@@ -643,18 +643,6 @@ extensions:
   - "ghcr.io/siderolabs/iscsi-tools:0.1.6"          # Storage integration
 ```
 
-### 4. Monitoring and Alerting (⚠️ TO BE TESTED ⚠️)
-
-Integration with traditional monitoring systems:
-
-```bash
-# Talos metrics export
-talosctl -n 192.168.1.100 get service prometheus-node-exporter
-# Prometheus scraping endpoint: :9100/metrics
-
-# Integration with Grafana dashboards
-# Dashboard ID: 15172 (Talos Linux Dashboard)
-```
 
 ---
 

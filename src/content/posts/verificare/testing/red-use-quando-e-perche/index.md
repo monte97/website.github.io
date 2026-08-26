@@ -37,7 +37,7 @@ Il grafico della latenza media è una linea piatta a 180 millisecondi. È piatta
 
 Il grafico non sta mentendo: la media *è* 180 millisecondi. Sta facendo esattamente quello che una media fa, cioè nascondere la coda. Se il 97% delle richieste risponde in 90 millisecondi e il 3% in dodici secondi, la media resta buona e quel 3% è la tua casella di posta.
 
-Da qui in avanti: perché i percentili risolvono questo, e due metodi — [RED](#red-le-tre-domande-dal-lato-del-servizio) e [USE](#use-le-tre-domande-dal-lato-della-risorsa) — che rispondono a due domande diverse e vanno usati in quest'ordine. Il pezzo precedente della serie, [Mille richieste al secondo non vogliono dire niente](/blog/verificare/testing/performance-senza-baseline/), è su cosa decidere prima di misurare.
+Il pezzo precedente della serie, [Mille richieste al secondo non vogliono dire niente](/blog/verificare/testing/performance-senza-baseline/), è su cosa decidere prima di misurare. Questo è su cosa guardare nei numeri una volta che ci sono.
 
 ## La media mente, i percentili no
 

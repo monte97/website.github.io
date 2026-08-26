@@ -11,7 +11,7 @@ tags:
   - Pinia
   - Testing
 lang: it
-draft: true
+draft: false
 series: unit-testing
 seriesOrder: 10
 summary:

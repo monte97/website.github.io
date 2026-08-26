@@ -11,7 +11,7 @@ tags:
   - Testing
   - Patterns
 lang: it
-draft: true
+draft: false
 summary:
   - label: "Contesto"
     value: "Tre servizi Flask con conftest da 228 righe e dodici hack su `sys.modules`"
