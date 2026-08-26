@@ -41,6 +41,7 @@ sections:
     title: "Evidenze"
     summary: "Una traccia sola, dal fornitore esterno all'API"
 flow:
+  at: configurazione
   label: "Percorso del dato"
   nodes:
     - kind: "Sorgenti esterne"

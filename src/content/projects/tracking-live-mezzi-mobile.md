@@ -86,6 +86,7 @@ decisionsNote: >
   scelta. Non cosa fa più effetto, non cosa è più moderno in astratto. È lo stesso criterio
   con cui, su un progetto vero, si decide dove spendere il budget di rischio.
 flow:
+  at: il-codice-tiene-la-promessa-dellarchitettura
   label: "Diagramma a blocchi"
   caption: "Due progetti in una soluzione, separati dal confine HTTP come sarebbero in produzione"
   nodes:

@@ -91,6 +91,7 @@ beforeAfter:
     La terza riga è l'unica che conta per chi paga: le prime due sono il lavoro tecnico
     che serve a rendere possibile quel cambio di domanda.
 matrix:
+  at: la-mappa-dei-buchi
   label: "La mappa dei buchi"
   columns: ["Esiste", "Risponde", "Funziona"]
   rows:

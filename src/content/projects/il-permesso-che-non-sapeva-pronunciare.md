@@ -94,6 +94,7 @@ decisionsNote: >
   dell'eleganza. Il vecchio resta raggiungibile finché il nuovo non si è guadagnato
   il posto.
 timeline:
+  at: lostacolo-vero
   label: "Come si cambia la serratura senza chiudere la porta"
   steps:
     - kind: "Punto zero"

@@ -67,6 +67,7 @@ decisionsNote: >
   lato dell'utente a quello del prodotto: prima che l'attrite arrivi, non mentre lo
   sta attraversando.
 flow:
+  at: il-terminale-che-non-si-vede
   label: "Il primo avvio"
   caption: "Dal doppio click alla finestra del programma, tutto ciò che l'utente non deve vedere"
   nodes:

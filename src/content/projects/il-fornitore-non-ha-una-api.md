@@ -70,6 +70,7 @@ readingNote: >
   L'ordine non è cronologico ma di dipendenza. Il perimetro effettivo (sola lettura) è
   dichiarato prima di qualsiasi affermazione sui risultati.
 flow:
+  at: quindici-minuti-alla-volta
   label: "Percorso del dato"
   caption: "Dal portale al gestionale, il backend reale è un prodotto diverso, rivestito"
   nodes:
@@ -137,6 +138,7 @@ openItems:
   - "La dipendenza da un browser per il primo accesso pesa negli ambienti minimali, dove conviene la via alternativa via file"
   - "Resta da chiedere al costruttore se esista un'interfaccia ufficiale supportata: toglierebbe di mezzo sia il browser sia la ricostruzione"
 swap:
+  at: i-numeri-erano-sbagliati
   label: "Il riordino silenzioso"
   requestedLabel: "Chiesto"
   receivedLabel: "Arrivato"

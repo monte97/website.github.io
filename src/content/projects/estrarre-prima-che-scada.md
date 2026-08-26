@@ -78,6 +78,7 @@ decisionsNote: >
   La coda riprendibile, l'annullamento morbido, l'overlay dei nomi sono tutti modi di
   dire che un'estrazione è finita anche quando qualcosa è andato storto.
 flow:
+  at: una-coda-che-perdona
   label: "Percorso dell'estratto"
   caption: "Dal modello sul servizio all'archivio navigabile in casa, mentre l'abbonamento è ancora vivo"
   nodes:

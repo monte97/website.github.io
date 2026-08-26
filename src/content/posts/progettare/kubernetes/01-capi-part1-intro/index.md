@@ -1,177 +1,79 @@
 ---
-title: "CAPI Parte 1: Dal Chaos all'Automazione"
-date: 2025-08-05T09:30:00.000Z
-description: Guida completa al deployment e gestione di cluster Kubernetes utilizzando Cluster API (CAPI) per l'automazione dell'infrastruttura
-pillar: automatizzare
+title: "Un cluster Kubernetes come risorsa Kubernetes"
+seoTitle: "Cluster API: cos'è e quando conviene"
+date: 2025-10-21T09:00:00.000Z
+description: "Lo script che aggiunge un nodo funziona finché non fallisce a metà. Cluster API rende il cluster una risorsa dichiarativa, gestita dagli stessi strumenti che usate già."
+pillar: progettare
 category: kubernetes
+mode: explanation
 tags:
   - Kubernetes
-  - CAPI
   - Cluster API
-  - Infrastructure as Code
-  - DevOps
-  - Automazione
+  - Proxmox
+  - Talos
+  - IaC
 lang: it
-reviewed: human
+reviewed: false
 series: homelab-capi
 seriesOrder: 10
-reproducibility: true
 summary:
-  - label: "Contesto"
-    value: "Cluster gestiti a mano: script, procedure manuali e drift di configurazione"
-    note: "Il carico operativo cresce al crescere del numero di cluster"
+  - label: "Problema"
+    value: "Provisioning e upgrade dei cluster affidati a script imperativi e procedure manuali"
+    note: "Uno script che fallisce a metà lascia uno stato che nessuno conosce"
   - label: "Scelta"
-    value: "Cluster API: lo stato desiderato dei cluster in manifest YAML"
-    note: "Controller che riconciliano continuamente stato osservato e desiderato"
+    value: "Cluster API: il cluster diventa una risorsa dichiarativa, riconciliata da un controller"
+    note: "Si dichiara lo stato voluto, non la sequenza di passi per arrivarci"
+  - label: "Strumento"
+    value: "Management cluster su Kind, infrastruttura Proxmox VE, workload cluster su Talos"
   - label: "Ampiezza"
-    value: "Target della serie: management su `kind`, infrastruttura Proxmox, nodi Talos"
-    note: "Il management cluster può essere leggero, anche locale"
-  - label: "Fuori scope"
-    value: "Principi e architettura: il flusso operativo resta descritto a grandissime linee"
+    value: "L'articolo inquadra il modello: i componenti e il flusso sono nelle parti successive"
 openItems:
-  - "L'architettura target lega la serie a Proxmox e Talos: gli altri provider dell'ecosistema CAPI restano citati, non usati"
-  - "Idempotenza, self-healing e riproducibilità sono proprietà attribuite al design dei controller, non verifiche condotte su un ambiente"
-  - "L'esempio di scaling tocca solo il control plane, portandolo da 1 a 3 repliche"
-openNote: "Confini di una parte che resta deliberatamente teorica."
----
-## Il Problema della Gestione Manuale di Kubernetes
-
-La gestione di cluster Kubernetes rappresenta una delle sfide più complesse nell'ecosistema cloud-native moderno. Man mano che il numero di nodi e cluster cresce, la complessità operativa aumenta esponenzialmente, rendendo rapidamente ingestibili operazioni come provisioning di nuovi worker, upgrade coordinati del control plane, gestione delle configurazioni di rete e manutenzione dell'infrastruttura sottostante.
-
-### Limitazioni dei Metodi Tradizionali
-
-I metodi tradizionali per la gestione dei cluster Kubernetes si basano tipicamente su:
-
-- **Script personalizzati** per il provisioning e la configurazione dei nodi
-- **Procedure manuali** documentate, si spera, per upgrade e manutenzione
-- **Configurazioni statiche** difficili da versionare e replicare
-- **Approcci imperativi** che descrivono "come fare" piuttosto che "cosa ottenere"
-
-### Problemi Operativi Concreti
-
-Secondo le [survey CNCF](https://www.cncf.io/reports/cncf-annual-survey-2023/), la complessità operativa rappresenta una delle principali sfide nell'adozione di Kubernetes a livello enterprise.
-
-#### Error-Prone Operations
-Ogni intervento manuale introduce potenziali punti di fallimento. Consideriamo ad esempio un possibile script per aggiungere un worker node:
-
-```bash
-#!/bin/bash
-ssh worker-node-03
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
-apt-get update && apt-get install -y kubelet kubeadm kubectl
-systemctl enable kubelet
-swapoff -a
-# ... configurazione runtime container
-# ... configurazione networking
-# ... join del cluster
-```
-
-Questo approccio presenta criticità significative:
-- **Error-prone**: ogni step manuale può fallire
-- **Time-consuming**: operazioni ripetitive che richiedono supervisione
-- **Non riproducibile**: difficoltà nel replicare configurazioni identiche
-- **Scalabilità limitata**: il carico operativo cresce linearmente con il numero di cluster
-
-#### Drift di Configurazione
-
-I cluster gestiti manualmente tendono a divergere nel tempo ("[configuration drift](https://spacelift.io/blog/what-is-configuration-drift)"). Modifiche ad-hoc, hotfix applicati direttamente sui nodi, e procedure di upgrade inconsistenti portano a cluster "unique snowflakes" difficili da debuggare e mantenere.
-
-#### Complessità di Scaling
-
-Le stesse problematiche che riguardano il provisioning iniziale si presentano anche quando abbiamo la necessità di scalare la nostra infrastruttura:
-- Provisioning dell'infrastruttura (VM, networking, storage)
-- Installazione e configurazione del sistema operativo
-- Setup dei componenti Kubernetes
-- Join del cluster e verifica dello stato
-
+  - "Il modello dichiarativo sposta la complessità, non la elimina: il controller va aggiornato, osservato e capito quando si ferma"
+  - "Il management cluster diventa una dipendenza critica: se non è disponibile, nessun workload cluster può essere modificato"
+  - "Proxmox è la scelta di questo percorso perché offre controllo completo a costo contenuto: su un provider cloud i provider CAPI cambiano, i concetti no"
+  - "Sotto una certa scala — due o tre cluster che cambiano di rado — il costo di imparare e mantenere CAPI può superare quello che fa risparmiare"
 ---
 
-## Cluster API: Infrastructure as Code per Kubernetes
+Lo script che aggiunge un worker node al cluster funziona. Lo lanciate, gira due minuti, il nodo compare in `kubectl get nodes`.
 
-**Cluster API (CAPI)** è un [sub-progetto ufficiale di Kubernetes](https://cluster-api.sigs.k8s.io/) progettato per risolvere questi problemi attraverso API dichiarative e tooling automatizzato per gestire l'intero ciclo di vita di cluster Kubernetes.
+Poi una volta fallisce a metà. La VM è stata creata su Proxmox, il pacchetto `kubeadm` è installato, il `join` non è mai partito perché il token era scaduto. Adesso esiste una macchina che non è un nodo, che nessun inventario conosce, e che scoprirete fra tre mesi guardando la fattura o le risorse dell'hypervisor.
 
-### Principi Architetturali
+**Questo è il costo dell'approccio imperativo, e non è la fatica di scrivere lo script.** È che uno script descrive *come fare*, e quando si interrompe a metà lascia uno stato che nessuno ha dichiarato e che nessuno sa ricostruire.
 
-#### Configurazione Dichiarativa
+## Il problema non è creare un cluster, è la sesta volta
 
-CAPI abbraccia il paradigma dichiarativo di Kubernetes, dove gli utenti definiscono lo stato desiderato dei loro cluster usando manifesti Kubernetes standard:
+Il primo cluster lo si monta a mano e va benissimo. La difficoltà arriva quando i cluster diventano più di uno e devono restare allineati nel tempo:
 
-```yaml
-apiVersion: cluster.x-k8s.io/v1beta1
-kind: Cluster
-metadata:
-  name: production-cluster
-spec:
-  controlPlaneRef:
-    apiVersion: controlplane.cluster.x-k8s.io/v1beta1
-    kind: KubeadmControlPlane
-    name: production-control-plane
-  infrastructureRef:
-    apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
-    kind: ProxmoxCluster
-    name: production-proxmox
-```
+- **Script personalizzati** che nascono per un caso e vengono adattati agli altri, finché nessuno sa più quale sia la versione buona
+- **Procedure manuali** documentate — si spera — in una pagina che è ferma a due upgrade fa
+- **Configurazioni statiche** difficili da versionare, e quindi difficili da confrontare quando due cluster si comportano diversamente
+- **Upgrade coordinati del control plane**, che è il momento in cui tutto quanto sopra si paga insieme
 
-#### Eventual Consistency
+Il denominatore comune è che ogni intervento manuale introduce un punto di fallimento, e ogni punto di fallimento produce stato non dichiarato.
 
-Come Kubernetes stesso, CAPI opera su un [modello di consistenza eventuale](https://kubernetes.io/docs/concepts/architecture/controller/). I controller osservano continuamente lo stato corrente delle risorse e lavorano per riconciliare le differenze tra lo stato osservato e quello desiderato.
+## Se il cluster è una risorsa, valgono le abitudini che hai già
 
-#### Infrastructure Provider Pattern
+[Cluster API](https://cluster-api.sigs.k8s.io/) ribalta la direzione: invece di descrivere i passi, **si dichiara il cluster che si vuole** e un controller si occupa di arrivarci — e di restarci.
 
-CAPI utilizza un'architettura modulare basata su provider che permettono di astrarre le specifiche dell'infrastruttura sottostante. Il [Cluster API Provider Ecosystem](https://cluster-api.sigs.k8s.io/reference/providers) include:
+L'idea in sé è quella che Kubernetes applica già ai container. Il cambio è nel soggetto: qui l'oggetto riconciliato non è un Pod, è un cluster intero, con le sue macchine e la sua infrastruttura sottostante.
 
-- **Core Controller**: gestisce gli oggetti Cluster e Machine
-- **Bootstrap Provider**: genera configurazioni per trasformare macchine in nodi Kubernetes
-- **Control Plane Provider**: gestisce i componenti del control plane
-- **Infrastructure Provider**: interfaccia con l'infrastruttura specifica ([AWS](https://github.com/kubernetes-sigs/cluster-api-provider-aws), [Proxmox](https://github.com/ionos-cloud/cluster-api-provider-proxmox), [vSphere](https://github.com/kubernetes-sigs/cluster-api-provider-vsphere), etc.)
+La conseguenza pratica è quella che rende l'adozione ragionevole: **non serve imparare un nuovo modo di lavorare.** Un cluster si crea con `kubectl apply`, si ispeziona con `kubectl describe`, si versiona in Git e si applica con lo stesso flusso GitOps che già usate per i deployment. Gli stessi strumenti, la stessa forma mentale, un oggetto diverso.
 
-### Architettura Management/Workload Cluster
+E lo stato non dichiarato dell'apertura sparisce per costruzione: se la creazione si interrompe, la risorsa resta lì a dire cosa manca, e il controller riprova. Non c'è un punto in cui il processo esce lasciando dietro una macchina orfana e nessuna traccia.
 
-CAPI introduce una separazione fondamentale tra due tipi di cluster:
+## Management e workload: chi gestisce chi
 
-**Management Cluster**
-- Cluster Kubernetes che ospita i controller CAPI e i provider
-- Contiene le Custom Resource che rappresentano lo stato desiderato dei workload cluster
-- Gestisce il ciclo di vita completo degli altri cluster
-- Può essere un cluster leggero (anche locale con [`kind`](https://kind.sigs.k8s.io/))
+CAPI separa due ruoli, ed è la distinzione da cui discende tutto il resto.
 
-**Workload Cluster**
-- Cluster Kubernetes di destinazione dove vengono deployate le applicazioni
-- Completamente gestiti dal Management Cluster
-- Ciclo di vita dichiarativo (creazione, aggiornamento, cancellazione)
+Il **management cluster** ospita i controller e le risorse che descrivono gli altri cluster. Non ci girano applicazioni: è la sala di controllo.
 
-### Vantaggi Operativi
+I **workload cluster** sono quelli veri, dove stanno i carichi. Non sanno di essere gestiti: sono il risultato della riconciliazione fatta altrove.
 
-#### Idempotenza e Reproducibilità
-Le operazioni CAPI sono idempotenti per design, seguendo i [principi dei controller Kubernetes](https://kubernetes.io/docs/concepts/architecture/controller/#design). La stessa configurazione applicata più volte produce sempre lo stesso risultato, eliminando i problemi di drift di configurazione.
+Il vantaggio è che l'intera flotta si descrive in un posto solo, versionabile. Il costo va detto subito: **il management cluster diventa una dipendenza critica.** Se non è disponibile, i workload continuano a girare — non è un proxy sul percorso del traffico — ma nessuno può più crearli, aggiornarli o scalarli finché non torna.
 
-#### Version Control Native
-Le configurazioni sono manifest YAML che possono essere versionati in Git, permettendo:
-- Tracciabilità completa delle modifiche
-- Rollback deterministici
-- Code review per le modifiche infrastrutturali
-- Integrazione con pipeline [GitOps](https://www.gitops.tech/)
+## Il banco di prova: Kind, Proxmox e Talos
 
-#### Self-Healing Infrastructure
-I controller CAPI monitorano continuamente lo stato dell'infrastruttura e applicano correzioni automatiche quando rilevano discrepanze dallo stato desiderato.
-
----
-
-## Implementazione con Proxmox
-
-### Perché Proxmox per Homelab
-
-[Proxmox Virtual Environment](https://www.proxmox.com/en/proxmox-virtual-environment/overview) rappresenta una piattaforma ideale per sperimentare con CAPI in un ambiente completamente virtualizzato, situazione adatta sia per le sperimentazioni che per carichi di lavoro reali:
-
-- **Controllo completo** dell'infrastruttura virtualizzata
-- **API REST** per automazione ([Proxmox VE API](https://pve.proxmox.com/wiki/Proxmox_VE_API))
-- **Costi contenuti** rispetto a soluzioni cloud
-- **Realismo operativo** comparabile ad ambienti enterprise
-
-### Architettura Target
-
-L'implementazione prevede:
+Il percorso di questa serie usa tre pezzi:
 
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
@@ -181,86 +83,20 @@ L'implementazione prevede:
 └─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
-**Componenti principali:**
-- **Management Cluster**: [Kind cluster](https://kind.sigs.k8s.io/docs/user/quick-start/) locale con controller CAPI
-- **Infrastructure Provider**: [Proxmox provider](https://github.com/ionos-cloud/cluster-api-provider-proxmox) per gestione VM
-- **Bootstrap/Control Plane Provider**: [Talos provider](https://github.com/siderolabs/cluster-api-bootstrap-provider-talos) per OS immutabile
-- **Workload Cluster**: Cluster Kubernetes production-ready
+**[Proxmox VE](https://www.proxmox.com/en/proxmox-virtual-environment/overview)** come infrastruttura, per tre motivi che contano più della gratuità: controllo completo sull'ambiente virtualizzato, una [API REST](https://pve.proxmox.com/wiki/Proxmox_VE_API) su cui il provider CAPI può agire davvero, e un realismo operativo confrontabile con un ambiente enterprise. Un homelab su Proxmox non è un simulatore: è la stessa meccanica su scala minore.
 
-### Integration con Talos Linux
+**Kind** per il management cluster, perché all'inizio deve essere sacrificabile. **[Talos Linux](https://www.talos.dev/)** per i workload, perché è un sistema operativo immutabile pensato per Kubernetes e senza shell: elimina per costruzione la classe di problemi da configuration drift che l'approccio imperativo produceva.
 
-L'implementazione utilizza **[Talos Linux](https://www.talos.dev/)** come sistema operativo per i nodi Kubernetes:
+Su un provider cloud cambierebbe il provider di infrastruttura e resterebbe identico tutto il resto. È il senso di avere un'interfaccia standard.
 
-- **Immutabilità**: filesystem read-only previene configuration drift
-- **API-driven**: gestione completa via [API gRPC](https://www.talos.dev/v1.9/reference/api/), eliminando SSH
-- **Minimalismo**: include solo componenti essenziali per Kubernetes
-- **Sicurezza**: superficie di attacco ridotta
+## Quanto vale, fuori dal team infrastrutturale
 
----
+La differenza non è il tempo per creare un cluster: quello si misura in minuti in entrambi i modi. È che **la conoscenza di come sono fatti i vostri cluster smette di stare nella testa di chi ha scritto gli script e passa in un file che si legge, si rivede e si applica** — con la conseguenza che ricostruire un ambiente dopo un guasto diventa un'operazione ripetibile invece di un progetto.
 
-## Flusso Operativo End-to-End
+## Da dove partire
 
-### Deployment Process
+Prima di installare qualcosa: contate i cluster che gestite e chiedetevi quante persone saprebbero ricrearne uno da zero oggi. Se la risposta è "una", il problema di questo articolo ce l'avete già.
 
-A grandissime linee, il processo di deploy funziona in questo modo:
+Se la risposta è "sono due cluster e cambiano una volta l'anno", CAPI probabilmente è più macchinario di quanto serva — e vale la pena saperlo prima, non dopo aver montato un management cluster.
 
-1. **Definizione dichiarativa**: creazione manifest YAML per il cluster desiderato
-2. **Apply al Management Cluster**: `kubectl apply -f cluster.yaml`
-3. **Controller Reconciliation**: i controller CAPI processano le risorse
-4. **Infrastructure Provisioning**: creazione VM su Proxmox
-5. **Bootstrap Process**: installazione e configurazione Kubernetes
-6. **Cluster Ready**: cluster operativo e pronto per workload
-
-### Scaling Operations
-
-Al termine del deploy avremo un cluster k8s funzionanente e completamente funzionante (workload cluster) gestito dal cluster di management, al pari di ogni altra risorsa tipicamente gestita da k8s.
-Proprio per questo, possiamo operare su di esso semplicemente editando il file `yaml` che definisce la struttur adel cluster, ad esempio per incrementare il numero delle repliche è sufficiente specificare il nuovo valore:
-```yaml
-# Scale control plane da 1 a 3 nodi
-spec:
-  replicas: 3  # Modificato da 1
-```
-
-Il controller automaticamente:
-- Provisiona 2 nuove VM
-- Installa Talos Linux
-- Configura i componenti control plane
-- Aggiorna il load balancer
-- Verifica health del cluster
-
----
-
-## Struttura della Serie
-
-**Parte 2: Anatomia di Cluster API**
-- Componenti core e loro interazioni
-- Custom Resource Definitions dettagliate
-- Reconciliation loop e gestione dello stato
-- Flusso completo da manifest a cluster
-
-**Parte 3: Talos Linux Integration**
-- Architettura e principi di Talos
-- TalosControlPlane e TalosConfig CRDs
-- Bootstrap process e configuration management
-- Vantaggi dell'approccio immutabile
-
-**Parte 4: Setup Pratic**
-- Configurazione Proxmox e prerequisiti
-- Installazione CAPI e provider
-- Python generator per configurazioni parametriche
-- Deploy del primo workload cluster
-
-**Parte 5: Gestione Avanzata**
-- Worker node management e scaling
-- Upgrade procedures e maintenance
-- Troubleshooting e debugging
-- Best practices operative
-
----
-
-La gestione manuale di cluster Kubernetes presenta limitazioni fondamentali di scalabilità, riproducibilità e affidabilità. Cluster API fornisce un approccio dichiarativo e automatizzato che risolve questi problemi attraverso astrazione dell'infrastruttura e [controller pattern](https://kubernetes.io/docs/concepts/architecture/controller/) standard di Kubernetes.
-
-Per approfondimenti sulla teoria e best practices di Cluster API, consultare la [documentazione ufficiale](https://cluster-api.sigs.k8s.io/) e il [Kubernetes SIG Cluster Lifecycle](https://github.com/kubernetes/community/tree/master/sig-cluster-lifecycle).
-
-*La prossima parte esplorerà nel dettaglio l'architettura e i componenti di CAPI, fornendo le basi teoriche necessarie per l'implementazione pratica.*
-
+La parte successiva entra nei componenti: [le CRD e il flusso di provisioning](/blog/progettare/kubernetes/02-capi-part2-internals/), cioè cosa succede davvero fra il `kubectl apply` e il cluster funzionante.
