@@ -134,7 +134,7 @@ flow:
     del motore nuovo, e non produce niente di visibile. È la voce che non entra in nessun
     preventivo.
 timeline:
-  at: lostacolo-vero
+  at: il-flag-che-non-cè-più
   label: "Come si cambia la serratura senza chiudere la porta"
   steps:
     - kind: "Punto zero"
