@@ -1,5 +1,6 @@
 ---
 title: "Keycloak M2M: Authenticating Services Without a User"
+seoTitle: "Keycloak M2M: authenticating services"
 date: 2026-02-05T09:00:00.000Z
 description: How to authenticate machine-to-machine calls between microservices with Keycloak Client Credentials. Setup, code, and common mistakes.
 pillar: progettare

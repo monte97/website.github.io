@@ -1,5 +1,6 @@
 ---
 title: "DevContainers: Your Portable and Reproducible Development Environment"
+seoTitle: "DevContainers: portable, reproducible dev"
 date: 2026-08-17T09:00:00.000Z
 description: How DevContainers work, what lives in the .devcontainer folder, and how to avoid the root-owned files problem that hits developers on Linux
 pillar: automatizzare

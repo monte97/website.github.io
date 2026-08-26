@@ -1,7 +1,8 @@
 ---
 title: "3 Patterns (+1 Anti-Pattern) for Eliminating Duplication in Vue 3"
+seoTitle: "3 Vue 3 patterns to eliminate duplication"
 date: 2026-02-18T09:00:00.000Z
-description: Three Vue 3 patterns for eliminating duplication in enterprise SPAs, plus an anti-pattern on knowing when to stop
+description: Three Vue 3 patterns for eliminating duplication in enterprise SPAs, plus an anti-pattern on knowing when to stop. Runnable demo included.
 pillar: progettare
 category: web-development
 tags:

@@ -1,7 +1,8 @@
 ---
 title: "Keycloak in Practice: 6 Real-World Integration Problems in an E-Commerce"
+seoTitle: "Keycloak: 6 real-world integration issues"
 date: 2026-02-06T09:00:00.000Z
-description: "6 concrete problems integrating Keycloak with Node.js microservices: issuer mismatch, missing audience validation, fragile service account detection, and M2M race conditions."
+description: "6 concrete problems integrating Keycloak with Node.js microservices: issuer mismatch, audience validation, fragile service accounts, and M2M race conditions."
 pillar: progettare
 category: keycloak
 tags:

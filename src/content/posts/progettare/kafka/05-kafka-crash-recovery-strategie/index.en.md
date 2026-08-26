@@ -1,7 +1,8 @@
 ---
 title: "Kafka Crash Recovery: Three Strategies for Three Types of State"
+seoTitle: "Kafka: three crash recovery strategies"
 date: 2026-03-02T09:00:00.000Z
-description: "Three recovery strategies for stateful Kafka consumers: full replay for idempotent state, checkpoint-and-skip for additive state, no recovery for stateless consumers."
+description: "Full replay, checkpoint-and-skip, or no recovery at all: which one fits depends on whether the consumer state is idempotent, additive or absent."
 pillar: progettare
 category: kafka
 tags:

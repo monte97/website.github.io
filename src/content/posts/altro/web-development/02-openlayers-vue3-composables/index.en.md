@@ -1,7 +1,8 @@
 ---
 title: "OpenLayers and Vue 3: Integration with Composables and TypeScript"
+seoTitle: "OpenLayers + Vue 3: typed composables"
 date: 2026-02-14T09:00:00.000Z
-description: Practical patterns for integrating OpenLayers into Vue 3 using shallowRef, typed composables, and lifecycle management
+description: Practical patterns for integrating OpenLayers into Vue 3 using shallowRef, typed composables, and lifecycle management. Runnable demo included.
 pillar: progettare
 category: web-development
 tags:

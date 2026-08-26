@@ -1,5 +1,6 @@
 ---
 title: "4 LINQ Mistakes I Found in Production (And How They Cost 1000x)"
+seoTitle: "4 LINQ mistakes that cost 1000x"
 date: 2026-02-21T08:00:00.000Z
 description: "Four common LINQ patterns that turn linear operations into quadratic ones. Analysis of real cases from a commercial fleet dispatch service on .NET 8."
 pillar: progettare
