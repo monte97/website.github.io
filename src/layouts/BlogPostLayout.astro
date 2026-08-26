@@ -83,7 +83,9 @@ const breadcrumbs = [
 if (pillar) {
   breadcrumbs.push({
     label: getPillarLabel(pillar, lang),
-    href: `${prefix}/blog/${pillar}/`,
+    // Non esiste una rotta per pillar: il filtro e' client-side in
+    // BlogFilterable.vue, che legge ?pillar= al mount (onMounted).
+    href: `${prefix}/blog/?pillar=${pillar}`,
   });
 }
 
@@ -101,7 +103,7 @@ const relatedPosts = pillar
 ---
 
 <BaseLayout title={title} seoTitle={seoTitle} description={description} ogImage={ogImage} lang={lang} type="article" publishedTime={date} alternateUrl={alternateUrl} author="Francesco Montelli" jsonLd={blogPostingJsonLd}>
-  <Header lang={lang} />
+  <Header lang={lang} altHref={alternateUrl ?? null} />
 
   <main class="max-w-5xl mx-auto px-5 py-8">
     <!-- Breadcrumb -->

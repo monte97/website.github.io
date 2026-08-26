@@ -5,9 +5,11 @@ import Logo from '@/assets/logo-fra.svg?raw';
 
 interface Props {
   lang?: 'it' | 'en';
+  /** URL della stessa pagina nell'altra lingua. `null` = non esiste, il pulsante sparisce. */
+  altHref?: string | null;
 }
 
-const { lang = 'it' } = Astro.props;
+const { lang = 'it', altHref } = Astro.props;
 
 const nav = {
   it: [
@@ -31,9 +33,30 @@ const nav = {
 };
 
 const currentPath = Astro.url.pathname;
-const langSwitchHref = lang === 'it'
-  ? `/en${currentPath}`
-  : currentPath.replace(/^\/en/, '') || '/';
+
+/**
+ * Il selettore di lingua non puo' anteporre `/en` a occhi chiusi: non tutte le
+ * pagine hanno un gemello, e uno slug non coincide (servizi/services).
+ *
+ * - `altHref` passato esplicitamente vince sempre: le pagine che conoscono il
+ *   proprio gemello (gli articoli del blog) lo dichiarano.
+ * - `altHref={null}` dice "questa pagina non ha traduzione": il pulsante sparisce.
+ * - Se non viene passato niente, si calcola qui, e si torna `null` per le rotte
+ *   che esistono solo in italiano.
+ */
+const SOLO_IT = [/^\/cv/, /^\/qr(\/|$)/, /^\/secret(\/|$)/, /^\/blog\/series\//, /^\/404/];
+
+function altDiDefault(path: string, l: 'it' | 'en'): string | null {
+  if (l === 'it') {
+    if (SOLO_IT.some(r => r.test(path))) return null;
+    if (path === '/servizi/' || path === '/servizi') return '/en/services/';
+    return `/en${path}`;
+  }
+  if (path === '/en/services/' || path === '/en/services') return '/servizi/';
+  return path.replace(/^\/en/, '') || '/';
+}
+
+const langSwitchHref = altHref !== undefined ? altHref : altDiDefault(currentPath, lang);
 
 function isActive(href: string): boolean {
   if (href === '/' || href === '/en/') return currentPath === href;
@@ -76,12 +99,14 @@ function isActive(href: string): boolean {
     <div class="flex items-center gap-2">
       <SearchModal client:only="vue" />
 
-      <a
-        href={langSwitchHref}
-        class="px-2 py-1 rounded-md text-xs font-bold uppercase tracking-wider text-text-muted hover:text-accent hover:bg-accent-subtle transition-all duration-200"
-      >
-        {lang === 'it' ? 'EN' : 'IT'}
-      </a>
+      {langSwitchHref && (
+        <a
+          href={langSwitchHref}
+          class="px-2 py-1 rounded-md text-xs font-bold uppercase tracking-wider text-text-muted hover:text-accent hover:bg-accent-subtle transition-all duration-200"
+        >
+          {lang === 'it' ? 'EN' : 'IT'}
+        </a>
+      )}
 
       <ThemeToggle client:load />
 

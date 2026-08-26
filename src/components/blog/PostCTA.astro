@@ -30,7 +30,8 @@ const prefix = lang === 'en' ? '/en' : '';
 
 const calLink = 'https://cal.com/francesco-montelli-4hfojq/30min';
 const mailLink = 'mailto:francesco@montelli.dev';
-const servicesLink = `${prefix}/servizi/`;
+// in inglese la pagina e' /en/services/, non /en/servizi/
+const servicesLink = lang === 'en' ? '/en/services/' : '/servizi/';
 
 type Copy = {
   title: string;
