@@ -69,6 +69,23 @@ readingPaths:
 readingNote: >
   L'ordine non è cronologico ma di dipendenza. Il perimetro effettivo (sola lettura) è
   dichiarato prima di qualsiasi affermazione sui risultati.
+beforeAfter:
+  label: "Cosa è cambiato, in tre righe"
+  rows:
+    - label: "I dati di utilizzo"
+      before: "Visibili su un portale, e ricopiati a mano da lì"
+      after: "Arrivano nel gestionale senza che nessuno li trascriva"
+    - label: "Il portale del costruttore"
+      before: "L'unico modo di guardarli"
+      after: "È rimasto quello, ed è una scelta: è specifico per quelle macchine"
+    - label: "I numeri letti"
+      before: "Plausibili, e per due settimane nella colonna sbagliata"
+      after: "Ogni grandezza legata al proprio nome, non alla propria posizione"
+  caption: "il riassunto in tre righe"
+  note: >
+    La seconda riga dice che il lavoro non ha sostituito niente. La terza è la parte che si
+    è quasi portata via il resto, e non aveva prodotto un solo errore.
+
 flow:
   at: quindici-minuti-alla-volta
   label: "Percorso del dato"

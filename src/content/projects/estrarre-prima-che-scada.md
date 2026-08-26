@@ -77,6 +77,23 @@ decisionsNote: >
   Il filo: ogni scelta separa ciò che puoi controllare da ciò che dipende dal servizio.
   La coda riprendibile, l'annullamento morbido, l'overlay dei nomi sono tutti modi di
   dire che un'estrazione è finita anche quando qualcosa è andato storto.
+beforeAfter:
+  label: "Cosa è cambiato, in tre righe"
+  rows:
+    - label: "La memoria visiva del cantiere"
+      before: "In due posti che non si parlano"
+      after: "Un archivio solo, con la stessa navigazione per entrambe le sorgenti"
+    - label: "Le panoramiche dello strumento"
+      before: "Vive finché l'abbonamento è attivo e il modello acceso"
+      after: "In locale, consultabili anche dopo"
+    - label: "Le fotografie fatte sul posto"
+      before: "Sparse fra telefoni e cartelle condivise, senza un ordine"
+      after: "Per piano e per stanza, accanto alle panoramiche dello stesso ambiente"
+  caption: "il riassunto in tre righe"
+  note: >
+    La seconda riga è la ragione per cui il lavoro è stato fatto adesso e non fra un anno:
+    quel tipo di dipendenza scade, e scade senza preavviso.
+
 flow:
   at: una-coda-che-perdona
   label: "Percorso dell'estratto"

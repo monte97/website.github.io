@@ -93,6 +93,25 @@ decisionsNote: >
   Il filo è lo stesso nei due bivi: su un sistema vivo la reversibilità vale più
   dell'eleganza. Il vecchio resta raggiungibile finché il nuovo non si è guadagnato
   il posto.
+beforeAfter:
+  label: "Le due forme, riga per riga"
+  beforeLabel: "Con tre ruoli globali"
+  afterLabel: "Con le relazioni"
+  rows:
+    - label: "«Fa vedere questo, ma non farlo toccare»"
+      before: "Il sistema non ha le parole per dirlo"
+      after: "È una relazione fra una persona e una cosa specifica"
+    - label: "Un caso nuovo"
+      before: "Un ruolo globale in più, che funziona subito e ovunque"
+      after: "Una relazione, che vale solo dove è stata scritta"
+    - label: "Chi vedeva cosa il mese scorso"
+      before: "Domanda senza risposta: il ruolo di ieri non è registrato da nessuna parte"
+      after: "Ricostruibile, perché i permessi sono diventati fatti scritti"
+  caption: "il riassunto in tre righe"
+  note: >
+    La seconda riga è la trappola del pezzo: la forma vecchia non fallisce mai, e per questo
+    non si smette di usarla finché qualcuno non chiede una cosa che non sa dire.
+
 timeline:
   at: lostacolo-vero
   label: "Come si cambia la serratura senza chiudere la porta"

@@ -40,6 +40,26 @@ sections:
   - n: "05"
     title: "Evidenze"
     summary: "Una traccia sola, dal fornitore esterno all'API"
+beforeAfter:
+  label: "Cosa è cambiato, in quattro righe"
+  rows:
+    - label: "Un dato che non arriva in fondo"
+      before: "«Non c'era niente da elaborare» e «qualcuno l'ha perso» hanno lo stesso aspetto"
+      after: "La traccia dice in quale passaggio il flusso si è interrotto"
+    - label: "Il codice dei servizi"
+      before: "Ogni misura in più è una modifica in un punto di passaggio, da mantenere per sempre"
+      after: "Agent e wrapper al posto del codice: nessuna riga applicativa toccata"
+    - label: "Le sei modifiche previste"
+      before: "In elenco, da fare"
+      after: "Dimostrate non necessarie, non rinviate"
+    - label: "Il perimetro"
+      before: "Implicito, quindi senza fine"
+      after: "Il percorso critico del dato, e il resto dichiarato fuori"
+  caption: "il riassunto in quattro righe"
+  note: >
+    La terza riga è quella che paga la verifica: il costo di guardare una traccia in faccia
+    è stato un paio d'ore, quello di non guardarla sarebbe stato codice sparso in sei file.
+
 flow:
   at: configurazione
   label: "Percorso del dato"

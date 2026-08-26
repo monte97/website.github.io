@@ -66,6 +66,28 @@ decisionsNote: >
   Il filo che tiene insieme i tre bivi è lo stesso: ogni scelta sposta conoscenza dal
   lato dell'utente a quello del prodotto: prima che l'attrite arrivi, non mentre lo
   sta attraversando.
+beforeAfter:
+  label: "Il primo incontro col programma"
+  beforeLabel: "Prima"
+  afterLabel: "Dopo"
+  rows:
+    - label: "L'avvio"
+      before: "Una schermata blu che dice che Windows ha protetto il PC"
+      after: "L'avviso c'è ancora, ma la documentazione lo precede invece di inseguirlo"
+    - label: "Le dipendenze"
+      before: "Una casella in fondo a una schermata di installazione, che nessuno spunta"
+      after: "Se ne occupa il launcher, e quando non ce la fa lo dice in italiano"
+    - label: "Le opzioni di elaborazione"
+      before: "Parametri numerici, da capire prima di poter scegliere"
+      after: "Quattro livelli descritti dal risultato: modanature, sezioni misurabili, ingombri"
+    - label: "La finestra nera"
+      before: "Resta aperta sotto il programma per tutto il tempo"
+      after: "Non compare, e riappare solo quando c'è un errore da leggere"
+  caption: "il riassunto in quattro righe"
+  note: >
+    Nessuna delle quattro righe riguarda l'algoritmo, che era la parte già finita quando è
+    cominciato il lavoro raccontato qui.
+
 flow:
   at: il-terminale-che-non-si-vede
   label: "Il primo avvio"

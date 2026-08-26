@@ -85,6 +85,28 @@ decisionsNote: >
   Il filo che tiene insieme i sei bivi è sempre lo stesso: cosa dimostra davvero questa
   scelta. Non cosa fa più effetto, non cosa è più moderno in astratto. È lo stesso criterio
   con cui, su un progetto vero, si decide dove spendere il budget di rischio.
+beforeAfter:
+  label: "Cosa è stato mostrato, riga per riga"
+  beforeLabel: "Quello che si poteva promettere"
+  afterLabel: "Quello che si è visto girare"
+  rows:
+    - label: "La richiesta"
+      before: "«Un'app che mostri dove sono i mezzi», grande quanto non si sa"
+      after: "Una feature sola, portata fino in fondo"
+    - label: "Le due piattaforme"
+      before: "Due progetti, oppure una scelta rimandata"
+      after: "Un solo codice, eseguito su iOS e compilato per Android"
+    - label: "I bivi"
+      before: "Decisi mentre si scrive, e dimenticati subito dopo"
+      after: "Registrati con l'alternativa scartata e il motivo"
+    - label: "La verifica"
+      before: "«È coperto»"
+      after: "Cosa è testato, cosa è stato provato a mano, cosa non è verificato e perché"
+  caption: "il riassunto in quattro righe"
+  note: >
+    Qui non c'è un prima e un dopo, perché un dimostratore non cambia niente per nessuno.
+    Le due colonne sono due modi di rispondere alla stessa richiesta.
+
 flow:
   at: il-codice-tiene-la-promessa-dellarchitettura
   label: "Diagramma a blocchi"
