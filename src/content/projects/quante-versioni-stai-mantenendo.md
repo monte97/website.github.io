@@ -90,6 +90,30 @@ beforeAfter:
   note: >
     La terza riga è l'unica che conta per chi paga: le prime due sono il lavoro tecnico
     che serve a rendere possibile quel cambio di domanda.
+flow:
+  at: una-fonte-due-esecutori
+  label: "Una fonte, due esecutori"
+  nodes:
+    - kind: "La fonte"
+      name: "Un solo file dichiarativo"
+      desc: "Per ogni configurazione supportata: quali moduli, come arrivano le utenze, cosa deve rispondere e a che livello. Un elenco, non codice."
+      key: true
+      edge: "letto da entrambi"
+    - kind: "Primo esecutore"
+      name: "Non installa niente"
+      desc: "Per gli ambienti chiusi dove hai il permesso di guardare e non di toccare."
+      edge: "e in parallelo"
+    - kind: "Secondo esecutore"
+      name: "Porta su l'ambiente da zero"
+      desc: "Installa e poi guarda cosa succede."
+      edge: "entrambi rispondono su"
+    - kind: "L'esito"
+      name: "Tre livelli, non un passa o non passa"
+      desc: "Esiste, risponde, funziona davvero."
+  caption: "la forma che ha retto"
+  note: >
+    Due elenchi separati sarebbero stati più semplici da scrivere e sarebbero divergiti in
+    silenzio, perché due elenchi che divergono non producono un errore: producono due verdi.
 matrix:
   at: la-mappa-dei-buchi
   label: "La mappa dei buchi"

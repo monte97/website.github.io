@@ -112,6 +112,27 @@ beforeAfter:
     La seconda riga è la trappola del pezzo: la forma vecchia non fallisce mai, e per questo
     non si smette di usarla finché qualcuno non chiede una cosa che non sa dire.
 
+flow:
+  at: lostacolo-vero
+  label: "Il seam, visto in sezione"
+  nodes:
+    - kind: "L'ingresso"
+      name: "Ogni domanda «può?»"
+      desc: "Prima erano condizioni sparse in decine di punti del codice. Raccoglierle è il passo che rende possibile tutto il resto."
+      edge: "passa da"
+    - kind: "Il confine"
+      name: "Un'interfaccia sola"
+      desc: "Un flag decide chi risponde. Girarlo è una scelta di traffico, reversibile in un istante."
+      key: true
+      edge: "dietro cui stanno"
+    - kind: "Le tre risposte"
+      name: "Vecchia · vuota · nuova"
+      desc: "La replica del comportamento di ieri, quella che non risponde per misurare chi chiede davvero, e quella che interroga le relazioni."
+  caption: "un punto solo davanti a tutte le domande"
+  note: >
+    La replica del comportamento vecchio costa meno di duecento righe contro le ottocento
+    del motore nuovo, e non produce niente di visibile. È la voce che non entra in nessun
+    preventivo.
 timeline:
   at: lostacolo-vero
   label: "Come si cambia la serratura senza chiudere la porta"

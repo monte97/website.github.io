@@ -88,6 +88,30 @@ beforeAfter:
     Nessuna delle quattro righe riguarda l'algoritmo, che era la parte già finita quando è
     cominciato il lavoro raccontato qui.
 
+inventory:
+  at: cosa-resta-aperto
+  label: "Gli attriti fra il download e la prima elaborazione"
+  items:
+    - name: "avviso del sistema al primo avvio"
+      mark: true
+    - name: "blocco di alcuni antivirus"
+      mark: true
+    - name: "interprete assente sul computer"
+    - name: "la casella del percorso non spuntata"
+    - name: "librerie da compilare durante l'installazione"
+    - name: "la finestra nera che resta aperta"
+    - name: "parametri numerici da capire prima di scegliere"
+    - name: "errori in una lingua che l'utente non parla"
+    - name: "file oltre i 30 GB"
+      mark: true
+  legend:
+    plain: "attriti incontrati nel percorso"
+    mark: "non eliminati, e dichiarati"
+  caption: "cosa è stato tolto, e cosa resta"
+  note: >
+    I tre marcati non si risolvono con il codice: due dipendono da una firma digitale che
+    non c'è, il terzo dalla memoria della macchina. Restano scritti accanto alla strada
+    scelta invece che scoperti dall'utente.
 flow:
   at: il-terminale-che-non-si-vede
   label: "Il primo avvio"

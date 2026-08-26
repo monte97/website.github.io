@@ -107,6 +107,35 @@ beforeAfter:
     Qui non c'è un prima e un dopo, perché un dimostratore non cambia niente per nessuno.
     Le due colonne sono due modi di rispondere alla stessa richiesta.
 
+matrix:
+  at: la-verifica-dichiarata-per-intero
+  label: "Come è verificata ogni parte"
+  columns: ["Test automatici", "Provato a mano", "Non verificato"]
+  rows:
+    - label: "Il contratto del gateway"
+      cells: [full, empty, empty]
+    - label: "Le trasformazioni pure e condivise"
+      cells: [full, empty, empty]
+    - label: "La guardia di avvio"
+      note: "cento chiamate concorrenti"
+      cells: [full, empty, empty]
+    - label: "Il formato sul filo"
+      note: "letto come JSON grezzo, non solo deserializzato"
+      cells: [full, empty, empty]
+    - label: "Le build"
+      cells: [empty, full, empty]
+    - label: "Alcune prove a runtime"
+      cells: [empty, full, empty]
+    - label: "L'esecuzione su Android"
+      note: "verificata la compilazione, non l'esecuzione"
+      cells: [empty, empty, full]
+  legend:
+    full: "sì"
+    empty: "no"
+  caption: "la verifica, dichiarata per intero"
+  note: >
+    L'ultima riga è il motivo per cui questa tabella esiste. Una copertura alta di cui non
+    si conosce il perimetro dice meno di una verifica proporzionata dichiarata per intero.
 flow:
   at: il-codice-tiene-la-promessa-dellarchitettura
   label: "Diagramma a blocchi"
