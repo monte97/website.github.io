@@ -266,11 +266,40 @@ pezzo che glielo spiega non esiste, o che nessuno l'ha collegato.
 
 ## 13. Versione inglese
 
-`index.en.md` nella stessa cartella. Non è una traduzione letterale ma un
-adattamento — le regole stanno in `_strategy/writing-rules/personal.md` del vault.
-`scripts/post-facts.py` segnala il drift quando il numero di heading diverge.
+`index.en.md` nella stessa cartella. **Non e' una traduzione: e' un adattamento**, e
+l'italiano e' la sorgente di verita'.
 
----
+Riferimenti da leggere prima di scriverne una, perche' la voce di casa e' gia' li':
+
+- `progettare/kafka/05-kafka-crash-recovery-strategie/index.en.md`
+- `progettare/keycloak/04-keycloak-e2e/index.en.md`
+
+Sono fedeli nella struttura e idiomatici nella formulazione:
+
+| Italiano | Inglese |
+|---|---|
+| «e' uno scenario comune» | «is a familiar story» — non «is a common scenario» |
+| «La risposta non dipende da Kafka, ma dal tipo di stato» | «The answer does not depend on Kafka — it depends on the type of state» |
+
+Le regole:
+
+1. **Stessa voce.** Prima persona dove l'italiano la usa, stessa direttezza, stessa
+   presa di posizione. Un pezzo opinionated in italiano resta opinionated in inglese.
+2. **Stessa struttura.** Stessi heading, stesso ordine, stesso numero di sezioni.
+   Gli heading si traducono, non si riorganizzano.
+3. **Stessa lunghezza.** Non si accorcia per "adattare".
+4. **Niente registro da blog aziendale.** Vietati «In this article we will explore...»,
+   «It is worth noting that...», «Let's dive into...».
+5. **Il codice non si traduce.** Restano identici comandi, nomi di file, chiavi YAML e
+   output. Si traducono i commenti dentro il codice, se erano in italiano.
+6. **I link interni** puntano alla versione inglese quando esiste, all'italiana quando
+   non esiste. Si verifica che il file di destinazione ci sia, non si indovina.
+
+`scripts/post-facts.py` segnala il drift quando il numero di heading diverge: a lavoro
+finito deve essere 0, perche' la struttura e' la stessa.
+
+**Nota:** `_strategy/writing-rules/personal.md` ha regole EN che valgono per i post
+LinkedIn, non per il blog. Il principio dell'adattamento e' lo stesso, il resto no.
 
 ## Controllo prima di pubblicare
 
