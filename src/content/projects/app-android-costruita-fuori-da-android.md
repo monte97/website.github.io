@@ -27,10 +27,10 @@ esito: >
   l'integrazione dei venti pezzi e la prova contro il sensore vero.
 
 anonimizzazione: >
-  Il settore e' quello reale. Non sono nominati il committente, il suo prodotto,
+  Il settore è quello reale. Non sono nominati il committente, il suo prodotto,
   l'intermediario da cui e' passato il lavoro, e gli operatori mobili citati nei profili
-  di configurazione. Il dominio e' rimasto perche' sostituirlo avrebbe reso generica la
-  scena da cui il pezzo dipende, e non avrebbe protetto niente che non sia gia' fuori.
+  di configurazione. Il dominio è rimasto perché sostituirlo avrebbe reso generica la
+  scena da cui il pezzo dipende, e non avrebbe protetto niente che non sia già fuori.
 
 sections:
   - n: "01"
@@ -118,7 +118,7 @@ decisions:
     why: "Avrebbe legato la verifica di un'addizione alla disponibilità di un telefono e di un sensore."
   - title: "Cosa mettere nel modulo della posizione"
     chosen: "Il campione, la qualità, il validatore, gli stati dell'acquisizione"
-    chosenWhy: "La parte che si rompe non è il satellite: è la decisione su quando fidarsi di quello che il satellite ha detto."
+    chosenWhy: "Quello che si rompe è la decisione su quando fidarsi di quello che il satellite ha detto. Il satellite, di suo, funziona."
     rejected: "Incapsulare l'interfaccia di posizionamento del sistema operativo"
     appeal: "Sembra più completo. Un modulo che si chiama così dovrebbe fornire la posizione."
     why: "Avrebbe portato la piattaforma dentro il modulo più ricco di logica del progetto, che è l'esatto contrario di quello che serviva."
@@ -242,8 +242,8 @@ Detto altrimenti: contiene tutto quello che serve a rispondere alla domanda *que
 misura è abbastanza buona da poterci scrivere sopra un rapporto?*, e niente di quello che
 serve a ottenerla.
 
-Sembra sbagliato finché non ti accorgi che **la parte che si rompe non è mai il
-satellite**. Il satellite funziona. Quello che si rompe è la soglia scelta male, lo stato
+Sembra sbagliato finché non ti accorgi di **quello che si rompe davvero**. Il satellite
+funziona. A rompersi è la soglia scelta male, lo stato
 in cui l'acquisizione resta bloccata perché nessuno ha previsto quella combinazione, la
 misura accettata quando andava rifiutata e finita in un documento che qualcuno ha firmato.
 Sono tutti errori di logica, e la logica non ha bisogno di un cielo aperto per essere
