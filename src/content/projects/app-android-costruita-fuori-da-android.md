@@ -282,8 +282,8 @@ Il cambiamento che conta non è tecnico e non è nel numero dei moduli.
 validazione non deve prenotare il sensore, non deve aspettare che un tecnico scenda dal
 traliccio, non deve accendere un emulatore per sapere se una soglia è giusta. Un pezzo
 del lavoro ha smesso di dipendere dalla disponibilità di qualcosa che non si controlla, ed
-è la specie di dipendenza che non compare in nessun preventivo perché non è una voce di
-costo: è un'attesa.
+è la specie di dipendenza che non compare in nessun preventivo perché non si scrive come una voce di
+costo: si presenta come un’attesa.
 
 E c'è un secondo effetto, che si vede più tardi. Il giorno in cui quella logica dovrà
 girare da qualche altra parte, su un'altra piattaforma o dentro un servizio che elabora i
