@@ -21,14 +21,14 @@ metodo: >
   dichiara, e la porta nel nome.
 
 esito: >
-  La parte che decide, cioe' validazione della qualita' del segnale, calibrazione,
+  La parte che decide, cioè validazione della qualità del segnale, calibrazione,
   filtri, generazione del rapporto, si verifica senza telefono e senza sensore. Il
   codice legato alla piattaforma sta in due file su tutto il progetto. Restano scoperte
   l'integrazione dei venti pezzi e la prova contro il sensore vero.
 
 anonimizzazione: >
   Il settore è quello reale. Non sono nominati il committente, il suo prodotto,
-  l'intermediario da cui e' passato il lavoro, e gli operatori mobili citati nei profili
+  l'intermediario da cui è passato il lavoro, e gli operatori mobili citati nei profili
   di configurazione. Il dominio è rimasto perché sostituirlo avrebbe reso generica la
   scena da cui il pezzo dipende, e non avrebbe protetto niente che non sia già fuori.
 
