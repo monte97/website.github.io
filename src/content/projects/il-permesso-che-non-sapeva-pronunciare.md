@@ -94,6 +94,41 @@ decisionsNote: >
   Il filo è lo stesso nei due bivi: su un sistema vivo la reversibilità vale più
   dell'eleganza. Il vecchio resta raggiungibile finché il nuovo non si è guadagnato
   il posto.
+timeline:
+  label: "Come si cambia la serratura senza chiudere la porta"
+  steps:
+    - kind: "Punto zero"
+      title: "Un solo punto di controllo davanti a tutte le domande «può?»"
+      desc: >
+        Prima di cambiare qualsiasi cosa, tutte le decisioni sui permessi passano da
+        un'unica interfaccia. Finché i controlli restano sparsi nel codice, non c'è
+        niente da girare.
+      done: true
+    - kind: "Dietro l'interfaccia"
+      title: "Tre implementazioni, non due"
+      desc: >
+        Una replica il comportamento vecchio — stesse risposte, stessi angoli ciechi.
+        Una non risponde affatto, per misurare quanti punti del sistema chiedano il
+        permesso senza che nessuno lo sappia. Una interroga le relazioni nuove.
+      done: true
+    - kind: "Il flag"
+      title: "Prima un utente, poi uno scenario, poi tutti"
+      desc: >
+        Girare il flag è una scelta di traffico, non un deploy: reversibile in un
+        istante. È la fase in cui il modello nuovo può sbagliare in sicurezza, perché
+        la replica del vecchio è ancora lì a rispondere.
+      done: true
+    - kind: "Fine dell'abitazione"
+      title: "Il seam si smonta"
+      desc: >
+        Un seam non è una struttura permanente: quando la terza implementazione è
+        l'unica che risponde, le altre due e il punto di controllo che le sceglieva
+        diventano codice da togliere.
+  caption: "G1 · le quattro fasi del seam"
+  note: >
+    La fase che costa e non si vede è la seconda: la replica del comportamento vecchio
+    sta in meno di duecento righe contro le ottocento del motore nuovo, e non produce
+    niente di visibile. È la voce che non entra mai in un preventivo.
 openItems:
   - "Restano riferimenti al vecchio modello di ruoli sparsi in una ventina di file: codice morto che non decide più nulla, e che aspetta di essere cancellato"
   - "La ricostruzione a posteriori di chi vedeva cosa è possibile, ma non c'è ancora un'interfaccia che la renda comoda a chi non scrive interrogazioni"
