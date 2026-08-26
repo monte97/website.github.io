@@ -5,6 +5,7 @@ date: 2026-01-29T09:00:00.000Z
 description: "Guida pratica al distributed tracing con OpenTelemetry e LGTM stack. Tre scenari di debug: silent failure, latency spike, fan-out."
 pillar: verificare
 category: observability
+mode: how-to
 tags:
   - OpenTelemetry
   - Observability
@@ -23,7 +24,7 @@ tags:
   - Sistemi Distribuiti
   - Docker
 lang: it
-reviewed: human
+reviewed: false
 series: observability
 seriesOrder: 40
 reproducibility: true
@@ -39,17 +40,19 @@ summary:
     note: "Con il tracing il bottleneck è visibile nel waterfall in pochi minuti"
 openItems:
   - "LGTM all-in-one non scala in produzione: servono deployment separati con storage persistente, retention policies e alta disponibilità"
-  - "In produzione non si può mantenere il 100% delle trace: servono strategie di head sampling, tail sampling e rate limiting"
+  - "In produzione non si possono conservare tutte le trace: servono strategie di head sampling, tail sampling e rate limiting"
   - "Gli scenari sono simulazioni controllate con delay artificiali e flag di configurazione: i problemi reali sono più difficili da riprodurre e spesso intermittenti"
   - "Su monoliti o bottleneck locali il tracing non aiuta, e l'auto-instrumentation ha un costo di ~2-5% di CPU e ~10-30MB per servizio Node.js"
 openNote: "Quello che la demo non copre, e che distingue uno scenario simulato dalla produzione."
 ---
 
-Chi ha strumentato un'applicazione con OpenTelemetry ha trace e log centralizzati. Resta una domanda pratica: come si usa concretamente questa telemetria per risolvere problemi? Questo tutorial risponde con tre scenari di debug reali. Per chi non ha familiarita con i concetti base di OTel (spans, traces, context propagation), si consiglia prima la lettura di [Introduzione a OpenTelemetry](https://theredcode.it/devops/observability-monitoring-intro/).
+Il checkout risponde `200`. Il cliente vede la conferma dell'ordine. La notifica non parte mai, e nessuno se ne accorge finché non arriva la segnalazione — due giorni dopo, quando ricostruire cosa è successo quel pomeriggio è già archeologia.
+
+È il fallimento silenzioso: nessun errore nei log del checkout, perché il checkout ha fatto il suo lavoro. L'errore è di un altro servizio, in un altro log, senza niente che colleghi i due.
+
+Strumentare con OpenTelemetry serve esattamente a questo, ma avere trace e log centralizzati non basta: bisogna sapere cosa guardare. Questo articolo lo mostra su tre scenari riproducibili — il fallimento silenzioso qui sopra, un picco di latenza, e un fan-out con quattro servizi da isolare.
 
 Il setup dettagliato sta in appendice: serve solo a chi vuole replicare la demo, non a chi legge per capire.
-
----
 
 ## Architettura Demo
 
@@ -529,46 +532,22 @@ Con 2-3 servizi in catena lineare (A→B→C) e un team che conosce bene il sist
 
 ---
 
-## Limiti di Questo Tutorial
+## Due conti da fare prima di portarlo in produzione
 
-### Cosa Non È Coperto
+Gli `openItems` in fondo dicono cosa questa demo non copre. Due di quelle voci però non stanno in una riga, perché sono numeri e vanno visti.
 
-1. **Production deployment**: LGTM all-in-one non scala. Servono deployment separati con:
-   - Storage persistente (S3, GCS per Tempo/Loki)
-   - Retention policies
-   - High availability
-   - Autenticazione e autorizzazione
+**Quanto pesa.** Uno span occupa circa 500 byte compresso su disco. Con 100 richieste al secondo e cinque span per richiesta:
 
-2. **Sampling**: In production, non è possibile mantenere il 100% delle trace. Servono strategie di:
-   - Head sampling (percentuale fissa)
-   - Tail sampling (100% errori, sample del resto)
-   - Rate limiting
+```text
+100 req/s x 5 span x 500 B x 86400 s = ~21,6 GB al giorno
+con campionamento al 10%:              ~2,16 GB al giorno
+```
 
-3. **Costi e storage**: Il volume di dati può crescere rapidamente. Calcola:
-   - ~500 bytes per span (media compressa su disco)
-   - 100 req/s x 5 span/req x 500B x 86400s = ~21.6 GB/giorno
-   - Con sampling 10%: ~2.16 GB/giorno
+Il fattore dieci fra le due righe è il motivo per cui il campionamento non è un'ottimizzazione ma una decisione di architettura. Come si sceglie *cosa* tenere è il tema di [tail sampling e retention](/blog/verificare/observability/05-management/), dove quei numeri diventano una proiezione a dodici mesi.
 
-4. **Security**: Attenzione a non loggare:
-   - Token e credenziali
-   - PII (email, nomi, indirizzi)
-   - Dati sensibili nei span attributes
+**Cosa non deve finirci dentro.** Token e credenziali, dati personali — email, nomi, indirizzi — e qualunque cosa che, finita in uno span, diventi un problema di conformità invece che di diagnosi. Il filtraggio si fa nel Collector, prima dello storage, ed è il tema di [PII filtering](/blog/verificare/observability/07-keycloak-pii/).
 
-### Simulazioni vs Realtà
-
-Gli scenari demo usano simulazioni controllate:
-- Il "template premium lento" è un `setTimeout(3000)`
-- L'"email invalida" è un flag di configurazione
-- I "servizi lenti" nel fan-out sono endpoint `/config/simulate-slow` che aggiungono delay
-
-In produzione, i problemi reali sono:
-- Più difficili da riprodurre
-- Spesso intermittenti
-- Causati da combinazioni di fattori
-
-OTel aiuta proprio perché cattura questi scenari quando accadono in produzione, senza doverli riprodurre in dev.
-
----
+Sul resto vale la nota in fondo: **gli scenari qui sopra sono simulazioni controllate.** Il template lento è un `setTimeout(3000)`, l'email invalida è un flag di configurazione. In produzione gli stessi problemi sono intermittenti e nascono da combinazioni di fattori — ed è esattamente per quello che serve la strumentazione: cattura il caso quando accade, senza doverlo riprodurre.
 
 ## Appendice: Setup OpenTelemetry
 
@@ -902,13 +881,12 @@ L'auto-instrumentation cattura:
 
 ---
 
-## Prossimi Articoli
+## Cosa avete adesso che prima non c'era
 
-- **Sampling strategies**: Head vs tail sampling, quando usare quale
-- **Production deployment**: LGTM in Kubernetes con storage persistente
-- **Cost optimization**: Calcolare e controllare i costi di observability
-- **Security**: Filtrare PII e dati sensibili dalle trace
+Tre scenari, e in tutti e tre la stessa cosa: **la domanda passa da «quale servizio ha sbagliato» a «dove è finito il tempo di questa richiesta»**, e la seconda ha una risposta che si legge in un grafico invece che ricostruirla incrociando quattro log a mano.
 
----
+Il valore non è tecnico. Un fallimento silenzioso come quello dell'apertura, senza tracing, si scopre da una segnalazione due giorni dopo; con il tracing si scopre dall'alert, mentre il contesto è ancora ricostruibile. **La differenza fra i due casi è il tempo in cui il problema resta invisibile**, e quel tempo è quello che il cliente vive.
 
-*Per domande o feedback: [francesco@montelli.dev](mailto:francesco@montelli.dev) | [LinkedIn](https://www.linkedin.com/in/francesco-montelli/) | [GitHub](https://github.com/monte97)*
+## Da qui in poi
+
+I due conti della sezione precedente sono i temi dei pezzi successivi: [tail sampling e retention](/blog/verificare/observability/05-management/) per il volume, [PII filtering](/blog/verificare/observability/07-keycloak-pii/) per i dati sensibili. E se i log audit devono seguire un percorso diverso da quelli tecnici, c'è [il routing](/blog/verificare/observability/06-routing/).

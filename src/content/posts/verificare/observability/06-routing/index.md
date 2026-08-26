@@ -687,5 +687,3 @@ Se tutti i check passano, il routing è pronto per il roll-out.
 - [Tail Sampling e Retention](/blog/verificare/observability/05-management/) - Ridurre il volume prima del routing
 
 ---
-
-*Per domande o feedback: [francesco@montelli.dev](mailto:francesco@montelli.dev) | [LinkedIn](https://www.linkedin.com/in/francesco-montelli/) | [GitHub](https://github.com/monte97)*

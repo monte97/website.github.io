@@ -470,5 +470,3 @@ Blocking a user on the fly or adding an access rule without a deploy requires no
 - [OPA REST API](https://www.openpolicyagent.org/docs/latest/rest-api/)
 
 ---
-
-*Questions or feedback: [LinkedIn](https://www.linkedin.com/in/francesco-montelli/) | [GitHub](https://github.com/monte97)*

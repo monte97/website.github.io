@@ -5,6 +5,7 @@ date: 2025-08-05T09:30:00.000Z
 description: Guida completa al deployment iniziale di cluster Kubernetes utilizzando Cluster API (CAPI) - Da Zero a Cluster Funzionante
 pillar: automatizzare
 category: kubernetes
+mode: how-to
 tags:
   - Kubernetes
   - CAPI
@@ -13,7 +14,7 @@ tags:
   - DevOps
   - Day 1 Operations
 lang: it
-reviewed: human
+reviewed: false
 series: homelab-capi
 seriesOrder: 40
 reproducibility: true
@@ -35,27 +36,19 @@ openItems:
   - "Il perimetro si ferma a un cluster minimale verificato su nodi, DNS e connettività esterna: storage, ingress e monitoraggio restano esclusi"
 ---
 
-# Parte 4: Setup Pratico - Day 1 Operations
+Fra un Proxmox vuoto e un cluster Kubernetes funzionante c'è una lista di cose che devono essere giuste tutte insieme: un utente con i permessi esatti, un token che non scade, un template che si clona, un bridge di rete che risponde, un generatore che produce manifest coerenti.
 
-*Quarto articolo della serie "Deploy Kubernetes con Cluster API: Gestione Automatizzata dei Cluster"*
+Se una sola sbaglia, il cluster non fallisce: **resta in `Provisioning`**, che è la modalità di fallimento più costosa perché non dice cosa manca. E il tempo che serve a scoprirlo cresce con quanto sei andato avanti prima di accorgertene.
 
----
-
-Nelle parti precedenti abbiamo esplorato i fondamenti teorici di Cluster API, l'architettura dei componenti e l'integrazione con Talos Linux. È ora il momento di mettere in pratica questi concetti attraverso un'implementazione completa delle **Day 1 Operations**.
-
-Questa parte guiderà attraverso ogni step del processo di deployment iniziale: dalla configurazione dell'infrastruttura Proxmox al primo cluster workload funzionante e verificato, utilizzando il Python generator per automatizzare la generazione delle configurazioni parametriche.
-
-L'obiettivo è ottenere un cluster Kubernetes **minimalmente funzionante e verificato**, pronto per le configurazioni avanzate che verranno coperte nella Parte 5 (Day 2 Operations).
-
----
+Questo articolo è la sequenza del giorno uno nell'ordine in cui va eseguita, con il controllo che chiude ogni passo prima di passare al successivo. La [parte precedente](/blog/progettare/kubernetes/02-capi-part2-internals/) spiega quali controller entrano in gioco e come leggerne lo stato: serve esattamente quando uno di questi controlli non passa.
 
 ## Configurazione Proxmox VE
 
-### Setup API User e Permissions
+### Utente API e permessi
 
 Proxmox richiede un utente dedicato con permissions appropriate per l'automazione CAPI.
 
-#### Creazione User e Token
+#### Creare utente e token
 
 ```bash
 # SSH al Proxmox host
@@ -84,7 +77,7 @@ pveum user token add capi@pve capi-token --privsep 0
 └──────────────┴──────────────────────────────────────┘
 ```
 
-#### Verifica API Access
+#### Verificare l'accesso all'API
 
 ```bash
 # Test API connectivity
@@ -105,7 +98,7 @@ curl -k -H 'Authorization: PVEAPIToken=capi@pve!capi-token=12345678-1234-1234-12
 
 Il template VM rappresenta l'immagine base che verrà clonata per ogni nodo del cluster.
 
-#### Download Talos Image Ottimizzata
+#### Scaricare l'immagine Talos ottimizzata
 
 ```bash
 # Talos factory image con estensioni per Proxmox
@@ -117,7 +110,7 @@ Questa immagine include:
 - **NoCloud datasource** per cloud-init integration
 - **Optimized kernel** per virtualizzazione
 
-#### Template VM Creation
+#### Creare il template della VM
 
 ```bash
 # Create template VM
@@ -138,7 +131,7 @@ qm create 8700 \
 qm template 8700
 ```
 
-#### Template Validation
+#### Verificare il template
 
 ```bash
 # Verify template creation
@@ -149,11 +142,11 @@ qm list | grep 8700
 qm config 8700 | grep -E "(name|template|agent|net0)"
 ```
 
-### Network Bridge Configuration
+### Configurazione del bridge di rete
 
 Assicurarsi che il bridge di rete sia configurato correttamente per l'accesso dei cluster nodes.
 
-#### Bridge Verification
+#### Verificare il bridge
 
 ```bash
 # Check existing bridges
@@ -172,7 +165,7 @@ iface vmbr0 inet static
     bridge-fd 0
 ```
 
-#### Firewall Rules (Optional)
+#### Regole di firewall (facoltative)
 
 ```bash
 # Allow Kubernetes API traffic
@@ -188,13 +181,13 @@ iptables-save > /etc/iptables/rules.v4
 
 ---
 
-## Management Cluster Setup
+## Preparare il management cluster
 
-### Kind Cluster Creation
+### Creare il cluster Kind
 
 Il management cluster serve come control plane per orchestrare i workload clusters.
 
-#### Kind Configuration
+#### La configurazione di Kind
 
 ```yaml
 # kind-config.yaml
@@ -212,9 +205,9 @@ kubectl cluster-info --context kind-capi-management
 kubectl get nodes -o wide
 ```
 
-### Tools Installation
+### Installare gli strumenti
 
-#### clusterctl Installation
+#### Installare clusterctl
 
 ```bash
 # Download latest clusterctl
@@ -227,7 +220,7 @@ sudo install -o root -g root -m 0755 clusterctl /usr/local/bin/clusterctl
 clusterctl version
 ```
 
-#### Provider Configuration
+#### Configurare i provider
 
 ```bash
 # Create clusterctl configuration directory
@@ -248,7 +241,7 @@ providers:
 EOF
 ```
 
-### Environment Variables Setup
+### Le variabili d'ambiente
 
 ```bash
 # Create environment file
@@ -266,7 +259,7 @@ source .capi-env
 echo "source .capi-env" >> .bashrc
 ```
 
-### CAPI Initialization
+### Inizializzare CAPI
 
 ```bash
 # Initialize Cluster API
@@ -294,11 +287,11 @@ capx-system                         infrastructure-proxmox  InfrastructureProvid
 
 ---
 
-## Python Generator Setup e Walkthrough
+## Il generatore Python, passo per passo
 
 Per facilitare la creazione dei template per i workload cluster è stato creato un [repository specifico](https://github.com/monte97/homelab-capi). Per informazioni specifiche, fare riferimento alla [relativa documentazione](https://github.com/monte97/homelab-capi/blob/master/docs.md).  
 
-### Dependencies Installation
+### Installare le dipendenze
 
 ```bash
 # Create virtual environment
@@ -312,7 +305,7 @@ pip install jinja2 pyyaml
 python -c "import jinja2, yaml; print('Dependencies OK')"
 ```
 
-### Generator Architecture Overview
+### Com'è fatto il generatore
 
 Il Python generator implementa un sistema templating flessibile:
 
@@ -325,7 +318,7 @@ Il Python generator implementa un sistema templating flessibile:
 └─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
-### Default Configuration Creation
+### Creare la configurazione di partenza
 
 ```bash
 # Generate default configuration
@@ -353,7 +346,7 @@ control_plane_endpoint:
 
 ## Deploy del Primo Cluster Workload
 
-### Pre-Deployment Validation
+### Controlli prima del deploy
 
 Prima del deployment, validare che tutti i prerequisiti siano soddisfatti:
 
@@ -363,7 +356,7 @@ kubectl get nodes -o wide
 kubectl get pods --all-namespaces
 ```
 
-### Cluster Configuration Generation
+### Generare la configurazione del cluster
 
 ```bash
 # Generate homelab cluster configuration
@@ -375,7 +368,7 @@ python cluster_generator.py \
 head -50 homelab-cluster.yaml
 ```
 
-### Cluster Deployment
+### Applicare il cluster
 
 ```bash
 # Apply cluster configuration
@@ -394,7 +387,7 @@ NAME                                      CLUSTER           NODENAME   PROVIDERI
 machine/homelab-cluster-cp-abc123         homelab-cluster              proxmox://   Pending    1m    v1.32.0
 ```
 
-### Deployment Monitoring
+### Seguire il deploy mentre avviene
 
 Il deployment progredisce attraverso diverse fasi. Monitorare usando:
 
@@ -409,7 +402,7 @@ kubectl get events --sort-by='.lastTimestamp' -A | tail -20
 kubectl describe machine homelab-cluster-cp-abc123
 ```
 
-#### Phase 1: Infrastructure Provisioning
+#### Fase 1: provisioning dell'infrastruttura
 
 ```bash
 # Monitor Proxmox machines
@@ -425,7 +418,7 @@ qm list | grep -v template
 3. **VM boot** con Talos ISO
 4. **Network configuration** applied
 
-#### Phase 2: Bootstrap Process
+#### Fase 2: bootstrap
 
 ```bash
 # Monitor bootstrap configuration
@@ -441,14 +434,14 @@ kubectl describe talosconfig homelab-cluster-cp-abc123
 3. **etcd cluster** initialization
 4. **API server** startup
 
-#### Phase 3: Control Plane Ready
+#### Fase 3: control plane pronto
 
 ```bash
 # Check control plane status
 kubectl get taloscontrolplane -A -o wide
 ```
 
-#### Phase 4: Worker Nodes (if enabled)
+#### Fase 4: worker node, se previsti
 
 ```bash
 # Monitor worker deployment
@@ -458,9 +451,9 @@ kubectl get machinedeployment -A -o wide
 kubectl get machines -A | grep worker
 ```
 
-### Troubleshooting Deployment Issues
+### Quando il deploy si blocca
 
-#### Common Issues e Resolution
+#### I blocchi più frequenti, e come uscirne
 
 **1. VM Creation Failures**
 ```bash
@@ -495,7 +488,7 @@ kubectl logs -n capi-control-plane-talos-system deployment/capi-control-plane-ta
 # - API server startup problems
 ```
 
-### Successful Deployment Verification
+### Verificare che sia andata bene
 
 Una volta completato il deployment:
 
@@ -517,7 +510,7 @@ curl -k https://192.168.0.30:6443/version
 
 ## Accesso al Cluster Workload
 
-### Kubeconfig Extraction
+### Estrarre il kubeconfig
 
 ```bash
 # Extract kubeconfig from management cluster
@@ -537,9 +530,9 @@ homelab-cluster-worker-def  Ready    <none>          8m    v1.32.0   192.168.0.2
 
 ---
 
-## Day 1 Readiness Validation
+## Il cluster è pronto? I controlli del giorno uno
 
-### Cluster Health Verification
+### Stato di salute del cluster
 
 Prima di considerare completate le Day 1 Operations, è essenziale validare che il cluster sia in uno stato healthy e pronto per le configurazioni avanzate.
 
@@ -554,7 +547,7 @@ kubectl --kubeconfig kubeconfig-homelab cluster-info
 kubectl --kubeconfig kubeconfig-homelab api-resources --verbs=list --namespaced -o name | head -10 | xargs -n 1 kubectl --kubeconfig kubeconfig-homelab get -A
 ```
 
-### Core System Validation
+### I componenti di sistema
 
 ```bash
 # Verify etcd cluster health
@@ -567,7 +560,7 @@ kubectl --kubeconfig kubeconfig-homelab get pods -n kube-system -l tier=control-
 kubectl --kubeconfig kubeconfig-homelab get pods -n kube-system | grep -E "(scheduler|controller-manager)"
 ```
 
-### Basic Networking Tests
+### Prove di rete di base
 
 ```bash
 # DNS functionality test
@@ -584,7 +577,7 @@ kubectl --kubeconfig kubeconfig-homelab logs network-test
 kubectl --kubeconfig kubeconfig-homelab delete pod dns-test network-test
 ```
 
-### Service Discovery Validation
+### Service discovery
 
 ```bash
 # Test service discovery
@@ -597,7 +590,7 @@ kubectl --kubeconfig kubeconfig-homelab get svc -n kube-system | grep dns
 kubectl --kubeconfig kubeconfig-homelab get endpoints -n kube-system
 ```
 
-### Resource Availability Check
+### Risorse disponibili
 
 ```bash
 # Check node resources
@@ -609,3 +602,17 @@ kubectl --kubeconfig kubeconfig-homelab top nodes --kubeconfig kubeconfig-homela
 # Check for any resource constraints
 kubectl --kubeconfig kubeconfig-homelab get events --field-selector type=Warning -A
 ```
+
+## Il cluster c'è. Cosa vuol dire davvero
+
+Un cluster in `Provisioned` con i controlli di base superati non è un cluster di produzione: è un cluster **verificato**, che è una cosa diversa e più utile. Vuol dire che ogni prerequisito è stato provato invece che assunto, e che se qualcosa si romperà domani saprete che non è nessuno dei punti di questa lista.
+
+Manca ancora tutto quello che rende un cluster utilizzabile da qualcun altro: storage persistente, ingress, osservabilità, politiche di accesso. Sono le Day 2 Operations, e cominciano da qui.
+
+**Detto a chi non scrive `kubectl`:** la differenza fra questa sequenza e uno script che fa le stesse cose è che qui ogni passo lascia una prova. Quando fra sei mesi il cluster andrà ricostruito — perché l'hardware muore, o perché ne serve un secondo identico — la ricostruzione è una procedura ripetibile invece di una giornata di archeologia.
+
+## Prima di passare oltre
+
+Rifate gli ultimi tre controlli su un cluster che *sapete* essere sano, e leggete cosa restituiscono. Riconoscere l'output di un cluster a posto è l'unico modo per riconoscere in fretta quello di un cluster che non lo è.
+
+La [parte successiva](/blog/progettare/kubernetes/05-capi-part5-ubuntu/) cambia il sistema operativo dei nodi: Ubuntu al posto di Talos, con Image Builder, e il motivo per cui a volte conviene.

@@ -583,5 +583,3 @@ Nel prossimo articolo vedremo come gestire la multi-tenancy: più organizzazioni
 - [Keycloak: introduzione](/blog/progettare/keycloak/01-keycloak-intro/)
 
 ---
-
-*Per domande o feedback: [LinkedIn](https://www.linkedin.com/in/francesco-montelli/) | [GitHub](https://github.com/monte97)*

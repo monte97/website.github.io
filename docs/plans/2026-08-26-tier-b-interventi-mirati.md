@@ -1,5 +1,9 @@
 # Tier B — interventi mirati su 9 articoli — Implementation Plan
 
+> **ESEGUITO 2026-08-26**, direttamente in Claude Code e non in delega:
+> opencode era bloccato da contesa sulla quota condivisa. Resta aperto un solo
+> punto, il Task 2 Step 2, che il piano stesso marca come decisione dell'autore.
+
 > **For agentic workers:** questo piano è pensato per l'esecuzione delegata. Ogni task prescrive **cosa fare su quale riga**, non "migliora l'articolo". Dove serve un giudizio editoriale, il piano lo dice e si ferma.
 
 **Goal:** Portare 9 articoli del Tier B a rispettare la style guide senza riscriverli. Il corpo di questi pezzi funziona: si toccano apertura, chiusura, heading e i difetti puntuali elencati.
@@ -41,7 +45,7 @@ npm run build
 
 Prima degli interventi editoriali, perché sono verificabili e non richiedono giudizio.
 
-- [ ] **Step 1: Assegnare il `mode`**
+- [x] **Step 1: Assegnare il `mode`**
 
 Uno per articolo, subito dopo `category:` nel frontmatter. Criterio §0: `explanation` se il lettore esce con una tesi, `how-to` se esce con un problema risolto.
 
@@ -59,16 +63,16 @@ Assegnazioni proposte, da confermare leggendo l'articolo:
 | `automatizzare/devops/pipeline-proxmox-opentofu-ansible` | `explanation` |
 | `verificare/testing/03-cicd-strategie-avanzate` | `how-to` |
 
-- [ ] **Step 2: Heading in inglese o misti**
+- [x] **Step 2: Heading in inglese o misti**
 
 Tradurre in italiano, mantenendo i nomi propri di tecnologie. Occorrenze note:
 
 - `03-capi-part3-talos`: `## Best Practices e Considerations`
 - `04-capi-part4-day1`: **tutti** gli heading sono in inglese (`Management Cluster Setup`, `Day 1 Readiness Validation`, `Python Generator Setup e Walkthrough`, …)
 
-- [ ] **Step 3: `reviewed: false` su tutti e 9**
+- [x] **Step 3: `reviewed: false` su tutti e 9**
 
-- [ ] **Step 4: Verifica**
+- [x] **Step 4: Verifica**
 
 ```bash
 for a in 03-capi-part3-talos 04-capi-part4-day1 02-authorization-code-pkce \
@@ -78,7 +82,7 @@ for a in 03-capi-part3-talos 04-capi-part4-day1 02-authorization-code-pkce \
 done
 ```
 
-- [ ] **Step 5: Build verde, commit**
+- [x] **Step 5: Build verde, commit**
 
 ---
 
@@ -122,7 +126,7 @@ Queste quattro aperture funzionano e rispettano la §1. Lasciarle invariate:
 - `progettare/keycloak/02-authorization-code-pkce` — vedi Task 2, ha un problema diverso
 - `progettare/kubernetes/01-article-ingress-k8s` — i terminali aperti per ogni `port-forward`
 
-- [ ] Build verde, commit
+- [x] Build verde, commit
 
 ---
 
@@ -134,9 +138,9 @@ Trattato a parte perché il difetto è strutturale e non è l'apertura.
 
 E la sezione più forte del pezzo — **`## Dove si rompe`**, con cinque guasti reali (redirect URI mismatch, issuer mismatch, CORS, token scaduto senza refresh, PKCE challenge fallito) — sta in fondo, dopo la configurazione e i test.
 
-- [ ] **Step 1:** `## Obiettivo` e `## Prerequisiti` si fondono nell'apertura in prosa, o diventano una riga sola. Non restano heading.
+- [x] **Step 1:** `## Obiettivo` e `## Prerequisiti` si fondono nell'apertura in prosa, o diventano una riga sola. Non restano heading.
 - [ ] **Step 2:** valutare se `## Dove si rompe` può salire subito dopo `## Come funziona il login con PKCE`. **Questa è una decisione editoriale: proporla, non applicarla senza conferma.**
-- [ ] **Step 3:** Build verde, commit
+- [x] **Step 3:** Build verde, commit
 
 ---
 
@@ -155,9 +159,9 @@ E la sezione più forte del pezzo — **`## Dove si rompe`**, con cinque guasti 
 
 **Nota su `04-correlation`:** i due punti sospesi possono indicare testo perduto in migrazione. **Prima di scrivere una chiusura, verificare nella storia git se quel paragrafo esisteva.** Se esisteva, il compito è recuperarlo, non riscriverlo.
 
-- [ ] **Step 1:** per ciascuno dei sei, scrivere una chiusura secondo la §11 — la regola generalizzata, oppure il "cosa fare domani"
-- [ ] **Step 2:** una sola frase di ponte col business per articolo (§4), costruita **solo** su fatti già presenti nel testo
-- [ ] **Step 3:** Build verde, commit
+- [x] **Step 1:** per ciascuno dei sei, scrivere una chiusura secondo la §11 — la regola generalizzata, oppure il "cosa fare domani"
+- [x] **Step 2:** una sola frase di ponte col business per articolo (§4), costruita **solo** su fatti già presenti nel testo
+- [x] **Step 3:** Build verde, commit
 
 ### Da NON toccare
 
@@ -167,18 +171,18 @@ E la sezione più forte del pezzo — **`## Dove si rompe`**, con cinque guasti 
 
 ## Task 4: `04-correlation` — il doppione strutturale
 
-- [ ] **Step 1:** l'articolo ha `## Limiti di Questo Tutorial` nel corpo, mentre il campo `openItems` esiste già nel frontmatter. Secondo la §6, quello che va tolto è **ciò che `openItems` già dice**; quello che richiede una spiegazione può restare come sezione, ma con un titolo che non duplichi il campo.
+- [x] **Step 1:** l'articolo ha `## Limiti di Questo Tutorial` nel corpo, mentre il campo `openItems` esiste già nel frontmatter. Secondo la §6, quello che va tolto è **ciò che `openItems` già dice**; quello che richiede una spiegazione può restare come sezione, ma con un titolo che non duplichi il campo.
 
 Confrontare le due liste voce per voce: le sovrapposizioni si eliminano dal corpo, il resto resta e la sezione si rinomina.
 
-- [ ] **Step 2:** Build verde, commit
+- [x] **Step 2:** Build verde, commit
 
 ---
 
 ## Task 5: Chiusura
 
-- [ ] **Step 1:** build completa verde
-- [ ] **Step 2:** controlli finali
+- [x] **Step 1:** build completa verde
+- [x] **Step 2:** controlli finali
 
 ```bash
 python3 scripts/post-facts.py | grep -E "mode:—|apertura-enciclopedica|doppione|marcatori"
@@ -188,7 +192,7 @@ grep -rn -E "^#{1,4} .*[📚🚀✅⚠️🔥]" src/content/posts --include="ind
 
 Tutti e tre devono essere vuoti sui 9 articoli di questo piano.
 
-- [ ] **Step 3:** report — cosa è stato cambiato per articolo, e **quali interventi sono stati proposti ma non applicati** perché richiedevano una decisione
+- [x] **Step 3:** report — cosa è stato cambiato per articolo, e **quali interventi sono stati proposti ma non applicati** perché richiedevano una decisione
 
 ---
 

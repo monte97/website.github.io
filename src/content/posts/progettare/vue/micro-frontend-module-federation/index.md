@@ -5,6 +5,7 @@ date: 2026-03-14T09:00:00.000Z
 description: "Module Federation in Vue 3 con Vite: il contratto shell/remoto va dichiarato a mano, e vue, vue-router e pinia devono essere singleton."
 pillar: progettare
 category: vue
+mode: explanation
 tags:
   - Vue3
   - MicroFrontend

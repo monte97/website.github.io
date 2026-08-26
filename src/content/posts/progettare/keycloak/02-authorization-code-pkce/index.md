@@ -5,6 +5,7 @@ date: 2026-02-15T09:00:00.000Z
 description: "Setup pratico di Authorization Code Flow con PKCE: configurazione Keycloak, integrazione frontend React e validazione backend Express."
 pillar: progettare
 category: keycloak
+mode: how-to
 tags:
   - Keycloak
   - OAuth2
@@ -13,7 +14,7 @@ tags:
   - Security
 lang: it
 draft: false
-reviewed: true
+reviewed: false
 series: keycloak
 seriesOrder: 20
 summary:
@@ -42,22 +43,9 @@ L'implementazione usa **Authorization Code Flow con PKCE** in MockMart, un e-com
 
 ---
 
-## Obiettivo
+Alla fine di questo percorso il realm `techstore` avrà un client public configurato per PKCE, il frontend React reindirizzerà a Keycloak per il login, il backend Express validerà i token che riceve, e un utente potrà entrare, vedere i prodotti e arrivare al checkout.
 
-Al termine di questo tutorial:
-
-- Keycloak avrà un realm `techstore` con un client public configurato per PKCE
-- Il frontend React (`shop-ui`) reindirizzerà a Keycloak per il login
-- Il backend Express (`shop-api`) validerà i token JWT ricevuti
-- L'utente potrà fare login, vedere i prodotti e completare il checkout
-
----
-
-## Prerequisiti
-
-- Docker e Docker Compose installati
-- [MockMart](https://github.com/monte97/MockMart) clonato in locale
-- Keycloak avviato (vedi [articolo introduttivo](/blog/progettare/keycloak/01-keycloak-intro/))
+Serve poco per seguirlo: Docker con Compose, [MockMart](https://github.com/monte97/MockMart) clonato in locale, e Keycloak avviato come nell'[articolo introduttivo](/blog/progettare/keycloak/01-keycloak-intro/).
 
 ---
 

@@ -5,6 +5,7 @@ date: 2025-01-24T09:00:00.000Z
 description: "Playwright in CI: sharding con blob reporter e job di merge, 200 test su 4 shard in un quarto del tempo, più emulazione mobile e API testing."
 pillar: verificare
 category: testing
+mode: how-to
 tags:
   - Playwright
   - CI/CD
@@ -12,7 +13,7 @@ tags:
   - Sharding
   - Agent-Driven Development
 lang: it
-reviewed: human
+reviewed: false
 series: playwright
 seriesOrder: 30
 reproducibility: true
@@ -352,7 +353,14 @@ cd ../demo && npm install && npx playwright test --ui
 
 ---
 
-*Serie Playwright:*
-1. [Playwright: Testing E2E Moderno e Affidabile](/blog/verificare/testing/01-guida-completa-e2e/)
-2. [Dal test E2E al debug del backend: Playwright + OpenTelemetry](/blog/verificare/testing/02-opentelemetry-trace-correlation/)
-3. **Playwright in CI/CD: Sharding, Mobile Testing e Automazione Agent-Driven** (questo articolo)
+## Quanto vale far girare la suite in CI
+
+Una suite E2E che gira solo in locale è una suite che qualcuno deve ricordarsi di lanciare, e prima o poi nessuno se lo ricorda. Portarla in CI non la rende migliore: **la rende inevitabile**, che è la sola proprietà che conta per un test di regressione.
+
+Lo sharding serve a rendere quella inevitabilità sopportabile: 200 test su quattro shard scendono a circa un quarto del tempo, ed è la differenza fra un controllo che si aspetta e uno che si salta.
+
+**Tradotto per chi guarda i tempi di rilascio:** una regressione trovata in pipeline costa i minuti della pipeline; la stessa regressione trovata da un cliente costa una segnalazione, un'indagine e un rilascio d'emergenza — più la fiducia, che non si misura in minuti.
+
+## Da provare domani
+
+Prendete il test più lento della suite e mettetelo su uno shard suo. Se il tempo totale scende, avete il caso pronto da portare a chi decide come si spende il tempo di CI.

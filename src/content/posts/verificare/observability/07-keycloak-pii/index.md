@@ -570,5 +570,3 @@ Per lanciare la demo con un solo comando: `make up-keycloak-pii` (safe) oppure `
 * **OTel Docs**: [opentelemetry.io/docs/collector](https://opentelemetry.io/docs/collector/processors)
 * **GDPR Guide**: [gdpr.eu](https://gdpr.eu)
 * **Workshop completo**: [github.com/monte97/otel-workshop](https://github.com/monte97/otel-workshop)
-
-*Per domande o feedback: [francesco@montelli.dev](mailto:francesco@montelli.dev) | [LinkedIn](https://www.linkedin.com/in/francesco-montelli/) | [GitHub](https://github.com/monte97)*

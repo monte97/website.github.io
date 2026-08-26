@@ -492,5 +492,3 @@ Bloccare un utente al volo o aggiungere una regola di accesso senza deploy non r
 - [OPA REST API](https://www.openpolicyagent.org/docs/latest/rest-api/)
 
 ---
-
-*Per domande o feedback: [LinkedIn](https://www.linkedin.com/in/francesco-montelli/) | [GitHub](https://github.com/monte97)*

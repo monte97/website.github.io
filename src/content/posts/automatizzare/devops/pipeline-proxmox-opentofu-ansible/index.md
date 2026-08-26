@@ -5,6 +5,7 @@ date: 2026-02-14T11:00:00.000Z
 description: Architettura di una pipeline CI/CD che provisiona VM su Proxmox con OpenTofu e automatizza il deploy con Ansible orchestrato da Semaphore
 pillar: automatizzare
 category: devops
+mode: explanation
 tags:
   - CI/CD
   - OpenTofu
@@ -15,7 +16,7 @@ tags:
   - DevOps
 lang: it
 draft: false
-reviewed: true
+reviewed: false
 series: cicd
 seriesOrder: 10
 summary:
@@ -38,17 +39,15 @@ openItems:
 openNote: "Dove la pipeline descritta si ferma."
 ---
 
-## Il contesto
+Aggiornare l'ambiente di staging richiede: aprire la UI di Proxmox, clonare la VM, configurare SSH, copiare i file di configurazione, lanciare i container. Venti minuti se tutto va bene, e va bene quasi sempre.
 
-Un'applicazione composta da più servizi containerizzati: backend API, frontend, database PostgreSQL e identity provider (Keycloak). Ogni ambiente (staging, produzione) gira su una VM dedicata, provisionata su un hypervisor Proxmox. Il deploy avviene via Docker Compose.
+Il problema non è la mezz'ora. È che quei passi vivono nella testa di chi li ha fatti l'ultima volta, e che ogni ambiente finisce per divergere dagli altri in modi che nessuno ha deciso. Con due ambienti e aggiornamenti frequenti, il costo non è il tempo: è **non poter più dire con certezza cosa c'è su quale macchina**.
 
-Il flusso manuale prevede: creare la VM dalla UI Proxmox, configurare SSH, copiare i file di configurazione, lanciare i container. Per un singolo ambiente il processo è gestibile. Per due ambienti con aggiornamenti frequenti, il costo di ogni deploy manuale si accumula - e con esso il rischio di errori e drift tra gli ambienti.
+## Cosa gira, e perché la mano ci finisce sopra
 
-Vogliamo una pipeline che, dato un nuovo set di immagini, provisioni l'infrastruttura se necessario e deploji l'applicazione senza intervento manuale.
+L'applicazione è fatta di più servizi containerizzati — API di backend, frontend, PostgreSQL e Keycloak come identity provider — e ogni ambiente, staging e produzione, sta su una VM dedicata su un hypervisor Proxmox.
 
-L'intero codice del progetto è disponibile nella cartella `demo/` accanto a questo articolo.
-
------
+L'obiettivo è una pipeline che, dato un nuovo set di immagini, provisioni l'infrastruttura se serve e rilasci l'applicazione senza che nessuno tocchi niente. Il codice completo è nella cartella `demo/` accanto a questo articolo.
 
 ## L'Architettura: Tre Strumenti, Tre Responsabilità
 
@@ -481,20 +480,19 @@ L'health check verifica solo la raggiungibilità HTTP. In un contesto più matur
 
 -----
 
-## Riepilogo
+## Perché i tre livelli restano separati
 
-L'architettura descritta copre:
+La proprietà che regge tutta l'architettura è una sola: **ogni strumento ha una responsabilità e un'interfaccia, e nessuno sa cosa fanno gli altri.** Jenkins orchestra, OpenTofu provisiona, Ansible configura, Docker Compose esegue.
 
-1. **Rilevamento automatico** delle nuove immagini via polling sul container registry
-2. **Provisioning** di VM Proxmox da template con OpenTofu e cloud-init
-3. **Deploy** via Ansible orchestrato da Semaphore, con template Docker Compose parametrici
-4. **Separazione** tra repository sorgente e repository di deployment
-5. **Isolamento** dei secret tra Jenkins Credentials e Semaphore Environment
-6. **Sviluppo locale** tramite Makefile e Docker Compose standalone
+Il modo di misurarla è chiedersi cosa costa sostituirne uno. Passare da Jenkins a GitLab CI tocca il livello di orchestrazione e basta: provisioning e deploy non se ne accorgono. Se invece la sostituzione richiedesse di riscrivere anche gli altri, i livelli sarebbero separati solo sulla carta.
 
-Ogni componente ha una singola responsabilità e interfacce definite. La sostituzione di uno strumento (ad esempio Jenkins con GitLab CI) richiede modifiche solo al livello di orchestrazione, senza impattare provisioning o deploy.
+Il prezzo di questa separazione va detto: sono quattro strumenti da conoscere, aggiornare e far dialogare, contro uno script che li farebbe tutti. Sotto una certa scala — un ambiente solo, che cambia di rado — quel prezzo non si ripaga.
 
-Niente più deploy manuali, niente più drift tra ambienti, niente più "ma su staging funzionava". Un `git push` e il resto succede da solo.
+**Sopra quella scala, invece, il conto si legge così:** niente più deploy manuali, niente più drift fra ambienti, niente più *«ma su staging funzionava»*. Un `git push`, e il resto succede da solo — con la conseguenza che ricreare un ambiente da zero smette di essere un progetto e diventa un'attesa.
+
+## Da dove partire
+
+Non da Jenkins. Dal livello più basso: portate in OpenTofu la creazione di **una** VM che oggi fate a mano dalla UI. È il passo che si ripaga da solo, e vi dice se il resto dell'architettura vi serve davvero.
 
 -----
 

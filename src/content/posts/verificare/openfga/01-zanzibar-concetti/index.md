@@ -5,6 +5,7 @@ date: 2026-03-07T09:00:00.000Z
 description: "Da RBAC a Zanzibar: come funziona il modello a tuple di OpenFGA, il DSL per le relazioni, e le tre domande fondamentali dell'autorizzazione."
 pillar: verificare
 category: openfga
+mode: explanation
 tags:
   - OpenFGA
   - Authorization

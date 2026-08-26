@@ -867,5 +867,3 @@ Auto-instrumentation captures:
 - **Security**: Filtering PII and sensitive data from traces
 
 ---
-
-*Questions or feedback: [francesco@montelli.dev](mailto:francesco@montelli.dev) | [LinkedIn](https://www.linkedin.com/in/francesco-montelli/) | [GitHub](https://github.com/monte97)*

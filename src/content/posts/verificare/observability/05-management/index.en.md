@@ -689,5 +689,3 @@ If all checks pass, the observability configuration is ready for an initial roll
 - Cloud cost optimization
 
 ---
-
-*Questions or feedback: [francesco@montelli.dev](mailto:francesco@montelli.dev) | [LinkedIn](https://www.linkedin.com/in/francesco-montelli/) | [GitHub](https://github.com/monte97)*

@@ -703,5 +703,3 @@ Se tutti i check passano, la configurazione di observability è pronta per un ro
 - Cost optimization in cloud
 
 ---
-
-*Per domande o feedback: [francesco@montelli.dev](mailto:francesco@montelli.dev) | [LinkedIn](https://www.linkedin.com/in/francesco-montelli/) | [GitHub](https://github.com/monte97)*

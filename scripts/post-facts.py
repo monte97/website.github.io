@@ -20,7 +20,10 @@ TITLE_BUDGET = 60 - len(TITLE_SUFFIX)
 DESC_RANGE = (120, 160)
 
 # heading che duplicano cio' che summary/openItems/PostCTA gia' rendono
-DUP_HEADING = re.compile(r"^#{2,4}\s+(TL;?DR|In sintesi|Limiti di|Cosa non copre|Call to action)", re.I)
+# NB: "Limiti di questo tutorial" e' un doppione di openItems; "Limiti dichiarati"
+# no — la style guide (§6) ammette una sezione quando il limite richiede una
+# spiegazione. Il confine di parola serve a non confondere i due.
+DUP_HEADING = re.compile(r"^#{2,4}\s+(TL;?DR|In sintesi|Limiti di\b|Cosa non copre|Call to action)", re.I)
 # l'archetipo enciclopedico: il pezzo apre spiegando cos'e' invece che cosa si rompe
 ENCYCLOPEDIC = re.compile(r"^(cos'?[eè]\b|introduzione|definizione|panoramica|che cos'?[eè]\b)", re.I)
 MARKER = re.compile(r"TO BE TESTED|<!--\s*TODO|TODO:|\[NUMERO DA FORNIRE")
