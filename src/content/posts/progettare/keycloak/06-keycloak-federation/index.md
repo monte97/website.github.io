@@ -1,7 +1,8 @@
 ---
 title: "Keycloak Federation: Integrare Utenti da LDAP, Okta, Google e Altri Identity Provider"
+seoTitle: "Keycloak Federation: LDAP, Okta e brokering"
 date: 2026-03-06T09:00:00.000Z
-description: "Come Keycloak integra identità esterne con due meccanismi distinti: User Federation per directory come LDAP/AD, e Identity Brokering per provider come Okta, Google e altri Keycloak."
+description: "Keycloak integra identità esterne: User Federation sincronizza utenti con LDAP o AD, Identity Brokering agisce come proxy verso Okta, Google e altri provider."
 pillar: progettare
 category: keycloak
 tags:

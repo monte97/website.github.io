@@ -1,5 +1,6 @@
 ---
 title: "Keycloak in Pratica: 6 Problemi Reali nell'Integrazione di un E-Commerce"
+seoTitle: "Keycloak: 6 problemi reali in produzione"
 date: 2026-02-06T09:00:00.000Z
 description: "6 problemi concreti nell'integrazione Keycloak con microservizi Node.js: issuer mismatch, audience mancante, service account fragili e race condition M2M."
 pillar: progettare

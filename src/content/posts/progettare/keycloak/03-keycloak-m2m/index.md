@@ -1,7 +1,8 @@
 ---
 title: "Keycloak M2M: Autenticare Servizi Senza Utente"
+seoTitle: "Keycloak M2M: autenticare i servizi"
 date: 2026-02-05T09:00:00.000Z
-description: Come autenticare chiamate tra microservizi con Keycloak Client Credentials. Setup, codice e errori comuni.
+description: "Autenticare servizi con Keycloak Client Credentials: il flusso, la configurazione, gli errori comuni e il pattern di cache con rinnovo anticipato."
 pillar: progettare
 category: keycloak
 tags:

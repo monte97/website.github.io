@@ -1,5 +1,6 @@
 ---
 title: "Login con Keycloak: Authorization Code + PKCE in MockMart"
+seoTitle: "Keycloak: Authorization Code Flow e PKCE"
 date: 2026-02-15T09:00:00.000Z
 description: "Setup pratico di Authorization Code Flow con PKCE: configurazione Keycloak, integrazione frontend React e validazione backend Express."
 pillar: progettare

@@ -1,5 +1,6 @@
 ---
 title: "Autorizzazione Granulare con OPA e Keycloak: Separare Autenticazione e Autorizzazione"
+seoTitle: "Keycloak + OPA: RBAC, deny list e ownership"
 date: 2026-02-06T09:00:00.000Z
 description: "Come integrare Open Policy Agent con Keycloak in un'app Express per separare autenticazione e autorizzazione. Tre pattern concreti: RBAC, deny list e ownership."
 pillar: progettare
