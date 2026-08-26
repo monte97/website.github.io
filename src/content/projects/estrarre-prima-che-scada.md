@@ -27,9 +27,7 @@ metodo: >
   aggiramento di limiti o protezioni.
 anonimizzazione: >
   Il fornitore del servizio non è nominato per scelta: il soggetto del pezzo è la
-  dipendenza da un servizio di terzi, non il caso particolare. Il lavoro è reale; la
-  pipeline di estrazione, però, è stata verificata end-to-end contro un ambiente
-  simulato, perché provarla richiede un modello attivo sull'account del cliente.
+  dipendenza da un servizio di terzi, non il caso particolare.
 problem: >
   La memoria visiva di un cantiere stava in due posti che non si parlavano: le
   panoramiche dello strumento, dietro un abbonamento che le tiene in vita solo finché
@@ -133,11 +131,21 @@ result:
   - "Un archivio navigabile che funziona senza alcuna dipendenza dal servizio: galleria, annotazioni, etichette e tour restano in piedi dopo la disattivazione del modello"
   - "La possibilità di disattivare i modelli dormienti per contenere i costi della licenza, mantenendo comunque il record visivo navigabile di ogni spazio rilevato"
   - "Un confine esplicito: lo strumento estrae e conserva; l'archiviazione formale e la riattivazione dei modelli restano sul portale del fornitore"
+esito: >
+  Le panoramiche dello strumento e le fotografie scattate in cantiere vivono nello stesso
+  archivio e nella stessa navigazione, in locale e senza dipendere da un abbonamento
+  attivo. Lo strumento è in uso quotidiano: non è un dimostratore, è il posto dove quelle
+  persone vanno a guardare com'era un ambiente.
 openItems:
-  - "I termini di servizio del fornitore vanno verificati caso per caso: questo pezzo non li interpreta e non stabilisce cosa sia consentito"
-  - "L'estrazione dipende dai formati e dagli accessi che il servizio espone oggi: se cambiano, va aggiornata"
-  - "I collegamenti dei virtual tour sono calcolati automaticamente sui vicini più prossimi: la percorribilità reale dei passaggi non è garantita"
-  - "L'archivio locale è a sua volta un sistema da mantenere: spazio disco, backup e longevità dei supporti diventano problemi tuoi"
+  - "L'archivio locale vive dove è stato messo: la conservazione nel tempo — copie, supporti, chi se ne occupa — resta una questione aperta che nessuno strumento risolve"
+  - "Le fotografie scattate in cantiere vanno collocate nello spazio da qualcuno: il collegamento fra una foto e il punto in cui è stata fatta non è automatico"
+  - "Il pezzo non interpreta i termini di servizio del fornitore: vanno letti e valutati caso per caso prima di replicare l'approccio"
+cta:
+  title: "Le foto dei vostri cantieri, fra sei mesi, dove saranno?"
+  desc: >
+    Se una metà vive dentro un abbonamento e l'altra nei telefoni di chi c'era, la
+    risposta è che una scadrà e l'altra non si troverà. Metterle nello stesso posto,
+    finché entrambe esistono, è un lavoro delimitato.
 thesis: "Con un servizio di terzi la domanda non è se uscirà di scena, ma cosa vorresti avere in mano quel giorno — e quella risposta si costruisce mentre funziona ancora."
 ---
 
