@@ -39,6 +39,28 @@ caseStudy:
   hook: >
     «Chi controlla che i test funzionino» non è una domanda sull'AI: qui i controlli
     sbagliati li avevo scritti io, e il risultato è stato identico.
+figures:
+  - kind: flow
+    at: la-freccia-che-mancava
+    label: "Il ciclo aperto, e la freccia che lo chiude"
+    caption: "I primi tre passi esistono gia' in qualsiasi repo con mutation testing. Il quarto e' quello che quasi nessuno fa, e senza il quale il report resta un tab del browser"
+    nodes:
+      - kind: "1"
+        name: "La spec"
+        desc: "Un umano descrive cosa il sistema deve fare. E' l'unico punto in cui entra la conoscenza del dominio."
+        edge: "l'agente legge la spec"
+      - kind: "2"
+        name: "L'agente scrive i test"
+        desc: "Migliaia di righe in un pomeriggio. Nessuno le rilegge davvero: il collo di bottiglia si e' spostato dallo scrivere al giudicare."
+        edge: "la suite gira contro i mutanti"
+      - kind: "3"
+        name: "Il report dei survived"
+        desc: "Stryker, PIT o mutmut dicono esattamente dove i test non si accorgono di niente. Verdetto oggettivo e ripetibile."
+        edge: "qui il ciclo di solito si interrompe"
+      - kind: "4"
+        name: "Il report torna all'agente"
+        desc: "Lo stesso agente legge i survived e li usa come prompt di ritorno: copri questo caso, che il report ti ha appena indicato. E' il workflow che Meta ha messo in produzione con ACH."
+        key: true
 ---
 
 Nel post precedente ho raccontato la storia: coverage al 93%, test tutti verdi, un bug in produzione per tre settimane perché nessun test distingueva `Sum` da `Max`. Buona parte di quei test li avevano scritti gli agenti AI, ed è lì che si apre la domanda che voglio affrontare qui: chiunque scriva i test, umano o agente, quello che conta è se qualcuno li mette alla prova.

@@ -36,6 +36,28 @@ openItems:
   - "Quali risorse rendere predittive e quali no è il tema del pezzo successivo, non di questo"
 openNote: "I confini del modello lineare, e cosa resta al pezzo dopo."
 mode: explanation
+figures:
+  - kind: timeline
+    at: gli-stessi-due-alert-sulla-stessa-metrica-in-tempo-reale
+    label: "La corsa fra i due alert"
+    caption: "Stessa metrica, stesso leak: tre minuti separano il momento in cui la proiezione sfonda il limite dal momento in cui l'heap ci arriva davvero"
+    steps:
+      - kind: "t=0:00"
+        title: "heap = 100 MB"
+        desc: "Nessun alert. Il leak e' partito, ma la finestra di storia e' ancora vuota."
+      - kind: "t=2:00"
+        title: "heap = 340 MB"
+        desc: "La regola predittiva inizia a valutare: le servono due minuti di storia prima di poter estrapolare."
+      - kind: "t=3:30"
+        title: "PREDITTIVA firing"
+        desc: "heap = 520 MB, poco sopra la meta'. La proiezione a cinque minuti sfonda 1 GB, quindi la regola scatta adesso."
+      - kind: "t=6:50"
+        title: "REATTIVA firing"
+        desc: "heap = 920 MB. Solo ora la soglia del 90% viene superata davvero: tre minuti dopo, e con molto meno margine."
+      - kind: "t=7:40"
+        title: "saturazione reale"
+        desc: "heap = 1 GB. In produzione, con un leak di 50 MB/ora invece di 2 MB/sec, quei tre minuti sarebbero oltre quattro ore."
+        done: true
 ---
 
 ## L'alert scatta quando il disco è già pieno
@@ -131,13 +153,6 @@ docker compose up --build
 
 Dopo qualche secondo di build, i tre servizi sono live. Grafana risponde su `http://localhost:3000`, ingresso anonimo come admin, dashboard `Saturation: Predictive vs Reactive`. La timeline qui sotto descrive cosa succede in tempo reale.
 
-```text
-t=0:00   heap = 100 MB  | nessun alert
-t=2:00   heap = 340 MB  | predittiva inizia a valutare (serve 2min di storia)
-t=3:30   heap = 520 MB  | PREDITTIVA firing: proiezione a 5min sfonda 1GB
-t=6:50   heap = 920 MB  | REATTIVA firing: heap > 90%
-t=7:40   heap = 1 GB    | saturazione reale
-```
 
 La cosa interessante è il gap fra la riga `t=3:30` e la riga `t=6:50`. Sono **circa tre minuti di lead time** che l'alert predittivo offre in uno scenario didattico compresso. In un sistema reale, dove il leak è dell'ordine di decine di MB/ora invece che 2 MB/sec, lo stesso identico pattern darebbe ore o giorni di anticipo. Il rapporto tra finestra di osservazione e velocità del leak determina il moltiplicatore.
 

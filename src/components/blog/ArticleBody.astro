@@ -1,0 +1,75 @@
+---
+/**
+ * Corpo di un articolo, con le figure dichiarate nel frontmatter inserite
+ * dentro la prosa.
+ *
+ * Il linguaggio e' quello dei case study: ogni figura dice `kind` e `at`, dove
+ * `at` e' l'id dell'heading della sezione a cui appartiene. La figura viene
+ * inserita **in fondo a quella sezione**, cioe' subito prima dell'heading
+ * successivo: prima il testo spiega, poi la figura riassume.
+ *
+ * Se `at` non corrisponde a nessun heading, la figura finisce in fondo
+ * all'articolo invece di sparire in silenzio.
+ */
+import FlowDiagram from '@/components/ui/FlowDiagram.astro';
+import MatrixFigure from '@/components/ui/MatrixFigure.astro';
+import TimelineFigure from '@/components/ui/TimelineFigure.astro';
+import BeforeAfterFigure from '@/components/ui/BeforeAfterFigure.astro';
+import InventoryFigure from '@/components/ui/InventoryFigure.astro';
+
+interface Figure {
+  kind: 'flow' | 'matrix' | 'timeline' | 'beforeAfter' | 'inventory';
+  at: string;
+  [key: string]: any;
+}
+
+interface Props {
+  /** HTML gia' renderizzato del markdown */
+  html: string;
+  figures?: Figure[];
+  lang?: 'it' | 'en';
+}
+
+const { html, figures = [], lang = 'it' } = Astro.props;
+
+// Ogni blocco parte da un heading di sezione; il primo blocco e' il testo
+// che precede il primo heading.
+const blocks = html.split(/(?=<h[23]\s+id=")/);
+const idOf = (block: string) => block.match(/^<h[23]\s+id="([^"]+)"/)?.[1] ?? null;
+
+const known = new Set(blocks.map(idOf).filter(Boolean) as string[]);
+const orphans = figures.filter(f => !known.has(f.at));
+
+let n = 0;
+const label = lang === 'en' ? 'Fig.' : 'Fig.';
+const nextFig = () => `${label} ${++n}`;
+---
+
+{blocks.map(block => {
+  const id = idOf(block);
+  const here = id ? figures.filter(f => f.at === id) : [];
+  return (
+    <>
+      <Fragment set:html={block} />
+      {here.map(f => (
+        <>
+          {f.kind === 'flow' && <FlowDiagram figureId={nextFig()} {...f} />}
+          {f.kind === 'matrix' && <MatrixFigure figureId={nextFig()} {...f} />}
+          {f.kind === 'timeline' && <TimelineFigure figureId={nextFig()} {...f} />}
+          {f.kind === 'beforeAfter' && <BeforeAfterFigure figureId={nextFig()} {...f} />}
+          {f.kind === 'inventory' && <InventoryFigure figureId={nextFig()} {...f} />}
+        </>
+      ))}
+    </>
+  );
+})}
+
+{orphans.map(f => (
+  <>
+    {f.kind === 'flow' && <FlowDiagram figureId={nextFig()} {...f} />}
+    {f.kind === 'matrix' && <MatrixFigure figureId={nextFig()} {...f} />}
+    {f.kind === 'timeline' && <TimelineFigure figureId={nextFig()} {...f} />}
+    {f.kind === 'beforeAfter' && <BeforeAfterFigure figureId={nextFig()} {...f} />}
+    {f.kind === 'inventory' && <InventoryFigure figureId={nextFig()} {...f} />}
+  </>
+))}

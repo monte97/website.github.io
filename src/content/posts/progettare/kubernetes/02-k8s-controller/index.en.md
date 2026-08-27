@@ -15,6 +15,28 @@ lang: en
 reviewed: machine
 series: kubernetes-fondamenti
 seriesOrder: 20
+figures:
+  - kind: flow
+    at: anatomy-of-a-controller
+    label: "The three pieces of a controller"
+    caption: "None of the three talks to the API server on every pass: that is what makes the loop sustainable across thousands of objects"
+    nodes:
+      - kind: "Informer"
+        name: "Watches, and remembers"
+        desc: "Opens a watch on the API server and keeps a local cache up to date. The controller's reads never touch the network."
+        edge: "the object changed"
+      - kind: "Work queue"
+        name: "Accumulates and deduplicates"
+        desc: "The keys of the objects to reconcile go into the queue. Ten changes to the same object become a single reconciliation."
+        edge: "one key at a time"
+      - kind: "Reconcile"
+        name: "Compares and acts"
+        desc: "Reads spec, reads status, and takes one step towards the desired state. It has to be idempotent, because it will be called again."
+        key: true
+        edge: "writes the status"
+      - kind: "API server"
+        name: "The single source of truth"
+        desc: "The write produces a new event, which the informer sees: the loop has no end, it has an equilibrium point."
 ---
 
 ## The Mechanism Behind kubectl apply

@@ -36,6 +36,28 @@ openItems:
   - "Auto-waiting removes timing bugs, not shared-state bugs between tests: those remain a suite design problem"
   - "On an existing Selenium suite the migration cost is real and has to be weighed against the flakiness you are paying for today"
 openNote: "Where this choice stops being obvious."
+figures:
+  - kind: flow
+    at: the-protocol-is-the-difference
+    label: "The channel between test and browser"
+    caption: "WebDriver asks one command at a time and stays blind in between; Playwright keeps the connection open and receives DOM events as they happen"
+    nodes:
+      - kind: "WebDriver"
+        name: "One command, one HTTP request"
+        desc: "Find the element, then click it, then read the text: every command is a full round trip. Between one and the next, the test has no idea what the page is doing."
+        edge: "the blind window where race conditions live"
+      - kind: "The symptom"
+        name: "sleep(5000)"
+        desc: "Waiting at random is the only remedy available: too short and the test fails, too long and the suite drags."
+        edge: "what changes when the channel changes"
+      - kind: "Playwright"
+        name: "Open, bidirectional WebSocket"
+        desc: "The test does not poll the browser at intervals: it receives the page lifecycle events as they happen."
+        key: true
+        edge: "a consequence, not a feature"
+      - kind: "The result"
+        name: "Auto-waiting"
+        desc: "The five checks before every action are not a polling loop bolted on top of a slow API: they follow from knowing in real time what is happening in the DOM."
 ---
 
 Tests that pass on the third attempt. `sleep(5000)` scattered through the code. Suites that run for twenty minutes and fail non-deterministically, always on a different test.

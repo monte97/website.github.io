@@ -6,6 +6,7 @@ import PostSummary from '@/components/ui/PostSummary.astro';
 import PostOpenItems from '@/components/ui/PostOpenItems.astro';
 import PostCaseStudy from '@/components/ui/PostCaseStudy.astro';
 import { estimateReadingTime } from '@/utils/blog';
+import ArticleBody from '@/components/blog/ArticleBody.astro';
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection('posts');
@@ -53,7 +54,9 @@ const alternateUrl = hasEnVersion ? `/en/blog/${slug}` : undefined;
     <PostSummary items={post.data.summary} lang="it" />
   )}
 
-  <Content />
+  {post.data.figures?.length
+    ? <ArticleBody html={post.rendered?.html ?? ''} figures={post.data.figures} lang="it" />
+    : <Content />}
 
   {post.data.openItems && post.data.openItems.length > 0 && (
     <PostOpenItems items={post.data.openItems} note={post.data.openNote} lang="it" />

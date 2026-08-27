@@ -31,6 +31,14 @@ const posts = defineCollection({
       hook: z.string().optional(),
     }).optional(),
     openNote: z.string().optional(),
+    // Figure nel corpo, con lo stesso linguaggio dei case study.
+    // `at` e' l'id dell'heading dopo la cui sezione la figura viene inserita.
+    figures: z.array(
+      z.object({
+        kind: z.enum(['flow', 'matrix', 'timeline', 'beforeAfter', 'inventory']),
+        at: z.string(),
+      }).passthrough()
+    ).optional(),
   }),
 });
 

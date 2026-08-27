@@ -35,6 +35,28 @@ openItems:
   - "La verifica mostrata è manuale su `kind`: il testing automatizzato dei controller non entra nell'articolo"
 openNote: "Cosa l'esempio minimale lascia fuori."
 mode: explanation
+figures:
+  - kind: flow
+    at: anatomia-di-un-controller
+    label: "I tre pezzi di un controller"
+    caption: "Nessuno dei tre parla direttamente con l'API server a ogni giro: e' questo che rende il loop sostenibile su migliaia di oggetti"
+    nodes:
+      - kind: "Informer"
+        name: "Guarda, e ricorda"
+        desc: "Apre un watch sull'API server e tiene una cache locale aggiornata. Le letture del controller non toccano la rete."
+        edge: "l'oggetto e' cambiato"
+      - kind: "Work queue"
+        name: "Accumula e deduplica"
+        desc: "Le chiavi degli oggetti da riconciliare entrano in coda. Dieci modifiche allo stesso oggetto diventano una sola riconciliazione."
+        edge: "una chiave alla volta"
+      - kind: "Reconcile"
+        name: "Confronta e agisce"
+        desc: "Legge spec, legge status, e fa un passo verso lo stato desiderato. Deve essere idempotente, perche' verra' chiamata di nuovo."
+        key: true
+        edge: "scrive lo status"
+      - kind: "API server"
+        name: "L'unica fonte di verita'"
+        desc: "La scrittura genera un nuovo evento, che l'informer vede: il loop non ha una fine, ha un punto di equilibrio."
 ---
 
 ## Il Meccanismo Dietro kubectl apply

@@ -39,6 +39,28 @@ caseStudy:
   hook: >
     "Who checks that the tests work" is not a question about AI: there the wrong checks
     were the ones I had written myself, and the result was identical.
+figures:
+  - kind: flow
+    at: the-arrow-that-was-missing
+    label: "The open cycle, and the arrow that closes it"
+    caption: "The first three steps already exist in any repo with mutation testing. The fourth is the one almost nobody does, and without it the report stays a browser tab"
+    nodes:
+      - kind: "1"
+        name: "The spec"
+        desc: "A human describes what the system has to do. It is the only point where domain knowledge enters."
+        edge: "the agent reads the spec"
+      - kind: "2"
+        name: "The agent writes the tests"
+        desc: "Thousands of lines in an afternoon. Nobody really reads them back: the bottleneck moved from writing to judging."
+        edge: "the suite runs against the mutants"
+      - kind: "3"
+        name: "The survived report"
+        desc: "Stryker, PIT or mutmut say exactly where the tests notice nothing. An objective, repeatable verdict."
+        edge: "this is where the cycle usually stops"
+      - kind: "4"
+        name: "The report goes back to the agent"
+        desc: "The same agent reads the survived mutants and uses them as a return prompt: cover this case, the one the report has just pointed you at. This is the workflow Meta put into production with ACH."
+        key: true
 ---
 
 In the previous post I told the story: 93% coverage, all tests green, a bug in production for three weeks because no test could tell `Sum` from `Max`. A good part of those tests had been written by AI agents, and that is where the question I want to tackle here opens up: whoever writes the tests, human or agent, what matters is whether anybody puts them to the test.

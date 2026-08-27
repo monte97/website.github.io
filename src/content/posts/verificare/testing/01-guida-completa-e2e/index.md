@@ -36,6 +36,28 @@ openItems:
   - "L'auto-waiting elimina i timing bug, non quelli di stato condiviso fra test: quelli restano un problema di progettazione della suite"
   - "Su una suite Selenium esistente il costo della migrazione è reale e va messo a bilancio contro la flakiness che si sta pagando oggi"
 openNote: "Dove questa scelta smette di essere ovvia."
+figures:
+  - kind: flow
+    at: il-protocollo-è-la-differenza
+    label: "Il canale fra test e browser"
+    caption: "WebDriver chiede un comando alla volta e resta cieco fra l'uno e l'altro; Playwright tiene la connessione aperta e riceve gli eventi del DOM mentre accadono"
+    nodes:
+      - kind: "WebDriver"
+        name: "Un comando, una richiesta HTTP"
+        desc: "Trova l'elemento, poi cliccalo, poi leggi il testo: ogni comando è un round trip completo. Fra l'uno e l'altro il test non sa cosa sta facendo la pagina."
+        edge: "la finestra cieca dove vivono le race condition"
+      - kind: "Il sintomo"
+        name: "sleep(5000)"
+        desc: "L'attesa a caso è l'unico rimedio disponibile: troppo corta e il test fallisce, troppo lunga e la suite si trascina."
+        edge: "cosa cambia se il canale cambia"
+      - kind: "Playwright"
+        name: "WebSocket aperto e bidirezionale"
+        desc: "Il test non interroga il browser a intervalli: riceve gli eventi del ciclo di vita della pagina mentre accadono."
+        key: true
+        edge: "conseguenza, non feature"
+      - kind: "Il risultato"
+        name: "Auto-waiting"
+        desc: "I cinque controlli prima di ogni azione non sono un polling appiccicato sopra un'API lenta: sono la conseguenza di sapere in tempo reale cosa succede nel DOM."
 ---
 
 Test che passano al terzo tentativo. `sleep(5000)` disseminati nel codice. Suite che girano venti minuti e falliscono in modo non deterministico, sempre su un test diverso.
