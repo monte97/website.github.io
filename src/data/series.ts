@@ -89,7 +89,7 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
     description:
       'Le suite E2E non vengono abbandonate perche\' sono lente: vengono abbandonate quando il team ' +
       'smette di credere ai loro fallimenti. La serie parte dal motivo tecnico per cui i test flaky ' +
-      'esistono — il protocollo con cui il test parla al browser — e arriva a una suite che gira in CI, ' +
+      'esistono: il protocollo con cui il test parla al browser. E arriva a una suite che gira in CI, ' +
       'mocka la rete, si correla alle trace del backend e resta leggibile quando cresce.',
     level: 'Intermedio',
     pillar: 'verificare',
@@ -169,8 +169,8 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
     subtitle: "Dall'evento come fatto già successo alle tre strategie di crash recovery",
     description:
       'Passare agli eventi non rende il sistema più veloce: lo rende meno accoppiato. ' +
-      'La serie parte da cosa Kafka garantisce davvero — l\'ordine vale per chiave, non in assoluto — ' +
-      'e attraversa i problemi che arrivano dopo: due servizi che non sono d\'accordo sul formato, ' +
+      'La serie parte da cosa Kafka garantisce davvero: l\'ordine vale per chiave, non in assoluto. ' +
+      'Poi attraversa i problemi che arrivano dopo: due servizi che non sono d\'accordo sul formato, ' +
       'attori che bloccano un thread, e un consumer che riparte dopo un crash.',
     level: 'Intermedio',
     pillar: 'progettare',
@@ -195,9 +195,9 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
     subtitle: 'Dalla saturation predittiva al burn-rate sugli SLO, fino a chi riceve la notifica',
     description:
       'Un alert che scatta quando il disco è già pieno ha risposto alla domanda sbagliata. ' +
-      'La serie percorre tre livelli della stessa domanda — quando va detto che qualcosa non funziona — ' +
-      'e si chiude sul tratto che quasi nessuno cura: cosa succede fra la regola che scatta e la persona ' +
-      'che deve agire.',
+      'La domanda e\' sempre la stessa, quando va detto che qualcosa non funziona, e la serie la percorre ' +
+      'su tre livelli. Si chiude sul tratto che quasi nessuno cura: cosa succede fra la regola che scatta ' +
+      'e la persona che deve agire.',
     level: 'Avanzato',
     pillar: 'verificare',
     category: 'observability',
@@ -222,8 +222,8 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
     description:
       'Lo script che aggiunge un nodo funziona finché non fallisce a metà, e lascia una macchina ' +
       'che nessun inventario conosce. La serie sostituisce quello script con un modello dichiarativo: ' +
-      'si dichiara il cluster che si vuole e un controller ci arriva — con il costo, dichiarato, ' +
-      'di un management cluster che diventa una dipendenza critica.',
+      'si dichiara il cluster che si vuole e un controller ci arriva. Il costo e\' dichiarato: ' +
+      'il management cluster diventa una dipendenza critica.',
     level: 'Avanzato',
     pillar: 'automatizzare',
     category: 'kubernetes',
@@ -287,7 +287,7 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
     learningGoals: [
       'Sostituire un EventBus con Pinia in modo progressivo, senza riscrivere tutto',
       'Integrare una libreria pesante tenendola fuori dal sistema reattivo',
-      'Estrarre la duplicazione con composable, wrapper e utility — e sapere quando non farlo',
+      'Estrarre la duplicazione con composable, wrapper e utility, e sapere quando non farlo',
     ],
   },
   'unit-testing': {

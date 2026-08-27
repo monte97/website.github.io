@@ -36,6 +36,7 @@ const t = lang === 'en'
       materialLabel: 'Published material',
       formatLabel: 'Format',
       catalogFlag: 'Catalogue available',
+      area: (n: number) => (n === 1 ? '1 area' : `${n} areas`),
       min: 'min of reading',
       deliveriesTitle: 'Sessions already delivered',
       deliveriesIntro: 'Two paths already run for clients, with public materials.',
@@ -64,6 +65,7 @@ const t = lang === 'en'
       materialLabel: 'Materiale pubblicato',
       formatLabel: 'Formato',
       catalogFlag: 'Catalogo disponibile',
+      area: (n: number) => (n === 1 ? '1 area' : `${n} aree`),
       min: 'min di lettura',
       deliveriesTitle: 'Sessioni già erogate',
       deliveriesIntro: 'Due percorsi già fatti per clienti, con i materiali pubblici.',
@@ -107,13 +109,21 @@ const groups = pillarOrder
 
       {groups.map((group) => (
         <div class="mb-16 last:mb-0">
-          <div class="relative rounded-xl overflow-hidden border border-border dark:border-border-dark bg-surface dark:bg-surface-dark px-5 py-4 mb-6">
-            <div class={`absolute top-0 left-0 right-0 h-1 ${pillarStyles[group.pillar].bg}`} />
-            <p class="flex items-baseline gap-3 text-xs font-mono uppercase tracking-[0.2em] text-text-muted mt-1">
-              <span class="text-accent font-semibold">{pillarStyles[group.pillar].num}</span>
-              <span>{pillarLabels[group.pillar][lang]}</span>
-            </p>
+          <div class="mb-6">
+          <div class="flex items-baseline gap-3 mb-2">
+            <span class={`text-2xl font-mono font-bold ${pillarStyles[group.pillar].text}`}>
+              {pillarStyles[group.pillar].num}
+            </span>
+            <h3 class="text-2xl font-bold text-text-dark dark:text-text-light">
+              {pillarLabels[group.pillar][lang]}
+            </h3>
+            <span class="text-sm text-text-muted ml-auto tabular-nums">
+              {t.area(group.items.length)} &middot;{' '}
+              {t.article(group.items.reduce((n, i) => n + i.postCount, 0))}
+            </span>
           </div>
+          <div class={`h-0.5 w-full ${pillarStyles[group.pillar].bg} opacity-40`} />
+        </div>
 
           <div class="space-y-4">
             {group.items.map(({ area, material, talks, postCount, readingTime }) => (

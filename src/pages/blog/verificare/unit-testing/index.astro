@@ -19,7 +19,7 @@ import SeriesLanding from '@/components/blog/SeriesLanding.astro';
         Il problema di solito non e' nel mocking: e' nel codice che vi <em>costringe</em> a mockare. Una connessione a Kafka aperta a livello di modulo, un client MongoDB creato all'import, un singleton che si inizializza da solo: ognuna di quelle righe rende impossibile istanziare la logica senza tirarsi dietro mezzo sistema, e i mock diventano la toppa.
       </p>
       <p>
-        La serie parte dall'altro capo: quanto si puo' verificare senza montare niente — settantadue test su store, composable e helper, zero componenti montati. Poi mostra dove i mock stanno nascondendo un problema di progettazione. E finisce con il refactoring che li rende superflui: application factory, dipendenze iniettate, e nessun <code>sys.modules</code> da manomettere.
+        La serie parte dall'altro capo: quanto si puo' verificare senza montare niente. Settantadue test su store, composable e helper, e nessun componente montato. Poi mostra dove i mock stanno nascondendo un problema di progettazione. E finisce con il refactoring che li rende superflui: application factory, dipendenze iniettate, e nessun <code>sys.modules</code> da manomettere.
       </p>
     </div>
   </section>
