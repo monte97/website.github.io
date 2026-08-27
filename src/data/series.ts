@@ -163,4 +163,200 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
       'Riconoscere quando ListObjects diventa il collo di bottiglia, e come aggirarlo',
     ],
   },
+
+  kafka: {
+    title: 'Kafka in un sistema di telemetria',
+    subtitle: "Dall'evento come fatto già successo alle tre strategie di crash recovery",
+    description:
+      'Passare agli eventi non rende il sistema più veloce: lo rende meno accoppiato. ' +
+      'La serie parte da cosa Kafka garantisce davvero — l\'ordine vale per chiave, non in assoluto — ' +
+      'e attraversa i problemi che arrivano dopo: due servizi che non sono d\'accordo sul formato, ' +
+      'attori che bloccano un thread, e un consumer che riparte dopo un crash.',
+    level: 'Intermedio',
+    pillar: 'progettare',
+    category: 'kafka',
+    breadcrumb: 'Kafka',
+    tags: ['Kafka', 'Avro', 'Schema Registry', 'Pekko', 'Scala', 'Event Streaming'],
+    serviceHref: '/servizi/#architecture',
+    serviceCTA: 'State portando un sistema verso gli eventi?',
+    serviceDescription:
+      'Posso affiancarvi sulle scelte che si pagano per anni: dove mettere il confine fra i servizi, ' +
+      'come versionare il formato dei messaggi, e cosa deve succedere quando un consumer riparte.',
+    learningGoals: [
+      'Capire cosa Kafka garantisce sull\'ordine, e a quali condizioni smette di garantirlo',
+      'Versionare il formato dei messaggi con Avro e uno Schema Registry, invece che a parole',
+      'Migrare da Akka a Pekko sapendo dove si rompe davvero',
+      'Togliere l\'I/O bloccante dagli attori senza perdere la backpressure',
+      'Scegliere la strategia di recovery dalla natura dello stato, non per preferenza',
+    ],
+  },
+  'saturation-alerting': {
+    title: 'Alertare prima che sia tardi',
+    subtitle: 'Dalla saturation predittiva al burn-rate sugli SLO, fino a chi riceve la notifica',
+    description:
+      'Un alert che scatta quando il disco è già pieno ha risposto alla domanda sbagliata. ' +
+      'La serie percorre tre livelli della stessa domanda — quando va detto che qualcosa non funziona — ' +
+      'e si chiude sul tratto che quasi nessuno cura: cosa succede fra la regola che scatta e la persona ' +
+      'che deve agire.',
+    level: 'Avanzato',
+    pillar: 'verificare',
+    category: 'observability',
+    breadcrumb: 'Alerting',
+    tags: ['Prometheus', 'Alertmanager', 'SRE', 'SLO', 'PromQL', 'Grafana'],
+    serviceHref: '/servizi/#observability-security',
+    serviceCTA: 'I vostri alert svegliano qualcuno che può fare qualcosa?',
+    serviceDescription:
+      'Posso affiancarvi a rimettere in ordine l\'alerting partendo dall\'alerts.yml che avete già: ' +
+      'quali regole hanno un lead time reale, quali sono rumore, e cosa trova chi apre la notifica.',
+    learningGoals: [
+      'Distinguere saturation come stato corrente da saturation come trend, e sapere quale vi serve',
+      'Riconoscere le quattro trappole della regressione lineare prima di metterla in pager',
+      'Alertare sul ritmo di consumo dell\'error budget invece che su una soglia fissa',
+      'Installare le tre coppie canoniche del SRE Workbook, e sapere da dove vengono i numeri',
+      'Instradare per severity, sopprimere i duplicati e mettere un runbook nel payload',
+    ],
+  },
+  'homelab-capi': {
+    title: 'Cluster API su Proxmox',
+    subtitle: 'Il cluster Kubernetes come risorsa Kubernetes, da Talos a Ubuntu',
+    description:
+      'Lo script che aggiunge un nodo funziona finché non fallisce a metà, e lascia una macchina ' +
+      'che nessun inventario conosce. La serie sostituisce quello script con un modello dichiarativo: ' +
+      'si dichiara il cluster che si vuole e un controller ci arriva — con il costo, dichiarato, ' +
+      'di un management cluster che diventa una dipendenza critica.',
+    level: 'Avanzato',
+    pillar: 'automatizzare',
+    category: 'kubernetes',
+    breadcrumb: 'Cluster API',
+    tags: ['Kubernetes', 'Cluster API', 'Proxmox', 'Talos', 'IaC', 'Homelab'],
+    serviceHref: '/servizi/#pipeline-automation',
+    serviceCTA: 'Quante persone sanno ricreare i vostri cluster?',
+    serviceDescription:
+      'Posso affiancarvi a portare la creazione e l\'aggiornamento dei cluster fuori dalla testa di ' +
+      'chi li ha fatti: modello dichiarativo, provisioning ripetibile e una procedura che regge un guasto.',
+    learningGoals: [
+      'Capire quando CAPI conviene davvero, e sotto quale scala è più macchinario che guadagno',
+      'Leggere le quattro CRD e le cinque fasi per sapere dove guardare quando si blocca',
+      'Usare un sistema operativo immutabile per togliere di mezzo il configuration drift',
+      'Portare in piedi un cluster dal manifest al kubeconfig',
+      'Costruire un\'immagine Ubuntu quando Talos non è la scelta possibile',
+    ],
+  },
+  linq: {
+    title: 'LINQ, dal profiler al compilatore',
+    subtitle: 'Quattro errori trovati in produzione, i benchmark, e cosa genera davvero il compilatore',
+    description:
+      'LINQ è dichiarativo, ma l\'esecuzione è imperativa: la stessa sintassi nasconde costi ' +
+      'radicalmente diversi a seconda della struttura dati sotto. La serie parte da un audit reale ' +
+      'su un dispatcher di flotta con un budget di latenza sotto i 100ms, mette i numeri con ' +
+      'BenchmarkDotNet, e scende fino alla state machine che il compilatore genera.',
+    level: 'Intermedio',
+    pillar: 'progettare',
+    category: 'system-design',
+    breadcrumb: 'LINQ',
+    tags: ['.NET', 'LINQ', 'Performance', 'BenchmarkDotNet', 'OpenTelemetry'],
+    serviceHref: '/servizi/#architecture',
+    serviceCTA: 'Avete un percorso critico che è diventato lento senza motivo?',
+    serviceDescription:
+      'Posso affiancarvi a misurare prima di ottimizzare: dove va il tempo davvero, quali pattern ' +
+      'costano un ordine di grandezza, e cosa vale la pena riscrivere e cosa no.',
+    learningGoals: [
+      'Riconoscere i quattro pattern che trasformano operazioni lineari in quadratiche',
+      'Misurare con BenchmarkDotNet invece di indovinare dove sta il costo',
+      'Capire cosa genera il compilatore dietro una Where(), e perché cambia il conto',
+      'Rendere visibile l\'esecuzione con tracing, invece di leggerla nel codice',
+    ],
+  },
+  'web-development': {
+    title: 'Vue 3 in una SPA che cresce',
+    subtitle: 'Da EventBus a Pinia, integrazioni pesanti e i pattern contro la duplicazione',
+    description:
+      'I problemi di una SPA arrivano quando smette di essere piccola: lo stato passa di mano senza ' +
+      'che si capisca dove, una libreria pesante non va d\'accordo con il sistema reattivo, e lo stesso ' +
+      'pezzo di logica compare in cinque componenti. La serie affronta i tre casi con pattern concreti.',
+    level: 'Intermedio',
+    pillar: 'progettare',
+    category: 'web-development',
+    breadcrumb: 'Vue 3',
+    tags: ['Vue 3', 'Pinia', 'TypeScript', 'OpenLayers', 'Composables'],
+    serviceHref: '/servizi/#architecture',
+    serviceCTA: 'Il vostro frontend è diventato difficile da cambiare?',
+    serviceDescription:
+      'Posso affiancarvi a rimettere ordine dove la crescita ha lasciato debito: gestione dello stato, ' +
+      'confini fra componenti e librerie di terze parti, e duplicazione da estrarre.',
+    learningGoals: [
+      'Sostituire un EventBus con Pinia in modo progressivo, senza riscrivere tutto',
+      'Integrare una libreria pesante tenendola fuori dal sistema reattivo',
+      'Estrarre la duplicazione con composable, wrapper e utility — e sapere quando non farlo',
+    ],
+  },
+  'unit-testing': {
+    title: 'Unit test che verificano davvero',
+    subtitle: 'Logica pura senza montare componenti, e il codice che rende i mock inutili',
+    description:
+      'Una suite può avere ottantotto test e un mutation score del 19%: il problema quasi mai è nel ' +
+      'mocking, è nel codice che ti costringe a mockare. La serie parte da cosa si può testare senza ' +
+      'montare niente, mostra dove i mock diventano una toppa, e arriva al refactoring che li rende ' +
+      'superflui.',
+    level: 'Intermedio',
+    pillar: 'verificare',
+    category: 'testing',
+    breadcrumb: 'Unit test',
+    tags: ['Testing', 'Nuxt 3', 'Flask', 'Python', 'Vitest', 'Mutation Testing'],
+    serviceHref: '/servizi/#observability-security',
+    serviceCTA: 'La vostra suite trova i bug, o li esegue soltanto?',
+    serviceDescription:
+      'Posso affiancarvi a capire cosa i test verificano davvero e cosa no, e a rendere testabile ' +
+      'il codice che oggi vi obbliga a mockare mezzo sistema.',
+    learningGoals: [
+      'Testare la logica pura senza montare un solo componente',
+      'Riconoscere quando un mock sta nascondendo un problema di progettazione',
+      'Rendere testabile un servizio con application factory e dependency injection',
+    ],
+  },
+  'performance-engineering': {
+    title: 'Misurare le prestazioni con onestà',
+    subtitle: 'Perché mille richieste al secondo non vogliono dire niente, e cosa guardare invece',
+    description:
+      'Un test di carico che passa non dice che il sistema regge: senza una baseline e senza il ' +
+      'contesto di produzione, quel numero non è confrontabile con niente. La serie mette in fila ' +
+      'cosa serve perché una misura significhi qualcosa, e quali metodi rispondono a quale domanda.',
+    level: 'Intermedio',
+    pillar: 'verificare',
+    category: 'testing',
+    breadcrumb: 'Performance',
+    tags: ['Performance', 'k6', 'Load Testing', 'RED', 'USE', 'Percentili'],
+    serviceHref: '/servizi/#observability-security',
+    serviceCTA: 'Sapete cosa regge il vostro sistema, o solo che finora ha retto?',
+    serviceDescription:
+      'Posso affiancarvi a costruire una misura di cui fidarsi: baseline, scenari realistici, ' +
+      'percentili invece di medie, e un criterio per dire se il risultato è accettabile.',
+    learningGoals: [
+      'Capire perché un numero di throughput senza baseline non è un risultato',
+      'Leggere i percentili invece delle medie, e vedere la minoranza che sta male',
+      'Sapere quando serve RED e quando serve USE, e perché non sono alternativi',
+    ],
+  },
+  'kubernetes-fondamenti': {
+    title: 'Come funziona Kubernetes sotto',
+    subtitle: 'Dall\'Ingress che sostituisce il port-forward al reconciliation loop dei controller',
+    description:
+      'Due pezzi sui meccanismi che stanno sotto l\'uso quotidiano di Kubernetes: come si smette di ' +
+      'raggiungere i servizi con un port-forward, e cosa succede davvero fra un kubectl apply e lo ' +
+      'stato che cambia. Servono a chi usa il cluster e vuole smettere di considerarlo una scatola nera.',
+    level: 'Intermedio',
+    pillar: 'automatizzare',
+    category: 'kubernetes',
+    breadcrumb: 'Kubernetes',
+    tags: ['Kubernetes', 'Ingress', 'NGINX', 'Controller', 'CRD'],
+    serviceHref: '/servizi/#pipeline-automation',
+    serviceCTA: 'Il cluster è una scatola nera per il vostro team?',
+    serviceDescription:
+      'Posso affiancarvi a portare il team dal "funziona e non sappiamo come" a un modello mentale ' +
+      'che regge quando qualcosa si blocca: cosa fa il cluster, dove guardare, e cosa non toccare.',
+    learningGoals: [
+      'Esporre i servizi con un Ingress invece che con un port-forward per ogni prova',
+      'Capire il reconciliation loop, e perché un controller non ha una fine ma un equilibrio',
+    ],
+  },
 };

@@ -4,6 +4,7 @@ import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import FinalCta from '@/components/ui/FinalCta.astro';
 import PageHero from '@/components/ui/PageHero.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
 import { pillarStyles } from '@/data/pillar-styles';
 import { pillarLabels, type Pillar } from '@/data/pillars';
 import { workshopAreas, pastDeliveries } from '@/data/workshop-areas';
@@ -34,6 +35,8 @@ const t = lang === 'en'
       audienceLabel: 'Who it is for',
       materialLabel: 'Published material',
       formatLabel: 'Format',
+      catalogFlag: 'Catalogue available',
+      min: 'min of reading',
       deliveriesTitle: 'Sessions already delivered',
       deliveriesIntro: 'Two paths already run for clients, with public materials.',
       repoLabel: 'Repository',
@@ -60,6 +63,8 @@ const t = lang === 'en'
       audienceLabel: 'A chi è rivolta',
       materialLabel: 'Materiale pubblicato',
       formatLabel: 'Formato',
+      catalogFlag: 'Catalogo disponibile',
+      min: 'min di lettura',
       deliveriesTitle: 'Sessioni già erogate',
       deliveriesIntro: 'Due percorsi già fatti per clienti, con i materiali pubblici.',
       repoLabel: 'Repository',
@@ -73,7 +78,7 @@ const t = lang === 'en'
 
 // Materiale risolto a build time: le aree non dichiarano quanti articoli hanno.
 const areas = await Promise.all(
-  workshopAreas.map(async (area) => ({ area, material: await getAreaMaterial(area, lang) }))
+  workshopAreas.map(async (area) => ({ area, ...(await getAreaMaterial(area, lang)) }))
 );
 
 const pillarOrder: Pillar[] = ['progettare', 'verificare', 'automatizzare'];
@@ -90,9 +95,7 @@ const groups = pillarOrder
 
     {/* IL PROBLEMA */}
     <section class="max-w-3xl mx-auto px-5 pt-12 md:pt-16">
-      <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light mb-5">
-        {t.problemTitle}
-      </h2>
+      <SectionHeading title={t.problemTitle} />
       {t.problem.map((p) => (
         <p class="text-text-muted leading-relaxed mb-4">{p}</p>
       ))}
@@ -100,49 +103,71 @@ const groups = pillarOrder
 
     {/* LE AREE, PER PILASTRO */}
     <section class="max-w-3xl mx-auto px-5 pt-14 md:pt-20">
-      <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light mb-10">
-        {t.areasTitle}
-      </h2>
+      <SectionHeading title={t.areasTitle} />
 
       {groups.map((group) => (
-        <div class="mb-14 last:mb-0">
-          <p class="flex items-baseline gap-3 text-xs font-mono uppercase tracking-[0.2em] text-text-muted mb-6 pb-3 border-b border-border/60 dark:border-border-dark/60">
-            <span class="text-accent font-semibold">{pillarStyles[group.pillar].num}</span>
-            <span>{pillarLabels[group.pillar][lang]}</span>
-          </p>
+        <div class="mb-16 last:mb-0">
+          <div class="relative rounded-xl overflow-hidden border border-border dark:border-border-dark bg-surface dark:bg-surface-dark px-5 py-4 mb-6">
+            <div class={`absolute top-0 left-0 right-0 h-1 ${pillarStyles[group.pillar].bg}`} />
+            <p class="flex items-baseline gap-3 text-xs font-mono uppercase tracking-[0.2em] text-text-muted mt-1">
+              <span class="text-accent font-semibold">{pillarStyles[group.pillar].num}</span>
+              <span>{pillarLabels[group.pillar][lang]}</span>
+            </p>
+          </div>
 
-          <div class="space-y-10">
-            {group.items.map(({ area, material }) => (
-              <article>
-                <h3 class="text-xl font-bold mb-3">
-                  <a
-                    href={`${prefix}/workshop2/${area.slug}/`}
-                    class="text-text-dark dark:text-text-light hover:text-accent transition-colors"
-                  >
+          <div class="space-y-4">
+            {group.items.map(({ area, material, talks, postCount, readingTime }) => (
+              <a
+                href={`${prefix}/workshop2/${area.slug}/`}
+                class="group block p-6 rounded-xl border border-border dark:border-border-dark hover:border-accent/40 dark:hover:border-accent/40 bg-surface dark:bg-surface-dark hover:bg-accent/5 transition-all"
+              >
+                <div class="flex items-start justify-between gap-3 mb-3">
+                  <h3 class="text-lg font-bold text-text-dark dark:text-text-light group-hover:text-accent transition-colors leading-snug">
                     {area.title[lang]}
-                  </a>
-                </h3>
-                <p class="text-text-muted leading-relaxed mb-3">{area.problem[lang]}</p>
-                <p class="text-sm text-text-muted mb-3">
+                  </h3>
+                  <span class="flex-shrink-0 text-text-muted group-hover:text-accent transition-colors">&rarr;</span>
+                </div>
+
+                <p class="text-text-muted leading-relaxed mb-4">{area.problem[lang]}</p>
+
+                <p class="text-sm text-text-muted mb-4">
                   <span class="font-semibold text-text-dark dark:text-text-light">{t.audienceLabel}:</span>{' '}
                   {area.audience[lang]}
                 </p>
+
                 {area.detail?.format && (
-                  <p class="text-sm text-text-muted mb-3">
+                  <p class="text-sm text-text-muted mb-4">
                     <span class="font-semibold text-text-dark dark:text-text-light">{t.formatLabel}:</span>{' '}
                     {area.detail.format[lang]}
                   </p>
                 )}
-                <p class="text-sm text-text-muted">
-                  <span class="font-semibold text-text-dark dark:text-text-light">{t.materialLabel}:</span>{' '}
-                  {[
-                    ...material.material
-                      .filter((g) => g.posts.length > 0)
-                      .map((g) => `${g.group.title[lang]} (${t.article(g.posts.length)})`),
-                    ...(material.talks.length > 0 ? [t.talk(material.talks.length)] : []),
-                  ].join(' · ')}
+
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-2 pt-4 border-t border-border/60 dark:border-border-dark/60">
+                  <span class="text-xs font-mono uppercase tracking-[0.15em] text-text-muted">
+                    {t.article(postCount)}
+                  </span>
+                  <span class="text-xs font-mono uppercase tracking-[0.15em] text-text-muted">
+                    {readingTime} {t.min}
+                  </span>
+                  {talks.length > 0 && (
+                    <span class="text-xs font-mono uppercase tracking-[0.15em] text-text-muted">
+                      {t.talk(talks.length)}
+                    </span>
+                  )}
+                  {area.catalog && lang === 'it' && (
+                    <span class="text-xs font-semibold uppercase tracking-[0.15em] text-accent">
+                      {t.catalogFlag}
+                    </span>
+                  )}
+                </div>
+
+                <p class="text-xs text-text-muted/80 mt-3">
+                  {material
+                    .filter((g) => g.posts.length > 0)
+                    .map((g) => g.group.title[lang])
+                    .join(' · ')}
                 </p>
-              </article>
+              </a>
             ))}
           </div>
         </div>
@@ -152,8 +177,7 @@ const groups = pillarOrder
     {/* EROGAZIONI PASSATE */}
     <section class="max-w-3xl mx-auto px-5 pt-16 md:pt-20 pb-16 md:pb-20">
       <div class="pt-10 border-t border-border/60 dark:border-border-dark/60">
-        <h2 class="text-lg font-bold text-text-dark dark:text-text-light mb-2">{t.deliveriesTitle}</h2>
-        <p class="text-sm text-text-muted mb-8">{t.deliveriesIntro}</p>
+        <SectionHeading title={t.deliveriesTitle} subtitle={t.deliveriesIntro} />
 
         <div class="space-y-8">
           {pastDeliveries.map((d) => (

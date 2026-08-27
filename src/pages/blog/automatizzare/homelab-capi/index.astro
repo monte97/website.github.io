@@ -1,0 +1,26 @@
+---
+/**
+ * Landing della serie Cluster API.
+ * URL canonico: /blog/automatizzare/homelab-capi/
+ */
+import SeriesLanding from '@/components/blog/SeriesLanding.astro';
+---
+
+<SeriesLanding series="homelab-capi">
+  <section class="mb-12 max-w-2xl">
+    <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-5">
+      Lo script che aggiunge un nodo funziona finche' non fallisce a meta'
+    </h2>
+    <div class="space-y-4 text-text-muted leading-relaxed">
+      <p>
+        La VM e' stata creata, <code>kubeadm</code> e' installato, il <code>join</code> non e' mai partito perche' il token era scaduto. Ora c'e' una macchina che non e' un nodo, che nessun inventario conosce, e che scoprirete fra tre mesi guardando le risorse dell'hypervisor.
+      </p>
+      <p>
+        Quello e' il costo dell'approccio imperativo, e non e' la fatica di scrivere lo script. E' che uno script descrive <em>come si fa</em>, e quando si interrompe lascia dietro stato che nessuno ha dichiarato e nessuno sa ricostruire. Cluster API gira la direzione: si dichiara il cluster che si vuole, e un controller si occupa di arrivarci e di restarci.
+      </p>
+      <p>
+        La serie va dal modello ai componenti fino a un cluster in piedi, e dichiara anche il conto: il management cluster diventa una dipendenza critica, e sotto una certa scala imparare e mantenere CAPI costa piu' di quello che fa risparmiare. Meglio saperlo prima di metterne su uno.
+      </p>
+    </div>
+  </section>
+</SeriesLanding>

@@ -1,11 +1,18 @@
 import { getCollection } from 'astro:content';
 import type { WorkshopArea, AreaMaterialGroup } from '@/data/workshop-areas';
 import { talks, type Talk } from '@/data/talks';
-import { postHref } from '@/utils/blog';
+import { postHref, estimateReadingTime } from '@/utils/blog';
+
+export interface MaterialPost {
+  title: string;
+  href: string;
+  description: string;
+  readingTime: number;
+}
 
 export interface MaterialGroup {
   group: AreaMaterialGroup;
-  posts: { title: string; href: string }[];
+  posts: MaterialPost[];
 }
 
 /**
@@ -36,12 +43,23 @@ export async function getAreaMaterial(area: WorkshopArea, lang: 'it' | 'en') {
         if (oa !== ob) return oa - ob;
         return a.data.date.valueOf() - b.data.date.valueOf();
       })
-      .map((p) => ({ title: p.data.title, href: postHref(p.id, lang) })),
+      .map((p) => ({
+        title: p.data.title,
+        href: postHref(p.id, lang),
+        description: p.data.description,
+        readingTime: estimateReadingTime(p.body),
+      })),
   }));
 
   const areaTalks: Talk[] = area.talks
     .map((slug) => talks.find((t) => t.slug === slug))
     .filter((t): t is Talk => Boolean(t));
 
-  return { material, talks: areaTalks };
+  const postCount = material.reduce((n, g) => n + g.posts.length, 0);
+  const readingTime = material.reduce(
+    (n, g) => n + g.posts.reduce((m, p) => m + p.readingTime, 0),
+    0
+  );
+
+  return { material, talks: areaTalks, postCount, readingTime };
 }

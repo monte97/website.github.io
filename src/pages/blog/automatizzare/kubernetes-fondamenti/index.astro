@@ -1,0 +1,26 @@
+---
+/**
+ * Landing della serie Kubernetes.
+ * URL canonico: /blog/automatizzare/kubernetes-fondamenti/
+ */
+import SeriesLanding from '@/components/blog/SeriesLanding.astro';
+---
+
+<SeriesLanding series="kubernetes-fondamenti">
+  <section class="mb-12 max-w-2xl">
+    <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-5">
+      Smettere di trattare il cluster come una scatola nera
+    </h2>
+    <div class="space-y-4 text-text-muted leading-relaxed">
+      <p>
+        Si puo' usare Kubernetes per mesi senza sapere cosa succede fra un <code>kubectl apply</code> e lo stato che cambia. Funziona, finche' non si blocca: e a quel punto la differenza fra chi ha un modello mentale e chi no e' mezza giornata di tentativi.
+      </p>
+      <p>
+        Questi due pezzi guardano sotto. Il primo sostituisce il <code>port-forward</code> — che va benissimo per una prova e diventa insostenibile quando i servizi sono piu' di uno — con un Ingress Controller, cioe' un indirizzo che smette di dipendere da chi lo esegue.
+      </p>
+      <p>
+        Il secondo apre il meccanismo che sta sotto tutto il resto: informer, work queue e reconciliation loop. Serve a capire perche' un controller non ha una fine ma un punto di equilibrio, e perche' la stessa riconciliazione verra' chiamata di nuovo — che e' il motivo per cui deve essere idempotente.
+      </p>
+    </div>
+  </section>
+</SeriesLanding>

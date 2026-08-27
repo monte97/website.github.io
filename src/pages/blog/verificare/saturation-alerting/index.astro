@@ -1,0 +1,26 @@
+---
+/**
+ * Landing della serie Alerting.
+ * URL canonico: /blog/verificare/saturation-alerting/
+ */
+import SeriesLanding from '@/components/blog/SeriesLanding.astro';
+---
+
+<SeriesLanding series="saturation-alerting">
+  <section class="mb-12 max-w-2xl">
+    <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-5">
+      Un alert che scatta quando il disco e' pieno ha risposto alla domanda sbagliata
+    </h2>
+    <div class="space-y-4 text-text-muted leading-relaxed">
+      <p>
+        La regola copiata dal primo tutorial segnala che il disco e' pieno <em>adesso</em>. Quando scatta, l'occupazione e' al 90%, i log stanno gia' fallendo e qualche servizio restituisce <code>ENOSPC</code>. Non e' un problema di soglia: e' che la domanda giusta era un'altra — <em>si riempira' entro una finestra in cui posso ancora intervenire senza svegliare nessuno?</em>
+      </p>
+      <p>
+        La serie percorre tre livelli della stessa domanda. Il primo guarda le risorse fisiche e il trend con cui si consumano. Il secondo sposta il soggetto dalla risorsa all'impatto utente: non quando si satura il disco, ma a che ritmo si sta bruciando l'error budget del servizio. Il terzo si occupa del tratto che quasi nessun repo cura, quello fra la regola che scatta e la persona che deve agire.
+      </p>
+      <p>
+        Il filo comune e' che alertare bene non e' una proprieta' di una singola query. E' una proprieta' del sistema intero: dalla metrica alla regola, dalla regola al routing, dal routing al payload, dal payload alla persona che alle tre di notte deve capire cosa fare.
+      </p>
+    </div>
+  </section>
+</SeriesLanding>

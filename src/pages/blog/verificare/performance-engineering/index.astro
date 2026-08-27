@@ -1,0 +1,26 @@
+---
+/**
+ * Landing della serie Performance.
+ * URL canonico: /blog/verificare/performance-engineering/
+ */
+import SeriesLanding from '@/components/blog/SeriesLanding.astro';
+---
+
+<SeriesLanding series="performance-engineering">
+  <section class="mb-12 max-w-2xl">
+    <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-5">
+      Mille richieste al secondo non vogliono dire niente
+    </h2>
+    <div class="space-y-4 text-text-muted leading-relaxed">
+      <p>
+        E' un numero senza denominatore. Mille richieste al secondo di cosa, con quanti dati, con quale distribuzione di endpoint, contro quale stato del database, e confrontate con che cosa? Senza una baseline, un test di carico che passa non dice che il sistema regge: dice che quel giorno, con quello scenario, non si e' rotto.
+      </p>
+      <p>
+        La serie mette in fila cosa serve perche' una misura significhi qualcosa. Prima il contesto: la baseline, lo scenario realistico, e il criterio deciso <em>prima</em> per dire se il risultato e' accettabile. Poi gli strumenti di lettura, che sono la seconda meta' del problema.
+      </p>
+      <p>
+        Perche' la media nasconde per costruzione la minoranza che sta male, ed e' esattamente quella minoranza che chiama l'assistenza. RED dice quando e' rotto, USE dice perche': non sono alternativi, rispondono a due domande diverse e servono tutti e due.
+      </p>
+    </div>
+  </section>
+</SeriesLanding>
