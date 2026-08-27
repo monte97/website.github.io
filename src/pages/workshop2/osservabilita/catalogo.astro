@@ -35,6 +35,29 @@ const giorni = [
   ['Giorno 3', 'Produzione: telemetria come codice, collector, SLO e alerting, sostituzione del backend, retrospettiva.'],
 ];
 
+const base = {
+  nome: 'Leggere un sistema e strumentarne un componente',
+  desc: "Avvio dello stack, analisi di un primo guasto e correlazione fra i tre segnali, seguiti dalla prima strumentazione del servizio privo di telemetria. I primi venti minuti introducono metriche, log e trace per i team che affrontano il tema per la prima volta.",
+  nota: 'Tutti gli altri moduli presuppongono questo.',
+};
+
+const moduli = [
+  ['Strumentazione avanzata', 'richiede la base', 'Ricostruzione completa della richiesta con propagazione del contesto, e strumentazione della persistenza dalla configurazione.'],
+  ['Automatica o manuale', 'richiede la base', 'Quali risultati offre la strumentazione automatica e quali richiedono un intervento nel codice.'],
+  ['SLO e alerting', 'richiede la base', "Definizione di un obiettivo di servizio misurabile e allarme basato sul consumo del margine di errore."],
+  ['Verifica degli allarmi', 'richiede SLO e alerting', 'Introduzione di un guasto circoscritto e verifica di quali allarmi non si attivano.'],
+  ['Portabilità', 'richiede la base', 'Sostituzione del backend dei segnali dalla sola configurazione, e limiti effettivi della portabilità.'],
+  ['Costi e dimensionamento', 'indipendente', 'Costo misurato di esercizio, conservazione dei dati, campionamento e cardinalità.'],
+  ['Contenuti di una dashboard', 'richiede la base', 'Quali indicatori si osservano quotidianamente e quali soltanto durante un incidente.'],
+  ['Esercitazione conclusiva', 'richiede tutti i precedenti', 'Guasto non dichiarato, ruoli assegnati, causa da individuare a partire dai soli segnali.'],
+];
+
+const composizione = [
+  ['01', 'La base', "Due ore, sempre incluse. È la durata minima con un esito verificabile."],
+  ['02', 'I moduli', 'La base con due moduli corrisponde a sei ore, pause incluse.'],
+  ['03', 'Il calendario', 'Sessione unica oppure sessioni distinte, preferibili oltre le sei ore.'],
+];
+
 const ram = [
   ['Osservabilità', '0,48 GiB'],
   ['Dipendenze', '0,44 GiB'],
@@ -290,6 +313,59 @@ const td = 'align-top py-3 pr-6 border-t border-border/50 dark:border-border-dar
           </div>
         ))}
       </dl>
+    </section>
+
+    <section class="mb-14">
+      <h2 class={h2}>Da cosa è composto il percorso</h2>
+      <p class={p}>
+        Il percorso si compone a moduli. Lo stack di lavoro è comune a tutti e resta a disposizione del team, e i
+        componenti possono essere sostituiti con quelli in uso presso di voi.
+      </p>
+
+      <div class="rounded-xl border-2 border-accent bg-accent-subtle/30 p-6 mb-6">
+        <div class="flex flex-wrap items-baseline justify-between gap-2 mb-2">
+          <span class="text-[11px] font-mono uppercase tracking-[0.15em] text-accent font-semibold">
+            Sempre incluso · base
+          </span>
+          <span class="text-xs font-mono text-text-muted">2 h</span>
+        </div>
+        <h3 class="text-lg font-semibold text-text-dark dark:text-text-light mb-2">{base.nome}</h3>
+        <p class="text-text-muted leading-relaxed mb-3">{base.desc}</p>
+        <p class="text-sm text-text-muted italic">{base.nota}</p>
+      </div>
+
+      <p class="text-[11px] font-mono uppercase tracking-[0.15em] text-text-muted mb-4">
+        A scelta, ognuno da due ore, nell'ordine delle dipendenze
+      </p>
+      <div class="grid sm:grid-cols-2 gap-4 mb-10">
+        {moduli.map(([nome, dip, desc]) => (
+          <div class="rounded-xl border border-border dark:border-border-dark bg-surface dark:bg-surface-dark p-5">
+            <div class="flex flex-wrap items-baseline justify-between gap-2 mb-2">
+              <span class="text-[11px] font-mono uppercase tracking-[0.15em] text-text-muted">{dip}</span>
+              <span class="text-xs font-mono text-text-muted">2 h</span>
+            </div>
+            <h3 class="text-base font-semibold text-text-dark dark:text-text-light mb-1.5">{nome}</h3>
+            <p class="text-sm text-text-muted leading-relaxed">{desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <h3 class={h3}>Come si compone</h3>
+      <ol class="space-y-3 mb-4">
+        {composizione.map(([n, titolo, desc]) => (
+          <li class="flex items-start gap-4">
+            <span class="flex-shrink-0 w-9 h-9 rounded-lg bg-accent text-white flex items-center justify-center text-sm font-bold">
+              {n}
+            </span>
+            <span class="text-text-muted leading-relaxed pt-1.5">
+              <span class="font-semibold text-text-dark dark:text-text-light">{titolo}.</span> {desc}
+            </span>
+          </li>
+        ))}
+      </ol>
+      <p class="text-sm text-text-muted">
+        La disponibilità dei singoli moduli viene definita in fase di discovery call.
+      </p>
     </section>
 
     <section class="mb-14">

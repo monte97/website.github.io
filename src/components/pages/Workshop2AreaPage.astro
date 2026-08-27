@@ -10,7 +10,7 @@ import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import { pillarStyles } from '@/data/pillar-styles';
 import { pillarLabels } from '@/data/pillars';
-import { author } from '@/data/author';
+import AuthorCard from '@/components/ui/AuthorCard.astro';
 import type { WorkshopArea } from '@/data/workshop-areas';
 import { getAreaMaterial } from '@/utils/workshop';
 
@@ -39,7 +39,7 @@ const t = lang === 'en'
       seriesLandingLabel: 'Series landing page',
       talksTitle: 'Talks',
       catalogTitle: 'The full catalogue',
-      catalogDesc: 'What the path contains: the system worked on, the two formats, the measured costs of the stack.',
+      catalogDesc: 'What the path contains: the system worked on, the composable modules, the two formats and the measured costs of the stack.',
       catalogLabel: 'Read the catalogue',
       catalogPdfLabel: 'Download the PDF',
       statPosts: 'Published articles',
@@ -50,7 +50,6 @@ const t = lang === 'en'
       ctaDesc: 'Tell me where the team is now and what it has to be able to do at the end. We define scope and format together.',
       ctaPrimary: 'Book a call',
       ctaSecondary: 'Write me directly',
-      authorRole: 'Freelance Software Engineer',
       locale: 'en-GB',
       min: 'min',
     }
@@ -68,7 +67,7 @@ const t = lang === 'en'
       seriesLandingLabel: 'Landing della serie',
       talksTitle: 'Talk',
       catalogTitle: 'Il catalogo completo',
-      catalogDesc: 'Cosa contiene il percorso: il sistema su cui si lavora, i due formati, i costi misurati dello stack.',
+      catalogDesc: 'Cosa contiene il percorso: il sistema su cui si lavora, i moduli componibili, i due formati e i costi misurati dello stack.',
       catalogLabel: 'Leggi il catalogo',
       catalogPdfLabel: 'Scarica il PDF',
       statPosts: 'Articoli pubblicati',
@@ -79,7 +78,6 @@ const t = lang === 'en'
       ctaDesc: 'Raccontami dove sta il team ora e cosa deve saper fare alla fine. Definiamo insieme scope e formato.',
       ctaPrimary: 'Prenota una call',
       ctaSecondary: 'Scrivimi direttamente',
-      authorRole: 'Software Engineer freelance',
       locale: 'it-IT',
       min: 'min',
     };
@@ -344,22 +342,7 @@ const numbered = groups.map((g) => ({
           </a>
         </div>
 
-        <div class="rounded-xl border border-border dark:border-border-dark p-5">
-          <div class="flex items-center gap-3 mb-3">
-            <img
-              src={author.image}
-              alt={author.name}
-              width="40"
-              height="40"
-              class="w-10 h-10 rounded-full object-cover"
-            />
-            <div>
-              <div class="text-sm font-semibold text-text-dark dark:text-text-light">{author.name}</div>
-              <div class="text-xs text-text-muted">{t.authorRole}</div>
-            </div>
-          </div>
-          <p class="text-sm text-text-muted leading-relaxed">{author.bio[lang]}</p>
-        </div>
+        <AuthorCard lang={lang} />
 
       </aside>
     </div>

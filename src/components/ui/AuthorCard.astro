@@ -1,0 +1,55 @@
+---
+/**
+ * Riquadro autore: foto, nome, ruolo, bio e — se richiesto — il bottone LinkedIn.
+ *
+ * Nome, ruolo, bio e URL vivono in `src/data/author.ts`: qui non si scrive
+ * nessuno dei tre. Prima esistevano due versioni divergenti di questo riquadro,
+ * una con la foto e una con una lettera dentro un cerchio, e dicevano due ruoli
+ * diversi.
+ */
+import { author } from '@/data/author';
+
+interface Props {
+  lang?: 'it' | 'en';
+  /** Il bottone LinkedIn: si toglie dove la pagina ha gia' una CTA propria */
+  linkedin?: boolean;
+  class?: string;
+}
+
+const { lang = 'it', linkedin = true, class: extra = '' } = Astro.props;
+
+const t = lang === 'en'
+  ? { follow: 'Follow me on LinkedIn' }
+  : { follow: 'Seguimi su LinkedIn' };
+---
+
+<div class:list={['rounded-xl border border-border dark:border-border-dark p-5', extra]}>
+  <div class="flex items-center gap-3 mb-3">
+    <img
+      src={author.image}
+      alt={author.name}
+      width="40"
+      height="40"
+      loading="lazy"
+      decoding="async"
+      class="w-10 h-10 rounded-full object-cover"
+    />
+    <div>
+      <div class="text-sm font-semibold text-text-dark dark:text-text-light">{author.name}</div>
+      <div class="text-xs text-text-muted">{author.role[lang]}</div>
+    </div>
+  </div>
+
+  <p class="text-sm text-text-muted leading-relaxed">{author.bio[lang]}</p>
+
+  {linkedin && (
+    <a
+      href={author.linkedin}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="block w-full text-center mt-4 px-4 py-2 rounded-lg bg-[#0077b5] text-white text-sm font-medium hover:bg-[#006399] transition-colors"
+    >
+      {t.follow}
+    </a>
+  )}
+</div>

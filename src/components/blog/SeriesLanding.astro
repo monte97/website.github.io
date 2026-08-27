@@ -15,6 +15,7 @@ import { postHref, estimateReadingTime } from '@/utils/blog';
 import { pillarStyles } from '@/data/pillar-styles';
 import { getPillarLabel } from '@/data/pillars';
 import { seriesMetadata } from '@/data/series';
+import AuthorCard from '@/components/ui/AuthorCard.astro';
 
 interface Props {
   /** Chiave in seriesMetadata, e valore del campo `series` nel frontmatter dei post */
@@ -219,29 +220,7 @@ const pillarLabel = getPillarLabel(meta.pillar);
           </a>
         </div>
 
-        <!-- Author -->
-        <div class="rounded-xl border border-border dark:border-border-dark p-5">
-          <div class="flex items-center gap-3 mb-3">
-            <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent font-bold text-lg">
-              F
-            </div>
-            <div>
-              <div class="text-sm font-semibold text-text-dark dark:text-text-light">Francesco Montelli</div>
-              <div class="text-xs text-text-muted">Backend Engineer & DevOps</div>
-            </div>
-          </div>
-          <p class="text-sm text-text-muted leading-relaxed mb-4">
-            Fullstack engineer e DevOps freelance. Aiuto team e PMI a progettare, verificare e automatizzare i loro sistemi.
-          </p>
-          <a
-            href="https://linkedin.com/in/francesco-montelli"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="block w-full text-center px-4 py-2 rounded-lg bg-[#0077b5] text-white text-sm font-medium hover:bg-[#006399] transition-colors"
-          >
-            Seguimi su LinkedIn
-          </a>
-        </div>
+        <AuthorCard lang="it" />
 
       </aside>
     </div>
