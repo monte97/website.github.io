@@ -22,7 +22,7 @@ The test passes 9 times out of 10. In CI it fails once a week, always on a diffe
 
 Flaky tests are the most damaging problem in E2E testing. Not because they're hard to fix, but because they erode trust in the suite. A team that doesn't trust its tests stops looking at them. And a suite nobody looks at is worse than no suite — it gives the illusion of a safety net that doesn't exist.
 
-This article analyzes the causes of flaky tests, the tools to diagnose them, and five concrete patterns to fix them. The code uses [MockMart](https://github.com/monte97/MockMart), the same environment from previous articles on [network mocking](/blog/verificare/testing/04-network-mocking/) and [reusable fixtures](/blog/verificare/testing/05-network-mocking-avanzato/). The complete file of flaky/stable patterns is in the repository, at `tests/e2e/tests/flaky-patterns.spec.ts`. For the initial Playwright setup, refer to the [introductory guide](/blog/verificare/testing/01-guida-completa-e2e/).
+This article analyzes the causes of flaky tests, the tools to diagnose them, and five concrete patterns to fix them. The code uses [MockMart](https://github.com/monte97/MockMart), the same environment from previous articles on [network mocking](/en/blog/verificare/testing/04-network-mocking/) and [reusable fixtures](/en/blog/verificare/testing/05-network-mocking-avanzato/). The complete file of flaky/stable patterns is in the repository, at `tests/e2e/tests/flaky-patterns.spec.ts`. For the initial Playwright setup, refer to the [introductory guide](/en/blog/verificare/testing/01-guida-completa-e2e/).
 
 ---
 
@@ -78,7 +78,7 @@ The Trace Viewer shows an interactive timeline. Each test action — `goto`, `cl
 
 The key point in analyzing a flaky test is comparison. When a test passes locally but fails in CI, the failure trace shows exactly what was different. For example: the test clicks the "Add to Cart" button, but the screenshot shows the loading spinner is still visible — the API hasn't responded yet. Locally, with abundant resources, the response arrived before the click. In CI, it didn't.
 
-> For a deeper look at trace correlation with the backend via OpenTelemetry, refer to the [trace correlation article](/blog/verificare/testing/02-opentelemetry-trace-correlation/).
+> For a deeper look at trace correlation with the backend via OpenTelemetry, refer to the [trace correlation article](/en/blog/verificare/testing/02-opentelemetry-trace-correlation/).
 
 ---
 
@@ -202,7 +202,7 @@ test('STABLE: waits for element and verifies action result', async ({ page }) =>
 });
 ```
 
-The principle: every UI state transition must be verified before proceeding. Don't assume a click worked — wait for the click's effect to be visible. For synchronizing with APIs, `waitForResponse()` is the complementary tool: it lets you wait for a specific HTTP request to complete before continuing with assertions. This pattern is covered in detail in the [introductory guide](/blog/verificare/testing/01-guida-completa-e2e/).
+The principle: every UI state transition must be verified before proceeding. Don't assume a click worked — wait for the click's effect to be visible. For synchronizing with APIs, `waitForResponse()` is the complementary tool: it lets you wait for a specific HTTP request to complete before continuing with assertions. This pattern is covered in detail in the [introductory guide](/en/blog/verificare/testing/01-guida-completa-e2e/).
 
 ### Pattern 3: mock external dependencies
 
@@ -241,7 +241,7 @@ test('STABLE: mocks checkout for deterministic result', async ({ page, mockApi }
 });
 ```
 
-The `mockApi` fixture is covered in detail in the [reusable fixtures article](/blog/verificare/testing/05-network-mocking-avanzato/). The underlying principle is in the [network mocking article](/blog/verificare/testing/04-network-mocking/): `page.route()` intercepts requests at the browser level, allowing you to isolate the UI from any external service.
+The `mockApi` fixture is covered in detail in the [reusable fixtures article](/en/blog/verificare/testing/05-network-mocking-avanzato/). The underlying principle is in the [network mocking article](/en/blog/verificare/testing/04-network-mocking/): `page.route()` intercepts requests at the browser level, allowing you to isolate the UI from any external service.
 
 ### Pattern 4: resilient selectors instead of DOM positions
 
@@ -358,12 +358,12 @@ The underlying principle: a flaky test is a bug in the test, not in the product.
 
 ### The complete series
 
-1. [Complete E2E Guide with Playwright](/blog/verificare/testing/01-guida-completa-e2e/) — setup, first tests, best practices
-2. [Trace Correlation with OpenTelemetry](/blog/verificare/testing/02-opentelemetry-trace-correlation/) — connecting E2E tests and backend traces
-3. [CI/CD: retry, sharding, and parallelism](/blog/verificare/testing/03-cicd-strategie-avanzate/) — scalable pipeline execution
-4. [Network mocking with page.route()](/blog/verificare/testing/04-network-mocking/) — isolating the UI from services
-5. [Advanced network mocking: fixtures and HAR](/blog/verificare/testing/05-network-mocking-avanzato/) — reusable mocking patterns
-6. [Visual regression testing](/blog/verificare/testing/06-visual-regression/) — catching visual bugs with screenshots
+1. [Complete E2E Guide with Playwright](/en/blog/verificare/testing/01-guida-completa-e2e/) — setup, first tests, best practices
+2. [Trace Correlation with OpenTelemetry](/en/blog/verificare/testing/02-opentelemetry-trace-correlation/) — connecting E2E tests and backend traces
+3. [CI/CD: retry, sharding, and parallelism](/en/blog/verificare/testing/03-cicd-strategie-avanzate/) — scalable pipeline execution
+4. [Network mocking with page.route()](/en/blog/verificare/testing/04-network-mocking/) — isolating the UI from services
+5. [Advanced network mocking: fixtures and HAR](/en/blog/verificare/testing/05-network-mocking-avanzato/) — reusable mocking patterns
+6. [Visual regression testing](/en/blog/verificare/testing/06-visual-regression/) — catching visual bugs with screenshots
 7. Diagnosing and fixing flaky tests — this article
 
 The complete code is in the [MockMart](https://github.com/monte97/MockMart) repository, in the `tests/e2e/tests/` directory.

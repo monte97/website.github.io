@@ -261,7 +261,7 @@ The other two that matter take the same shape: retention is cheap because whole 
 
 The price is paid elsewhere, and that is what the rest of this series is about: ordering only holds per key, consumer state becomes your problem, and debugging now crosses one more component.
 
-The [next article](/blog/progettare/kafka/02-schema-registry-avro-apicurio/) starts exactly there: what happens when two services disagree about what a message contains.
+The [next article](/en/blog/progettare/kafka/02-schema-registry-avro-apicurio/) starts exactly there: what happens when two services disagree about what a message contains.
 
 ---
 

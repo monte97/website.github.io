@@ -514,9 +514,9 @@ The `openItems` at the bottom say what this demo does not cover. Two of those en
 at 10% sampling:                        ~2.16 GB per day
 ```
 
-The factor of ten between those two lines is why sampling is not an optimisation but an architectural decision. How you choose *what* to keep is the subject of [tail sampling and retention](/blog/verificare/observability/05-management/), where these numbers turn into a twelve-month projection.
+The factor of ten between those two lines is why sampling is not an optimisation but an architectural decision. How you choose *what* to keep is the subject of [tail sampling and retention](/en/blog/verificare/observability/05-management/), where these numbers turn into a twelve-month projection.
 
-**What must never end up in there.** Tokens and credentials, personal data — emails, names, addresses — and anything that, once inside a span, becomes a compliance problem instead of a diagnostic one. Filtering happens in the Collector, before storage, and it is the subject of [PII filtering](/blog/verificare/observability/07-keycloak-pii/).
+**What must never end up in there.** Tokens and credentials, personal data — emails, names, addresses — and anything that, once inside a span, becomes a compliance problem instead of a diagnostic one. Filtering happens in the Collector, before storage, and it is the subject of [PII filtering](/en/blog/verificare/observability/07-keycloak-pii/).
 
 For the rest, the note at the bottom holds: **the scenarios above are controlled simulations.** The slow template is a `setTimeout(3000)`, the invalid email is a configuration flag. In production the same problems are intermittent and come from combinations of factors — which is precisely why the instrumentation matters: it catches the case when it happens, without you having to reproduce it.
 
@@ -841,4 +841,4 @@ The value is not technical. A silent failure like the one this article opens wit
 
 ## From here
 
-The two numbers above are the subjects of the next pieces: [tail sampling and retention](/blog/verificare/observability/05-management/) for volume, [PII filtering](/blog/verificare/observability/07-keycloak-pii/) for sensitive data. And if audit logs need a different path from technical ones, there is [routing](/blog/verificare/observability/06-routing/).
+The two numbers above are the subjects of the next pieces: [tail sampling and retention](/en/blog/verificare/observability/05-management/) for volume, [PII filtering](/en/blog/verificare/observability/07-keycloak-pii/) for sensitive data. And if audit logs need a different path from technical ones, there is [routing](/en/blog/verificare/observability/06-routing/).

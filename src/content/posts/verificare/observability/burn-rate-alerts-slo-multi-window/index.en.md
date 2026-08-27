@@ -253,7 +253,7 @@ The minimal SLO alerting package to take into production contains, for every ser
 3. **Routing in Alertmanager** by severity: critical → PagerDuty 24/7, warning → the team's Slack during business hours.
 4. **A Grafana dashboard** with the four rates side by side and the firing state of the three pairs, so that during an incident the oncall sees at a glance which pair fired and the consumption rate of the remaining budget.
 
-What stays out are the two questions that close the circle: who receives each of the three pairs and with what urgency, and what the person opening the notification finds. They are the subject of [severity, routing and runbook](/blog/verificare/observability/alert-routing-severity-inhibition/), the last article in the series: a well-written rule reaching the wrong channel produces the same practical effect as not having written it.
+What stays out are the two questions that close the circle: who receives each of the three pairs and with what urgency, and what the person opening the notification finds. They are the subject of [severity, routing and runbook](/en/blog/verificare/observability/alert-routing-severity-inhibition/), the last article in the series: a well-written rule reaching the wrong channel produces the same practical effect as not having written it.
 
 ## References
 
@@ -261,4 +261,4 @@ What stays out are the two questions that close the circle: who receives each of
 - **Google SRE Workbook**, ch. 5 "Alerting on SLOs", section "Multiwindow, Multi-Burn-Rate Alerts" and table 5-8: [sre.google/workbook/alerting-on-slos/](https://sre.google/workbook/alerting-on-slos/)
 - **Prometheus recording rules**: [prometheus.io/docs/prometheus/latest/configuration/recording_rules/](https://prometheus.io/docs/prometheus/latest/configuration/recording_rules/)
 - **Demo repository**: [github.com/monte97/burn-rate-demo](https://github.com/monte97/burn-rate-demo)
-- **Previous article in the series**: [Prometheus predict\_linear: predictive alerts on saturation](/blog/verificare/observability/prometheus-predict-linear-alert-predittivi/)
+- **Previous article in the series**: [Prometheus predict\_linear: predictive alerts on saturation](/en/blog/verificare/observability/prometheus-predict-linear-alert-predittivi/)

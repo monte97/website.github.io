@@ -62,7 +62,7 @@ from usage import app
 
 The module is a 469-line file. The conftest to make it importable requires 94 of its own lines. Every new connection added to the module requires a corresponding line in the conftest. The two files evolve in sync, but the conftest has no tests of its own: if a mock is configured incorrectly, the tests pass anyway.
 
-The specific problems with mocking C-backed libraries like `confluent_kafka` are covered in [Your Flask service is untestable](/blog/verificare/testing/02-mock-traps-python-flask/).
+The specific problems with mocking C-backed libraries like `confluent_kafka` are covered in [Your Flask service is untestable](/en/blog/verificare/testing/02-mock-traps-python-flask/).
 
 ---
 

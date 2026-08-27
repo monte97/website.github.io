@@ -22,7 +22,7 @@ The E2E checkout test fails. The screenshot shows a generic error message, the l
 
 This is the reality of E2E testing on microservice architectures: tests depend on N services, and if even one is slow, unstable, or under maintenance, the entire suite becomes unreliable. You can't fix this with retries or longer timeouts — it's a structural problem.
 
-Playwright's `page.route()` solves this by intercepting HTTP requests at the browser level and returning controlled responses. It's not a substitute for integration tests — it's a tool for testing UI behavior deterministically, isolating the frontend from external dependencies. This article uses [MockMart](https://github.com/monte97/MockMart), the same environment from the [trace correlation article](/blog/verificare/testing/02-opentelemetry-trace-correlation/). The complete code is in the [repository](https://github.com/monte97/MockMart), in the `tests/e2e/tests/` directory.
+Playwright's `page.route()` solves this by intercepting HTTP requests at the browser level and returning controlled responses. It's not a substitute for integration tests — it's a tool for testing UI behavior deterministically, isolating the frontend from external dependencies. This article uses [MockMart](https://github.com/monte97/MockMart), the same environment from the [trace correlation article](/en/blog/verificare/testing/02-opentelemetry-trace-correlation/). The complete code is in the [repository](https://github.com/monte97/MockMart), in the `tests/e2e/tests/` directory.
 
 ---
 
@@ -382,7 +382,7 @@ Network mocking is powerful, but it's not the answer to everything. Overusing it
 
 The guiding principle is simple: **mock what you're not testing**. If you're testing the UI's behavior on a 500 error, you don't need the server to actually return a 500 — you need the UI to handle it. If you're testing that checkout works end-to-end, mocking the payment service makes the test useless.
 
-The two approaches are complementary. A robust E2E suite has tests with mocks to cover edge cases and UI states, and tests without mocks to verify critical flows with real services. In the [CI/CD article](/blog/verificare/testing/03-cicd-strategie-avanzate/) we saw how to organize different suites with tags and sharding — the same principle applies here: fast mocked tests on every PR, full integration tests in nightly pipelines.
+The two approaches are complementary. A robust E2E suite has tests with mocks to cover edge cases and UI states, and tests without mocks to verify critical flows with real services. In the [CI/CD article](/en/blog/verificare/testing/03-cicd-strategie-avanzate/) we saw how to organize different suites with tags and sharding — the same principle applies here: fast mocked tests on every PR, full integration tests in nightly pipelines.
 
 ---
 
@@ -396,6 +396,6 @@ Five patterns for controlling network traffic in Playwright tests:
 4. **Conditional** — modify real responses with `route.fetch()` or mock selectively by URL/parameters
 5. **Abort** — block requests to simulate offline and lost connectivity
 
-All examples in this article are in the [MockMart](https://github.com/monte97/MockMart) repository, in the file `tests/e2e/tests/network-mocking.spec.ts`. For environment configuration and test setup, refer to the [series introduction](/blog/verificare/testing/01-guida-completa-e2e/).
+All examples in this article are in the [MockMart](https://github.com/monte97/MockMart) repository, in the file `tests/e2e/tests/network-mocking.spec.ts`. For environment configuration and test setup, refer to the [series introduction](/en/blog/verificare/testing/01-guida-completa-e2e/).
 
 In the next article we'll see how to scale these patterns with HAR replay, reusable mock fixtures, and handler composition for complex test suites.

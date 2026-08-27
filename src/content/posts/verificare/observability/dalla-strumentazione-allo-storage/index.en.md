@@ -46,7 +46,7 @@ There is a recurring moment in observability projects: the system is instrumente
 
 At that point there are two levers available, and both are architectural. **Where you put the collection point**, and **what your storage decides to index.** These are decisions you make at the start and pay for over years: changing them later means going back into every service.
 
-This article is about those two choices. The rest of the series — [the debugging scenarios](/blog/verificare/observability/04-correlation/) and then [tail sampling with the cost projections](/blog/verificare/observability/05-management/) — is about what you do once you have made them.
+This article is about those two choices. The rest of the series — [the debugging scenarios](/en/blog/verificare/observability/04-correlation/) and then [tail sampling with the cost projections](/en/blog/verificare/observability/05-management/) — is about what you do once you have made them.
 
 ## Before OpenTelemetry every vendor had its own dialect
 
@@ -163,4 +163,4 @@ If you are about to start: put the Collector in from the first service, even if 
 
 If you are already instrumented and the bill is climbing, the first thing to check is not sampling: it is whether compression is on and batching is configured. Two lines, and they are worth the factor of five in the table above.
 
-The rest — which traces to keep and for how long — is the subject of [tail sampling and retention](/blog/verificare/observability/05-management/), where the numbers stop being orders of magnitude and become projections against concrete traffic.
+The rest — which traces to keep and for how long — is the subject of [tail sampling and retention](/en/blog/verificare/observability/05-management/), where the numbers stop being orders of magnitude and become projections against concrete traffic.

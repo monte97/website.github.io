@@ -60,7 +60,7 @@ The value of the separation shows when something changes. Moving the service to 
 
 The underlying choice is where to run the thing, and it is worth understanding because it is the least reversible one.
 
-LXC and Docker are both containers and use the same kernel mechanisms — namespaces and cgroups, the same ones [a Docker container is made of](/blog/automatizzare/docker/docker-internals/). What changes is what you put inside:
+LXC and Docker are both containers and use the same kernel mechanisms — namespaces and cgroups, the same ones [a Docker container is made of](/en/blog/automatizzare/docker/docker-internals/). What changes is what you put inside:
 
 | | LXC — *system container* | Docker — *application container* |
 |---|---|---|

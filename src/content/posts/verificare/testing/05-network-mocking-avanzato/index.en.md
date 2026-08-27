@@ -18,7 +18,7 @@ series: playwright
 seriesOrder: 50
 ---
 
-In the [previous article](/blog/verificare/testing/04-network-mocking/) we saw how `page.route()` lets you intercept browser HTTP requests and return controlled responses. It works: register a handler, call `route.fulfill()`, and the test no longer depends on the real backend. But a problem emerges as soon as the suite grows.
+In the [previous article](/en/blog/verificare/testing/04-network-mocking/) we saw how `page.route()` lets you intercept browser HTTP requests and return controlled responses. It works: register a handler, call `route.fulfill()`, and the test no longer depends on the real backend. But a problem emerges as soon as the suite grows.
 
 With 5 tests mocking `/api/products`, the `page.route()` + `route.fulfill()` block is repeated identically in each one. When the product schema changes — a renamed field, a type that becomes nullable — you need 5 updates. With 30 tests, you need 30 updates. The inline mock that seemed simple becomes a maintenance burden.
 
@@ -375,7 +375,7 @@ This approach makes the scenario matrix explicit. A checkout test can combine: e
 
 ## Mock + trace correlation
 
-In the [trace correlation article](/blog/verificare/testing/02-opentelemetry-trace-correlation/) we saw how to collect OpenTelemetry trace IDs during E2E tests using a `traceCollector` fixture. Now the question is: how do you combine `mockApi` and `traceCollector` in the same test?
+In the [trace correlation article](/en/blog/verificare/testing/02-opentelemetry-trace-correlation/) we saw how to collect OpenTelemetry trace IDs during E2E tests using a `traceCollector` fixture. Now the question is: how do you combine `mockApi` and `traceCollector` in the same test?
 
 The use case is hybrid debugging: you want to mock an endpoint (for example checkout) while simultaneously collecting traces from real calls (for example the product list). If the test fails, you have both the controlled behavior of the mock and real traces to understand what happened in the backend.
 
@@ -460,14 +460,14 @@ Four patterns, each with its use case:
 3. **Composition** — combining multiple MockApi methods in the same test for multi-endpoint scenarios. Each mock is independent.
 4. **mergeTests** — combining fixtures from different modules (mock + trace, mock + auth) in the same test.
 
-Together with [article 04](/blog/verificare/testing/04-network-mocking/) on `page.route()` fundamentals, these patterns cover the full spectrum of network mocking in Playwright. The complete code is in the [MockMart repository](https://github.com/monte97/MockMart).
+Together with [article 04](/en/blog/verificare/testing/04-network-mocking/) on `page.route()` fundamentals, these patterns cover the full spectrum of network mocking in Playwright. The complete code is in the [MockMart repository](https://github.com/monte97/MockMart).
 
 Articles in the Playwright series:
 
-- [01 - Complete E2E Guide](/blog/verificare/testing/01-guida-completa-e2e/)
-- [02 - OpenTelemetry Trace Correlation](/blog/verificare/testing/02-opentelemetry-trace-correlation/)
-- [03 - Advanced CI/CD Strategies](/blog/verificare/testing/03-cicd-strategie-avanzate/)
-- [04 - Network Mocking](/blog/verificare/testing/04-network-mocking/)
+- [01 - Complete E2E Guide](/en/blog/verificare/testing/01-guida-completa-e2e/)
+- [02 - OpenTelemetry Trace Correlation](/en/blog/verificare/testing/02-opentelemetry-trace-correlation/)
+- [03 - Advanced CI/CD Strategies](/en/blog/verificare/testing/03-cicd-strategie-avanzate/)
+- [04 - Network Mocking](/en/blog/verificare/testing/04-network-mocking/)
 - 05 - Mock Fixtures, HAR Replay, and Composition (this article)
 
 With inline mocks, reusable fixtures, HAR replay, composition, and fixture merging, network mocking is no longer a bottleneck. The suite grows, the mocks stay manageable.

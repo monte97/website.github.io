@@ -16,7 +16,7 @@ lang: en
 reviewed: machine
 ---
 
-An identity provider manages users, roles, and login. An authorization engine decides who can do what on which resource. The challenge is not making them work — it is making them communicate without one invading the other's territory. In the [previous article](/blog/verificare/openfga/01-zanzibar-concetti/) we built a relationship-based authorization model with OpenFGA. Now we connect it to Keycloak, using [VaultDrive](https://github.com/monte97/VaultDrive) as the reference project: a demo built for this series with a containerized setup and reproducible code.
+An identity provider manages users, roles, and login. An authorization engine decides who can do what on which resource. The challenge is not making them work — it is making them communicate without one invading the other's territory. In the [previous article](/en/blog/verificare/openfga/01-zanzibar-concetti/) we built a relationship-based authorization model with OpenFGA. Now we connect it to Keycloak, using [VaultDrive](https://github.com/monte97/VaultDrive) as the reference project: a demo built for this series with a containerized setup and reproducible code.
 
 ---
 
@@ -552,6 +552,6 @@ The next article covers multi-tenancy: multiple organizations in the same system
 - [Keycloak - Client Scopes](https://www.keycloak.org/docs/latest/server_admin/#_client_scopes)
 
 **Related articles:**
-- [Previous: Zanzibar and the core concepts](/blog/verificare/openfga/01-zanzibar-concetti/)
-- [Fine-grained authorization with OPA and Keycloak](/blog/progettare/keycloak/05-keycloak-opa/)
-- [Keycloak: introduction](/blog/progettare/keycloak/01-keycloak-intro/)
+- [Previous: Zanzibar and the core concepts](/en/blog/verificare/openfga/01-zanzibar-concetti/)
+- [Fine-grained authorization with OPA and Keycloak](/en/blog/progettare/keycloak/05-keycloak-opa/)
+- [Keycloak: introduction](/en/blog/progettare/keycloak/01-keycloak-intro/)

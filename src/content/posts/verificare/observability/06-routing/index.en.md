@@ -18,7 +18,7 @@ reviewed: machine
 
 Imagine receiving a request from your compliance team: "We need the audit logs from the last three years." You open Grafana, query Loki, and discover that the maximum retention is 30 days. The audit logs were deleted together with the debug logs, because they lived in the same backend. No separation, no dedicated policy.
 
-The [previous article](/blog/verificare/observability/05-management/) addressed the first production problem: **volume**. With tail sampling and retention, volume drops by 90% without losing visibility into errors. But a question remains: for the data that does survive, **where does it end up?**
+The [previous article](/en/blog/verificare/observability/05-management/) addressed the first production problem: **volume**. With tail sampling and retention, volume drops by 90% without losing visibility into errors. But a question remains: for the data that does survive, **where does it end up?**
 
 Today everything lands in the same backend: debug logs, application errors, and audit trails all live in the same Loki instance. In development that works fine. In production it can become a compliance or operational issue.
 
@@ -334,7 +334,7 @@ The key point: physically separating the destination makes it possible to apply 
 
 ## Each Route Has Its Own Lifecycle
 
-Separating destinations is not enough: each destination needs a **persistence strategy** consistent with the type of data it receives. The [previous article](/blog/verificare/observability/05-management/) shows how to configure a single retention for all traces (Tempo, 7 days). With routing, you can apply different policies to each stream.
+Separating destinations is not enough: each destination needs a **persistence strategy** consistent with the type of data it receives. The [previous article](/en/blog/verificare/observability/05-management/) shows how to configure a single retention for all traces (Tempo, 7 days). With routing, you can apply different policies to each stream.
 
 ### Full map: route, destination, persistence
 
@@ -428,7 +428,7 @@ After the export, cold records can be removed from PostgreSQL (by temporarily di
 
 ### Connecting this to tail sampling
 
-The persistence strategies integrate with the [tail sampling from the previous article](/blog/verificare/observability/05-management/) into a complete pipeline:
+The persistence strategies integrate with the [tail sampling from the previous article](/en/blog/verificare/observability/05-management/) into a complete pipeline:
 
 ```text
 Application
@@ -659,6 +659,6 @@ If all checks pass, routing is ready for rollout.
 - [OTel Collector Configuration](https://opentelemetry.io/docs/collector/configuration/)
 
 **Related articles:**
-- [Tail Sampling and Retention](/blog/verificare/observability/05-management/) — Reducing volume before routing
+- [Tail Sampling and Retention](/en/blog/verificare/observability/05-management/) — Reducing volume before routing
 
 ---

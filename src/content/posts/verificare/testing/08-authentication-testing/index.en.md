@@ -22,7 +22,7 @@ The suite has 50 tests. Every test starts at the login page, fills in username a
 
 The problem isn't the login itself. It's the repetition: every test executes the same authentication flow, the same redirect, the same wait. Information already known, work already done, time already spent.
 
-Playwright's `storageState` solves this: run the login once in a setup project, save cookies and localStorage to a JSON file, and all subsequent tests start already authenticated. No login, no redirect, no Keycloak dependency during test execution. This article uses [MockMart](https://github.com/monte97/MockMart), the same environment from the entire [Playwright series](/blog/verificare/testing/01-guida-completa-e2e/). The complete code is in the [repository](https://github.com/monte97/MockMart), in the `tests/e2e/` directory.
+Playwright's `storageState` solves this: run the login once in a setup project, save cookies and localStorage to a JSON file, and all subsequent tests start already authenticated. No login, no redirect, no Keycloak dependency during test execution. This article uses [MockMart](https://github.com/monte97/MockMart), the same environment from the entire [Playwright series](/en/blog/verificare/testing/01-guida-completa-e2e/). The complete code is in the [repository](https://github.com/monte97/MockMart), in the `tests/e2e/` directory.
 
 ---
 
@@ -366,7 +366,7 @@ Intercept the refresh endpoint:
 
 `page.route()` intercepts the call that `keycloak-js` makes to refresh the token. Instead of contacting Keycloak, the request receives an `invalid_grant` error. The library interprets the error as an expired token and forces a redirect to the login page.
 
-This pattern combines network mocking from [article 04](/blog/verificare/testing/04-network-mocking/) with authentication. You're not mocking the login — you're mocking the refresh, which is a different operation. The login happens in the setup, the refresh happens during the test's lifecycle.
+This pattern combines network mocking from [article 04](/en/blog/verificare/testing/04-network-mocking/) with authentication. You're not mocking the login — you're mocking the refresh, which is a different operation. The login happens in the setup, the refresh happens during the test's lifecycle.
 
 > Don't test the `keycloak-js` refresh timer. The library has its own internal logic for deciding when to refresh the token — typically when 30% of the duration remains until expiry. That logic is the library's responsibility, not your application's. Test your app's behavior when the refresh fails, not when it's invoked.
 
@@ -376,7 +376,7 @@ This pattern combines network mocking from [article 04](/blog/verificare/testing
 
 So far the tests used real services: products come from the backend, checkout calls the payment service. But there are scenarios where you need to control both authentication and API responses. For example: an authenticated user viewing mocked products, or an authenticated checkout that fails with a simulated error.
 
-In [article 05](/blog/verificare/testing/05-network-mocking-avanzato/) we saw `mergeTests` for combining fixtures from different modules. The same pattern works with authentication:
+In [article 05](/en/blog/verificare/testing/05-network-mocking-avanzato/) we saw `mergeTests` for combining fixtures from different modules. The same pattern works with authentication:
 
 ```typescript
 import { mergeTests } from '@playwright/test';
@@ -432,7 +432,7 @@ The user is authenticated (storageState includes mario's token with `canCheckout
 
 This type of scenario is impossible to test without composition. Without mocking, you'd need a test account with a credit card that gets declined. Without authentication, you couldn't reach checkout. The combination of both patterns covers the full spectrum.
 
-> The `MockApi` fixture from [article 05](/blog/verificare/testing/05-network-mocking-avanzato/) operates on specific endpoints: `products()` intercepts `/api/products`, `checkoutError()` intercepts `/api/checkout`. Authentication operates at the cookie and localStorage level. There's no conflict: they are different layers of HTTP communication.
+> The `MockApi` fixture from [article 05](/en/blog/verificare/testing/05-network-mocking-avanzato/) operates on specific endpoints: `products()` intercepts `/api/products`, `checkoutError()` intercepts `/api/checkout`. Authentication operates at the cookie and localStorage level. There's no conflict: they are different layers of HTTP communication.
 
 ---
 
@@ -450,13 +450,13 @@ The guiding principle: the authentication setup is the only point where you touc
 
 ### The complete series
 
-1. [Complete E2E Guide with Playwright](/blog/verificare/testing/01-guida-completa-e2e/) — setup, first tests, best practices
-2. [Trace Correlation with OpenTelemetry](/blog/verificare/testing/02-opentelemetry-trace-correlation/) — connecting E2E tests and backend traces
-3. [CI/CD: retry, sharding, and parallelism](/blog/verificare/testing/03-cicd-strategie-avanzate/) — scalable pipeline execution
-4. [Network mocking with page.route()](/blog/verificare/testing/04-network-mocking/) — isolating the UI from services
-5. [Advanced network mocking: fixtures and HAR](/blog/verificare/testing/05-network-mocking-avanzato/) — reusable mocking patterns
-6. [Visual regression testing](/blog/verificare/testing/06-visual-regression/) — catching visual bugs with screenshots
-7. [Diagnosing and fixing flaky tests](/blog/verificare/testing/07-flaky-debugging/) — causes, tools, and anti-flaky patterns
+1. [Complete E2E Guide with Playwright](/en/blog/verificare/testing/01-guida-completa-e2e/) — setup, first tests, best practices
+2. [Trace Correlation with OpenTelemetry](/en/blog/verificare/testing/02-opentelemetry-trace-correlation/) — connecting E2E tests and backend traces
+3. [CI/CD: retry, sharding, and parallelism](/en/blog/verificare/testing/03-cicd-strategie-avanzate/) — scalable pipeline execution
+4. [Network mocking with page.route()](/en/blog/verificare/testing/04-network-mocking/) — isolating the UI from services
+5. [Advanced network mocking: fixtures and HAR](/en/blog/verificare/testing/05-network-mocking-avanzato/) — reusable mocking patterns
+6. [Visual regression testing](/en/blog/verificare/testing/06-visual-regression/) — catching visual bugs with screenshots
+7. [Diagnosing and fixing flaky tests](/en/blog/verificare/testing/07-flaky-debugging/) — causes, tools, and anti-flaky patterns
 8. Authentication testing with storageState and Keycloak — this article
 
 The complete code is in the [MockMart](https://github.com/monte97/MockMart) repository, in the `tests/e2e/` directory.

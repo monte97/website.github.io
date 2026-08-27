@@ -85,7 +85,7 @@ What stops being your code:
 - **Social login** — Google, GitHub and the rest are configured from the console, without writing anything.
 - **User management** — registration, password reset, sessions, MFA.
 
-What stays yours, and it needs saying because it is the part that surprises people: **deciding what a user is allowed to do.** Keycloak says *who they are* and carries the roles; it is your application that decides what those roles open. Where authentication ends and authorization begins is a line you draw by hand, and it is the subject of [OPA as a policy engine](/blog/progettare/keycloak/05-keycloak-opa/).
+What stays yours, and it needs saying because it is the part that surprises people: **deciding what a user is allowed to do.** Keycloak says *who they are* and carries the roles; it is your application that decides what those roles open. Where authentication ends and authorization begins is a line you draw by hand, and it is the subject of [OPA as a policy engine](/en/blog/progettare/keycloak/05-keycloak-opa/).
 
 ## Realm, client, role: the three concepts that shape the project
 
@@ -109,7 +109,7 @@ Keycloak signs that token with its private key; the app validates it by fetching
 
 Step 2 is the one people get wrong most often: **the app must not have a login form of its own.** If you collect username and password in your frontend, those credentials travel through your code again — and you are back where you started, with all the problems the IdP was supposed to remove. The redirect exists precisely to avoid that.
 
-The complete flow, with PKCE and the client and middleware configuration, is the subject of the [next article in the series](/blog/progettare/keycloak/02-authorization-code-pkce/).
+The complete flow, with PKCE and the client and middleware configuration, is the subject of the [next article in the series](/en/blog/progettare/keycloak/02-authorization-code-pkce/).
 
 ## The four day-one traps
 

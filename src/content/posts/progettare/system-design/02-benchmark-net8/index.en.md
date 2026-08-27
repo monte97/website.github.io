@@ -19,7 +19,7 @@ seriesOrder: 20
 
 Every C# code review eventually produces the same comment: "LINQ is too slow here, use a for loop." Nobody ever backs it up with a benchmark. Today we do — on .NET 8, with BenchmarkDotNet, using the real-world patterns from the previous article.
 
-In the [first article of this series](/blog/progettare/system-design/01-errori-produzione/) we examined four LINQ patterns found in a commercial fleet dispatcher. The fixes were straightforward — `ToHashSet`, `GroupBy`, `ToLookup`, `foreach`. But *how much* does it actually matter? Saying "we go from O(n²) to O(n)" is theoretically correct. In practice, the tech lead's question is different: "How many microseconds do we save? How much less memory? Is the refactoring worth it?" Today we put numbers to it.
+In the [first article of this series](/en/blog/progettare/system-design/01-errori-produzione/) we examined four LINQ patterns found in a commercial fleet dispatcher. The fixes were straightforward — `ToHashSet`, `GroupBy`, `ToLookup`, `foreach`. But *how much* does it actually matter? Saying "we go from O(n²) to O(n)" is theoretically correct. In practice, the tech lead's question is different: "How many microseconds do we save? How much less memory? Is the refactoring worth it?" Today we put numbers to it.
 
 ---
 

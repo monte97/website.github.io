@@ -16,7 +16,7 @@ series: keycloak
 seriesOrder: 20
 ---
 
-Keycloak configured, realm created, client registered. The next step is wiring a React frontend and an Express backend to the Identity Provider. The [introductory article](/blog/progettare/keycloak/01-keycloak-intro/) covers the concept of delegating authentication. This one implements the practical piece.
+Keycloak configured, realm created, client registered. The next step is wiring a React frontend and an Express backend to the Identity Provider. The [introductory article](/en/blog/progettare/keycloak/01-keycloak-intro/) covers the concept of delegating authentication. This one implements the practical piece.
 
 The implementation uses **Authorization Code Flow with PKCE** in MockMart, a demo e-commerce app. The result: the user clicks "Login," is redirected to Keycloak, enters their credentials, and returns to the app with a JWT that the backend validates on every request. The application never touches passwords.
 
@@ -24,7 +24,7 @@ The implementation uses **Authorization Code Flow with PKCE** in MockMart, a dem
 
 By the end of this walkthrough the `techstore` realm will have a public client configured for PKCE, the React frontend will redirect to Keycloak for login, the Express backend will validate the tokens it receives, and a user will be able to sign in, browse products and reach checkout.
 
-You need very little to follow along: Docker with Compose, [MockMart](https://github.com/monte97/MockMart) cloned locally, and Keycloak running as in the [introductory article](/blog/progettare/keycloak/01-keycloak-intro/).
+You need very little to follow along: Docker with Compose, [MockMart](https://github.com/monte97/MockMart) cloned locally, and Keycloak running as in the [introductory article](/en/blog/progettare/keycloak/01-keycloak-intro/).
 
 ---
 
@@ -524,7 +524,7 @@ The authentication flow covered in this article:
 
 The application code never touches credentials. The frontend has no secret. The backend has no user database. Everything is delegated to Keycloak.
 
-The next articles cover authenticating services to each other without a user ([Client Credentials](/blog/progettare/keycloak/03-keycloak-m2m/)) and the real-world problems that surface when the integration meets production ([6 Real Problems](/blog/progettare/keycloak/04-keycloak-e2e/)).
+The next articles cover authenticating services to each other without a user ([Client Credentials](/en/blog/progettare/keycloak/03-keycloak-m2m/)) and the real-world problems that surface when the integration meets production ([6 Real Problems](/en/blog/progettare/keycloak/04-keycloak-e2e/)).
 
 ---
 

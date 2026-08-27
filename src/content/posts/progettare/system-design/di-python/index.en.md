@@ -37,7 +37,7 @@ The result: the conftest becomes the mirror image of the code. Every connection 
 
 In the three services I refactored, the total conftest was 228 lines — almost half the application code. The conftest had no tests of its own: if a mock was misconfigured, nobody noticed. The two files evolved in sync, but the contract was implicit and undocumented.
 
-The details of these problems — the four `sys.modules` mocking traps, mocks on C-backed libraries, test contamination — are covered in [Your Flask service is untestable](/blog/verificare/testing/02-mock-traps-python-flask/). The complete refactoring of the three services is in [Testable Flask microservices](/blog/verificare/testing/03-flask-factory-testabile/). Here I focus on the underlying pattern: dependency injection.
+The details of these problems — the four `sys.modules` mocking traps, mocks on C-backed libraries, test contamination — are covered in [Your Flask service is untestable](/en/blog/verificare/testing/02-mock-traps-python-flask/). The complete refactoring of the three services is in [Testable Flask microservices](/en/blog/verificare/testing/03-flask-factory-testabile/). Here I focus on the underlying pattern: dependency injection.
 
 ---
 
@@ -284,7 +284,7 @@ In my experience, 90% of Python services I have seen in production stay at level
 
 ## Resources
 
-- **Unit testing series** — Flask refactoring details: [Your Flask service is untestable](/blog/verificare/testing/02-mock-traps-python-flask/) and [Testable Flask microservices](/blog/verificare/testing/03-flask-factory-testabile/)
+- **Unit testing series** — Flask refactoring details: [Your Flask service is untestable](/en/blog/verificare/testing/02-mock-traps-python-flask/) and [Testable Flask microservices](/en/blog/verificare/testing/03-flask-factory-testabile/)
 - **dependency-injector** — Official documentation: [python-dependency-injector.ets-labs.org](https://python-dependency-injector.ets-labs.org/)
 - **Flask Application Factory** — Official Flask pattern: [flask.palletsprojects.com/en/2.3.x/patterns/appfactories/](https://flask.palletsprojects.com/en/2.3.x/patterns/appfactories/)
 - **PEP 544 — Protocols** — The PEP that introduced Protocol in Python: [peps.python.org/pep-0544/](https://peps.python.org/pep-0544/)

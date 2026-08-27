@@ -24,7 +24,7 @@ Three problems emerge as the model grows: N-level hierarchies, the cost of inver
 
 ## N-Level Hierarchies
 
-In the [first article](/blog/verificare/openfga/01-zanzibar-concetti/) we defined the `parent` relation between a folder and a document. In the [multi-tenancy article](/blog/verificare/openfga/03-multitenancy/) we added the organization as the graph root. But what happens when folders are nested?
+In the [first article](/en/blog/verificare/openfga/01-zanzibar-concetti/) we defined the `parent` relation between a folder and a document. In the [multi-tenancy article](/en/blog/verificare/openfga/03-multitenancy/) we added the organization as the graph root. But what happens when folders are nested?
 
 OpenFGA's DSL handles recursion naturally. A folder can have another folder as its parent:
 
@@ -525,7 +525,7 @@ At this point VaultDrive uses three systems for authorization. Each system answe
 
 The boundary is clear:
 
-- **Keycloak** handles identity: who you are, which claims you have in the token. Covered in the [Keycloak integration article](/blog/verificare/openfga/02-openfga-keycloak/).
+- **Keycloak** handles identity: who you are, which claims you have in the token. Covered in the [Keycloak integration article](/en/blog/verificare/openfga/02-openfga-keycloak/).
 - **OpenFGA** handles relationships: who can do what on which resource. The ReBAC model covers hierarchical access, sharing, and teams.
 - **Data Masking** handles field-level granularity: it is not a relationship — it is a classification.
 
@@ -613,7 +613,7 @@ Three takeaways:
 
 **Not everything is ReBAC.** Field-level access control is ABAC: a field classification combined with the user's relation level. Dynamic Data Masking is the pattern that separates "can you access the resource" (OpenFGA) from "which fields do you see" (application).
 
-This article's fast path avoids ListObjects in most cases, but not in all of them. [When ListObjects is the only way left](/blog/verificare/openfga/05-listobjects-performance/) the cost has to be attacked elsewhere: caching, a pre-materialised read model, BatchCheck.
+This article's fast path avoids ListObjects in most cases, but not in all of them. [When ListObjects is the only way left](/en/blog/verificare/openfga/05-listobjects-performance/) the cost has to be attacked elsewhere: caching, a pre-materialised read model, BatchCheck.
 
 ### Resources
 
@@ -629,8 +629,8 @@ This article's fast path avoids ListObjects in most cases, but not in all of the
 - [OpenFGA Playground](https://play.fga.dev/)
 
 **Related articles:**
-- [Zanzibar and the core concepts](/blog/verificare/openfga/01-zanzibar-concetti/)
-- [OpenFGA + Keycloak](/blog/verificare/openfga/02-openfga-keycloak/)
-- [Multi-tenancy with OpenFGA](/blog/verificare/openfga/03-multitenancy/)
-- [ListObjects in production: caching, pre-materialization and BatchCheck](/blog/verificare/openfga/05-listobjects-performance/)
-- [Authorization with OPA and Keycloak](/blog/progettare/keycloak/05-keycloak-opa/)
+- [Zanzibar and the core concepts](/en/blog/verificare/openfga/01-zanzibar-concetti/)
+- [OpenFGA + Keycloak](/en/blog/verificare/openfga/02-openfga-keycloak/)
+- [Multi-tenancy with OpenFGA](/en/blog/verificare/openfga/03-multitenancy/)
+- [ListObjects in production: caching, pre-materialization and BatchCheck](/en/blog/verificare/openfga/05-listobjects-performance/)
+- [Authorization with OPA and Keycloak](/en/blog/progettare/keycloak/05-keycloak-opa/)

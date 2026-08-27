@@ -351,7 +351,7 @@ This article covered:
 4. **Observability infrastructure** — Collector, Loki, and Grafana with three Docker services
 5. **LogQL queries** — filtering by level, user, and action on centralized data
 
-Logging is the first pillar of observability, and on its own it tells you what happened inside one service, not how a request crossed the others. That thread is the subject of [correlating metrics, logs and traces](/blog/verificare/observability/04-correlation/).
+Logging is the first pillar of observability, and on its own it tells you what happened inside one service, not how a request crossed the others. That thread is the subject of [correlating metrics, logs and traces](/en/blog/verificare/observability/04-correlation/).
 
 ---
 

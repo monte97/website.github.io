@@ -39,7 +39,7 @@ Two weeks later support collects the same three complaints: "the export is glaci
 
 Nobody measured wrong. A thousand requests per second is a correct number. The problem is that it is not **a measurement**: it is a number without the reference that would make it readable. We do not know whether it is better or worse than yesterday, whether it is enough for real traffic, or whether those thousand requests resemble anything users actually do.
 
-This article is about the work that comes before you launch the test. The next one, [RED tells you when it broke, USE tells you why](/blog/verificare/testing/red-use-quando-e-perche/), is about reading the numbers once you have them.
+This article is about the work that comes before you launch the test. The next one, [RED tells you when it broke, USE tells you why](/en/blog/verificare/testing/red-use-quando-e-perche/), is about reading the numbers once you have them.
 
 ## A number on its own is not a measurement
 
@@ -107,4 +107,4 @@ Three things, in order, and none of them needs a tool:
 2. **Take a threshold to whoever knows the product.** Not "how fast should it be", but "what happens if it takes ten seconds". Write the answer next to the threshold.
 3. **Describe the scenario before implementing it.** How many users, which endpoints, with what data, in what state of the system. If you cannot write it in five lines, the test will measure something else.
 
-Then you can launch. The next piece in the series, [RED tells you when it broke, USE tells you why](/blog/verificare/testing/red-use-quando-e-perche/), is about what to look at in the numbers that come out.
+Then you can launch. The next piece in the series, [RED tells you when it broke, USE tells you why](/en/blog/verificare/testing/red-use-quando-e-perche/), is about what to look at in the numbers that come out.

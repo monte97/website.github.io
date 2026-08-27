@@ -99,4 +99,4 @@ Before installing anything: count the clusters you run and ask yourself how many
 
 If the answer is "two clusters and they change once a year", CAPI is probably more machinery than you need — and it is worth knowing that beforehand, not after standing up a management cluster.
 
-The next part goes into the components: [the CRDs and the provisioning flow](/blog/progettare/kubernetes/02-capi-part2-internals/), meaning what actually happens between the `kubectl apply` and a working cluster.
+The next part goes into the components: [the CRDs and the provisioning flow](/en/blog/progettare/kubernetes/02-capi-part2-internals/), meaning what actually happens between the `kubectl apply` and a working cluster.

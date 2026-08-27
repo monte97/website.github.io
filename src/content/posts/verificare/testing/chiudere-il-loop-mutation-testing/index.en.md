@@ -99,4 +99,4 @@ It is enough to stop treating the report as the last step of a pipeline, and sta
 
 ---
 
-*I went deeper into this part for the edition of the talk given at [DevRomagna 2026](/en/talks/il-tuo-collega-piu-produttivo/). It continues the [previous post](/blog/verificare/testing/mutation-testing-oltre-la-coverage/): slides and demo code are public on GitHub.*
+*I went deeper into this part for the edition of the talk given at [DevRomagna 2026](/en/talks/il-tuo-collega-piu-produttivo/). It continues the [previous post](/en/blog/verificare/testing/mutation-testing-oltre-la-coverage/): slides and demo code are public on GitHub.*

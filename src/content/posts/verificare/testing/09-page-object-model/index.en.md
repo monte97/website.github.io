@@ -28,7 +28,7 @@ The same selector appears in five different files. `[data-testid="first-name"]` 
 
 The Page Object Model solves this by centralizing selectors and user actions in reusable classes. It's not a new pattern, not a Playwright invention — it's the standard way to scale an E2E suite beyond a single file. Martin Fowler described it in 2013, Selenium adopted it as a best practice, and Playwright supports it natively through the fixture system.
 
-This article uses [MockMart](https://github.com/monte97/MockMart), the same environment from the entire [Playwright series](/blog/verificare/testing/01-guida-completa-e2e/). The complete code is in the [repository](https://github.com/monte97/MockMart), in the `tests/e2e/` directory.
+This article uses [MockMart](https://github.com/monte97/MockMart), the same environment from the entire [Playwright series](/en/blog/verificare/testing/01-guida-completa-e2e/). The complete code is in the [repository](https://github.com/monte97/MockMart), in the `tests/e2e/` directory.
 
 ---
 
@@ -431,7 +431,7 @@ import { test as mockTest, fakeProduct } from '../fixtures/mock-api';
 const test = mergeTests(pomTest, mockTest);
 ```
 
-`mergeTests(pomTest, mockTest)` creates a new test object that includes both POM fixtures (`homePage`, `cartPage`, `checkoutPage`) and the mock fixture (`mockApi`). The test has access to both worlds. This is the same pattern from [article 05](/blog/verificare/testing/05-network-mocking-avanzato/) and [article 08](/blog/verificare/testing/08-authentication-testing/) for combining authentication and mocks.
+`mergeTests(pomTest, mockTest)` creates a new test object that includes both POM fixtures (`homePage`, `cartPage`, `checkoutPage`) and the mock fixture (`mockApi`). The test has access to both worlds. This is the same pattern from [article 05](/en/blog/verificare/testing/05-network-mocking-avanzato/) and [article 08](/en/blog/verificare/testing/08-authentication-testing/) for combining authentication and mocks.
 
 ### Checkout with mocked products
 
@@ -530,14 +530,14 @@ The key concepts from this article:
 
 ### The complete series
 
-1. [Complete E2E Guide with Playwright](/blog/verificare/testing/01-guida-completa-e2e/) — setup, first tests, best practices
-2. [Trace Correlation with OpenTelemetry](/blog/verificare/testing/02-opentelemetry-trace-correlation/) — connecting E2E tests and backend traces
-3. [CI/CD: retry, sharding, and parallelism](/blog/verificare/testing/03-cicd-strategie-avanzate/) — scalable pipeline execution
-4. [Network mocking with page.route()](/blog/verificare/testing/04-network-mocking/) — isolating the UI from services
-5. [Advanced network mocking: fixtures and HAR](/blog/verificare/testing/05-network-mocking-avanzato/) — reusable mocking patterns
-6. [Visual regression testing](/blog/verificare/testing/06-visual-regression/) — catching visual bugs with screenshots
-7. [Diagnosing and fixing flaky tests](/blog/verificare/testing/07-flaky-debugging/) — causes, tools, and anti-flaky patterns
-8. [Authentication testing with storageState and Keycloak](/blog/verificare/testing/08-authentication-testing/) — login once, always authenticated
+1. [Complete E2E Guide with Playwright](/en/blog/verificare/testing/01-guida-completa-e2e/) — setup, first tests, best practices
+2. [Trace Correlation with OpenTelemetry](/en/blog/verificare/testing/02-opentelemetry-trace-correlation/) — connecting E2E tests and backend traces
+3. [CI/CD: retry, sharding, and parallelism](/en/blog/verificare/testing/03-cicd-strategie-avanzate/) — scalable pipeline execution
+4. [Network mocking with page.route()](/en/blog/verificare/testing/04-network-mocking/) — isolating the UI from services
+5. [Advanced network mocking: fixtures and HAR](/en/blog/verificare/testing/05-network-mocking-avanzato/) — reusable mocking patterns
+6. [Visual regression testing](/en/blog/verificare/testing/06-visual-regression/) — catching visual bugs with screenshots
+7. [Diagnosing and fixing flaky tests](/en/blog/verificare/testing/07-flaky-debugging/) — causes, tools, and anti-flaky patterns
+8. [Authentication testing with storageState and Keycloak](/en/blog/verificare/testing/08-authentication-testing/) — login once, always authenticated
 9. Page Object Model for maintainable tests — this article
 
 The complete code is in the [MockMart](https://github.com/monte97/MockMart) repository, in the `tests/e2e/` directory.

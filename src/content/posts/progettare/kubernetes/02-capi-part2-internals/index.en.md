@@ -41,11 +41,11 @@ The question is not what went wrong: it is **where to look**. Because between th
 
 This article is the map of that path. It is not here to build anything: it is here so that when it stalls, you know which resource to query.
 
-> The general theory of Kubernetes controllers — informers, local cache, work queue, reconciliation — is the subject of [The mechanism behind kubectl apply](/blog/progettare/kubernetes/02-k8s-controller/). It is taken as given here.
+> The general theory of Kubernetes controllers — informers, local cache, work queue, reconciliation — is the subject of [The mechanism behind kubectl apply](/en/blog/progettare/kubernetes/02-k8s-controller/). It is taken as given here.
 
 ## Who runs what
 
-Two roles, as in [the previous part](/blog/progettare/kubernetes/01-capi-part1-intro/): the **management cluster** hosts the controllers and the resources describing the fleet, the **workload clusters** run the workloads and do not know they are managed.
+Two roles, as in [the previous part](/en/blog/progettare/kubernetes/01-capi-part1-intro/): the **management cluster** hosts the controllers and the resources describing the fleet, the **workload clusters** run the workloads and do not know they are managed.
 
 ![The management cluster hosts the CAPI controllers and the providers, and acts on the infrastructure to bring workload clusters to the declared state](/images/posts/kubernetes/02-capi-part2-internals/management-cluster.svg)
 
@@ -157,4 +157,4 @@ A provisioning that stalls without a map becomes half a day of guesswork, and it
 
 On an existing CAPI cluster, run `kubectl get machines -A -o wide` and `kubectl describe cluster <name>` even when everything is fine. Reading the conditions of a healthy cluster is the fastest way to recognise, next time, one that is not.
 
-The next part goes into [Talos Linux](/blog/progettare/kubernetes/03-capi-part3-talos/) and why an immutable operating system removes an entire class of node-level problems.
+The next part goes into [Talos Linux](/en/blog/progettare/kubernetes/03-capi-part3-talos/) and why an immutable operating system removes an entire class of node-level problems.

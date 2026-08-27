@@ -37,7 +37,7 @@ The average latency chart is a flat line at 180 milliseconds. It has been flat f
 
 The chart is not lying: the average *is* 180 milliseconds. It is doing exactly what an average does, which is hiding the tail. If 97% of requests answer in 90 milliseconds and 3% take twelve seconds, the average stays good and that 3% is your inbox.
 
-The previous piece in this series, [A thousand requests per second means nothing](/blog/verificare/testing/performance-senza-baseline/), is about what to decide before measuring. This one is about what to look at in the numbers once they exist.
+The previous piece in this series, [A thousand requests per second means nothing](/en/blog/verificare/testing/performance-senza-baseline/), is about what to decide before measuring. This one is about what to look at in the numbers once they exist.
 
 ## Averages lie, percentiles do not
 

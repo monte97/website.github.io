@@ -105,7 +105,7 @@ Playwright runs tests in parallel across multiple workers, and every worker gets
 
 On a suite of 100 tests: **from ~10 minutes with one worker to ~2.5 minutes with four.** No changes to the tests.
 
-In CI, sharding pushes further: the suite is split across machines and the reports are merged downstream. That is covered in full in [CI/CD and advanced strategies](/blog/verificare/testing/03-cicd-strategie-avanzate/).
+In CI, sharding pushes further: the suite is split across machines and the reports are merged downstream. That is covered in full in [CI/CD and advanced strategies](/en/blog/verificare/testing/03-cicd-strategie-avanzate/).
 
 The number worth keeping is the earlier one, not this one: **parallelisation reduces the time, auto-waiting reduces how often that time is wasted.** A fast unreliable suite is still useless.
 
@@ -125,4 +125,4 @@ E2E tests get abandoned when the team stops believing their failures — and fro
 
 Just one: the path whose breakage you would notice in the revenue figures — login, cart, checkout. Write it without a single explicit wait and run it twenty times in CI. If it passes twenty out of twenty, you have a new yardstick for judging all the others.
 
-The rest of the series starts from there: [correlating a failed test with the backend trace](/blog/verificare/testing/02-opentelemetry-trace-correlation/), [mocking the network](/blog/verificare/testing/04-network-mocking/), [chasing flaky tests](/blog/verificare/testing/07-flaky-debugging/), [organising the suite with the Page Object Model](/blog/verificare/testing/09-page-object-model/).
+The rest of the series starts from there: [correlating a failed test with the backend trace](/en/blog/verificare/testing/02-opentelemetry-trace-correlation/), [mocking the network](/en/blog/verificare/testing/04-network-mocking/), [chasing flaky tests](/en/blog/verificare/testing/07-flaky-debugging/), [organising the suite with the Page Object Model](/en/blog/verificare/testing/09-page-object-model/).

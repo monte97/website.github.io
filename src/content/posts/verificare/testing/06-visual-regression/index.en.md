@@ -22,7 +22,7 @@ The functional test passes: the button exists, the text is correct, the redirect
 
 Visual regression testing closes this gap: it captures screenshots of the page and compares them against an approved baseline. If something changes visually — a margin, a color, an alignment — the test fails with a diff image that highlights pixel-by-pixel differences. It doesn't replace functional tests: it complements them, covering a category of bugs that no DOM assertion can catch.
 
-This article covers five visual testing patterns with Playwright, from basic comparison to cross-browser CI configuration. The code uses [MockMart](https://github.com/monte97/MockMart), the same environment from the previous articles on [network mocking](/blog/verificare/testing/04-network-mocking/) and [reusable fixtures](/blog/verificare/testing/05-network-mocking-avanzato/). For the initial setup and Playwright configuration, refer to the [introductory guide](/blog/verificare/testing/01-guida-completa-e2e/).
+This article covers five visual testing patterns with Playwright, from basic comparison to cross-browser CI configuration. The code uses [MockMart](https://github.com/monte97/MockMart), the same environment from the previous articles on [network mocking](/en/blog/verificare/testing/04-network-mocking/) and [reusable fixtures](/en/blog/verificare/testing/05-network-mocking-avanzato/). For the initial setup and Playwright configuration, refer to the [introductory guide](/en/blog/verificare/testing/01-guida-completa-e2e/).
 
 ---
 
@@ -115,7 +115,7 @@ With `animations: 'disabled'`, Playwright forces all CSS animations to their fin
 
 ## Screenshots of specific states
 
-This is where visual testing becomes powerful: combining it with network mocking from articles [04](/blog/verificare/testing/04-network-mocking/) and [05](/blog/verificare/testing/05-network-mocking-avanzato/). The `MockApi` fixture lets you force the application into any state — error, empty, loading — and capture a screenshot of that exact state.
+This is where visual testing becomes powerful: combining it with network mocking from articles [04](/en/blog/verificare/testing/04-network-mocking/) and [05](/en/blog/verificare/testing/05-network-mocking-avanzato/). The `MockApi` fixture lets you force the application into any state — error, empty, loading — and capture a screenshot of that exact state.
 
 ### Error state
 
@@ -387,11 +387,11 @@ Visual testing doesn't replace functional tests — it covers a different gap. F
 
 Articles in the Playwright series:
 
-- [01 - Complete E2E Guide](/blog/verificare/testing/01-guida-completa-e2e/)
-- [02 - OpenTelemetry Trace Correlation](/blog/verificare/testing/02-opentelemetry-trace-correlation/)
-- [03 - Advanced CI/CD Strategies](/blog/verificare/testing/03-cicd-strategie-avanzate/)
-- [04 - Network Mocking](/blog/verificare/testing/04-network-mocking/)
-- [05 - Mock Fixtures, HAR Replay, and Composition](/blog/verificare/testing/05-network-mocking-avanzato/)
+- [01 - Complete E2E Guide](/en/blog/verificare/testing/01-guida-completa-e2e/)
+- [02 - OpenTelemetry Trace Correlation](/en/blog/verificare/testing/02-opentelemetry-trace-correlation/)
+- [03 - Advanced CI/CD Strategies](/en/blog/verificare/testing/03-cicd-strategie-avanzate/)
+- [04 - Network Mocking](/en/blog/verificare/testing/04-network-mocking/)
+- [05 - Mock Fixtures, HAR Replay, and Composition](/en/blog/verificare/testing/05-network-mocking-avanzato/)
 - 06 - Visual Regression Testing (this article)
 
 The complete code is in the [MockMart](https://github.com/monte97/MockMart) repository. With deterministic mocks, dynamic element masking, and CI-generated baselines, visual testing becomes a reliable safety net for your application's design.

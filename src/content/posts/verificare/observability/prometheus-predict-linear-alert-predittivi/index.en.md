@@ -261,7 +261,7 @@ The USE/Golden Signals distinction on saturation is not an academic subtlety: it
 - `predict_linear` is the base tool for predictive alerts in Prometheus, but it has concrete traps: non-linear growth, wrong windows, cyclical patterns, thresholds that are not time-aware
 - The choice between reactive and predictive depends on the resource's time-to-saturation, not on the reference framework: both should be used where they make sense, without making everything predictive by default
 
-> [The next article in the series](/blog/verificare/observability/burn-rate-alerts-slo-multi-window/) takes this logic a level further: no longer "when will the resource saturate" but "at what rate are we burning the error budget". For metrics with seasonal patterns, where `predict_linear` stops working, the road is forecasting with Holt-Winters or Prophet: that stays outside this series.
+> [The next article in the series](/en/blog/verificare/observability/burn-rate-alerts-slo-multi-window/) takes this logic a level further: no longer "when will the resource saturate" but "at what rate are we burning the error budget". For metrics with seasonal patterns, where `predict_linear` stops working, the road is forecasting with Holt-Winters or Prophet: that stays outside this series.
 
 
 ## Resources
