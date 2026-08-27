@@ -5,6 +5,7 @@ import Footer from '@/components/layout/Footer.astro';
 import Badge from '@/components/ui/Badge.astro';
 import TOC from '@/components/blog/TOC.astro';
 import PostCTA from '@/components/blog/PostCTA.astro';
+import AuthorCard from '@/components/ui/AuthorCard.astro';
 import SeriesNav from '@/components/blog/SeriesNav.astro';
 import { getPillarLabel } from '@/data/pillars';
 import { getCollection } from 'astro:content';
@@ -167,6 +168,11 @@ const relatedPosts = pillar
       <aside class="hidden lg:block w-56 shrink-0">
         <TOC headings={headings} lang={lang} />
       </aside>
+    </div>
+
+    <!-- Chi ha scritto, prima di cosa offre -->
+    <div class="mt-12 max-w-xl">
+      <AuthorCard lang={lang} />
     </div>
 
     <!-- CTA -->
