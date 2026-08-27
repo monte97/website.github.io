@@ -173,6 +173,11 @@ const relatedPosts = pillar
       </aside>
     </div>
 
+    <!-- Sotto lg la sidebar non c'e': il riquadro torna in fondo, prima della CTA -->
+    <div class="lg:hidden mt-12">
+      <AuthorCard lang={lang} />
+    </div>
+
     <!-- CTA -->
     <PostCTA lang={lang} category={category} />
 
