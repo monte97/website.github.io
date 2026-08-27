@@ -40,7 +40,7 @@ openNote: "The assumptions of the linear model and where they stop holding."
 mode: explanation
 ---
 
-## The problem: the alert that always fires late
+## The alert fires when the disk is already full
 
 Anyone who has written even one alerting rule in Prometheus has probably already met something very close to this:
 
@@ -54,7 +54,7 @@ A different question, and a far more useful one operationally, would be *"will t
 
 This distinction is not an academic curiosity: it has precise theoretical roots in two frameworks anybody working in observability has heard of, USE and the Golden Signals. The two frameworks use the same word and do not mean the same thing, and that is where two different kinds of alert come from.
 
-## USE vs Golden Signals: two definitions of saturation
+## USE and the Golden Signals do not mean the same thing
 
 Let us start from the primary sources, because the details matter here. The **USE method** was formalised by **Brendan Gregg in 2012**, out of his performance engineering work on Solaris first and Linux later. The acronym stands for Utilization, Saturation, Errors, and it is meant as an operational checklist for diagnosing performance problems at the level of the hardware resource: CPU, memory, disk, network.
 
@@ -80,7 +80,7 @@ That sentence appears literally in the book, in a paragraph discussing how to in
 
 Keeping this distinction in mind makes it much easier to answer the question "what kind of alert do I need here?", because it forces you to say out loud whether the object of the monitoring is a state or a trend.
 
-## Symptom-based vs cause-based: when you get paged
+## Symptom-based and cause-based: when you get paged
 
 There is another axis to reason on, orthogonal to the previous one, which the SRE literature identifies as **symptom-based vs cause-based**. A reactive alert is typically symptom-based: it fires when the problem is manifesting, it is late but very precise, because it is not predicting anything but observing. A predictive alert is cause-based with a time horizon: it tries to anticipate the symptom by watching an indicator of cause tending towards a known limit. Proactive, but by definition estimated, and therefore exposed to false positives when the underlying model breaks. Neither approach is universally better than the other, and treating them as alternatives is a common mistake.
 
@@ -90,7 +90,7 @@ The second alert is predictive, on the same metric: it uses `predict_linear` wit
 
 Both alerts make sense and answer different operational needs: the predictive one does not replace the reactive one, they are complementary. The reactive one is the safety net for when the prediction fails — for example when the heap suddenly grows non-linearly because of a change in load. Understanding which alert answers which question is the point of the whole article, and without that clarity you inevitably end up writing rules that fire too often, too late, or both at once.
 
-## predict_linear: anatomy of the function
+## predict_linear is a straight line extrapolated forwards
 
 Before moving to the examples, the function at the centre of all this is worth examining. The PromQL signature is this:
 
@@ -115,11 +115,11 @@ It is worth comparing it with two nearby functions that sometimes do the same jo
 
 The key thing to remember is that `predict_linear(v, t)` is conceptually equivalent to `deriv(v) * t + current_value`: nothing more sophisticated than a straight line extrapolated forwards. When the linear assumption holds — and it does for plenty of real resources, like heap growth in a healthy JVM or the occupancy of a log disk — the function does exactly what is needed. When it breaks, different strategies are needed: those are the traps further down.
 
-## Five real PromQL examples
+## Five real cases, from the most reactive to the most predictive
 
 The filling disk is the textbook example, but it risks giving the impression that `predict_linear` is a single-purpose hammer. In reality the spectrum of real cases is much wider, and it includes scenarios where the function is perfect, scenarios where it is the wrong choice, and scenarios where the prediction is already encapsulated in the metric itself. Five examples follow that cover this spectrum, from the most reactive to the most predictive.
 
-### 5.1 TLS certificate expiring
+### The TLS certificate does not need predict_linear
 
 ```promql
 (probe_ssl_earliest_cert_expiry - time()) / 86400 < 7
@@ -127,7 +127,7 @@ The filling disk is the textbook example, but it risks giving the impression tha
 
 This is the predictive case par excellence, but one thing is worth noticing: **there is no `predict_linear`**. The reason is that the metric `probe_ssl_earliest_cert_expiry`, exposed by the `blackbox_exporter`, is already defined as "Unix timestamp of the nearest expiry". Subtracting `time()` (the current instant) and dividing by 86400 (the seconds in a day) gives the days remaining before expiry. The cleanest form of predictive alert requires no extrapolation: it is simple arithmetic between two timestamps. The "predictive" part in this case lives in the metric itself, not in the query, and it is typically the pattern to prefer whenever the metric allows it: fewer assumptions, fewer models, fewer ways to get it wrong.
 
-### 5.2 Progressive memory leak in the JVM
+### Progressive memory leak in the JVM
 
 ```promql
 predict_linear(jvm_memory_used_bytes{area="heap"}[6h], 2 * 3600)
@@ -136,7 +136,7 @@ predict_linear(jvm_memory_used_bytes{area="heap"}[6h], 2 * 3600)
 
 The names `jvm_memory_used_bytes` and `jvm_memory_max_bytes` with the label `area="heap"` are the ones exposed by Micrometer (Spring Boot Actuator) and equivalents, and it is the most common pattern in production on modern JVM stacks. The window is long (six hours of history) deliberately, to filter the noise of the garbage collection cycles that make the heap "breathe" up and down with sometimes considerable swings. A short window would be dominated by those oscillations and would produce a very noisy slope; six hours capture the underlying trend, which is the relevant one for spotting a progressive leak. The two-hour projection gives a daytime oncall enough time to open a ticket, coordinate a planned restart and act without drama before the JVM ends in OOM. The `on(instance)` join is critical: it pairs each `jvm_memory_used_bytes` with the `jvm_memory_max_bytes` of the same instance, and without it Prometheus refuses the operation because the two vectors have different label sets. Important note: this is the "realistic production" version. The accompanying demo in the repository uses a custom metric `jvm_heap_used_bytes` (without the `area` label) and a much shorter window, so it is observable in minutes rather than hours.
 
-### 5.3 Monthly API quota
+### Monthly API quota
 
 ```promql
 # Pseudocode: predict_linear over a 24h window projected to the end of the month
@@ -150,7 +150,7 @@ A classic case for integrations with services like Stripe, Twilio, OpenAI, or an
 
 The example above uses a fixed seven-day horizon for simplicity, but the real production query depends on the recording rule or the custom metric chosen to expose the remaining period.
 
-### 5.4 Kafka consumer lag growing steadily
+### Kafka consumer lag: the slope counts, not the value
 
 ```promql
 deriv(kafka_consumergroup_lag[15m]) > 1000 / 60
@@ -158,7 +158,7 @@ deriv(kafka_consumergroup_lag[15m]) > 1000 / 60
 
 Here `deriv()` does a better job than `predict_linear`, and it is instructive to understand why. The relevant information for a Kafka consumer is not the absolute value of the lag in two hours, but the **sustained rate of growth**: if the lag grows steadily by a thousand messages a minute (about sixteen a second), there is a structural capacity problem with the consumer even starting from low numbers, and the problem will get worse until somebody acts. The rule fires when the slope of the regression line over fifteen minutes goes above sixteen messages a second, sustained over time. The prediction here is implicit: a trend is already a prediction, simply expressed as a slope instead of an extrapolated value.
 
-### 5.5 Saturated connection pool (reactive counter-example)
+### The connection pool saturates in seconds, and wants a threshold
 
 ```promql
 (db_connection_pool_active / db_connection_pool_max) > 0.9
@@ -168,7 +168,7 @@ No prediction, no `predict_linear` function, no trend: just a static threshold o
 
 > **Selection rule**: `predict_linear` is suitable when there is a clear absolute threshold (heap limit, monthly quota, certificate expiry) and a horizon of hours or days in which to act. `deriv` is the choice when the relevant information is the rate of change regardless of the absolute value. A reactive static threshold is what you need when the resource saturates in seconds and there is no window of intervention to anticipate.
 
-## Let's see it in action: a Prometheus + Grafana demo
+## The same two alerts on the same metric, in real time
 
 The theory so far was necessary, but seeing the behaviour of the two alerts on the same metric in real time makes the difference clear far more quickly. The linked repository contains a minimal Docker Compose demo simulating exactly the JVM scenario seen above: a JVM with a linear memory leak, and the same two alerts (one reactive, one predictive) competing on the same metric. The goal is to make concrete the lead time gap discussed so far only in formulas.
 
@@ -206,7 +206,7 @@ The first panel shows the raw metrics, but the second is even more direct: two s
 
 The `docker-compose.yml` exposes three environment variables (`START_HEAP_MB`, `MAX_HEAP_MB`, `GROWTH_MB_PER_SEC`) letting you slow the leak down to simulate more realistic scenarios, or speed it up to observe the pattern quickly. The alert rules live in `prometheus/alerts.yml` and need no rebuild: restarting the `prometheus` container reloads them.
 
-## The traps of predictive saturation
+## Four ways the straight line gets it wrong
 
 `predict_linear` is a powerful tool, but it has four typical failure modes in production. They are worth knowing before putting a predictive rule on a pager, because each of these traps shows up as operational noise that is hard to diagnose after the fact.
 
@@ -234,7 +234,7 @@ The pragmatic workaround is to use a window of at least twenty-four hours for an
 
 Handling this means splitting the routing: predictive alert to a low-urgency channel (team Slack, email) during working hours, reactive alert to PagerDuty 24/7 as the safety net. Recording rules applying the prediction only during business hours through conditions like `hour() >= 9 and hour() < 18` are another useful tool for reducing night-time false positives without giving up the reactive coverage.
 
-## When to use which: a decision table
+## Ten resources and the alert each one needs
 
 The theory is interesting, but in practice what you need to know is "for this specific resource, which alert do I actually need?". The table below summarises ten common resources and indicates which kind of alert makes sense in each case, taking into account the resource's typical time-to-saturation and the time scale over which the problem manifests. The goal is not to be exhaustive but to give a concrete starting point for reasoning about real cases.
 
@@ -253,13 +253,11 @@ The theory is interesting, but in practice what you need to know is "for this sp
 
 > **Heuristic rule**: the predictive version makes sense when the time-to-saturation is on the order of hours or days and there is room to act before user impact. For anything saturating in seconds or minutes, the reactive version is the only sensible choice. Making alerts predictive by default is an anti-pattern: every predictive alert has to be justified by the actual lead time it offers over its reactive counterpart.
 
-## Conclusion and next steps
+## What to do tomorrow
 
 The USE/Golden Signals distinction on saturation is not an academic subtlety: it operationally changes when and to whom the page arrives, and it is the difference between a night-time wake-up with the service already degraded and a daytime ticket opened with room to act.
 
-- The USE/Golden Signals distinction on saturation is spelled out in the original texts of the two frameworks, it is not a personal interpretation, and it changes the kind of question alerts should be answering
-- `predict_linear` is the base tool for predictive alerts in Prometheus, but it has concrete traps: non-linear growth, wrong windows, cyclical patterns, thresholds that are not time-aware
-- The choice between reactive and predictive depends on the resource's time-to-saturation, not on the reference framework: both should be used where they make sense, without making everything predictive by default
+Where to start: take the resource that woke you up last time and ask how long it took to saturate. If the answer is "hours", there was a window to act in and the alert did not give it to you. If it is "seconds", the reactive threshold was the right tool and the problem is elsewhere.
 
 > [The next article in the series](/en/blog/verificare/observability/burn-rate-alerts-slo-multi-window/) takes this logic a level further: no longer "when will the resource saturate" but "at what rate are we burning the error budget". For metrics with seasonal patterns, where `predict_linear` stops working, the road is forecasting with Holt-Winters or Prophet: that stays outside this series.
 

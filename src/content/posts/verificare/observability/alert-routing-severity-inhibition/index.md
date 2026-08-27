@@ -40,7 +40,7 @@ openNote: "I confini dichiarati dei tre mattoni."
 mode: explanation
 ---
 
-## Il Gap tra la Regola `firing` e l'Umano che Deve Agire
+## Fra la regola che scatta e chi deve agire non c'è niente
 
 I due articoli precedenti della serie si sono fermati al momento in cui una regola Prometheus passa in stato `firing`. Il primo ha mostrato come anticipare la saturazione di una risorsa fisica con `predict_linear`, il secondo come alertare sul ritmo di consumo dell'error budget con burn-rate multi-window. In entrambi il traguardo implicito era la stessa riga di alertmanager: l'espressione PromQL che diventa vera. Ma la regola che scatta è solo l'inizio del percorso.
 
@@ -52,7 +52,7 @@ Tre domande a cui un repo di alerting maturo deve poter rispondere, e che questo
 
 ![Alertmanager UI con l'alert `ErrorBudgetBurnRateFast` raggruppato nel receiver `critical-channel`, etichette severity/slo/window visibili](./alertmanager-grouping.webp)
 
-## Severity come Contratto, non come Etichetta
+## `severity` è un contratto di routing, non un'etichetta
 
 La label `severity` nelle regole Prometheus viene spesso trattata come un'annotazione descrittiva, un tag per sapere "quanto è grave" leggendo la regola. In realtà ha una funzione operativa precisa: è l'input del routing tree di Alertmanager. È il contratto tra chi scrive la regola e chi configura il routing, e come ogni contratto vale solo se entrambe le parti lo rispettano.
 
@@ -90,7 +90,7 @@ Avviato lo stack, la UI di Alertmanager mostra ciascun alert nel gruppo del rece
 
 Il vantaggio concreto è che il mapping severity-receiver diventa leggibile in un solo file, non distribuito tra le regole. Quando serve cambiare il canale di destinazione degli alert critici, si tocca solo l'`alertmanager.yml`, non le decine di regole che usano `severity: critical`.
 
-## Un Incidente, una Notifica: le Inhibit Rules
+## Un incidente, una notifica: le inhibit rules
 
 Il problema successivo emerge quando due regole correlate scattano insieme. Nel demo, il burn-rate fast e il burn-rate medium sono progettati apposta per attivarsi in sequenza ravvicinata su condizioni di errore elevato: il fast cattura il bruciare rapido su finestra breve, il medium conferma che il pattern è sostenuto. Entrambi descrivono lo stesso incidente visto a due velocità diverse. Senza inibizione, Alertmanager invia due notifiche per lo stesso evento: una al canale critical e una al warning.
 
@@ -114,7 +114,7 @@ La vista Alerts con il filtro `Inhibited` attivo mostra il comportamento: il med
 
 L'API v2 lo rende esplicito nel payload: l'alert inibito riporta `status.state: "suppressed"` e `status.inhibitedBy` con il fingerprint dell'alert sorgente. È un dettaglio utile per debug: se un alert che ci si aspetta non arriva al receiver, la prima verifica è se qualcun altro lo sta inibendo.
 
-## Runbook come Parte Obbligatoria della Regola
+## Una regola senza runbook è una regola incompleta
 
 Il terzo mattone è il più ignorato: cosa trova chi apre la notifica. Alertmanager non inventa niente, propaga quello che la regola Prometheus dichiara nel campo `annotations`. Se la regola non contiene `runbook_url`, il payload che arriva al canale non lo avrà.
 
@@ -163,7 +163,7 @@ La posizione nella struttura conta: un template Slack o un'integrazione PagerDut
 
 La tesi operativa è semplice: `runbook_url` dovrebbe essere trattato come un campo obbligatorio della definizione della regola, al pari di `summary`, non come un extra facoltativo. Va detto che non è un campo formalizzato nella documentazione Prometheus core: è una convenzione dell'ecosistema, adottata da kube-prometheus e dal Prometheus Operator, e come tale non c'è nulla che forzi la sua presenza. È proprio per questo che conviene imporla per policy interna. Regola senza runbook, regola incompleta. Vale anche la nota meno ovvia: è meglio puntare a una pagina runbook minimale che esiste (anche solo tre righe con "controlla X, chiedi a Y, contatto Z") che a un link 404. Il link rotto erode la fiducia nell'intero sistema di notifica, e l'oncall smette di seguirli.
 
-## Chiusura della Serie
+## Alertare bene non è una proprietà di una query
 
 La serie `saturation-alerting` chiude con tre articoli che coprono livelli diversi della stessa domanda, "quando va detto che qualcosa non funziona":
 

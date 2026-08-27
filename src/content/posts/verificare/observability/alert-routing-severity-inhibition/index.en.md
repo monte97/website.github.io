@@ -40,7 +40,7 @@ openNote: "The declared boundaries of the three building blocks."
 mode: explanation
 ---
 
-## The gap between the `firing` rule and the human who has to act
+## Between the rule that fires and the person who must act there is nothing
 
 The two previous articles in the series stopped at the moment a Prometheus rule goes into the `firing` state. The first showed how to anticipate the saturation of a physical resource with `predict_linear`, the second how to alert on the rate at which the error budget is being consumed with multi-window burn-rate. In both the implicit finish line was the same line of alerting: the PromQL expression that becomes true. But the rule firing is only the start of the path.
 
@@ -52,7 +52,7 @@ Three questions a mature alerting repo has to be able to answer, and that this a
 
 ![Alertmanager UI with the `ErrorBudgetBurnRateFast` alert grouped under the `critical-channel` receiver, severity/slo/window labels visible](./alertmanager-grouping.webp)
 
-## Severity as a contract, not as a label
+## `severity` is a routing contract, not a label
 
 The `severity` label in Prometheus rules often gets treated as a descriptive annotation, a tag for telling "how bad it is" while reading the rule. In fact it has a precise operational function: it is the input to Alertmanager's routing tree. It is the contract between whoever writes the rule and whoever configures the routing, and like any contract it only holds if both sides honour it.
 
@@ -114,7 +114,7 @@ The Alerts view with the `Inhibited` filter on shows the behaviour: the medium i
 
 The v2 API makes it explicit in the payload: the inhibited alert reports `status.state: "suppressed"` and `status.inhibitedBy` with the fingerprint of the source alert. It is a useful detail for debugging: if an alert you expect does not reach the receiver, the first thing to check is whether something else is inhibiting it.
 
-## The runbook as a mandatory part of the rule
+## A rule without a runbook is an incomplete rule
 
 The third building block is the most ignored: what the person opening the notification finds. Alertmanager invents nothing, it propagates what the Prometheus rule declares in the `annotations` field. If the rule contains no `runbook_url`, the payload arriving at the channel will not have one.
 
@@ -163,7 +163,7 @@ The position in the structure matters: a Slack template or a PagerDuty integrati
 
 The operational thesis is simple: `runbook_url` should be treated as a mandatory field of the rule definition, on the same footing as `summary`, not as an optional extra. It has to be said that it is not a field formalised in the core Prometheus documentation: it is an ecosystem convention, adopted by kube-prometheus and by the Prometheus Operator, and as such there is nothing forcing its presence. Which is exactly why it is worth imposing it by internal policy. A rule without a runbook is an incomplete rule. The less obvious note holds too: it is better to point at a minimal runbook page that exists — even just three lines saying "check X, ask Y, contact Z" — than at a 404. A broken link erodes trust in the whole notification system, and the oncall stops following them.
 
-## Closing the series
+## Alerting well is not a property of one query
 
 The `saturation-alerting` series closes with three articles covering different levels of the same question, "when should it be said that something is not working":
 

@@ -41,13 +41,13 @@ openNote: "The Workbook's canonical numbers, with the conditions under which the
 mode: explanation
 ---
 
-## The problem: the availability alert that fires too late
+## By the time the alert fires, the week's budget is already burnt
 
 Anyone who has configured a classic alert of the form `error_rate > 1%` has probably already experienced the two mirror-image failures of that rule. Either it fires on every transient spike of errors and becomes noise the oncall learns to ignore, or it is so permissive that by the time it fires the week's error budget is already burnt and the service has been out of its SLO for hours. Both outcomes are consequences of the same conceptual error: alerting on the instantaneous metric instead of on the **budget consumed over time**.
 
 The previous article in the series showed how to anticipate the saturation of a physical resource (disk, heap, connection pool) using `predict_linear` and the Golden Signals definition of saturation. Here the question changes level of abstraction: no longer "when will the hardware resource run out" but "how fast are we burning the service's error budget as seen by the user". The anticipation logic is the same, but the subject of the monitoring moves from the resource to the user impact, and that has very concrete operational consequences for how the alerts have to be formulated.
 
-## SLO, SLI, error budget: the operational definitions
+## SLI, SLO and error budget, operationally
 
 Before talking about alerting, three operational definitions need fixing — operational, not philosophical. There are two sources: the **Google SRE Book, chapter 4 "Service Level Objectives"** for SLO and SLI, and the **SRE Workbook, chapter 5 "Alerting on SLOs"** for the burn-rate part that comes after.
 
@@ -63,7 +63,7 @@ The SRE Book fixes the definition operationally: the error budget is *"a clear, 
 
 The operational takeaway of this section is a single one, and it is the hinge for everything that follows: **the SLO is a contract with the user expressed in terms of a consumable budget**. Reasonable alerts should answer the question "are we consuming the budget at a rate sustainable for the current window?", not the question "has the instantaneous metric crossed an arbitrary threshold at this precise moment?". These are two different questions, and they produce two different kinds of alert with very different error profiles.
 
-## Why the static threshold alert is not enough
+## The static threshold gets it wrong from both ends
 
 The operational question becomes: why is an alert of the form `error_rate[5m] > X` not sufficient, whatever `X` is? The answer is that there are two mirror-image failure modes, each emerging when you pick `X` from one end of the spectrum or the other, and no intermediate value of `X` really solves both.
 
@@ -79,7 +79,7 @@ A burn rate of 2× corresponds to an error rate of 0.2%, which burns the entire 
 
 Reasoning in burn rate instead of absolute error rate makes the number automatically comparable across services with different SLOs: 2× always means "we are burning twice what is sustainable", regardless of whether the SLO is 99.9% or 99.95%. And above all it becomes the basis for alerts that finally answer the right question.
 
-## Multi-window multi-burn-rate: the Workbook's solution
+## Two windows in AND: the Workbook's multi-window
 
 Burn-rate alerting was formalised by Google in the **2018 SRE Workbook, chapter 5 "Alerting on SLOs"**, as an explicit evolution of the alerting techniques in the original SRE Book. The second part of the chapter introduces the technique of **multi-window multi-burn-rate alerts** to solve two distinct problems at once that single-window alerts do not handle well: the **detection time** (how quickly an alert fires when the problem starts) and the **reset time** (how quickly it resets once the problem is mitigated).
 
@@ -134,7 +134,7 @@ On top of the recording rules you build the `ErrorBudgetBurnRateFast` alert, whi
 
 The `for: 2m` is an extra buffer filtering micro-oscillations on the edge of the threshold. The `severity: critical` label is the hook for routing in Alertmanager: the fast burn goes to PagerDuty, not to a Slack channel. The rest of the section is the generalisation of this scheme to the other window pairs.
 
-## The three canonical pairs: table 5-8 row by row
+## The three canonical pairs, row by row
 
 The SRE Workbook, in the "Multiwindow, Multi-Burn-Rate Alerts" section of chapter 5, does not stop at a single pair of windows. It proposes **three canonical pairs** for monthly SLOs, each with a specific operational vocation, and these three pairs are to be installed together in production, not chosen one against the other. Table 5-8 of the Workbook ("Recommended time windows and burn rates for alerts") is the reference source, reconstructed below with the relevant columns.
 
@@ -168,7 +168,7 @@ The exact source for the values in this table is:
 
 Seeing these three pairs work together on a real service makes their behaviour during an incident clearer than any table. The next section shows a minimal Docker Compose demo with Prometheus and Grafana simulating an HTTP service with an injected error, loads the three pairs as alert rules, and lets you observe which fires first, when each resets, and how severity routing sends them to different channels.
 
-## The demo: both alerts fire at 37 seconds
+## In the demo both alerts fire at 37 seconds
 
 The [burn-rate-demo](https://github.com/monte97/burn-rate-demo) repository contains a minimal Docker Compose stack letting you observe the canonical pairs in under five minutes of wall-clock time. There are four services: a fake HTTP service (`fake-http-service`, FastAPI + `prometheus_client`) exposing a `/` endpoint configured to return a 500 status with probability `ERROR_RATE`, a `load-generator` that `curl`s the service at a constant rate, a Prometheus with the four recording rules (`ratio_rate5m`, `ratio_rate30m`, `ratio_rate1h`, `ratio_rate6h`) and the two alerts (`ErrorBudgetBurnRateFast`, `ErrorBudgetBurnRateMedium`), and a Grafana with a provisioned dashboard visualising the rates and the firing state.
 
@@ -220,7 +220,7 @@ In production the slow burn gets installed anyway, alongside the other two, with
 
 The `for: 15m` is deliberately generous, because the slow burn is not an incident: it is a signal that the safety margin is eroding, to be investigated during working hours, not after three minutes of observation.
 
-## Typical traps in adoption
+## Four mistakes that keep coming back
 
 While adopting burn-rate alerting a few mistakes come up repeatedly, and they are worth spelling out because they appear even in codebases with otherwise well-tended observability.
 
@@ -232,7 +232,7 @@ The third mistake is **getting the SLO reference window wrong** in the consumed-
 
 The fourth mistake is **using multi-window for non-SLO metrics**. Burn-rate makes sense for service quality metrics as seen by the user (availability, p99 latency, end-to-end error ratio). Applying it to physical saturation metrics (CPU, memory, disk) is a misuse: for those the right question is "when will the resource run out", and the correct tool is projection (`predict_linear`), as seen in the previous article of the series. The two techniques are complementary but answer different questions and operate on different domains.
 
-## When to use what: a selection table
+## Three tools, three different questions
 
 The table summarises the three alerting tools seen so far and helps work out which is appropriate in which context.
 

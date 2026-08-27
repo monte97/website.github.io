@@ -41,13 +41,13 @@ openNote: "Numeri canonici del Workbook, con le condizioni per cui valgono."
 mode: explanation
 ---
 
-## Il Problema: l'Alert di Availability che Scatta Troppo Tardi
+## Quando l'alert scatta, il budget della settimana è già bruciato
 
 Chi ha configurato un alert classico tipo `error_rate > 1%` ha probabilmente già sperimentato i due fallimenti speculari di quella regola. O scatta per ogni picco di errori transiente e diventa rumore che l'oncall impara a ignorare, oppure è così permissivo che quando scatta l'error budget della settimana è già bruciato e il servizio ha smesso di rispettare il proprio SLO da ore. Entrambi gli esiti sono conseguenze dello stesso errore concettuale: alertare sulla metrica istantanea invece che sul **budget consumato nel tempo**.
 
 L'articolo precedente della serie ha mostrato come anticipare la saturazione di una risorsa fisica (disco, heap, connection pool) usando `predict_linear` e la definizione di saturation dei Golden Signals. Qui la domanda cambia di livello d'astrazione: non più "quando si esaurirà la risorsa hardware" ma "a che velocità stiamo bruciando l'error budget del servizio visto dall'utente". La logica di anticipazione è la stessa, ma il soggetto del monitoraggio passa dalla risorsa all'impatto utente, e questo ha conseguenze operative molto concrete sul modo in cui gli alert vanno formulati.
 
-## SLO, SLI, Error Budget: le Definizioni Operative
+## SLI, SLO ed error budget, in modo operativo
 
 Prima di parlare di alerting serve fissare tre definizioni operative, non filosofiche. Le fonti sono due: il **Google SRE Book, capitolo 4 "Service Level Objectives"** per SLO e SLI, e il **SRE Workbook, capitolo 5 "Alerting on SLOs"** per la parte burn-rate che viene dopo.
 
@@ -65,7 +65,7 @@ Il SRE Book fissa la definizione in modo operativo:
 
 Il takeaway operativo di questa sezione è uno solo, ed è il cardine di tutto quello che segue: **lo SLO è un contratto con l'utente espresso in termini di budget consumabile**. Gli alert ragionevoli dovrebbero rispondere alla domanda "stiamo consumando il budget a un ritmo sostenibile per la finestra corrente?", non alla domanda "la metrica istantanea ha superato una soglia arbitraria in questo preciso momento?". Sono due domande diverse, e producono due tipi di alert diversi con profili di errore molto differenti.
 
-## Perché l'Alert sul Threshold Statico non Basta
+## La soglia statica sbaglia da entrambi i lati
 
 La domanda operativa diventa: perché un alert della forma `error_rate[5m] > X` non è sufficiente, qualunque sia `X`? La risposta è che ci sono due modalità di fallimento speculari, ognuna delle quali emerge scegliendo `X` da un lato o dall'altro dello spettro, e che nessun valore intermedio di `X` risolve davvero entrambe.
 
@@ -81,7 +81,7 @@ Un burn rate di 2× corrisponde a un error rate dello 0.2%, che brucia l'intero 
 
 Ragionando in burn rate invece che in error rate assoluto, il numero diventa automaticamente confrontabile tra servizi con SLO diversi: 2× significa sempre "stiamo bruciando il doppio di quanto sostenibile", indipendentemente dal fatto che lo SLO sia 99.9% o 99.95%. E soprattutto diventa la base per alert che rispondono finalmente alla domanda giusta.
 
-## Multi-window Multi-burn-rate: la Soluzione del Workbook
+## Due finestre in AND: il multi-window del Workbook
 
 Il burn-rate alerting è stato formalizzato da Google nel **SRE Workbook del 2018, capitolo 5 "Alerting on SLOs"**, come evoluzione esplicita delle tecniche di alerting del SRE Book originale. La seconda parte del capitolo introduce la tecnica dei **multi-window multi-burn-rate alerts** per risolvere contemporaneamente due problemi distinti che gli alert single-window non riescono a gestire bene: il **detection time** (quanto velocemente un alert scatta quando il problema inizia) e il **reset time** (quanto velocemente si resetta quando il problema è mitigato).
 
@@ -136,7 +136,7 @@ Sopra le recording rules si costruisce l'alert `ErrorBudgetBurnRateFast`, che im
 
 Il `for: 2m` è un buffer aggiuntivo che filtra micro-oscillazioni sul bordo della soglia. La label `severity: critical` è il gancio per il routing in Alertmanager: la fast burn va verso PagerDuty, non verso un canale Slack. Il resto della sezione è la generalizzazione di questo schema alle altre coppie di finestre.
 
-## Le Tre Coppie Canoniche: Tabella 5-8 Riga per Riga
+## Le tre coppie canoniche, riga per riga
 
 Il SRE Workbook, nella sezione "Multiwindow, Multi-Burn-Rate Alerts" del capitolo 5, non si ferma a una singola coppia di finestre. Propone **tre coppie canoniche** per SLO mensili, ciascuna con una vocazione operativa specifica, e queste tre coppie vanno installate insieme in produzione, non scelte una contro l'altra. La tabella 5-8 del Workbook ("Recommended time windows and burn rates for alerts") è la fonte di riferimento, qui sotto ricostruita con le colonne rilevanti.
 
@@ -170,7 +170,7 @@ La fonte esatta per i valori di questa tabella è:
 
 Vedere queste tre coppie lavorare insieme su un servizio reale chiarisce meglio di qualsiasi tabella il modo in cui si comportano durante un incidente. La sezione successiva mostra un demo Docker Compose minimale con Prometheus e Grafana che simula un servizio HTTP con un errore iniettato, carica le tre coppie come regole di alert, e permette di osservare quale scatta per prima, quando si resetta ciascuna, e come il routing per severity le instrada su canali diversi.
 
-## La Demo: Entrambi gli Alert Scattano a 37 Secondi
+## Nella demo entrambi gli alert scattano a 37 secondi
 
 Il repository [burn-rate-demo](https://github.com/monte97/burn-rate-demo) contiene uno stack Docker Compose minimale che permette di osservare le coppie canoniche in meno di cinque minuti di wall-clock. I servizi sono quattro: un servizio HTTP finto (`fake-http-service`, FastAPI + `prometheus_client`) che espone un endpoint `/` configurato per restituire uno status 500 con probabilità `ERROR_RATE`, un `load-generator` che fa `curl` al servizio a ritmo costante, un Prometheus con le quattro recording rules (`ratio_rate5m`, `ratio_rate30m`, `ratio_rate1h`, `ratio_rate6h`) e i due alert (`ErrorBudgetBurnRateFast`, `ErrorBudgetBurnRateMedium`), e una Grafana con una dashboard provisioned che visualizza i tassi e lo stato di firing.
 
@@ -199,7 +199,7 @@ Per osservare il comportamento di **detection differenziata** (fast burn che sca
 
 Per spegnere lo stack: `docker compose down`. Nessun volume persistente, tutto ricreabile da zero in meno di trenta secondi.
 
-## Quello che la Demo non Mostra: la Slow Burn
+## Quello che la demo non mostra: la slow burn
 
 La tabella 5-8 prevede **tre** coppie canoniche, ma la demo ne implementa solo due. La slow burn (`3d + 6h`, burn rate `1×`) è stata esclusa per una ragione molto concreta: con una finestra lunga di tre giorni, la recording rule `rate(http_requests_total[3d])` ha bisogno di tre giorni di dati reali per restituire un valore stabile. In una demo Docker Compose che parte da zero non c'è modo di osservarla in tempi utili, e forzare il firing con `ERROR_RATE=0.50` produrrebbe solo un risultato inutile (il rate satura la finestra in pochi secondi e l'alert scatta immediatamente, senza fornire informazione sul comportamento "slow").
 
@@ -222,7 +222,7 @@ In produzione la slow burn si installa comunque, insieme alle altre due, con la 
 
 Il `for: 15m` è volutamente generoso, perché la slow burn non è un incidente: è un segnale di erosione del margine di sicurezza che va investigato in orario lavorativo, non dopo tre minuti di osservazione.
 
-## Trappole Tipiche nell'Adozione
+## Quattro errori che tornano sempre
 
 Durante l'adozione del burn-rate alerting tornano ricorrenti alcuni errori, che meritano di essere esplicitati perché compaiono anche in codebase con osservabilità altrimenti curata.
 
@@ -234,7 +234,7 @@ Il terzo errore è **sbagliare la finestra di riferimento dello SLO** nella form
 
 Il quarto errore è **usare il multi-window per metriche non-SLO**. Il burn-rate ha senso per metriche di qualità del servizio come viste dall'utente (availability, latency p99, error ratio end-to-end). Applicarlo a metriche di saturation fisica (CPU, memoria, disco) è un misuso: per quelle la domanda giusta è "quando si esaurirà la risorsa", e lo strumento corretto è la proiezione (`predict_linear`), come visto nell'articolo precedente della serie. Le due tecniche sono complementari ma rispondono a domande diverse e operano su domini diversi.
 
-## Quando Usare Cosa: Tabella di Selezione
+## Tre strumenti, tre domande diverse
 
 La tabella riassume i tre strumenti di alerting visti finora e aiuta a capire quale sia appropriato in quale contesto.
 
@@ -246,7 +246,7 @@ La tabella riassume i tre strumenti di alerting visti finora e aiuta a capire qu
 
 Il criterio di selezione è la domanda operativa, non il tipo di metrica in senso stretto. Se ci si sta chiedendo quando si esaurirà qualcosa, lo strumento è `predict_linear`. Se ci si sta chiedendo a che ritmo si sta consumando un budget, lo strumento è il burn-rate multi-window. Se ci si sta chiedendo solo "è su o giù", il threshold statico è sufficiente (ma non chiamarlo alerting sugli SLO, chiamarlo quello che è: un health check).
 
-## Cosa Installare Domani
+## Cosa installare domani
 
 Il pacchetto minimale di alerting sugli SLO da portare in produzione contiene, per ogni servizio con uno SLO formalizzato, quattro componenti.
 
