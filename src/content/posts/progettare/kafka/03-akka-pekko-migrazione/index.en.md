@@ -14,6 +14,23 @@ lang: en
 reviewed: machine
 series: kafka
 seriesOrder: 30
+figures:
+  - kind: inventory
+    at: the-akka-license-change
+    label: "The three roads, and the one taken"
+    items:
+      - name: "Stay on Akka 2.6.x, the last release under Apache 2.0"
+      - name: "Pay for the Lightbend commercial licence"
+      - name: "Migrate to Apache Pekko, the community fork"
+        mark: true
+    legend:
+      plain: "possible"
+      mark: "this article's road"
+    caption: "2.6.x has been end-of-life since 19 October 2023: it works, but no future fixes"
+    note: >
+      The first two are legitimate and worth weighing: the choice depends on how long the
+      system has to stay in production and on the budget available. The rest of the article
+      walks the third.
 ---
 
 A Scala service running on Akka 2.6, in production for three years. The license changes; security patches stop arriving. What follows is the hands-on migration from Akka to Apache Pekko: checklist, gotchas, and lessons from the field.

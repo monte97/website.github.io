@@ -14,6 +14,23 @@ lang: en
 reviewed: machine
 series: kafka
 seriesOrder: 10
+figures:
+  - kind: beforeAfter
+    at: what-it-actually-guarantees-and-under-what-conditions
+    label: "The three guarantees, and the condition holding them up"
+    beforeLabel: "What people assume"
+    afterLabel: "What Kafka guarantees"
+    rows:
+      - label: "Ordering"
+        before: "Messages arrive in the order they were sent"
+        after: "In order relative to each other only for the same key, and only while the partition count stays fixed"
+      - label: "Retention"
+        before: "Deleting old data costs more as the volume grows"
+        after: "Whole segment files are removed: an `rm`, at a cost independent of size"
+      - label: "Durability"
+        before: "`acks=all` is enough not to lose messages"
+        after: "It depends on `acks` together with `min.insync.replicas`: neither one on its own"
+    caption: "Kafka's guarantees are tighter than the ones usually assumed, and it is the tight ones you design against"
 ---
 ## From Synchronous Calls to Event Streams
 

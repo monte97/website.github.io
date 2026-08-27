@@ -34,6 +34,23 @@ openItems:
   - "Le dipendenze di terze parti che portano un reference.conf con chiavi akka vanno controllate una per una: non esiste una regola generale"
 openNote: "Quello che questa migrazione non copre, e che va deciso o verificato caso per caso."
 mode: how-to
+figures:
+  - kind: inventory
+    at: il-cambio-licenza-di-akka
+    label: "Le tre strade, e quella presa"
+    items:
+      - name: "Restare su Akka 2.6.x, ultima release sotto Apache 2.0"
+      - name: "Pagare la licenza commerciale Lightbend"
+      - name: "Migrare ad Apache Pekko, il fork della community"
+        mark: true
+    legend:
+      plain: "possibile"
+      mark: "la strada di questo articolo"
+    caption: "La 2.6.x e' end-of-life dal 19 ottobre 2023: funziona, ma nessuna correzione futura"
+    note: >
+      Le prime due sono legittime e vanno valutate: la scelta dipende da quanto a lungo
+      il sistema deve restare in produzione e da che budget c'e'. Il resto dell'articolo
+      percorre la terza.
 ---
 
 Un servizio Scala su Akka 2.6 in produzione da tre anni. La licenza cambia, le patch di sicurezza non arrivano più. Quello che segue è la migrazione pratica da Akka ad Apache Pekko: checklist, gotcha e lezioni dal campo.

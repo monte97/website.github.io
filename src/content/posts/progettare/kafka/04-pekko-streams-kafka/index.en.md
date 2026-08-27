@@ -16,6 +16,23 @@ reviewed: human
 series: kafka
 seriesOrder: 40
 reproducibility: true
+figures:
+  - kind: beforeAfter
+    at: the-solution-separating-responsibilities
+    label: "What changes when the I/O leaves the actor"
+    beforeLabel: "`while(true)` inside an actor"
+    afterLabel: "Separated responsibilities"
+    rows:
+      - label: "Threads"
+        before: "`poll()` blocks a dispatcher thread for five seconds per cycle: three readers saturate a pool of two"
+        after: "The blocking I/O sits outside the dispatcher, on a dedicated thread or inside a source"
+      - label: "Backpressure"
+        before: "None: if the downstream consumer is slow, the mailbox grows until OutOfMemoryError"
+        after: "The stream propagates the slowness upstream and throttles consumption"
+      - label: "Errors"
+        before: "`SupervisorStrategy.restart` recreates the consumer and re-subscribes: disproportionate for a network timeout"
+        after: "A transient failure is handled where it happens, without discarding the subscription"
+    caption: "An actor should not do blocking I/O: it is the rule all three effects follow from"
 ---
 ## The starting pattern: while(true) inside an actor
 

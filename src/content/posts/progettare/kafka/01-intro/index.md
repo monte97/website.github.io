@@ -35,6 +35,23 @@ openItems:
   - "Il producer della demo usa kafkajs, client non mantenuto dal 2023: per nuovi progetti Confluent pubblica `@confluentinc/kafka-javascript`"
   - "L'articolo copre partizioni, chiave e replicazione: consumer group e ribilanciamento non sono trattati qui"
 openNote: "Dove la garanzia d'ordine si ferma e cosa le fondamenta lasciano fuori."
+figures:
+  - kind: beforeAfter
+    at: cosa-vi-garantisce-davvero-e-a-quali-condizioni
+    label: "Le tre garanzie, e la condizione che le regge"
+    beforeLabel: "Quello che si assume"
+    afterLabel: "Quello che Kafka garantisce"
+    rows:
+      - label: "Ordine"
+        before: "I messaggi arrivano nell'ordine in cui sono stati inviati"
+        after: "In ordine fra loro solo a parita' di chiave, e solo finche' il numero di partizioni non cambia"
+      - label: "Retention"
+        before: "Cancellare i dati vecchi ha un costo che cresce con il volume"
+        after: "Si eliminano file di segmento interi: un `rm`, con costo indipendente dalla dimensione"
+      - label: "Durabilita'"
+        before: "`acks=all` basta a non perdere messaggi"
+        after: "Dipende da `acks` insieme a `min.insync.replicas`: nessuno dei due da solo"
+    caption: "Le garanzie di Kafka sono piu' strette di quelle che di solito si assumono, ed e' sulle strette che si progetta"
 ---
 ## Da Chiamate Sincrone a Flussi di Eventi
 

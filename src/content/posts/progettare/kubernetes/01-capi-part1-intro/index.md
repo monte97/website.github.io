@@ -32,6 +32,24 @@ openItems:
   - "Il management cluster diventa una dipendenza critica: se non è disponibile, nessun workload cluster può essere modificato"
   - "Proxmox è la scelta di questo percorso perché offre controllo completo a costo contenuto: su un provider cloud i provider CAPI cambiano, i concetti no"
   - "Sotto una certa scala — due o tre cluster che cambiano di rado — il costo di imparare e mantenere CAPI può superare quello che fa risparmiare"
+figures:
+  - kind: flow
+    at: il-banco-di-prova-kind-proxmox-e-talos
+    label: "I tre pezzi del banco di prova"
+    caption: "Su un cloud provider cambierebbe solo il pezzo di mezzo: e' il senso di avere un'interfaccia standard"
+    nodes:
+      - kind: "Management"
+        name: "Kind"
+        desc: "Ospita i controller e le risorse che descrivono la flotta. All'inizio deve essere usa e getta: se serve ricrearlo, non deve essere un evento."
+        edge: "chiama le API di Proxmox"
+      - kind: "Infrastruttura"
+        name: "Proxmox VE"
+        desc: "Controllo completo sull'ambiente virtualizzato e una API REST su cui il provider CAPI puo' agire davvero. Non e' un simulatore: e' la stessa meccanica su scala minore."
+        edge: "crea le macchine"
+      - kind: "Workload"
+        name: "Talos Linux"
+        desc: "Sistema operativo immutabile, costruito per Kubernetes e senza shell: per costruzione toglie di mezzo la classe di problemi da configuration drift che l'approccio imperativo produceva."
+        key: true
 ---
 
 Lo script che aggiunge un worker node al cluster funziona. Lo lanciate, gira due minuti, il nodo compare in `kubectl get nodes`.
@@ -74,14 +92,6 @@ Il vantaggio è che l'intera flotta si descrive in un posto solo, versionabile. 
 ## Il banco di prova: Kind, Proxmox e Talos
 
 Il percorso di questa serie usa tre pezzi:
-
-```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│  Management     │    │   Proxmox VE     │    │  Workload       │
-│  Cluster        │───▶│   Infrastructure │───▶│  Cluster        │
-│  (Kind)         │    │                  │    │  (Talos)        │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-```
 
 **[Proxmox VE](https://www.proxmox.com/en/proxmox-virtual-environment/overview)** come infrastruttura, per tre motivi che contano più della gratuità: controllo completo sull'ambiente virtualizzato, una [API REST](https://pve.proxmox.com/wiki/Proxmox_VE_API) su cui il provider CAPI può agire davvero, e un realismo operativo confrontabile con un ambiente enterprise. Un homelab su Proxmox non è un simulatore: è la stessa meccanica su scala minore.
 
