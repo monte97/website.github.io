@@ -164,15 +164,13 @@ const relatedPosts = pillar
         <slot />
       </article>
 
-      <!-- TOC sidebar -->
-      <aside class="hidden lg:block w-56 shrink-0">
-        <TOC headings={headings} lang={lang} />
+      <!-- Sidebar: indice, e sotto chi ha scritto -->
+      <aside class="hidden lg:block w-64 shrink-0">
+        <div class="sticky top-20 space-y-6">
+          <TOC headings={headings} lang={lang} />
+          <AuthorCard lang={lang} />
+        </div>
       </aside>
-    </div>
-
-    <!-- Chi ha scritto, prima di cosa offre -->
-    <div class="mt-12 max-w-xl">
-      <AuthorCard lang={lang} />
     </div>
 
     <!-- CTA -->

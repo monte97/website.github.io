@@ -13,7 +13,7 @@ const filtered = headings.filter(h => h.depth >= 2 && h.depth <= 3);
 ---
 
 {filtered.length > 0 && (
-  <nav class="sticky top-20 max-h-[calc(100vh-6rem)] overflow-y-auto">
+  <nav class="max-h-[60vh] overflow-y-auto">
     <h4 class="text-sm font-semibold mb-3 text-text-muted uppercase tracking-wide">{lang === 'en' ? 'Table of Contents' : 'Indice'}</h4>
     <ul class="space-y-1.5 text-sm">
       {filtered.map(h => (

@@ -1,15 +1,52 @@
 ---
+/**
+ * Catalogo del percorso sull'osservabilita', in versione web.
+ *
+ * L'impaginazione segue il doc-kit del design system, non la landing del sito:
+ * cover con eyebrow / titolo / filetto arancio / sommario, capitoli marcati da
+ * una regola spessa con il numero nella colonna di sinistra, griglie
+ * etichetta-valore al posto delle tabelle. La profondita' e' data dallo spessore
+ * dei filetti (3px capitolo, 2px sezione, 1px riga), mai dal colore: il filetto
+ * arancio compare una volta sola, sulla cover.
+ */
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import FinalCta from '@/components/ui/FinalCta.astro';
-import FlowDiagram from '@/components/ui/FlowDiagram.astro';
 import { workshopAreas } from '@/data/workshop-areas';
+import { author } from '@/data/author';
+import Logo from '@/assets/logo-fra.svg?raw';
 
-// Versione web del catalogo. I contenuti vengono dal documento commerciale:
-// nessun numero e nessun blocco che non sia gia' scritto li'.
 const area = workshopAreas.find((a) => a.slug === 'osservabilita')!;
 const pdf = area.catalog?.pdf;
+
+// ── Idiomi del doc-kit, in classi ──────────────────────────────────────────
+const gutter = 'grid grid-cols-1 sm:grid-cols-[7rem_1fr] gap-x-5 gap-y-2';
+const mono = 'font-mono text-[11px] uppercase tracking-[0.12em] text-text-muted';
+const hair = 'border-border/70 dark:border-border-dark/70';
+const strong = 'border-text-dark/30 dark:border-text-light/30';
+const prose = 'text-text-muted leading-relaxed max-w-[42rem] mb-4';
+const h2 = 'text-2xl md:text-3xl font-bold tracking-tight leading-snug text-text-dark dark:text-text-light text-balance';
+const h3 = 'text-xl font-bold tracking-tight text-text-dark dark:text-text-light';
+
+const meta = [
+  ['Per chi è', 'Team di sviluppo che devono capire cosa è successo dentro un sistema distribuito in esecuzione'],
+  ['Formato', 'Due ore in versione compatta, tre giorni in versione aziendale. In presenza o da remoto'],
+  ['Base di lavoro', 'Uno stack completo in esecuzione: ingresso, coda, elaborazione, persistenza, con la raccolta dei segnali già configurata'],
+];
+
+const acquisito = [
+  ['Si presume', 'Che sappiate a cosa servono metriche, log e trace.'],
+  ['Non si presume', "Che qualcuno abbia mai strumentato un servizio a mano, né che sappiate cosa fa un collector quando gli si cambia la configurazione sotto."],
+  ['Si parte da', 'Lo stack già in esecuzione sulle vostre macchine, verificato prima del corso.'],
+];
+
+const catena = [
+  ['01', 'Ingresso', 'autenticato'],
+  ['02', 'Coda', 'disaccoppia'],
+  ['03', 'Elaborazione', 'strumentata'],
+  ['—', 'Persistenza', 'si strumenta da fuori'],
+];
 
 const compatta = [
   ['15 min', 'Claim e avvio dello stack', 'Si parte dal sistema in esecuzione e dal giro della dashboard.'],
@@ -18,6 +55,12 @@ const compatta = [
   ['45 min', 'I quattro checkpoint', 'Dalla prima traccia al waterfall completo, con verifica a ogni passo.'],
   ['5 min', 'Chiusura', 'Waterfall completo a schermo e confronto con la soluzione di riferimento.'],
   ['10 min', 'La parte onesta', 'Costi veri dello stack, cambio del backend dal vivo, quando basta molto meno.'],
+];
+
+const serve = [
+  ['Macchine', 'Docker funzionante e circa 4 GB di RAM libera per macchina. Lo stack a regime ne occupa poco meno di 4.'],
+  ['Rete', 'Accesso al registry delle immagini. Il pacchetto di preparazione le scarica prima del corso.'],
+  ['Verifica', 'Un avvio di prova dello stack, da fare prima e non in aula.'],
 ];
 
 const aziendale = [
@@ -42,18 +85,18 @@ const base = {
 };
 
 const moduli = [
-  ['Strumentazione avanzata', 'richiede la base', 'Ricostruzione completa della richiesta con propagazione del contesto, e strumentazione della persistenza dalla configurazione.'],
-  ['Automatica o manuale', 'richiede la base', 'Quali risultati offre la strumentazione automatica e quali richiedono un intervento nel codice.'],
-  ['SLO e alerting', 'richiede la base', "Definizione di un obiettivo di servizio misurabile e allarme basato sul consumo del margine di errore."],
-  ['Verifica degli allarmi', 'richiede SLO e alerting', 'Introduzione di un guasto circoscritto e verifica di quali allarmi non si attivano.'],
-  ['Portabilità', 'richiede la base', 'Sostituzione del backend dei segnali dalla sola configurazione, e limiti effettivi della portabilità.'],
-  ['Costi e dimensionamento', 'indipendente', 'Costo misurato di esercizio, conservazione dei dati, campionamento e cardinalità.'],
-  ['Contenuti di una dashboard', 'richiede la base', 'Quali indicatori si osservano quotidianamente e quali soltanto durante un incidente.'],
-  ['Esercitazione conclusiva', 'richiede tutti i precedenti', 'Guasto non dichiarato, ruoli assegnati, causa da individuare a partire dai soli segnali.'],
+  ['M1', 'Strumentazione avanzata', 'richiede la base', 'Ricostruzione completa della richiesta con propagazione del contesto, e strumentazione della persistenza dalla configurazione.'],
+  ['M2', 'Automatica o manuale', 'richiede la base', 'Quali risultati offre la strumentazione automatica e quali richiedono un intervento nel codice.'],
+  ['M3', 'SLO e alerting', 'richiede la base', 'Definizione di un obiettivo di servizio misurabile e allarme basato sul consumo del margine di errore.'],
+  ['M4', 'Verifica degli allarmi', 'richiede SLO e alerting', 'Introduzione di un guasto circoscritto e verifica di quali allarmi non si attivano.'],
+  ['M5', 'Portabilità', 'richiede la base', 'Sostituzione del backend dei segnali dalla sola configurazione, e limiti effettivi della portabilità.'],
+  ['M6', 'Costi e dimensionamento', 'indipendente', 'Costo misurato di esercizio, conservazione dei dati, campionamento e cardinalità.'],
+  ['M7', 'Contenuti di una dashboard', 'richiede la base', 'Quali indicatori si osservano quotidianamente e quali soltanto durante un incidente.'],
+  ['M8', 'Esercitazione conclusiva', 'richiede tutti i precedenti', 'Guasto non dichiarato, ruoli assegnati, causa da individuare a partire dai soli segnali.'],
 ];
 
 const composizione = [
-  ['01', 'La base', "Due ore, sempre incluse. È la durata minima con un esito verificabile."],
+  ['01', 'La base', 'Due ore, sempre incluse. È la durata minima con un esito verificabile.'],
   ['02', 'I moduli', 'La base con due moduli corrisponde a sei ore, pause incluse.'],
   ['03', 'Il calendario', 'Sessione unica oppure sessioni distinte, preferibili oltre le sei ore.'],
 ];
@@ -74,10 +117,27 @@ const leve = [
 ];
 
 const bastaMeno = [
-  ['Un servizio, poche richieste all\'ora', 'Un cron, una curl, un alert via mail', 'Un controllo periodico batte un collector intero'],
+  ["Un servizio, poche richieste all'ora", 'Un cron, una curl, un alert via mail', 'Un controllo periodico batte un collector intero'],
   ['Pochi servizi, senza trace', 'Metriche per applicazione', 'Si capisce il come, senza il perché'],
   ['Più servizi, serve propagare il contesto', 'Collector leggero, un backend solo', 'Portabilità senza il peso dello stack completo'],
   ['Microservizi, più team, debug fra servizi', 'Stack completo', 'Il debugging e la conservazione valgono il costo'],
+];
+
+const resta = [
+  ['Lo stack', 'Quattro servizi, la coda, il servizio di identità, il generatore di carico e la raccolta dei segnali, con due comandi per avviarlo.'],
+  ['Gli esercizi', 'I quattro checkpoint scritti passo per passo, e la soluzione di riferimento completa da confrontare.'],
+  ['La parte onesta', 'I costi misurati, la proiezione sulla conservazione dei dati e la tabella per decidere quando basta meno.'],
+];
+
+const capitoli = [
+  ['01', 'Il sistema', 'Un sistema a microservizi, e uno di questi è cieco'],
+  ['02', 'Il punto di partenza', 'Un servizio che risponde e non esiste'],
+  ['03', 'La versione compatta', 'Due ore, sei blocchi'],
+  ['04', 'La versione aziendale', 'Stessa base, altra profondità'],
+  ['05', 'I moduli', 'Da cosa è composto il percorso'],
+  ['06', 'I costi', 'Quanto costa tenere acceso lo stack'],
+  ['07', 'Il dimensionamento', 'Quando basta molto meno'],
+  ['08', 'Cosa resta', 'Il repository resta, e continua a girare'],
 ];
 
 const terminale = `$ curl -s -X POST localhost:18081/gate
@@ -85,373 +145,448 @@ const terminale = `$ curl -s -X POST localhost:18081/gate
 
 Grafana → Explore → Tempo   { service.name = "quality-gate" }
 0 risultati                                         # per il sistema di osservabilità non esiste`;
-
-const h2 = 'text-2xl font-bold tracking-tight text-text-dark dark:text-text-light mb-4';
-const h3 = 'text-xl font-semibold text-text-dark dark:text-text-light mb-3';
-const p = 'text-text-muted leading-relaxed mb-4';
-const th = 'text-left text-[11px] font-mono uppercase tracking-[0.15em] text-text-muted font-normal pb-3 pr-6';
-const td = 'align-top py-3 pr-6 border-t border-border/50 dark:border-border-dark/50';
 ---
 
 <BaseLayout
   title="Catalogo · Rendere osservabile un sistema vivo"
-  description="Il catalogo del percorso sull'osservabilità: il sistema su cui si lavora, la versione compatta e quella aziendale, i costi misurati dello stack e cosa resta al team."
+  description="Il catalogo del percorso sull'osservabilità: il sistema su cui si lavora, i moduli componibili, i due formati, i costi misurati dello stack e cosa resta al team."
   ogImage="/og/workshop.png"
   lang="it"
 >
   <Header lang="it" />
 
-  <main class="max-w-3xl mx-auto px-5 py-8">
-    <nav class="text-xs text-text-muted mb-8" aria-label="Breadcrumb">
-      <ol class="flex items-center gap-1.5">
-        <li><a href="/" class="hover:text-accent transition-colors">Home</a></li>
-        <li aria-hidden="true" class="opacity-40">/</li>
-        <li><a href="/workshop2/" class="hover:text-accent transition-colors">Formazione</a></li>
-        <li aria-hidden="true" class="opacity-40">/</li>
-        <li><a href="/workshop2/osservabilita/" class="hover:text-accent transition-colors">Osservabilità</a></li>
-        <li aria-hidden="true" class="opacity-40">/</li>
-        <li class="text-text-dark dark:text-text-light">Catalogo</li>
-      </ol>
-    </nav>
+  <main class="max-w-[72rem] mx-auto px-5 py-10 md:px-10">
 
-    <header class="mb-12">
-      <p class="text-xs font-mono uppercase tracking-[0.2em] text-text-muted mb-3">
-        Workshop hands-on per team di sviluppo
+    <!-- ── Testata ── -->
+    <div class={`flex items-center justify-between gap-5 pb-4 border-b ${hair}`}>
+      <div class="flex items-center gap-3">
+        <span class="w-[46px] h-[40px] shrink-0 [&_svg]:w-full [&_svg]:h-full" set:html={Logo} />
+        <span class="text-base font-bold text-text-dark dark:text-text-light leading-tight">
+          {author.name}
+          <span class={`block ${mono} mt-0.5`}>Software engineer freelance</span>
+        </span>
+      </div>
+      <p class={`${mono} text-right hidden sm:block`}>
+        francesco@montelli.dev<br />montelli.dev
       </p>
-      <h1 class="text-3xl md:text-4xl font-bold leading-tight tracking-tight text-text-dark dark:text-text-light mb-4">
+    </div>
+
+    <!-- ── Cover ── -->
+    <div class="mt-12">
+      <p class={mono}>Osservabilità · catalogo del percorso</p>
+      <h1 class="mt-3 text-3xl md:text-5xl font-bold tracking-tight leading-[1.1] text-text-dark dark:text-text-light text-balance">
         Rendere osservabile un sistema vivo
       </h1>
-      <p class="text-text-muted text-lg leading-relaxed">
+      <div class="mt-5 w-[72px] h-[3px] rounded-sm bg-accent" />
+      <p class="mt-5 text-lg text-text-muted leading-relaxed max-w-[42rem]">
         Strumentare i servizi e debuggare con metriche, log e trace. Su uno stack completo, in esecuzione.
       </p>
 
-      <dl class="grid sm:grid-cols-3 gap-6 mt-8 pt-8 border-t border-border/60 dark:border-border-dark/60">
-        <div>
-          <dt class="text-[11px] font-mono uppercase tracking-[0.15em] text-text-muted mb-1.5">Per chi è</dt>
-          <dd class="text-sm text-text-muted leading-relaxed">
-            Team di sviluppo che devono capire cosa è successo dentro un sistema distribuito in esecuzione
-          </dd>
-        </div>
-        <div>
-          <dt class="text-[11px] font-mono uppercase tracking-[0.15em] text-text-muted mb-1.5">Formato</dt>
-          <dd class="text-sm text-text-muted leading-relaxed">
-            Due ore in versione compatta, tre giorni in versione aziendale. In presenza o da remoto
-          </dd>
-        </div>
-        <div>
-          <dt class="text-[11px] font-mono uppercase tracking-[0.15em] text-text-muted mb-1.5">Base di lavoro</dt>
-          <dd class="text-sm text-text-muted leading-relaxed">
-            Uno stack completo in esecuzione: ingresso, coda, elaborazione, persistenza, con la raccolta dei segnali già configurata
-          </dd>
-        </div>
+      <dl class={`mt-8 max-w-[54rem] ${gutter} border-t-2 ${strong}`}>
+        {meta.map(([k, v]) => (
+          <>
+            <dt class={`${mono} pt-3 pb-1 sm:pb-3 sm:border-b ${hair}`}>{k}</dt>
+            <dd class={`text-sm text-text-dark dark:text-text-light pb-3 border-b ${hair}`}>{v}</dd>
+          </>
+        ))}
       </dl>
 
       {pdf && (
         <p class="mt-8">
-          <a
-            href={pdf}
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border dark:border-border-dark text-sm font-medium hover:border-accent hover:text-accent transition-colors"
-          >
+          <a href={pdf} class={`inline-flex items-center gap-2 px-4 py-2 rounded-sm border ${strong} text-sm font-medium hover:border-accent hover:text-accent transition-colors`}>
             Scarica il catalogo in PDF &rarr;
           </a>
         </p>
       )}
-    </header>
+    </div>
 
-    <section class="mb-14">
-      <h2 class={h2}>Un sistema a microservizi, e uno di questi è cieco</h2>
-      <p class={p}>
-        Il percorso gira su una catena di servizi che si chiamano fra loro, con una coda in mezzo e un generatore
-        di carico che tiene tutto in movimento. I problemi che si vogliono mostrare esistono solo quando una
-        richiesta attraversa più processi.
-      </p>
+    <!-- ── Indice ── -->
+    <nav class={`mt-12 max-w-[54rem] border-t ${hair}`} aria-label="Indice del catalogo">
+      {capitoli.map(([n, kicker, titolo]) => (
+        <a href={`#c${n}`} class={`${gutter} py-3 px-2 border-b ${hair} hover:bg-text-muted/5 transition-colors`}>
+          <span class="font-mono text-[11px] uppercase tracking-[0.12em] text-accent">{n}</span>
+          <span class="text-sm font-semibold text-text-dark dark:text-text-light">
+            {titolo}
+            <span class={`block ${mono} font-normal mt-0.5`}>{kicker}</span>
+          </span>
+        </a>
+      ))}
+    </nav>
 
-      <FlowDiagram
-        label="Una richiesta attraverso i servizi"
-        nodes={[
-          { kind: '01', name: 'Ingresso', desc: 'autenticato', edge: 'chiama' },
-          { kind: '02', name: 'Coda', desc: 'disaccoppia', edge: 'consuma' },
-          { kind: '03', name: 'Elaborazione', desc: 'strumentata', edge: 'scrive' },
-          { kind: 'da configurare', name: 'Persistenza', desc: 'si strumenta da fuori' },
-        ]}
-      />
+    <!-- ══ 01 ══ -->
+    <section id="c01" class={`mt-20 pt-5 border-t-[3px] ${strong} scroll-mt-6`}>
+      <div class={gutter}>
+        <div>
+          <span class="block font-mono text-4xl font-medium leading-none tracking-tight text-accent">01</span>
+          <span class={`block ${mono} mt-2`}>Il sistema</span>
+        </div>
+        <div>
+          <h2 class={h2}>Un sistema a microservizi, e uno di questi è cieco</h2>
+          <p class="mt-3 text-text-muted leading-relaxed max-w-[42rem]">
+            Il percorso gira su una catena di servizi che si chiamano fra loro, con una coda in mezzo e un
+            generatore di carico che tiene tutto in movimento. I problemi che si vogliono mostrare esistono solo
+            quando una richiesta attraversa più processi.
+          </p>
+        </div>
+      </div>
 
-      <p class={p}>
-        La raccolta dei segnali è già configurata in partenza: un collector solo, come unico punto di uscita per
-        trace, log e metriche.
-      </p>
-      <p class={p}>
+      <div class="mt-8 max-w-[54rem]">
+        <p class={`${mono} mb-3`}>Una richiesta attraverso i servizi</p>
+        <div class={`border ${hair} rounded-sm divide-y ${hair}`}>
+          {catena.map(([n, nome, ruolo]) => (
+            <div class="grid grid-cols-[3.5rem_1fr] items-baseline">
+              <span class={`${mono} px-4 py-3 border-r ${hair} self-stretch`}>{n}</span>
+              <span class="px-4 py-3 text-sm">
+                <span class="font-semibold text-text-dark dark:text-text-light">{nome}</span>
+                <span class="text-text-muted"> · {ruolo}</span>
+              </span>
+            </div>
+          ))}
+        </div>
+        <p class={`${mono} mt-3`}>
+          La raccolta dei segnali è già configurata: un collector solo, unico punto di uscita per trace, log e metriche
+        </p>
+      </div>
+
+      <p class={`${prose} mt-8`}>
         Nella stessa sessione si vedono due strumentazioni diverse: il servizio si strumenta nel codice, la
         persistenza si configura da fuori, e sono mestieri distinti che spesso in azienda ricadono su persone
         distinte.
       </p>
-      <p class={p}>
+      <p class={prose}>
         Questa architettura copre buona parte dei casi che si incontrano e resta personalizzabile: i componenti si
         sostituiscono con i vostri, i servizi da strumentare si scrivono nel linguaggio che usate, e i punti su cui
         si interviene si scelgono in fase di scoping.
       </p>
 
-      <h3 class={`${h3} mt-8`}>Cosa si dà per acquisito</h3>
-      <dl class="space-y-3">
-        <div class="border-l-2 border-border dark:border-border-dark pl-5">
-          <dt class="font-semibold text-text-dark dark:text-text-light">Si presume</dt>
-          <dd class="text-text-muted leading-relaxed mt-1">Che sappiate a cosa servono metriche, log e trace.</dd>
-        </div>
-        <div class="border-l-2 border-border dark:border-border-dark pl-5">
-          <dt class="font-semibold text-text-dark dark:text-text-light">Non si presume</dt>
-          <dd class="text-text-muted leading-relaxed mt-1">
-            Che qualcuno abbia mai strumentato un servizio a mano, né che sappiate cosa fa un collector quando gli
-            si cambia la configurazione sotto.
-          </dd>
-        </div>
-        <div class="border-l-2 border-border dark:border-border-dark pl-5">
-          <dt class="font-semibold text-text-dark dark:text-text-light">Si parte da</dt>
-          <dd class="text-text-muted leading-relaxed mt-1">
-            Lo stack già in esecuzione sulle vostre macchine, verificato prima del corso.
-          </dd>
-        </div>
+      <div class={`mt-10 max-w-[54rem] ${gutter} pb-4 border-b-2 ${strong}`}>
+        <span aria-hidden="true" />
+        <h3 class={h3}>Cosa si dà per acquisito</h3>
+      </div>
+      <dl class={`max-w-[54rem] ${gutter}`}>
+        {acquisito.map(([k, v]) => (
+          <>
+            <dt class={`${mono} pt-3 pb-1 sm:pb-3 sm:border-b ${hair}`}>{k}</dt>
+            <dd class={`text-sm text-text-muted pb-3 border-b ${hair}`}>{v}</dd>
+          </>
+        ))}
       </dl>
     </section>
 
-    <section class="mb-14">
-      <h2 class={h2}>Un servizio che risponde e non esiste</h2>
-      <p class={p}>
-        Allo stack in esecuzione si aggiunge un quarto servizio, <code class="text-sm">quality-gate</code>. Risponde
-        alle richieste, chiama il gateway a valle e non emette telemetria. Chi guarda i cruscotti non ha modo di
-        sapere che è lì.
-      </p>
-      <pre class="rounded-xl bg-code-bg text-text-light text-xs md:text-sm p-4 md:p-5 overflow-x-auto mb-4"><code>{terminale}</code></pre>
-      <p class={p}>
+    <!-- ══ 02 ══ -->
+    <section id="c02" class={`mt-20 pt-5 border-t-[3px] ${strong} scroll-mt-6`}>
+      <div class={gutter}>
+        <div>
+          <span class="block font-mono text-4xl font-medium leading-none tracking-tight text-accent">02</span>
+          <span class={`block ${mono} mt-2`}>Il punto di partenza</span>
+        </div>
+        <div>
+          <h2 class={h2}>Un servizio che risponde e non esiste</h2>
+          <p class="mt-3 text-text-muted leading-relaxed max-w-[42rem]">
+            Allo stack in esecuzione si aggiunge un quarto servizio, <code class="text-sm">quality-gate</code>.
+            Risponde alle richieste, chiama il gateway a valle e non emette telemetria. Chi guarda i cruscotti non
+            ha modo di sapere che è lì.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-8 max-w-[54rem]">
+        <p class={`${mono} mb-3`}>Terminale · le due righe che aprono il percorso</p>
+        <pre class="rounded-sm bg-code-bg text-text-light text-xs md:text-sm p-5 overflow-x-auto"><code>{terminale}</code></pre>
+      </div>
+
+      <p class={`${prose} mt-8`}>
         Il servizio risponde 200 e il gateway a valle accetta i dati. Nessuno dei due segnali arriva dove qualcuno
         lo guarderebbe.
       </p>
-      <p class={p}>
+      <p class={prose}>
         Poi lo si rende osservabile in quattro checkpoint, e ognuno si chiude con una verifica in Tempo, Loki e
         Grafana. Il confronto finale è con la soluzione di riferimento, che resta chiusa fino alla fine.
       </p>
-      <p class={p}>
+      <p class={prose}>
         Il collector applica un campionamento che tiene il 20% delle trace sane, quindi una singola richiesta può
         non comparire. Le verifiche si fanno su volume, con un ciclo di dieci chiamate, ed è la prima cosa che il
         team impara sul funzionamento reale di uno stack di telemetria.
       </p>
     </section>
 
-    <section class="mb-14">
-      <h2 class={h2}>La versione compatta: due ore, sei blocchi</h2>
-      <p class={p}>
-        Centodieci minuti di programma su due ore di aula. Il margine che resta è per le domande e per la demo che
-        sfora.
-      </p>
-      <table class="w-full text-sm mb-8">
-        <tbody>
-          {compatta.map(([min, titolo, desc]) => (
-            <tr>
-              <td class={`${td} font-mono text-xs text-accent whitespace-nowrap`}>{min}</td>
-              <td class={td}>
-                <span class="block font-semibold text-text-dark dark:text-text-light">{titolo}</span>
-                <span class="block text-text-muted leading-relaxed mt-1">{desc}</span>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <!-- ══ 03 ══ -->
+    <section id="c03" class={`mt-20 pt-5 border-t-[3px] ${strong} scroll-mt-6`}>
+      <div class={gutter}>
+        <div>
+          <span class="block font-mono text-4xl font-medium leading-none tracking-tight text-accent">03</span>
+          <span class={`block ${mono} mt-2`}>La versione compatta</span>
+        </div>
+        <div>
+          <h2 class={h2}>Due ore, sei blocchi</h2>
+          <p class="mt-3 text-text-muted leading-relaxed max-w-[42rem]">
+            Centodieci minuti di programma su due ore di aula. Il margine che resta è per le domande e per la demo
+            che sfora.
+          </p>
+        </div>
+      </div>
 
-      <h3 class={h3}>Cosa serve dalla vostra parte</h3>
-      <dl class="space-y-3">
-        <div class="border-l-2 border-border dark:border-border-dark pl-5">
-          <dt class="font-semibold text-text-dark dark:text-text-light">Macchine</dt>
-          <dd class="text-text-muted leading-relaxed mt-1">
-            Docker funzionante e circa 4 GB di RAM libera per macchina. Lo stack a regime ne occupa poco meno di 4.
-          </dd>
-        </div>
-        <div class="border-l-2 border-border dark:border-border-dark pl-5">
-          <dt class="font-semibold text-text-dark dark:text-text-light">Rete</dt>
-          <dd class="text-text-muted leading-relaxed mt-1">
-            Accesso al registry delle immagini. Il pacchetto di preparazione le scarica prima del corso.
-          </dd>
-        </div>
-        <div class="border-l-2 border-border dark:border-border-dark pl-5">
-          <dt class="font-semibold text-text-dark dark:text-text-light">Verifica</dt>
-          <dd class="text-text-muted leading-relaxed mt-1">Un avvio di prova dello stack, da fare prima e non in aula.</dd>
-        </div>
+      <div class={`mt-8 max-w-[54rem] ${gutter} border-t ${hair}`}>
+        {compatta.map(([min, titolo, desc]) => (
+          <>
+            <span class={`font-mono text-[11px] uppercase tracking-[0.12em] text-accent pt-3 pb-1 sm:pb-3 sm:border-b ${hair}`}>{min}</span>
+            <span class={`pb-3 border-b ${hair}`}>
+              <span class="block text-sm font-semibold text-text-dark dark:text-text-light sm:pt-3">{titolo}</span>
+              <span class="block text-sm text-text-muted mt-1">{desc}</span>
+            </span>
+          </>
+        ))}
+      </div>
+
+      <div class={`mt-10 max-w-[54rem] ${gutter} pb-4 border-b-2 ${strong}`}>
+        <span aria-hidden="true" />
+        <h3 class={h3}>Cosa serve dalla vostra parte</h3>
+      </div>
+      <dl class={`max-w-[54rem] ${gutter}`}>
+        {serve.map(([k, v]) => (
+          <>
+            <dt class={`${mono} pt-3 pb-1 sm:pb-3 sm:border-b ${hair}`}>{k}</dt>
+            <dd class={`text-sm text-text-muted pb-3 border-b ${hair}`}>{v}</dd>
+          </>
+        ))}
       </dl>
     </section>
 
-    <section class="mb-14">
-      <h2 class={h2}>La versione aziendale: stessa base, altra profondità</h2>
-      <p class={p}>
-        Lo stack è lo stesso e il servizio da strumentare è lo stesso. Cambia quanto tempo ha ogni passaggio e
-        quanto lontano si arriva.
-      </p>
-      <div class="overflow-x-auto mb-8">
+    <!-- ══ 04 ══ -->
+    <section id="c04" class={`mt-20 pt-5 border-t-[3px] ${strong} scroll-mt-6`}>
+      <div class={gutter}>
+        <div>
+          <span class="block font-mono text-4xl font-medium leading-none tracking-tight text-accent">04</span>
+          <span class={`block ${mono} mt-2`}>La versione aziendale</span>
+        </div>
+        <div>
+          <h2 class={h2}>Stessa base, altra profondità</h2>
+          <p class="mt-3 text-text-muted leading-relaxed max-w-[42rem]">
+            Lo stack è lo stesso e il servizio da strumentare è lo stesso. Cambia quanto tempo ha ogni passaggio e
+            quanto lontano si arriva.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-8 max-w-[54rem] overflow-x-auto">
         <table class="w-full text-sm min-w-[36rem]">
           <thead>
             <tr>
-              <th class={th}>aspetto</th>
-              <th class={th}>due ore</th>
-              <th class={th}>tre giorni</th>
+              <th class={`text-left ${mono} font-normal pb-3 pr-6 border-b-2 ${strong}`}>aspetto</th>
+              <th class={`text-left ${mono} font-normal pb-3 pr-6 border-b-2 ${strong}`}>due ore</th>
+              <th class={`text-left ${mono} font-normal pb-3 border-b-2 ${strong}`}>tre giorni</th>
             </tr>
           </thead>
           <tbody>
-            {aziendale.map(([aspetto, due, tre]) => (
+            {aziendale.map(([a, due, tre]) => (
               <tr>
-                <td class={`${td} font-semibold text-text-dark dark:text-text-light`}>{aspetto}</td>
-                <td class={`${td} text-text-muted`}>{due}</td>
-                <td class={`${td} text-text-muted`}>{tre}</td>
+                <td class={`align-top py-3 pr-6 border-b ${hair} font-semibold text-text-dark dark:text-text-light`}>{a}</td>
+                <td class={`align-top py-3 pr-6 border-b ${hair} text-text-muted`}>{due}</td>
+                <td class={`align-top py-3 border-b ${hair} text-text-muted`}>{tre}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      <h3 class={h3}>Come sono divisi i tre giorni</h3>
-      <dl class="space-y-3">
+      <div class={`mt-10 max-w-[54rem] ${gutter} pb-4 border-b-2 ${strong}`}>
+        <span aria-hidden="true" />
+        <h3 class={h3}>Come sono divisi i tre giorni</h3>
+      </div>
+      <dl class={`max-w-[54rem] ${gutter}`}>
         {giorni.map(([g, desc]) => (
-          <div class="border-l-2 border-border dark:border-border-dark pl-5">
-            <dt class="font-semibold text-text-dark dark:text-text-light">{g}</dt>
-            <dd class="text-text-muted leading-relaxed mt-1">{desc}</dd>
-          </div>
+          <>
+            <dt class={`${mono} pt-3 pb-1 sm:pb-3 sm:border-b ${hair}`}>{g}</dt>
+            <dd class={`text-sm text-text-muted pb-3 border-b ${hair}`}>{desc}</dd>
+          </>
         ))}
       </dl>
     </section>
 
-    <section class="mb-14">
-      <h2 class={h2}>Da cosa è composto il percorso</h2>
-      <p class={p}>
-        Il percorso si compone a moduli. Lo stack di lavoro è comune a tutti e resta a disposizione del team, e i
-        componenti possono essere sostituiti con quelli in uso presso di voi.
-      </p>
-
-      <div class="rounded-xl border-2 border-accent bg-accent-subtle/30 p-6 mb-6">
-        <div class="flex flex-wrap items-baseline justify-between gap-2 mb-2">
-          <span class="text-[11px] font-mono uppercase tracking-[0.15em] text-accent font-semibold">
-            Sempre incluso · base
-          </span>
-          <span class="text-xs font-mono text-text-muted">2 h</span>
+    <!-- ══ 05 ══ -->
+    <section id="c05" class={`mt-20 pt-5 border-t-[3px] ${strong} scroll-mt-6`}>
+      <div class={gutter}>
+        <div>
+          <span class="block font-mono text-4xl font-medium leading-none tracking-tight text-accent">05</span>
+          <span class={`block ${mono} mt-2`}>I moduli</span>
         </div>
-        <h3 class="text-lg font-semibold text-text-dark dark:text-text-light mb-2">{base.nome}</h3>
-        <p class="text-text-muted leading-relaxed mb-3">{base.desc}</p>
-        <p class="text-sm text-text-muted italic">{base.nota}</p>
+        <div>
+          <h2 class={h2}>Da cosa è composto il percorso</h2>
+          <p class="mt-3 text-text-muted leading-relaxed max-w-[42rem]">
+            Il percorso si compone a moduli. Lo stack di lavoro è comune a tutti e resta a disposizione del team, e
+            i componenti possono essere sostituiti con quelli in uso presso di voi. Gli importi non sono riportati:
+            sono oggetto della proposta economica.
+          </p>
+        </div>
       </div>
 
-      <p class="text-[11px] font-mono uppercase tracking-[0.15em] text-text-muted mb-4">
-        A scelta, ognuno da due ore, nell'ordine delle dipendenze
-      </p>
-      <div class="grid sm:grid-cols-2 gap-4 mb-10">
-        {moduli.map(([nome, dip, desc]) => (
-          <div class="rounded-xl border border-border dark:border-border-dark bg-surface dark:bg-surface-dark p-5">
-            <div class="flex flex-wrap items-baseline justify-between gap-2 mb-2">
-              <span class="text-[11px] font-mono uppercase tracking-[0.15em] text-text-muted">{dip}</span>
-              <span class="text-xs font-mono text-text-muted">2 h</span>
+      <div class={`mt-8 max-w-[54rem] border ${strong} rounded-sm overflow-hidden`}>
+        <div class={`grid grid-cols-[6rem_1fr_auto] items-center bg-text-muted/5 border-b ${strong}`}>
+          <span class={`font-mono text-sm tracking-[0.06em] text-accent px-4 py-3 border-r ${strong}`}>BASE</span>
+          <h3 class="px-4 py-3 text-base md:text-lg font-bold tracking-tight text-text-dark dark:text-text-light">
+            {base.nome}
+          </h3>
+          <span class="mr-4 px-3 py-0.5 rounded-sm bg-text-dark dark:bg-text-light text-white dark:text-text-dark font-mono text-xs whitespace-nowrap">
+            2 h
+          </span>
+        </div>
+        <div class={`grid grid-cols-1 sm:grid-cols-[6rem_1fr] border-b ${hair}`}>
+          <span class={`${mono} px-4 pt-3 sm:py-3 sm:border-r ${hair}`}>Sempre incluso</span>
+          <span class="px-4 py-3 text-sm text-text-muted leading-relaxed">{base.desc}</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-[6rem_1fr]">
+          <span class={`${mono} px-4 pt-3 sm:py-3 sm:border-r ${hair}`}>Dipendenze</span>
+          <span class="px-4 py-3 text-sm text-text-muted">{base.nota}</span>
+        </div>
+      </div>
+
+      <p class={`${mono} mt-8 mb-3`}>A scelta, ognuno da due ore, nell'ordine delle dipendenze</p>
+      <div class={`max-w-[54rem] border ${hair} rounded-sm divide-y ${hair}`}>
+        {moduli.map(([id, nome, dip, desc]) => (
+          <div class="grid grid-cols-1 sm:grid-cols-[6rem_1fr]">
+            <span class={`font-mono text-[11px] uppercase tracking-[0.12em] text-accent px-4 pt-3 sm:py-3 sm:border-r ${hair}`}>
+              {id}
+            </span>
+            <div class="px-4 py-3">
+              <div class="flex flex-wrap items-baseline justify-between gap-2">
+                <span class="text-sm font-semibold text-text-dark dark:text-text-light">{nome}</span>
+                <span class={mono}>{dip} · 2 h</span>
+              </div>
+              <p class="text-sm text-text-muted leading-relaxed mt-1">{desc}</p>
             </div>
-            <h3 class="text-base font-semibold text-text-dark dark:text-text-light mb-1.5">{nome}</h3>
-            <p class="text-sm text-text-muted leading-relaxed">{desc}</p>
           </div>
         ))}
       </div>
 
-      <h3 class={h3}>Come si compone</h3>
-      <ol class="space-y-3 mb-4">
+      <div class={`mt-10 max-w-[54rem] ${gutter} pb-4 border-b-2 ${strong}`}>
+        <span aria-hidden="true" />
+        <h3 class={h3}>Come si compone</h3>
+      </div>
+      <dl class={`max-w-[54rem] ${gutter}`}>
         {composizione.map(([n, titolo, desc]) => (
-          <li class="flex items-start gap-4">
-            <span class="flex-shrink-0 w-9 h-9 rounded-lg bg-accent text-white flex items-center justify-center text-sm font-bold">
-              {n}
-            </span>
-            <span class="text-text-muted leading-relaxed pt-1.5">
-              <span class="font-semibold text-text-dark dark:text-text-light">{titolo}.</span> {desc}
-            </span>
-          </li>
+          <>
+            <dt class={`font-mono text-[11px] uppercase tracking-[0.12em] text-accent pt-3 pb-1 sm:pb-3 sm:border-b ${hair}`}>
+              {n} · {titolo}
+            </dt>
+            <dd class={`text-sm text-text-muted pb-3 border-b ${hair} sm:pt-3`}>{desc}</dd>
+          </>
         ))}
-      </ol>
-      <p class="text-sm text-text-muted">
-        La disponibilità dei singoli moduli viene definita in fase di discovery call.
-      </p>
+      </dl>
+      <p class={`${mono} mt-4`}>La disponibilità dei singoli moduli viene definita in fase di discovery call</p>
     </section>
 
-    <section class="mb-14">
-      <h2 class={h2}>Quanto costa tenere acceso lo stack</h2>
-      <p class={p}>
-        L'ultimo blocco del percorso è quello che di solito si salta. I numeri che seguono sono misurati sullo
-        stack del workshop, e quelli stimati sono dichiarati come tali.
-      </p>
+    <!-- ══ 06 ══ -->
+    <section id="c06" class={`mt-20 pt-5 border-t-[3px] ${strong} scroll-mt-6`}>
+      <div class={gutter}>
+        <div>
+          <span class="block font-mono text-4xl font-medium leading-none tracking-tight text-accent">06</span>
+          <span class={`block ${mono} mt-2`}>I costi</span>
+        </div>
+        <div>
+          <h2 class={h2}>Quanto costa tenere acceso lo stack</h2>
+          <p class="mt-3 text-text-muted leading-relaxed max-w-[42rem]">
+            L'ultimo blocco del percorso è quello che di solito si salta. I numeri che seguono sono misurati sullo
+            stack del workshop, e quelli stimati sono dichiarati come tali.
+          </p>
+        </div>
+      </div>
 
-      <h3 class={h3}>Misurato · RAM a freddo</h3>
-      <table class="w-full text-sm mb-4">
-        <tbody>
-          {ram.map(([voce, val]) => (
-            <tr>
-              <td class={`${td} text-text-muted`}>{voce}</td>
-              <td class={`${td} font-mono text-text-dark dark:text-text-light text-right`}>{val}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <p class={p}>
-        A regime, dopo ore di esecuzione, il totale sale a circa 3,65 GiB. Il costo cresce con la scala e con la
-        conservazione dei dati, non con l'avvio.
-      </p>
+      <div class="mt-8 grid md:grid-cols-2 gap-8 max-w-[54rem]">
+        <div>
+          <p class={`${mono} mb-3`}>Misurato · RAM a freddo</p>
+          <dl class={`border-t ${hair}`}>
+            {ram.map(([voce, val]) => (
+              <div class={`flex items-baseline justify-between gap-4 py-2.5 border-b ${hair}`}>
+                <dt class="text-sm text-text-muted">{voce}</dt>
+                <dd class="font-mono text-sm text-text-dark dark:text-text-light tabular-nums">{val}</dd>
+              </div>
+            ))}
+          </dl>
+          <p class="text-sm text-text-muted leading-relaxed mt-3">
+            A regime, dopo ore di esecuzione, il totale sale a circa 3,65 GiB. Il costo cresce con la scala e con
+            la conservazione dei dati, non con l'avvio.
+          </p>
+        </div>
+        <div>
+          <p class={`${mono} mb-3`}>Stimato · disco per conservazione</p>
+          <dl class={`border-t ${hair}`}>
+            {disco.map(([finestra, val]) => (
+              <div class={`flex items-baseline justify-between gap-4 py-2.5 border-b ${hair}`}>
+                <dt class="text-sm text-text-muted">{finestra}</dt>
+                <dd class="font-mono text-sm text-text-dark dark:text-text-light tabular-nums">{val}</dd>
+              </div>
+            ))}
+          </dl>
+          <p class="text-sm text-text-muted leading-relaxed mt-3">
+            Stima su un traffico contenuto, con le assunzioni scritte accanto a ogni segnale. Serve per l'ordine di
+            grandezza, e i numeri veri dipendono dal traffico e dalla cardinalità.
+          </p>
+        </div>
+      </div>
 
-      <h3 class={`${h3} mt-8`}>Stimato · disco per conservazione</h3>
-      <table class="w-full text-sm mb-4">
-        <tbody>
-          {disco.map(([finestra, val]) => (
-            <tr>
-              <td class={`${td} text-text-muted`}>{finestra}</td>
-              <td class={`${td} font-mono text-text-dark dark:text-text-light text-right`}>{val}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      <p class={p}>
-        Stima su un traffico contenuto, con le assunzioni scritte accanto a ogni segnale. Serve per l'ordine di
-        grandezza, e i numeri veri dipendono dal traffico e dalla cardinalità.
-      </p>
-
-      <h3 class={`${h3} mt-8`}>Le leve per farlo scendere</h3>
-      <dl class="space-y-4">
+      <div class={`mt-10 max-w-[54rem] ${gutter} pb-4 border-b-2 ${strong}`}>
+        <span aria-hidden="true" />
+        <h3 class={h3}>Le leve per farlo scendere</h3>
+      </div>
+      <dl class={`max-w-[54rem] ${gutter}`}>
         {leve.map(([nome, effetto, nota]) => (
-          <div class="border-l-2 border-border dark:border-border-dark pl-5">
-            <dt class="font-semibold text-text-dark dark:text-text-light">{nome}</dt>
-            <dd class="text-sm text-accent mt-0.5">{effetto}</dd>
-            <dd class="text-text-muted leading-relaxed mt-1">{nota}</dd>
-          </div>
+          <>
+            <dt class={`${mono} pt-3 pb-1 sm:pb-3 sm:border-b ${hair}`}>{nome}</dt>
+            <dd class={`pb-3 border-b ${hair} sm:pt-3`}>
+              <span class="block text-sm font-semibold text-text-dark dark:text-text-light">{effetto}</span>
+              <span class="block text-sm text-text-muted mt-1">{nota}</span>
+            </dd>
+          </>
         ))}
       </dl>
     </section>
 
-    <section class="mb-14">
-      <h2 class={h2}>Quando basta molto meno</h2>
-      <p class={p}>
-        La tabella con cui si chiude il percorso serve a decidere di non installare niente, se è il caso. Sta nei
-        materiali che il team si porta via.
-      </p>
-      <div class="overflow-x-auto mb-8">
+    <!-- ══ 07 ══ -->
+    <section id="c07" class={`mt-20 pt-5 border-t-[3px] ${strong} scroll-mt-6`}>
+      <div class={gutter}>
+        <div>
+          <span class="block font-mono text-4xl font-medium leading-none tracking-tight text-accent">07</span>
+          <span class={`block ${mono} mt-2`}>Il dimensionamento</span>
+        </div>
+        <div>
+          <h2 class={h2}>Quando basta molto meno</h2>
+          <p class="mt-3 text-text-muted leading-relaxed max-w-[42rem]">
+            La tabella con cui si chiude il percorso serve a decidere di non installare niente, se è il caso. Sta
+            nei materiali che il team si porta via.
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-8 max-w-[54rem] overflow-x-auto">
         <table class="w-full text-sm min-w-[36rem]">
           <thead>
             <tr>
-              <th class={th}>situazione</th>
-              <th class={th}>cosa basta</th>
-              <th class={th}>perché</th>
+              <th class={`text-left ${mono} font-normal pb-3 pr-6 border-b-2 ${strong}`}>situazione</th>
+              <th class={`text-left ${mono} font-normal pb-3 pr-6 border-b-2 ${strong}`}>cosa basta</th>
+              <th class={`text-left ${mono} font-normal pb-3 border-b-2 ${strong}`}>perché</th>
             </tr>
           </thead>
           <tbody>
-            {bastaMeno.map(([situazione, cosa, perche]) => (
+            {bastaMeno.map(([s, c, p2]) => (
               <tr>
-                <td class={`${td} font-semibold text-text-dark dark:text-text-light`}>{situazione}</td>
-                <td class={`${td} text-text-muted`}>{cosa}</td>
-                <td class={`${td} text-text-muted`}>{perche}</td>
+                <td class={`align-top py-3 pr-6 border-b ${hair} font-semibold text-text-dark dark:text-text-light`}>{s}</td>
+                <td class={`align-top py-3 pr-6 border-b ${hair} text-text-muted`}>{c}</td>
+                <td class={`align-top py-3 border-b ${hair} text-text-muted`}>{p2}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      <h3 class={h3}>Dove la neutralità del formato si ferma</h3>
-      <p class={p}>
+      <div class={`mt-10 max-w-[54rem] ${gutter} pb-4 border-b-2 ${strong}`}>
+        <span aria-hidden="true" />
+        <h3 class={h3}>Dove la neutralità del formato si ferma</h3>
+      </div>
+      <p class={`${prose} mt-4`}>
         La promessa è: strumenti una volta, esporti dove vuoi. È attraente perché rende la scelta del backend
         reversibile e sposta la decisione a dopo.
       </p>
-      <p class={p}>
+      <p class={prose}>
         In aula il cambio avviene nella configurazione del collector, e le applicazioni non cambiano mai. Si fa dal
         vivo, e si guarda anche il conto: dopo lo scambio i backend da installare, mantenere e pagare sono due.
         Metriche e log restano dove stavano, quindi la portabilità vale per un segnale alla volta. Il punto dove si
@@ -459,40 +594,44 @@ const td = 'align-top py-3 pr-6 border-t border-border/50 dark:border-border-dar
       </p>
     </section>
 
-    <section class="mb-16">
-      <h2 class={h2}>Il repository resta, e continua a girare</h2>
-      <dl class="space-y-4">
-        <div class="border-l-2 border-border dark:border-border-dark pl-5">
-          <dt class="font-semibold text-text-dark dark:text-text-light">Lo stack</dt>
-          <dd class="text-text-muted leading-relaxed mt-1">
-            Quattro servizi, la coda, il servizio di identità, il generatore di carico e la raccolta dei segnali,
-            con due comandi per avviarlo.
-          </dd>
+    <!-- ══ 08 ══ -->
+    <section id="c08" class={`mt-20 pt-5 border-t-[3px] ${strong} scroll-mt-6`}>
+      <div class={gutter}>
+        <div>
+          <span class="block font-mono text-4xl font-medium leading-none tracking-tight text-accent">08</span>
+          <span class={`block ${mono} mt-2`}>Cosa resta</span>
         </div>
-        <div class="border-l-2 border-border dark:border-border-dark pl-5">
-          <dt class="font-semibold text-text-dark dark:text-text-light">Gli esercizi</dt>
-          <dd class="text-text-muted leading-relaxed mt-1">
-            I quattro checkpoint scritti passo per passo, e la soluzione di riferimento completa da confrontare.
-          </dd>
+        <div>
+          <h2 class={h2}>Il repository resta, e continua a girare</h2>
         </div>
-        <div class="border-l-2 border-border dark:border-border-dark pl-5">
-          <dt class="font-semibold text-text-dark dark:text-text-light">La parte onesta</dt>
-          <dd class="text-text-muted leading-relaxed mt-1">
-            I costi misurati, la proiezione sulla conservazione dei dati e la tabella per decidere quando basta
-            meno.
-          </dd>
-        </div>
+      </div>
+
+      <dl class={`mt-8 max-w-[54rem] ${gutter} border-t ${hair}`}>
+        {resta.map(([k, v]) => (
+          <>
+            <dt class={`${mono} pt-3 pb-1 sm:pb-3 sm:border-b ${hair}`}>{k}</dt>
+            <dd class={`text-sm text-text-muted pb-3 border-b ${hair}`}>{v}</dd>
+          </>
+        ))}
       </dl>
     </section>
 
-    <FinalCta
-      title="Parliamone"
-      desc="Raccontami che sistema avete in esecuzione e cosa vi costa di più capire quando si rompe. Discovery call di 30 minuti."
-      ctaLabel="Prenota una discovery call"
-      secondaryLabel="oppure scrivimi"
-      secondaryHref="mailto:francesco@montelli.dev"
-      umamiEvent="cta-catalogo-osservabilita"
-    />
+    <div class="mt-20">
+      <FinalCta
+        title="Parliamone"
+        desc="Raccontami che sistema avete in esecuzione e cosa vi costa di più capire quando si rompe. Discovery call di 30 minuti."
+        ctaLabel="Prenota una discovery call"
+        secondaryLabel="oppure scrivimi"
+        secondaryHref="mailto:francesco@montelli.dev"
+        umamiEvent="cta-catalogo-osservabilita"
+      />
+    </div>
+
+    <p class={`${mono} mt-8 pt-4 border-t ${hair} flex justify-between gap-4`}>
+      <span>Francesco Montelli · francesco@montelli.dev · montelli.dev</span>
+      <span><a href="/workshop2/osservabilita/" class="hover:text-accent transition-colors">Torna all'area</a></span>
+    </p>
+
   </main>
 
   <Footer lang="it" />
