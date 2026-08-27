@@ -17,7 +17,7 @@ tags:
 lang: it
 reviewed: machine
 series: saturation-alerting
-seriesOrder: 30
+seriesOrder: 50
 reproducibility: true
 summary:
   - label: "Contesto"
@@ -42,7 +42,7 @@ mode: explanation
 
 ## Fra la regola che scatta e chi deve agire non c'è niente
 
-I due articoli precedenti della serie si sono fermati al momento in cui una regola Prometheus passa in stato `firing`. Il primo ha mostrato come anticipare la saturazione di una risorsa fisica con `predict_linear`, il secondo come alertare sul ritmo di consumo dell'error budget con burn-rate multi-window. In entrambi il traguardo implicito era la stessa riga di alertmanager: l'espressione PromQL che diventa vera. Ma la regola che scatta è solo l'inizio del percorso.
+I quattro articoli precedenti della serie si sono fermati al momento in cui una regola Prometheus passa in stato `firing`: i primi due su come anticipare la saturazione di una risorsa fisica con `predict_linear`, gli altri due su come alertare sul ritmo di consumo dell'error budget con burn-rate multi-window. In entrambi il traguardo implicito era la stessa riga di alertmanager: l'espressione PromQL che diventa vera. Ma la regola che scatta è solo l'inizio del percorso.
 
 L'assunzione nascosta nella maggior parte dei repo di alerting è che il tratto che va dalla regola alla persona che deve agire sia un dettaglio di configurazione, da risolvere con un webhook Slack e poco altro. La conseguenza è osservabile in produzione: alert precisi e ben scritti che finiscono tutti nello stesso canale, senza severity differenziata, senza runbook, con più notifiche per lo stesso incidente.
 

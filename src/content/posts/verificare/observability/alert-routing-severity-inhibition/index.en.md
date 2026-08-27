@@ -17,7 +17,7 @@ tags:
 lang: en
 reviewed: machine
 series: saturation-alerting
-seriesOrder: 30
+seriesOrder: 50
 reproducibility: true
 summary:
   - label: "Context"
@@ -42,7 +42,7 @@ mode: explanation
 
 ## Between the rule that fires and the person who must act there is nothing
 
-The two previous articles in the series stopped at the moment a Prometheus rule goes into the `firing` state. The first showed how to anticipate the saturation of a physical resource with `predict_linear`, the second how to alert on the rate at which the error budget is being consumed with multi-window burn-rate. In both the implicit finish line was the same line of alerting: the PromQL expression that becomes true. But the rule firing is only the start of the path.
+The four previous articles in the series stopped at the moment a Prometheus rule goes into the `firing` state: the first two on anticipating the saturation of a physical resource with `predict_linear`, the other two on alerting on the rate at which the error budget is being consumed with multi-window burn-rate. In both the implicit finish line was the same line of alerting: the PromQL expression that becomes true. But the rule firing is only the start of the path.
 
 The hidden assumption in most alerting repos is that the stretch running from the rule to the person who has to act is a configuration detail, to be settled with a Slack webhook and little else. The consequence is observable in production: precise, well-written alerts that all end up in the same channel, with no differentiated severity, no runbook, and several notifications for the same incident.
 
