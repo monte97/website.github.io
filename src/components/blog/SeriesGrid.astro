@@ -1,0 +1,57 @@
+---
+/**
+ * Griglia delle serie. Le serie con una landing hanno la card "piena": ci si
+ * arriva alla porta della serie. Quelle senza portano al primo articolo e lo
+ * dicono, invece di fingere di essere la stessa cosa.
+ */
+import { pillarStyles } from '@/data/pillar-styles';
+import { getPillarLabel } from '@/data/pillars';
+import type { SeriesEntry } from '@/utils/series';
+
+interface Props {
+  series: SeriesEntry[];
+  /** due o tre colonne */
+  cols?: 2 | 3;
+}
+const { series, cols = 3 } = Astro.props;
+const grid = cols === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-2 lg:grid-cols-3';
+---
+
+<div class={`grid grid-cols-1 ${grid} gap-4`}>
+  {series.map(s => {
+    const st = s.pillar ? pillarStyles[s.pillar] : null;
+    const href = s.landingHref ?? s.firstHref;
+    return (
+      <a
+        href={href}
+        class="group flex flex-col h-full p-5 rounded-xl border border-border dark:border-border-dark bg-surface dark:bg-surface-dark hover:border-accent/40 hover:bg-accent/5 transition-all"
+      >
+        <div class="flex items-center justify-between gap-2 mb-3">
+          {st && (
+            <span class={`text-[10px] font-mono font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full ${st.badge}`}>
+              {getPillarLabel(s.pillar!)}
+            </span>
+          )}
+          <span class="text-xs text-text-muted tabular-nums">
+            {s.count} {s.count === 1 ? 'articolo' : 'articoli'}
+          </span>
+        </div>
+
+        <h3 class="text-base font-bold text-text-dark dark:text-text-light leading-snug mb-1.5 group-hover:text-accent transition-colors">
+          {s.title}
+        </h3>
+
+        {s.subtitle && (
+          <p class="text-sm text-text-muted leading-relaxed line-clamp-2 mb-4">{s.subtitle}</p>
+        )}
+
+        <div class="mt-auto pt-3 border-t border-border/60 dark:border-border-dark/60 flex items-center justify-between text-xs">
+          <span class="text-text-muted">{s.minutes} min in tutto</span>
+          <span class={s.landingHref ? 'font-medium text-accent' : 'text-text-muted'}>
+            {s.landingHref ? 'Apri la serie →' : 'Parti dal primo →'}
+          </span>
+        </div>
+      </a>
+    );
+  })}
+</div>

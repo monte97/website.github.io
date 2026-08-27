@@ -1,0 +1,203 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import FinalCta from '@/components/ui/FinalCta.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import { pillarStyles } from '@/data/pillar-styles';
+import { pillarLabels, type Pillar } from '@/data/pillars';
+import { workshopAreas, pastDeliveries } from '@/data/workshop-areas';
+import { getAreaMaterial } from '@/utils/workshop';
+
+interface Props {
+  lang?: 'it' | 'en';
+}
+
+const { lang = 'it' } = Astro.props;
+const prefix = lang === 'en' ? '/en' : '';
+const mailLink = 'mailto:francesco@montelli.dev';
+
+const t = lang === 'en'
+  ? {
+      pageTitle: 'Training',
+      pageDesc: 'Training paths for engineering teams, built on the problem the team has in front of it. Five areas, the material already published on each, and the sessions already delivered.',
+      eyebrow: 'Training',
+      heroTitle: 'Training for engineering teams',
+      heroSubtitle: 'A path built on the problem the team has, and on the stack it actually works with.',
+      problemTitle: 'The programme comes after the problem',
+      problem: [
+        'A training path is worth the time when it starts from the problem the team has in front of it: a test suite nobody reads any more, an identity provider to adopt without breaking what is already running, a distributed system where nobody can say where an error started.',
+        'The areas below are the themes those paths are built on, grouped by pillar. For each one you will find the problem it addresses, who it is for, and the material already published on it: articles and talks, readable before any conversation.',
+        'Scope, format and depth get defined by talking: where the team is now, which stack it uses, what it has to be able to do at the end.',
+      ],
+      areasTitle: 'What the work is on',
+      audienceLabel: 'Who it is for',
+      materialLabel: 'Published material',
+      formatLabel: 'Format',
+      deliveriesTitle: 'Sessions already delivered',
+      deliveriesIntro: 'Two paths already run for clients, with public materials.',
+      repoLabel: 'Repository',
+      ctaTitle: 'Shall we talk about the path for your team?',
+      ctaDesc: 'Tell me where the team is now and what it has to be able to do at the end. We define scope and format together.',
+      ctaPrimary: 'Book a discovery call',
+      ctaSecondary: 'or write me',
+      article: (n: number) => (n === 1 ? '1 article' : `${n} articles`),
+      talk: (n: number) => (n === 1 ? '1 talk' : `${n} talks`),
+    }
+  : {
+      pageTitle: 'Formazione',
+      pageDesc: 'Percorsi di formazione per team di sviluppo, costruiti sul problema che il team ha davanti. Cinque aree, il materiale già pubblicato su ciascuna, e le sessioni già erogate.',
+      eyebrow: 'Formazione',
+      heroTitle: 'Formazione per team di sviluppo',
+      heroSubtitle: 'Un percorso costruito sul problema del team e sullo stack che usa davvero.',
+      problemTitle: 'Il programma viene dopo il problema',
+      problem: [
+        'Un percorso di formazione vale il tempo che costa quando parte dal problema che il team ha davanti: una suite di test che nessuno guarda più, un identity provider da adottare senza rompere quello che già gira, un sistema distribuito in cui nessuno sa dire dove sia nato un errore.',
+        'Le aree qui sotto sono i temi su cui questi percorsi vengono costruiti, raggruppate per pilastro. Per ognuna trovi il problema che affronta, a chi si rivolge, e il materiale già pubblicato su quel tema: articoli e talk, leggibili prima di qualsiasi conversazione.',
+        'Scope, formato e profondità si definiscono parlando: il livello del team, lo stack in uso, cosa deve saper fare alla fine.',
+      ],
+      areasTitle: 'Su cosa si lavora',
+      audienceLabel: 'A chi è rivolta',
+      materialLabel: 'Materiale pubblicato',
+      formatLabel: 'Formato',
+      deliveriesTitle: 'Sessioni già erogate',
+      deliveriesIntro: 'Due percorsi già fatti per clienti, con i materiali pubblici.',
+      repoLabel: 'Repository',
+      ctaTitle: 'Parliamo del percorso per il tuo team?',
+      ctaDesc: 'Raccontami dove sta il team ora e cosa deve saper fare alla fine. Definiamo insieme scope e formato.',
+      ctaPrimary: 'Prenota una discovery call',
+      ctaSecondary: 'oppure scrivimi',
+      article: (n: number) => (n === 1 ? '1 articolo' : `${n} articoli`),
+      talk: (n: number) => (n === 1 ? '1 talk' : `${n} talk`),
+    };
+
+// Materiale risolto a build time: le aree non dichiarano quanti articoli hanno.
+const areas = await Promise.all(
+  workshopAreas.map(async (area) => ({ area, material: await getAreaMaterial(area, lang) }))
+);
+
+const pillarOrder: Pillar[] = ['progettare', 'verificare', 'automatizzare'];
+const groups = pillarOrder
+  .map((pillar) => ({ pillar, items: areas.filter((a) => a.area.pillar === pillar) }))
+  .filter((g) => g.items.length > 0);
+---
+
+<BaseLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/workshop.png" lang={lang}>
+  <Header lang={lang} />
+  <main>
+
+    <PageHero title={t.heroTitle} subtitle={t.heroSubtitle} eyebrow={t.eyebrow} align="center" />
+
+    {/* IL PROBLEMA */}
+    <section class="max-w-3xl mx-auto px-5 pt-12 md:pt-16">
+      <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light mb-5">
+        {t.problemTitle}
+      </h2>
+      {t.problem.map((p) => (
+        <p class="text-text-muted leading-relaxed mb-4">{p}</p>
+      ))}
+    </section>
+
+    {/* LE AREE, PER PILASTRO */}
+    <section class="max-w-3xl mx-auto px-5 pt-14 md:pt-20">
+      <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light mb-10">
+        {t.areasTitle}
+      </h2>
+
+      {groups.map((group) => (
+        <div class="mb-14 last:mb-0">
+          <p class="flex items-baseline gap-3 text-xs font-mono uppercase tracking-[0.2em] text-text-muted mb-6 pb-3 border-b border-border/60 dark:border-border-dark/60">
+            <span class="text-accent font-semibold">{pillarStyles[group.pillar].num}</span>
+            <span>{pillarLabels[group.pillar][lang]}</span>
+          </p>
+
+          <div class="space-y-10">
+            {group.items.map(({ area, material }) => (
+              <article>
+                <h3 class="text-xl font-bold mb-3">
+                  <a
+                    href={`${prefix}/workshop2/${area.slug}/`}
+                    class="text-text-dark dark:text-text-light hover:text-accent transition-colors"
+                  >
+                    {area.title[lang]}
+                  </a>
+                </h3>
+                <p class="text-text-muted leading-relaxed mb-3">{area.problem[lang]}</p>
+                <p class="text-sm text-text-muted mb-3">
+                  <span class="font-semibold text-text-dark dark:text-text-light">{t.audienceLabel}:</span>{' '}
+                  {area.audience[lang]}
+                </p>
+                {area.detail?.format && (
+                  <p class="text-sm text-text-muted mb-3">
+                    <span class="font-semibold text-text-dark dark:text-text-light">{t.formatLabel}:</span>{' '}
+                    {area.detail.format[lang]}
+                  </p>
+                )}
+                <p class="text-sm text-text-muted">
+                  <span class="font-semibold text-text-dark dark:text-text-light">{t.materialLabel}:</span>{' '}
+                  {[
+                    ...material.material
+                      .filter((g) => g.posts.length > 0)
+                      .map((g) => `${g.group.title[lang]} (${t.article(g.posts.length)})`),
+                    ...(material.talks.length > 0 ? [t.talk(material.talks.length)] : []),
+                  ].join(' · ')}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
+
+    {/* EROGAZIONI PASSATE */}
+    <section class="max-w-3xl mx-auto px-5 pt-16 md:pt-20 pb-16 md:pb-20">
+      <div class="pt-10 border-t border-border/60 dark:border-border-dark/60">
+        <h2 class="text-lg font-bold text-text-dark dark:text-text-light mb-2">{t.deliveriesTitle}</h2>
+        <p class="text-sm text-text-muted mb-8">{t.deliveriesIntro}</p>
+
+        <div class="space-y-8">
+          {pastDeliveries.map((d) => (
+            <div class="border-l-2 border-border dark:border-border-dark pl-5">
+              <p class="text-[11px] font-mono uppercase tracking-[0.15em] text-text-muted mb-1">
+                {pillarLabels[d.pillar][lang]}
+              </p>
+              <h3 class="text-base font-semibold text-text-dark dark:text-text-light mb-2">{d.title[lang]}</h3>
+              <ul class="space-y-1 mb-3">
+                {d.facts[lang].map((f) => (
+                  <li class="text-sm text-text-muted leading-relaxed">{f}</li>
+                ))}
+              </ul>
+              <div class="flex flex-wrap items-center gap-1.5">
+                {d.tags.map((tag) => (
+                  <span class="text-[11px] text-text-muted/80 bg-text-muted/8 px-1.5 py-0.5 rounded">{tag}</span>
+                ))}
+                {d.repo && (
+                  <a
+                    href={d.repo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-[11px] font-semibold text-accent hover:underline underline-offset-4 ml-1"
+                  >
+                    {t.repoLabel} &rarr;
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <FinalCta
+      title={t.ctaTitle}
+      desc={t.ctaDesc}
+      ctaLabel={t.ctaPrimary}
+      secondaryLabel={t.ctaSecondary}
+      secondaryHref={mailLink}
+      umamiEvent="cta-workshop2-final"
+      fullBleed
+    />
+
+  </main>
+  <Footer lang={lang} />
+</BaseLayout>

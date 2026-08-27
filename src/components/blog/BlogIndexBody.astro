@@ -1,0 +1,77 @@
+---
+/**
+ * Corpo dell'indice del blog (prova D): tre settori per pillar, dentro ciascuno
+ * le sue serie e i suoi pezzi singoli.
+ *
+ * Sta in un componente perche' le prove sull'hero condividano lo stesso corpo:
+ * cosi' quello che si confronta e' solo la testa della pagina.
+ */
+import SeriesGrid from '@/components/blog/SeriesGrid.astro';
+import { postHref, estimateReadingTime } from '@/utils/blog';
+import { pillarStyles } from '@/data/pillar-styles';
+import { getPillarLabel } from '@/data/pillars';
+import type { SeriesEntry } from '@/utils/series';
+
+interface Props {
+  series: SeriesEntry[];
+  singoli: any[];
+}
+const { series, singoli } = Astro.props;
+
+export const PILLARS = ['progettare', 'verificare', 'automatizzare'] as const;
+export const introPillar: Record<string, string> = {
+  progettare: 'Decidere cosa costruire e come: architettura, eventi, identità, autorizzazione.',
+  verificare: 'Assicurarsi che funzioni e che si sappia quando smette: test, observability, alerting.',
+  automatizzare: 'Far girare tutto senza intervento manuale: cluster, pipeline, container, homelab.',
+};
+---
+
+<div class="space-y-16">
+  {PILLARS.map(pil => {
+    const st = pillarStyles[pil];
+    const mieSerie = series.filter(s => s.pillar === pil);
+    const mieiSingoli = singoli.filter(p => p.data.pillar === pil);
+    const tot = mieSerie.reduce((a, s) => a + s.count, 0) + mieiSingoli.length;
+
+    return (
+      <section id={pil} class="scroll-mt-24">
+        <div class="mb-6">
+          <div class="flex items-baseline gap-3 mb-2">
+            <span class={`text-2xl font-mono font-bold ${st.text}`}>{st.num}</span>
+            <h2 class="text-2xl font-bold text-text-dark dark:text-text-light">{getPillarLabel(pil)}</h2>
+            <span class="text-sm text-text-muted ml-auto tabular-nums">
+              {tot} articoli{mieSerie.length > 0 && ` · ${mieSerie.length} serie`}
+            </span>
+          </div>
+          <div class={`h-0.5 w-full ${st.bg} opacity-40 mb-3`} />
+          <p class="text-text-muted max-w-2xl">{introPillar[pil]}</p>
+        </div>
+
+        {mieSerie.length > 0 && <SeriesGrid series={mieSerie} cols={2} />}
+
+        {mieiSingoli.length > 0 && (
+          <div class={mieSerie.length > 0 ? 'mt-6' : ''}>
+            <div class="flex items-center gap-3 mb-3">
+              <span class="text-[10px] font-mono font-semibold uppercase tracking-widest text-text-muted whitespace-nowrap">
+                Pezzi singoli
+              </span>
+              <span class="h-px flex-1 bg-border dark:bg-border-dark" />
+            </div>
+            <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-6">
+              {mieiSingoli.map(p => (
+                <li>
+                  <a href={postHref(p.id)} class="group flex items-baseline gap-3 py-2 border-b border-border/50 dark:border-border-dark/50">
+                    <span class="flex-1 text-sm text-text-dark dark:text-text-light group-hover:text-accent transition-colors leading-snug">
+                      {p.data.title}
+                    </span>
+                    <span class="shrink-0 text-xs text-text-muted tabular-nums">{estimateReadingTime(p.body)} min</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </section>
+    );
+  })}
+</div>

@@ -1,0 +1,227 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import FinalCta from '@/components/ui/FinalCta.astro';
+import { pillarLabels } from '@/data/pillars';
+import type { WorkshopArea } from '@/data/workshop-areas';
+import { getAreaMaterial } from '@/utils/workshop';
+
+interface Props {
+  area: WorkshopArea;
+  lang?: 'it' | 'en';
+}
+
+const { area, lang = 'it' } = Astro.props;
+const prefix = lang === 'en' ? '/en' : '';
+const mailLink = 'mailto:francesco@montelli.dev';
+
+const t = lang === 'en'
+  ? {
+      home: 'Home',
+      section: 'Training',
+      audienceTitle: 'Who it is for',
+      formatLabel: 'Format',
+      worksOnTitle: 'What the work is done on',
+      takeawayTitle: 'What the team keeps',
+      requirementsTitle: 'What is needed on your side',
+      materialTitle: 'Published material',
+      materialIntro: 'What already exists on this topic, readable before any conversation.',
+      seriesLandingLabel: 'Series landing page',
+      talksTitle: 'Talks',
+      catalogTitle: 'The full catalogue',
+      catalogDesc: 'What the path contains: the system worked on, the two formats, the measured costs of the stack.',
+      catalogLabel: 'Read the catalogue',
+      catalogPdfLabel: 'Download the PDF',
+      ctaTitle: 'Shall we talk about the path for your team?',
+      ctaDesc: 'Tell me where the team is now and what it has to be able to do at the end. We define scope and format together.',
+      ctaPrimary: 'Book a discovery call',
+      ctaSecondary: 'or write me',
+      locale: 'en-GB',
+    }
+  : {
+      home: 'Home',
+      section: 'Formazione',
+      audienceTitle: 'A chi è rivolta',
+      formatLabel: 'Formato',
+      worksOnTitle: 'Su cosa si lavora',
+      takeawayTitle: 'Cosa resta al team',
+      requirementsTitle: 'Cosa serve dalla vostra parte',
+      materialTitle: 'Materiale pubblicato',
+      materialIntro: 'Quello che esiste già su questo tema, leggibile prima di qualsiasi conversazione.',
+      seriesLandingLabel: 'Landing della serie',
+      talksTitle: 'Talk',
+      catalogTitle: 'Il catalogo completo',
+      catalogDesc: 'Cosa contiene il percorso: il sistema su cui si lavora, i due formati, i costi misurati dello stack.',
+      catalogLabel: 'Leggi il catalogo',
+      catalogPdfLabel: 'Scarica il PDF',
+      ctaTitle: 'Parliamo del percorso per il tuo team?',
+      ctaDesc: 'Raccontami dove sta il team ora e cosa deve saper fare alla fine. Definiamo insieme scope e formato.',
+      ctaPrimary: 'Prenota una discovery call',
+      ctaSecondary: 'oppure scrivimi',
+      locale: 'it-IT',
+    };
+
+const { material, talks } = await getAreaMaterial(area, lang);
+const detail = area.detail;
+const fmtDate = (iso: string) =>
+  new Date(iso).toLocaleDateString(t.locale, { year: 'numeric', month: 'long' });
+---
+
+<BaseLayout
+  title={area.title[lang]}
+  description={area.problem[lang]}
+  ogImage="/og/workshop.png"
+  lang={lang}
+>
+  <Header lang={lang} />
+
+  <main class="max-w-3xl mx-auto px-5 py-8">
+    <nav class="text-xs text-text-muted mb-8" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-1.5">
+        <li><a href={`${prefix}/`} class="hover:text-accent transition-colors">{t.home}</a></li>
+        <li aria-hidden="true" class="opacity-40">/</li>
+        <li><a href={`${prefix}/workshop2/`} class="hover:text-accent transition-colors">{t.section}</a></li>
+        <li aria-hidden="true" class="opacity-40">/</li>
+        <li class="truncate max-w-[220px] text-text-dark dark:text-text-light">{area.title[lang]}</li>
+      </ol>
+    </nav>
+
+    <header class="mb-12">
+      <p class="text-xs font-mono uppercase tracking-[0.2em] text-text-muted mb-3">
+        {pillarLabels[area.pillar][lang]}
+      </p>
+      <h1 class="text-3xl md:text-4xl font-bold leading-tight tracking-tight text-text-dark dark:text-text-light mb-5">
+        {area.title[lang]}
+      </h1>
+      <p class="text-text-muted text-lg leading-relaxed">{area.problem[lang]}</p>
+      {detail?.format && (
+        <p class="mt-6 pt-5 border-t border-border/60 dark:border-border-dark/60 text-sm text-text-muted">
+          <span class="font-semibold text-text-dark dark:text-text-light">{t.formatLabel}:</span>{' '}
+          {detail.format[lang]}
+        </p>
+      )}
+    </header>
+
+    <section class="mb-12">
+      <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-3">{t.audienceTitle}</h2>
+      <p class="text-text-muted leading-relaxed">{area.audience[lang]}</p>
+    </section>
+
+    {detail?.worksOn && (
+      <section class="mb-12">
+        <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-3">{t.worksOnTitle}</h2>
+        <p class="text-text-muted leading-relaxed">{detail.worksOn[lang]}</p>
+      </section>
+    )}
+
+    {detail?.takeaway && detail.takeaway.length > 0 && (
+      <section class="mb-12">
+        <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-4">{t.takeawayTitle}</h2>
+        <dl class="space-y-4">
+          {detail.takeaway.map((item) => (
+            <div class="border-l-2 border-border dark:border-border-dark pl-5">
+              <dt class="font-semibold text-text-dark dark:text-text-light">{item.title[lang]}</dt>
+              <dd class="text-text-muted leading-relaxed mt-1">{item.desc[lang]}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    )}
+
+    {detail?.requirements && (
+      <section class="mb-12">
+        <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-3">{t.requirementsTitle}</h2>
+        <p class="text-text-muted leading-relaxed">{detail.requirements[lang]}</p>
+      </section>
+    )}
+
+    <section class="mb-12">
+      <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-2">{t.materialTitle}</h2>
+      <p class="text-sm text-text-muted mb-7">{t.materialIntro}</p>
+
+      <div class="space-y-8">
+        {material.filter((g) => g.posts.length > 0).map((g) => (
+          <div>
+            <h3 class="text-base font-semibold text-text-dark dark:text-text-light mb-1">
+              {g.group.title[lang]}
+            </h3>
+            {g.group.href && lang === 'it' && (
+              <p class="mb-3">
+                <a href={g.group.href} class="text-sm text-accent hover:underline underline-offset-4">
+                  {t.seriesLandingLabel} &rarr;
+                </a>
+              </p>
+            )}
+            <ul class="space-y-1.5 mt-3">
+              {g.posts.map((p) => (
+                <li class="flex gap-2.5 text-text-muted leading-relaxed">
+                  <span class="mt-2.5 shrink-0 w-1 h-1 rounded-full bg-accent" />
+                  <a href={p.href} class="hover:text-accent transition-colors">{p.title}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+
+        {talks.length > 0 && (
+          <div>
+            <h3 class="text-base font-semibold text-text-dark dark:text-text-light mb-3">{t.talksTitle}</h3>
+            <ul class="space-y-3">
+              {talks.map((talk) => (
+                <li>
+                  <a
+                    href={`${prefix}/talks/${talk.slug}/`}
+                    class="text-text-muted hover:text-accent transition-colors leading-relaxed"
+                  >
+                    {talk.title}
+                  </a>
+                  <p class="text-xs text-text-muted/80 mt-0.5">
+                    {talk.event} &middot; {fmtDate(talk.date)} &middot; {talk.location}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </section>
+
+    {/* Catalogo: compare quando esiste. Il PDF e' un'aggiunta, non un requisito. */}
+    {area.catalog && lang === 'it' && (
+      <section class="mb-12">
+        <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-3">{t.catalogTitle}</h2>
+        <p class="text-text-muted leading-relaxed mb-5">{t.catalogDesc}</p>
+        <div class="flex flex-wrap items-center gap-4">
+          <a
+            href={area.catalog.href}
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-accent text-white text-sm font-semibold hover:bg-accent-hover transition-colors"
+          >
+            {t.catalogLabel} &rarr;
+          </a>
+          {area.catalog.pdf && (
+            <a
+              href={area.catalog.pdf}
+              class="text-sm text-text-muted hover:text-accent transition-colors underline underline-offset-4"
+            >
+              {t.catalogPdfLabel}
+            </a>
+          )}
+        </div>
+      </section>
+    )}
+
+    <div class="mt-16">
+      <FinalCta
+        title={t.ctaTitle}
+        desc={t.ctaDesc}
+        ctaLabel={t.ctaPrimary}
+        secondaryLabel={t.ctaSecondary}
+        secondaryHref={mailLink}
+        umamiEvent="cta-workshop2-area"
+      />
+    </div>
+  </main>
+
+  <Footer lang={lang} />
+</BaseLayout>

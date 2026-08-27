@@ -1,0 +1,423 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import FinalCta from '@/components/ui/FinalCta.astro';
+import FlowDiagram from '@/components/ui/FlowDiagram.astro';
+import { workshopAreas } from '@/data/workshop-areas';
+
+// Versione web del catalogo. I contenuti vengono dal documento commerciale:
+// nessun numero e nessun blocco che non sia gia' scritto li'.
+const area = workshopAreas.find((a) => a.slug === 'osservabilita')!;
+const pdf = area.catalog?.pdf;
+
+const compatta = [
+  ['15 min', 'Claim e avvio dello stack', 'Si parte dal sistema in esecuzione e dal giro della dashboard.'],
+  ['20 min', 'Il guasto', 'Si attiva il tasso di dispositivi rotti nel generatore di carico e si correlano metriche, log e trace.'],
+  ['15 min', 'Il buco nero', 'Entra il servizio non strumentato: risponde, chiama a valle, non compare da nessuna parte.'],
+  ['45 min', 'I quattro checkpoint', 'Dalla prima traccia al waterfall completo, con verifica a ogni passo.'],
+  ['5 min', 'Chiusura', 'Waterfall completo a schermo e confronto con la soluzione di riferimento.'],
+  ['10 min', 'La parte onesta', 'Costi veri dello stack, cambio del backend dal vivo, quando basta molto meno.'],
+];
+
+const aziendale = [
+  ['Servizi da strumentare', 'Uno, in Python', 'Due in più, nel runtime scelto dal team fra Node, Java e Go'],
+  ['Checkpoint', 'Quattro, in 45 minuti', "Ognuno diventa una sessione da un'ora con debrief"],
+  ['Guasto', 'Uno, su un servizio', 'Guasto multi servizio con propagazione fra le trace'],
+  ['Pipeline', 'Configurazione già pronta', 'Collector con routing e uscite multiple, alerting, SLO'],
+  ['Neutralità del fornitore', 'Accennata', 'Sostituzione del backend dalla configurazione, con i limiti dichiarati'],
+  ['Cosa resta', 'Esercizi e soluzione di riferimento', "Documento di architettura dell'osservabilità e runbook"],
+];
+
+const giorni = [
+  ['Giorno 1', 'Fondamenti e debug: avvio dello stack, il guasto, correlazione fra metriche, log e trace, il modello di telemetria.'],
+  ['Giorno 2', 'Strumentazione: i quattro checkpoint con più tempo, poi un secondo servizio in un altro runtime e il confronto sulla propagazione del contesto.'],
+  ['Giorno 3', 'Produzione: telemetria come codice, collector, SLO e alerting, sostituzione del backend, retrospettiva.'],
+];
+
+const ram = [
+  ['Osservabilità', '0,48 GiB'],
+  ['Dipendenze', '0,44 GiB'],
+  ['Servizi della demo', '0,99 GiB'],
+  ['Totale', '1,92 GiB'],
+];
+
+const disco = [['7 giorni', '~12 GB'], ['30 giorni', '~52 GB'], ['90 giorni', '~157 GB']];
+
+const leve = [
+  ['Campionamento', 'Da 80 a 90 per cento in meno sullo spazio delle trace', 'Tiene errori e trace lente, scarta quelle sane. Il compromesso è dichiarato: le trace sane le perdete.'],
+  ['Conservazione', 'Finestre diverse per segnale', 'Dettaglio a breve, aggregazioni a lunga. Meno storia consultabile nel dettaglio.'],
+  ['Cardinalità', 'La leva che esplode se nessuno la guarda', 'Richiede governo continuo delle etichette, non una configurazione da fare una volta.'],
+];
+
+const bastaMeno = [
+  ['Un servizio, poche richieste all\'ora', 'Un cron, una curl, un alert via mail', 'Un controllo periodico batte un collector intero'],
+  ['Pochi servizi, senza trace', 'Metriche per applicazione', 'Si capisce il come, senza il perché'],
+  ['Più servizi, serve propagare il contesto', 'Collector leggero, un backend solo', 'Portabilità senza il peso dello stack completo'],
+  ['Microservizi, più team, debug fra servizi', 'Stack completo', 'Il debugging e la conservazione valgono il costo'],
+];
+
+const terminale = `$ curl -s -X POST localhost:18081/gate
+{ "gate": "open", "upstream_status": 202 }          # il servizio funziona
+
+Grafana → Explore → Tempo   { service.name = "quality-gate" }
+0 risultati                                         # per il sistema di osservabilità non esiste`;
+
+const h2 = 'text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light mb-4';
+const h3 = 'text-lg font-bold text-text-dark dark:text-text-light mb-3';
+const p = 'text-text-muted leading-relaxed mb-4';
+const th = 'text-left text-[11px] font-mono uppercase tracking-[0.15em] text-text-muted font-normal pb-3 pr-6';
+const td = 'align-top py-3 pr-6 border-t border-border/50 dark:border-border-dark/50';
+---
+
+<BaseLayout
+  title="Catalogo · Rendere osservabile un sistema vivo"
+  description="Il catalogo del percorso sull'osservabilità: il sistema su cui si lavora, la versione compatta e quella aziendale, i costi misurati dello stack e cosa resta al team."
+  ogImage="/og/workshop.png"
+  lang="it"
+>
+  <Header lang="it" />
+
+  <main class="max-w-3xl mx-auto px-5 py-8">
+    <nav class="text-xs text-text-muted mb-8" aria-label="Breadcrumb">
+      <ol class="flex items-center gap-1.5">
+        <li><a href="/" class="hover:text-accent transition-colors">Home</a></li>
+        <li aria-hidden="true" class="opacity-40">/</li>
+        <li><a href="/workshop2/" class="hover:text-accent transition-colors">Formazione</a></li>
+        <li aria-hidden="true" class="opacity-40">/</li>
+        <li><a href="/workshop2/osservabilita/" class="hover:text-accent transition-colors">Osservabilità</a></li>
+        <li aria-hidden="true" class="opacity-40">/</li>
+        <li class="text-text-dark dark:text-text-light">Catalogo</li>
+      </ol>
+    </nav>
+
+    <header class="mb-12">
+      <p class="text-xs font-mono uppercase tracking-[0.2em] text-text-muted mb-3">
+        Workshop hands-on per team di sviluppo
+      </p>
+      <h1 class="text-3xl md:text-4xl font-bold leading-tight tracking-tight text-text-dark dark:text-text-light mb-4">
+        Rendere osservabile un sistema vivo
+      </h1>
+      <p class="text-text-muted text-lg leading-relaxed">
+        Strumentare i servizi e debuggare con metriche, log e trace. Su uno stack completo, in esecuzione.
+      </p>
+
+      <dl class="grid sm:grid-cols-3 gap-6 mt-8 pt-8 border-t border-border/60 dark:border-border-dark/60">
+        <div>
+          <dt class="text-[11px] font-mono uppercase tracking-[0.15em] text-text-muted mb-1.5">Per chi è</dt>
+          <dd class="text-sm text-text-muted leading-relaxed">
+            Team di sviluppo che devono capire cosa è successo dentro un sistema distribuito in esecuzione
+          </dd>
+        </div>
+        <div>
+          <dt class="text-[11px] font-mono uppercase tracking-[0.15em] text-text-muted mb-1.5">Formato</dt>
+          <dd class="text-sm text-text-muted leading-relaxed">
+            Due ore in versione compatta, tre giorni in versione aziendale. In presenza o da remoto
+          </dd>
+        </div>
+        <div>
+          <dt class="text-[11px] font-mono uppercase tracking-[0.15em] text-text-muted mb-1.5">Base di lavoro</dt>
+          <dd class="text-sm text-text-muted leading-relaxed">
+            Uno stack completo in esecuzione: ingresso, coda, elaborazione, persistenza, con la raccolta dei segnali già configurata
+          </dd>
+        </div>
+      </dl>
+
+      {pdf && (
+        <p class="mt-8">
+          <a
+            href={pdf}
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border dark:border-border-dark text-sm font-medium hover:border-accent hover:text-accent transition-colors"
+          >
+            Scarica il catalogo in PDF &rarr;
+          </a>
+        </p>
+      )}
+    </header>
+
+    <section class="mb-14">
+      <h2 class={h2}>Un sistema a microservizi, e uno di questi è cieco</h2>
+      <p class={p}>
+        Il percorso gira su una catena di servizi che si chiamano fra loro, con una coda in mezzo e un generatore
+        di carico che tiene tutto in movimento. I problemi che si vogliono mostrare esistono solo quando una
+        richiesta attraversa più processi.
+      </p>
+
+      <FlowDiagram
+        label="Una richiesta attraverso i servizi"
+        nodes={[
+          { kind: '01', name: 'Ingresso', desc: 'autenticato', edge: 'chiama' },
+          { kind: '02', name: 'Coda', desc: 'disaccoppia', edge: 'consuma' },
+          { kind: '03', name: 'Elaborazione', desc: 'strumentata', edge: 'scrive' },
+          { kind: 'da configurare', name: 'Persistenza', desc: 'si strumenta da fuori' },
+        ]}
+      />
+
+      <p class={p}>
+        La raccolta dei segnali è già configurata in partenza: un collector solo, come unico punto di uscita per
+        trace, log e metriche.
+      </p>
+      <p class={p}>
+        Nella stessa sessione si vedono due strumentazioni diverse: il servizio si strumenta nel codice, la
+        persistenza si configura da fuori, e sono mestieri distinti che spesso in azienda ricadono su persone
+        distinte.
+      </p>
+      <p class={p}>
+        Questa architettura copre buona parte dei casi che si incontrano e resta personalizzabile: i componenti si
+        sostituiscono con i vostri, i servizi da strumentare si scrivono nel linguaggio che usate, e i punti su cui
+        si interviene si scelgono in fase di scoping.
+      </p>
+
+      <h3 class={`${h3} mt-8`}>Cosa si dà per acquisito</h3>
+      <dl class="space-y-3">
+        <div class="border-l-2 border-border dark:border-border-dark pl-5">
+          <dt class="font-semibold text-text-dark dark:text-text-light">Si presume</dt>
+          <dd class="text-text-muted leading-relaxed mt-1">Che sappiate a cosa servono metriche, log e trace.</dd>
+        </div>
+        <div class="border-l-2 border-border dark:border-border-dark pl-5">
+          <dt class="font-semibold text-text-dark dark:text-text-light">Non si presume</dt>
+          <dd class="text-text-muted leading-relaxed mt-1">
+            Che qualcuno abbia mai strumentato un servizio a mano, né che sappiate cosa fa un collector quando gli
+            si cambia la configurazione sotto.
+          </dd>
+        </div>
+        <div class="border-l-2 border-border dark:border-border-dark pl-5">
+          <dt class="font-semibold text-text-dark dark:text-text-light">Si parte da</dt>
+          <dd class="text-text-muted leading-relaxed mt-1">
+            Lo stack già in esecuzione sulle vostre macchine, verificato prima del corso.
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="mb-14">
+      <h2 class={h2}>Un servizio che risponde e non esiste</h2>
+      <p class={p}>
+        Allo stack in esecuzione si aggiunge un quarto servizio, <code class="text-sm">quality-gate</code>. Risponde
+        alle richieste, chiama il gateway a valle e non emette telemetria. Chi guarda i cruscotti non ha modo di
+        sapere che è lì.
+      </p>
+      <pre class="rounded-xl bg-code-bg text-text-light text-xs md:text-sm p-4 md:p-5 overflow-x-auto mb-4"><code>{terminale}</code></pre>
+      <p class={p}>
+        Il servizio risponde 200 e il gateway a valle accetta i dati. Nessuno dei due segnali arriva dove qualcuno
+        lo guarderebbe.
+      </p>
+      <p class={p}>
+        Poi lo si rende osservabile in quattro checkpoint, e ognuno si chiude con una verifica in Tempo, Loki e
+        Grafana. Il confronto finale è con la soluzione di riferimento, che resta chiusa fino alla fine.
+      </p>
+      <p class={p}>
+        Il collector applica un campionamento che tiene il 20% delle trace sane, quindi una singola richiesta può
+        non comparire. Le verifiche si fanno su volume, con un ciclo di dieci chiamate, ed è la prima cosa che il
+        team impara sul funzionamento reale di uno stack di telemetria.
+      </p>
+    </section>
+
+    <section class="mb-14">
+      <h2 class={h2}>La versione compatta: due ore, sei blocchi</h2>
+      <p class={p}>
+        Centodieci minuti di programma su due ore di aula. Il margine che resta è per le domande e per la demo che
+        sfora.
+      </p>
+      <table class="w-full text-sm mb-8">
+        <tbody>
+          {compatta.map(([min, titolo, desc]) => (
+            <tr>
+              <td class={`${td} font-mono text-xs text-accent whitespace-nowrap`}>{min}</td>
+              <td class={td}>
+                <span class="block font-semibold text-text-dark dark:text-text-light">{titolo}</span>
+                <span class="block text-text-muted leading-relaxed mt-1">{desc}</span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <h3 class={h3}>Cosa serve dalla vostra parte</h3>
+      <dl class="space-y-3">
+        <div class="border-l-2 border-border dark:border-border-dark pl-5">
+          <dt class="font-semibold text-text-dark dark:text-text-light">Macchine</dt>
+          <dd class="text-text-muted leading-relaxed mt-1">
+            Docker funzionante e circa 4 GB di RAM libera per macchina. Lo stack a regime ne occupa poco meno di 4.
+          </dd>
+        </div>
+        <div class="border-l-2 border-border dark:border-border-dark pl-5">
+          <dt class="font-semibold text-text-dark dark:text-text-light">Rete</dt>
+          <dd class="text-text-muted leading-relaxed mt-1">
+            Accesso al registry delle immagini. Il pacchetto di preparazione le scarica prima del corso.
+          </dd>
+        </div>
+        <div class="border-l-2 border-border dark:border-border-dark pl-5">
+          <dt class="font-semibold text-text-dark dark:text-text-light">Verifica</dt>
+          <dd class="text-text-muted leading-relaxed mt-1">Un avvio di prova dello stack, da fare prima e non in aula.</dd>
+        </div>
+      </dl>
+    </section>
+
+    <section class="mb-14">
+      <h2 class={h2}>La versione aziendale: stessa base, altra profondità</h2>
+      <p class={p}>
+        Lo stack è lo stesso e il servizio da strumentare è lo stesso. Cambia quanto tempo ha ogni passaggio e
+        quanto lontano si arriva.
+      </p>
+      <div class="overflow-x-auto mb-8">
+        <table class="w-full text-sm min-w-[36rem]">
+          <thead>
+            <tr>
+              <th class={th}>aspetto</th>
+              <th class={th}>due ore</th>
+              <th class={th}>tre giorni</th>
+            </tr>
+          </thead>
+          <tbody>
+            {aziendale.map(([aspetto, due, tre]) => (
+              <tr>
+                <td class={`${td} font-semibold text-text-dark dark:text-text-light`}>{aspetto}</td>
+                <td class={`${td} text-text-muted`}>{due}</td>
+                <td class={`${td} text-text-muted`}>{tre}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class={h3}>Come sono divisi i tre giorni</h3>
+      <dl class="space-y-3">
+        {giorni.map(([g, desc]) => (
+          <div class="border-l-2 border-border dark:border-border-dark pl-5">
+            <dt class="font-semibold text-text-dark dark:text-text-light">{g}</dt>
+            <dd class="text-text-muted leading-relaxed mt-1">{desc}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <section class="mb-14">
+      <h2 class={h2}>Quanto costa tenere acceso lo stack</h2>
+      <p class={p}>
+        L'ultimo blocco del percorso è quello che di solito si salta. I numeri che seguono sono misurati sullo
+        stack del workshop, e quelli stimati sono dichiarati come tali.
+      </p>
+
+      <h3 class={h3}>Misurato · RAM a freddo</h3>
+      <table class="w-full text-sm mb-4">
+        <tbody>
+          {ram.map(([voce, val]) => (
+            <tr>
+              <td class={`${td} text-text-muted`}>{voce}</td>
+              <td class={`${td} font-mono text-text-dark dark:text-text-light text-right`}>{val}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p class={p}>
+        A regime, dopo ore di esecuzione, il totale sale a circa 3,65 GiB. Il costo cresce con la scala e con la
+        conservazione dei dati, non con l'avvio.
+      </p>
+
+      <h3 class={`${h3} mt-8`}>Stimato · disco per conservazione</h3>
+      <table class="w-full text-sm mb-4">
+        <tbody>
+          {disco.map(([finestra, val]) => (
+            <tr>
+              <td class={`${td} text-text-muted`}>{finestra}</td>
+              <td class={`${td} font-mono text-text-dark dark:text-text-light text-right`}>{val}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p class={p}>
+        Stima su un traffico contenuto, con le assunzioni scritte accanto a ogni segnale. Serve per l'ordine di
+        grandezza, e i numeri veri dipendono dal traffico e dalla cardinalità.
+      </p>
+
+      <h3 class={`${h3} mt-8`}>Le leve per farlo scendere</h3>
+      <dl class="space-y-4">
+        {leve.map(([nome, effetto, nota]) => (
+          <div class="border-l-2 border-border dark:border-border-dark pl-5">
+            <dt class="font-semibold text-text-dark dark:text-text-light">{nome}</dt>
+            <dd class="text-sm text-accent mt-0.5">{effetto}</dd>
+            <dd class="text-text-muted leading-relaxed mt-1">{nota}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+
+    <section class="mb-14">
+      <h2 class={h2}>Quando basta molto meno</h2>
+      <p class={p}>
+        La tabella con cui si chiude il percorso serve a decidere di non installare niente, se è il caso. Sta nei
+        materiali che il team si porta via.
+      </p>
+      <div class="overflow-x-auto mb-8">
+        <table class="w-full text-sm min-w-[36rem]">
+          <thead>
+            <tr>
+              <th class={th}>situazione</th>
+              <th class={th}>cosa basta</th>
+              <th class={th}>perché</th>
+            </tr>
+          </thead>
+          <tbody>
+            {bastaMeno.map(([situazione, cosa, perche]) => (
+              <tr>
+                <td class={`${td} font-semibold text-text-dark dark:text-text-light`}>{situazione}</td>
+                <td class={`${td} text-text-muted`}>{cosa}</td>
+                <td class={`${td} text-text-muted`}>{perche}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class={h3}>Dove la neutralità del formato si ferma</h3>
+      <p class={p}>
+        La promessa è: strumenti una volta, esporti dove vuoi. È attraente perché rende la scelta del backend
+        reversibile e sposta la decisione a dopo.
+      </p>
+      <p class={p}>
+        In aula il cambio avviene nella configurazione del collector, e le applicazioni non cambiano mai. Si fa dal
+        vivo, e si guarda anche il conto: dopo lo scambio i backend da installare, mantenere e pagare sono due.
+        Metriche e log restano dove stavano, quindi la portabilità vale per un segnale alla volta. Il punto dove si
+        ferma è l'esportatore, insieme alle convenzioni ancora instabili.
+      </p>
+    </section>
+
+    <section class="mb-16">
+      <h2 class={h2}>Il repository resta, e continua a girare</h2>
+      <dl class="space-y-4">
+        <div class="border-l-2 border-border dark:border-border-dark pl-5">
+          <dt class="font-semibold text-text-dark dark:text-text-light">Lo stack</dt>
+          <dd class="text-text-muted leading-relaxed mt-1">
+            Quattro servizi, la coda, il servizio di identità, il generatore di carico e la raccolta dei segnali,
+            con due comandi per avviarlo.
+          </dd>
+        </div>
+        <div class="border-l-2 border-border dark:border-border-dark pl-5">
+          <dt class="font-semibold text-text-dark dark:text-text-light">Gli esercizi</dt>
+          <dd class="text-text-muted leading-relaxed mt-1">
+            I quattro checkpoint scritti passo per passo, e la soluzione di riferimento completa da confrontare.
+          </dd>
+        </div>
+        <div class="border-l-2 border-border dark:border-border-dark pl-5">
+          <dt class="font-semibold text-text-dark dark:text-text-light">La parte onesta</dt>
+          <dd class="text-text-muted leading-relaxed mt-1">
+            I costi misurati, la proiezione sulla conservazione dei dati e la tabella per decidere quando basta
+            meno.
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <FinalCta
+      title="Parliamone"
+      desc="Raccontami che sistema avete in esecuzione e cosa vi costa di più capire quando si rompe. Discovery call di 30 minuti."
+      ctaLabel="Prenota una discovery call"
+      secondaryLabel="oppure scrivimi"
+      secondaryHref="mailto:francesco@montelli.dev"
+      umamiEvent="cta-catalogo-osservabilita"
+    />
+  </main>
+
+  <Footer lang="it" />
+</BaseLayout>

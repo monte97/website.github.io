@@ -1,0 +1,13 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Workshop2AreaPage from '@/components/pages/Workshop2AreaPage.astro';
+import { workshopAreas } from '@/data/workshop-areas';
+
+export const getStaticPaths = (() =>
+  workshopAreas.map((area) => ({ params: { area: area.slug }, props: { area } }))
+) satisfies GetStaticPaths;
+
+const { area } = Astro.props;
+---
+
+<Workshop2AreaPage area={area} lang="it" />
