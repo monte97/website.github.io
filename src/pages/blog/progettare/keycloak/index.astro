@@ -1,0 +1,36 @@
+---
+/**
+ * Landing della serie Keycloak in produzione.
+ * URL canonico: /blog/progettare/keycloak/
+ */
+import SeriesLanding from '@/components/blog/SeriesLanding.astro';
+---
+
+<SeriesLanding series="keycloak">
+  <section class="mb-12 max-w-2xl">
+    <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-5">
+      Delegare l'autenticazione e' una decisione che si paga per anni
+    </h2>
+    <div class="space-y-4 text-text-muted leading-relaxed">
+      <p>
+        Scrivere l'autenticazione a mano e' un errore che quasi nessuno fa piu'.
+        Delegarla a un identity provider e' la scelta giusta, ma non e' la fine del
+        problema: e' l'inizio di una serie di decisioni che si correggono male.
+        Il modello dei realm, quale flusso OAuth2 usare, dove finiscono le policy di
+        autorizzazione, come si testa un'applicazione che dipende da un servizio esterno.
+      </p>
+      <p>
+        Sono tutte scelte che si fanno all'inizio e si pagano per anni, perche'
+        cambiarle dopo significa rientrare in ogni servizio che parla con
+        l'autenticazione.
+      </p>
+      <p>
+        Questa serie percorre i punti dove Keycloak si rompe davvero in produzione,
+        uno per articolo: il flusso corretto e perche' PKCE non e' un extra,
+        l'autenticazione fra servizi, i test end-to-end su un identity provider,
+        la separazione fra autenticazione e autorizzazione delegando le policy a OPA,
+        e infine la federazione con provider esterni.
+      </p>
+    </div>
+  </section>
+</SeriesLanding>

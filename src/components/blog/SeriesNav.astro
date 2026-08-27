@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import { postHref } from '@/utils/blog';
+import { seriesMetadata } from '@/data/series';
 
 interface Props {
   series: string;
@@ -21,10 +22,13 @@ const currentIndex = seriesPosts.findIndex(p => p.id === currentId);
 const prevPost = currentIndex > 0 ? seriesPosts[currentIndex - 1] : null;
 const nextPost = currentIndex < seriesPosts.length - 1 ? seriesPosts[currentIndex + 1] : null;
 
-// Format series name for display
-const seriesLabel = series
+// Se la serie ha una landing, il titolo vero sta li'; altrimenti si ricava dallo slug.
+const meta = seriesMetadata[series];
+const seriesLabel = meta?.title ?? series
   .replace(/-/g, ' ')
   .replace(/\b\w/g, c => c.toUpperCase());
+// Le landing esistono solo in italiano.
+const landingHref = meta && lang === 'it' ? `/blog/${meta.pillar}/${series}/` : null;
 
 const t = {
   series: lang === 'en' ? 'Series' : 'Serie',
@@ -36,7 +40,12 @@ const t = {
 {showNav && (
   <aside class="mb-10 rounded-lg border border-border dark:border-border-dark bg-text-muted/5 p-5">
     <h4 class="text-sm font-semibold uppercase tracking-wide text-text-muted mb-3">
-      {t.series}: {seriesLabel}
+      {t.series}:{' '}
+      {landingHref ? (
+        <a href={landingHref} class="text-accent hover:underline">{seriesLabel}</a>
+      ) : (
+        seriesLabel
+      )}
     </h4>
 
     <ol class="space-y-1.5 text-sm mb-4">
