@@ -14,7 +14,7 @@ tags:
   - Observability
   - Tracing
 lang: it
-reviewed: true
+reviewed: human
 series: linq
 seriesOrder: 40
 summary:

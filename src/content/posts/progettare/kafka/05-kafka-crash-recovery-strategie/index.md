@@ -13,7 +13,7 @@ tags:
 lang: it
 series: kafka
 seriesOrder: 50
-reviewed: true
+reviewed: human
 reproducibility: true
 summary:
   - label: "Tesi"

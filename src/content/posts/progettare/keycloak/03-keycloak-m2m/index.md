@@ -13,7 +13,7 @@ tags:
   - Security
 lang: it
 draft: false
-reviewed: true
+reviewed: human
 series: keycloak
 seriesOrder: 30
 summary:

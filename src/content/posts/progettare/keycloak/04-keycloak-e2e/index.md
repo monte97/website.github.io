@@ -14,7 +14,7 @@ tags:
   - PKCE
   - M2M
 lang: it
-reviewed: true
+reviewed: human
 series: keycloak
 seriesOrder: 40
 summary:

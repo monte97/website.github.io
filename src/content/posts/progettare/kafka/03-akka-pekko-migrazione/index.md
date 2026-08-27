@@ -11,7 +11,7 @@ tags:
   - JVM
   - Migrazione
 lang: it
-reviewed: true
+reviewed: human
 series: kafka
 seriesOrder: 30
 reproducibility: true

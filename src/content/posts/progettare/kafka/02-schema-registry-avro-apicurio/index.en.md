@@ -13,7 +13,7 @@ tags:
   - Node.js
   - Python
 lang: en
-reviewed: true
+reviewed: human
 series: kafka
 seriesOrder: 20
 reproducibility: true

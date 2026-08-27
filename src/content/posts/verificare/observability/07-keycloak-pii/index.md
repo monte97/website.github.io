@@ -13,7 +13,7 @@ tags:
   - Observability
 lang: it
 draft: false
-reviewed: true
+reviewed: human
 series: observability
 seriesOrder: 70
 summary:

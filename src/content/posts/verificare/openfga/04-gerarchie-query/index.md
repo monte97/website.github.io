@@ -639,7 +639,7 @@ Tre concetti da portare via:
 
 **Non tutto è ReBAC.** Il field-level access control è ABAC: una classificazione dei campi combinata con il livello di relazione dell'utente. Dynamic Data Masking è il pattern che separa il "puoi accedere alla risorsa" (OpenFGA) dal "quali campi vedi" (applicazione).
 
-Nel prossimo articolo affronteremo i test: come scrivere test di autorizzazione dichiarativi, come integrarli in CI, e come verificare che una modifica al modello non rompa i permessi esistenti.
+Il fast path di questo articolo evita ListObjects nella maggior parte dei casi, ma non in tutti. [Quando ListObjects resta l'unica strada](/blog/verificare/openfga/05-listobjects-performance/) il costo va aggredito altrove: caching, read model pre-materializzato, BatchCheck.
 
 ### Risorse
 

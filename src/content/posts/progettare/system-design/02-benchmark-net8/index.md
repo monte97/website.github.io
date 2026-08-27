@@ -13,7 +13,7 @@ tags:
   - BenchmarkDotNet
   - Allocazioni
 lang: it
-reviewed: true
+reviewed: human
 series: linq
 seriesOrder: 20
 summary:

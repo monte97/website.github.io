@@ -12,7 +12,7 @@ tags:
   - Streaming
   - Avro
 lang: it
-reviewed: true
+reviewed: human
 series: kafka
 seriesOrder: 40
 reproducibility: true

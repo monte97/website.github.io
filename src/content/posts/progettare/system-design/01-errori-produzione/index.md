@@ -14,7 +14,7 @@ tags:
   - ToLookup
 lang: it
 draft: false
-reviewed: true
+reviewed: human
 series: linq
 seriesOrder: 10
 summary:

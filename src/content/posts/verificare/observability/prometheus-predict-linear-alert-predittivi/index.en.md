@@ -52,7 +52,7 @@ It is the rule that ends up copied from the first tutorial you find, and it popu
 
 A different question, and a far more useful one operationally, would be *"will the disk fill up within a time window where it is still possible to act without waking anybody in the middle of the night?"*. That is a different question, and it needs a different alert: not an adjustment to the threshold, but a query reasoning about the **trend** instead of the **state**.
 
-This distinction is not an academic curiosity: it has precise theoretical roots in two frameworks anybody working in observability has heard of, USE and the Golden Signals. In the rest of the article we see where the difference comes from, how to translate it into concrete Prometheus rules with `predict_linear`, and above all when predictive alerts are the right idea and when they are a mistake.
+This distinction is not an academic curiosity: it has precise theoretical roots in two frameworks anybody working in observability has heard of, USE and the Golden Signals. The two frameworks use the same word and do not mean the same thing, and that is where two different kinds of alert come from.
 
 ## USE vs Golden Signals: two definitions of saturation
 
@@ -113,7 +113,7 @@ It is worth comparing it with two nearby functions that sometimes do the same jo
 - `deriv(gauge[5m])`: slope of the linear regression line computed over a gauge, expressed as change per second
 - `predict_linear(gauge[1h], t)`: extrapolation of the estimated value `t` seconds into the future, based on the same regression
 
-The key thing to remember is that `predict_linear(v, t)` is conceptually equivalent to `deriv(v) * t + current_value`: nothing more sophisticated than a straight line extrapolated forwards. When the linear assumption holds — and it does for plenty of real resources, like heap growth in a healthy JVM or the occupancy of a log disk — the function does exactly what is needed. When it breaks, different strategies are needed (see section 7).
+The key thing to remember is that `predict_linear(v, t)` is conceptually equivalent to `deriv(v) * t + current_value`: nothing more sophisticated than a straight line extrapolated forwards. When the linear assumption holds — and it does for plenty of real resources, like heap growth in a healthy JVM or the occupancy of a log disk — the function does exactly what is needed. When it breaks, different strategies are needed: those are the traps further down.
 
 ## Five real PromQL examples
 
@@ -170,7 +170,7 @@ No prediction, no `predict_linear` function, no trend: just a static threshold o
 
 ## Let's see it in action: a Prometheus + Grafana demo
 
-The theory so far was necessary, but seeing the behaviour of the two alerts on the same metric in real time makes the difference clear far more quickly. The linked repository contains a minimal Docker Compose demo simulating exactly the scenario described in section 3: a JVM with a linear memory leak, and the same two alerts (one reactive, one predictive) competing on the same metric. The goal is to make concrete the lead time gap discussed so far only in formulas.
+The theory so far was necessary, but seeing the behaviour of the two alerts on the same metric in real time makes the difference clear far more quickly. The linked repository contains a minimal Docker Compose demo simulating exactly the JVM scenario seen above: a JVM with a linear memory leak, and the same two alerts (one reactive, one predictive) competing on the same metric. The goal is to make concrete the lead time gap discussed so far only in formulas.
 
 > 👉 [github.com/monte97/saturation-predittiva-demo](https://github.com/monte97/saturation-predittiva-demo)
 
@@ -261,9 +261,8 @@ The USE/Golden Signals distinction on saturation is not an academic subtlety: it
 - `predict_linear` is the base tool for predictive alerts in Prometheus, but it has concrete traps: non-linear growth, wrong windows, cyclical patterns, thresholds that are not time-aware
 - The choice between reactive and predictive depends on the resource's time-to-saturation, not on the reference framework: both should be used where they make sense, without making everything predictive by default
 
-> The next article in the series will look at how **burn-rate** alerts applied to SLOs take this logic a level further: no longer "when will the resource saturate" but "when is the week's error budget running out". The article after that will explore **advanced forecasting** with Holt-Winters and Prophet for metrics with seasonal patterns, where `predict_linear` stops working.
+> [The next article in the series](/blog/verificare/observability/burn-rate-alerts-slo-multi-window/) takes this logic a level further: no longer "when will the resource saturate" but "at what rate are we burning the error budget". For metrics with seasonal patterns, where `predict_linear` stops working, the road is forecasting with Holt-Winters or Prophet: that stays outside this series.
 
-For anyone wanting to understand how these rules translate into a concrete observability stack, a **targeted intervention** is a two-week engagement starting from the existing `alerts.yml` and the metrics already being collected: it delivers a first concrete improvement and leaves the map of where it is worth acting next.
 
 ## Resources
 

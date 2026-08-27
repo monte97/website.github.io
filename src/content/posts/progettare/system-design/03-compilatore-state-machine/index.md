@@ -14,7 +14,7 @@ tags:
   - ILSpy
   - SharpLab
 lang: it
-reviewed: true
+reviewed: human
 series: linq
 seriesOrder: 30
 summary:

@@ -13,7 +13,7 @@ tags:
   - OpenPolicyAgent
 lang: it
 draft: false
-reviewed: true
+reviewed: human
 series: keycloak
 seriesOrder: 50
 summary:

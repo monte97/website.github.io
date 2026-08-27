@@ -12,7 +12,7 @@ tags:
   - Grafana
   - Pino
 lang: it
-reviewed: true
+reviewed: human
 series: observability
 seriesOrder: 80
 summary:
@@ -369,7 +369,7 @@ L'articolo ha coperto:
 4. **Infrastruttura di osservabilità** - Collector, Loki e Grafana con tre servizi Docker
 5. **Query LogQL** - filtraggio per livello, utente, azione su dati centralizzati
 
-Il logging è il primo pilastro dell'osservabilità. Nel prossimo articolo: **distributed tracing** per seguire una request attraverso più servizi.
+Il logging è il primo pilastro dell'osservabilità, e da solo dice cosa è successo dentro un servizio, non come una request ha attraversato gli altri. Quel filo è il tema di [correlazione fra metriche, log e trace](/blog/verificare/observability/04-correlation/).
 
 ---
 
