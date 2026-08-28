@@ -1,40 +1,9 @@
 ---
 /**
- * Landing della serie Test end-to-end con Playwright.
- * URL canonico: /blog/verificare/playwright/
+ * Landing della serie playwright, italiano.
+ * Testo e metadati vivono in src/data/series.ts.
  */
 import SeriesLanding from '@/components/blog/SeriesLanding.astro';
 ---
 
-<SeriesLanding series="playwright">
-  <section class="mb-12 max-w-2xl">
-    <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-5">
-      Le suite E2E non muoiono di lentezza, muoiono di sfiducia
-    </h2>
-    <div class="space-y-4 text-text-muted leading-relaxed">
-      <p>
-        Test che passano al terzo tentativo. <code>sleep(5000)</code> sparsi nel codice.
-        Suite che girano venti minuti e falliscono in modo non deterministico, sempre su
-        un test diverso. La spiegazione che si sente di solito e' che i test end-to-end
-        sono fragili per natura, e che ci si convive.
-      </p>
-      <p>
-        Non e' vero. Quella fragilita' non e' una proprieta' del testing end-to-end:
-        e' una conseguenza di <strong>come il test parla al browser</strong>. Cambiato
-        quel canale, la maggior parte dei sintomi sparisce senza toccare una riga di
-        logica di test.
-      </p>
-      <p>
-        Il momento in cui una suite viene abbandonata non e' quando diventa lenta: e'
-        quando il team smette di credere ai suoi fallimenti. Da li' in avanti continua
-        a costare tempo di CI senza produrre informazione, e chi rilascia impara a
-        premere <em>skip</em>.
-      </p>
-      <p>
-        Questa serie segue il percorso completo: dal protocollo che genera la flakiness
-        fino a una suite che gira in CI parallelizzata, mocka la rete, si correla alle
-        trace del backend e resta leggibile quando i test diventano centinaia.
-      </p>
-    </div>
-  </section>
-</SeriesLanding>
+<SeriesLanding series="playwright" lang="it" />

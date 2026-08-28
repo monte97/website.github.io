@@ -19,7 +19,7 @@ export interface SeriesEntry {
  * Raccoglie le serie a partire dai post di una lingua.
  * Il titolo viene da seriesMetadata quando esiste, altrimenti dallo slug.
  */
-export function getSeriesIndex(posts: any[]): SeriesEntry[] {
+export function getSeriesIndex(posts: any[], lang: 'it' | 'en' = 'it'): SeriesEntry[] {
   const groups = new Map<string, any[]>();
   for (const p of posts) {
     const s = p.data.series;
@@ -31,7 +31,8 @@ export function getSeriesIndex(posts: any[]): SeriesEntry[] {
   const out: SeriesEntry[] = [];
   for (const [key, items] of groups) {
     items.sort((a, b) => (a.data.seriesOrder ?? 0) - (b.data.seriesOrder ?? 0));
-    const meta = seriesMetadata[key];
+    const base = seriesMetadata[key];
+    const meta = base && lang === 'en' ? { ...base, ...base.en } : base;
     // Il pillar della serie e' quello dichiarato dalla maggioranza dei suoi
     // articoli: `homelab-capi` oggi ne dichiara due diversi, e prendere il
     // primo darebbe un risultato che dipende dall'ordine.
@@ -49,8 +50,8 @@ export function getSeriesIndex(posts: any[]): SeriesEntry[] {
       count: items.length,
       minutes: items.reduce((acc, p) => acc + estimateReadingTime(p.body), 0),
       pillar,
-      landingHref: meta ? `/blog/${meta.pillar}/${key}/` : null,
-      firstHref: postHref(items[0].id),
+      landingHref: base ? `${lang === 'en' ? '/en' : ''}/blog/${base.pillar}/${key}/` : null,
+      firstHref: postHref(items[0].id, lang),
       lastDate: items.reduce(
         (max, p) => (p.data.date > max ? p.data.date : max),
         items[0].data.date as Date

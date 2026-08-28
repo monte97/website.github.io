@@ -1,26 +1,9 @@
 ---
 /**
- * Landing della serie Kafka.
- * URL canonico: /blog/progettare/kafka/
+ * Landing della serie kafka, italiano.
+ * Testo e metadati vivono in src/data/series.ts.
  */
 import SeriesLanding from '@/components/blog/SeriesLanding.astro';
 ---
 
-<SeriesLanding series="kafka">
-  <section class="mb-12 max-w-2xl">
-    <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-5">
-      Un evento non e' una richiesta: e' un fatto gia' successo
-    </h2>
-    <div class="space-y-4 text-text-muted leading-relaxed">
-      <p>
-        Una chiamata sincrona chiede a qualcuno di fare qualcosa e aspetta la risposta. Un evento dichiara che qualcosa <em>e' successo</em>, e chi lo riceve decide da solo cosa farne. La differenza sembra filosofica finche' non si guarda cosa cambia in produzione: un servizio lento smette di rallentare quelli che lo chiamano, e un servizio fermo smette di fermarli.
-      </p>
-      <p>
-        Il prezzo pero' c'e', e questa serie lo paga per intero invece di nominarlo e passare oltre. L'ordine dei messaggi vale solo per chiave. Lo stato del consumer diventa un problema vostro. Il debug attraversa un componente in piu'. E due servizi che non sono d'accordo su cosa contiene un messaggio si rompono a runtime, non a compile-time.
-      </p>
-      <p>
-        Il sistema da cui vengono questi articoli e' una piattaforma di telemetria per mezzi d'opera: sensori che pubblicano dati odometrici e posizione, tre consumer che leggono lo stesso topic con responsabilita' diverse. Un caso abbastanza piccolo da stare in una demo e abbastanza vero da avere gia' rotto qualcosa.
-      </p>
-    </div>
-  </section>
-</SeriesLanding>
+<SeriesLanding series="kafka" lang="it" />

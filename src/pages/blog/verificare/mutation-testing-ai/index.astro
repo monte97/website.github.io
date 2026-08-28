@@ -1,34 +1,9 @@
 ---
 /**
- * Landing della serie Mutation testing e AI.
- * URL canonico: /blog/verificare/mutation-testing-ai/
+ * Landing della serie mutation-testing-ai, italiano.
+ * Testo e metadati vivono in src/data/series.ts.
  */
 import SeriesLanding from '@/components/blog/SeriesLanding.astro';
 ---
 
-<SeriesLanding series="mutation-testing-ai">
-  <section class="mb-12 max-w-2xl">
-    <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-5">
-      Test verdi e codice sano non sono la stessa cosa
-    </h2>
-    <div class="space-y-4 text-text-muted leading-relaxed">
-      <p>
-        Diamo per scontata un'equazione: i test passano, quindi il codice funziona.
-        Quasi sempre regge. Quando non regge, il conto arriva su codice coperto,
-        testato e verde, e nessun test se n'era accorto.
-      </p>
-      <p>
-        La coverage risponde a una domanda sola: <em>questo codice viene eseguito?</em>
-        Non risponde a quella che conta: <em>se questo codice fosse sbagliato, i test
-        se ne accorgerebbero?</em> Il mutation testing risponde alla seconda,
-        rompendo il codice apposta e contando quante rotture i test rilevano.
-      </p>
-      <p>
-        La serie parte da un bug rimasto tre settimane in produzione con il 93% di
-        coverage, e arriva alla domanda che gli agenti AI rendono urgente: se i test
-        li scrive una macchina, chi controlla che funzionino? La risposta e' che serve
-        un arbitro esterno e formale, e che quel ruolo il mutation score lo sa fare.
-      </p>
-    </div>
-  </section>
-</SeriesLanding>
+<SeriesLanding series="mutation-testing-ai" lang="it" />

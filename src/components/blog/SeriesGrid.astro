@@ -12,8 +12,12 @@ interface Props {
   series: SeriesEntry[];
   /** due o tre colonne */
   cols?: 2 | 3;
+  lang?: 'it' | 'en';
 }
-const { series, cols = 3 } = Astro.props;
+const { series, cols = 3, lang = 'it' } = Astro.props;
+const t = lang === 'en'
+  ? { uno: 'article', molti: 'articles', tot: 'min in total', apri: 'Open the series', primo: 'Start from the first' }
+  : { uno: 'articolo', molti: 'articoli', tot: 'min in tutto', apri: 'Apri la serie', primo: 'Parti dal primo' };
 const grid = cols === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-2 lg:grid-cols-3';
 ---
 
@@ -29,11 +33,11 @@ const grid = cols === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-2 lg:grid-cols-3';
         <div class="flex items-center justify-between gap-2 mb-3">
           {st && (
             <span class={`text-[10px] font-mono font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full ${st.badge}`}>
-              {getPillarLabel(s.pillar!)}
+              {getPillarLabel(s.pillar!, lang)}
             </span>
           )}
           <span class="text-xs text-text-muted tabular-nums">
-            {s.count} {s.count === 1 ? 'articolo' : 'articoli'}
+            {s.count} {s.count === 1 ? t.uno : t.molti}
           </span>
         </div>
 
@@ -46,9 +50,9 @@ const grid = cols === 2 ? 'sm:grid-cols-2' : 'sm:grid-cols-2 lg:grid-cols-3';
         )}
 
         <div class="mt-auto pt-3 border-t border-border/60 dark:border-border-dark/60 flex items-center justify-between text-xs">
-          <span class="text-text-muted">{s.minutes} min in tutto</span>
+          <span class="text-text-muted">{s.minutes} {t.tot}</span>
           <span class={s.landingHref ? 'font-medium text-accent' : 'text-text-muted'}>
-            {s.landingHref ? 'Apri la serie →' : 'Parti dal primo →'}
+            {s.landingHref ? `${t.apri} →` : `${t.primo} →`}
           </span>
         </div>
       </a>

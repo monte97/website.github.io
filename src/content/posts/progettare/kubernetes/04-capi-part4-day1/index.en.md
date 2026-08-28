@@ -2,7 +2,7 @@
 title: "CAPI Part 4: Practical Setup - Day 1 Operations"
 date: 2025-08-05T09:30:00.000Z
 description: Complete guide to initial deployment of Kubernetes clusters using Cluster API (CAPI) - From Zero to Working Cluster
-pillar: progettare
+pillar: automatizzare
 category: kubernetes
 tags:
   - Kubernetes

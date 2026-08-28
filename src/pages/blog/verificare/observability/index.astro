@@ -1,41 +1,9 @@
 ---
 /**
- * Landing della serie Observability.
- * URL canonico: /blog/verificare/observability/
+ * Landing della serie observability, italiano.
+ * Testo e metadati vivono in src/data/series.ts.
  */
 import SeriesLanding from '@/components/blog/SeriesLanding.astro';
 ---
 
-<SeriesLanding series="observability">
-  <section class="mb-12 max-w-2xl">
-    <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-5">
-      Monitoraggio e observability non sono la stessa cosa
-    </h2>
-    <div class="space-y-4 text-text-muted leading-relaxed">
-      <p>
-        Il monitoraggio risponde a domande che hai previsto: la CPU e' sopra soglia,
-        il disco si sta riempiendo, il servizio non risponde. Funziona finche' i guasti
-        somigliano a quelli che avevi immaginato quando hai scritto gli alert.
-      </p>
-      <p>
-        In un sistema distribuito i guasti smettono di somigliare a quello che avevi
-        previsto. La domanda diventa <em>perche' questa richiesta, di questo cliente,
-        ha impiegato dodici secondi</em> — e non e' una domanda che si puo' mettere in
-        una dashboard in anticipo. L'observability e' la proprieta' di un sistema che
-        permette di rispondere a domande che nessuno aveva preparato.
-      </p>
-      <p>
-        I segnali sono tre, e da soli valgono poco. Le <strong>metriche</strong> dicono
-        che qualcosa e' cambiato, i <strong>log</strong> dicono cosa e' successo in un
-        punto, le <strong>tracce</strong> dicono dove il tempo se n'e' andato lungo il
-        percorso. Il valore sta nel passare dall'uno all'altro senza perdere il filo:
-        dall'alert alla traccia, dalla traccia al log della riga che ha fallito.
-      </p>
-      <p>
-        Questa serie parte da quel filo e lo segue fino in produzione, dove i problemi
-        smettono di essere concettuali e diventano volume di dati, costi di storage e
-        vincoli di conformita'.
-      </p>
-    </div>
-  </section>
-</SeriesLanding>
+<SeriesLanding series="observability" lang="it" />

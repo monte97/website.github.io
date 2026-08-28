@@ -1,26 +1,9 @@
 ---
 /**
- * Landing della serie LINQ.
- * URL canonico: /blog/progettare/linq/
+ * Landing della serie linq, italiano.
+ * Testo e metadati vivono in src/data/series.ts.
  */
 import SeriesLanding from '@/components/blog/SeriesLanding.astro';
 ---
 
-<SeriesLanding series="linq">
-  <section class="mb-12 max-w-2xl">
-    <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-5">
-      Lo stesso codice, due ordini di grandezza di differenza
-    </h2>
-    <div class="space-y-4 text-text-muted leading-relaxed">
-      <p>
-        <code>.Contains()</code> su una <code>List</code> e' O(n). <code>.Contains()</code> su un <code>HashSet</code> e' O(1). Il codice che scrivete e' identico. Il profiler racconta due storie diverse.
-      </p>
-      <p>
-        E' il filo di tutta la serie: LINQ e' dichiarativo, ma l'esecuzione e' imperativa, e la stessa sintassi nasconde costi radicalmente diversi a seconda della struttura dati sotto. Il punto di partenza e' un audit vero, su un dispatcher per una flotta di veicoli commerciali che tiene tutto in memoria per stare sotto i 100ms di latenza: quattro pattern trovati in produzione, e il piu' costoso faceva 1.400.000 confronti dove ne bastavano 2000.
-      </p>
-      <p>
-        Da li' la serie scende: i numeri misurati con BenchmarkDotNet invece che stimati, la state machine che il compilatore genera dietro una <code>Where()</code>, e infine come rendere visibile l'esecuzione con il tracing invece di doverla leggere nel codice.
-      </p>
-    </div>
-  </section>
-</SeriesLanding>
+<SeriesLanding series="linq" lang="it" />

@@ -1,26 +1,9 @@
 ---
 /**
- * Landing della serie Vue 3.
- * URL canonico: /blog/progettare/web-development/
+ * Landing della serie web-development, italiano.
+ * Testo e metadati vivono in src/data/series.ts.
  */
 import SeriesLanding from '@/components/blog/SeriesLanding.astro';
 ---
 
-<SeriesLanding series="web-development">
-  <section class="mb-12 max-w-2xl">
-    <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-5">
-      I problemi di una SPA arrivano quando smette di essere piccola
-    </h2>
-    <div class="space-y-4 text-text-muted leading-relaxed">
-      <p>
-        Finche' i componenti sono pochi, un EventBus funziona e nessuno si lamenta. Il problema arriva dopo: lo stato passa di mano senza che si capisca dove, e per rispondere a <em>chi ha cambiato questo valore</em> bisogna leggere tutto il progetto.
-      </p>
-      <p>
-        Questa serie affronta tre casi che si presentano in quell'ordine. Sostituire l'EventBus con uno store senza riscrivere l'applicazione in un colpo solo. Integrare una libreria pesante, nel caso concreto una mappa, tenendola fuori dal sistema reattivo invece di lasciare che il framework la gestisca. Ed estrarre la duplicazione quando lo stesso pezzo di logica e' finito in cinque componenti.
-      </p>
-      <p>
-        L'ultimo articolo porta anche un anti-pattern, perche' l'astrazione sbagliata costa piu' della duplicazione che voleva togliere.
-      </p>
-    </div>
-  </section>
-</SeriesLanding>
+<SeriesLanding series="web-development" lang="it" />

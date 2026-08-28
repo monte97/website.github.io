@@ -2,7 +2,7 @@
 title: "From port-forward to Ingress: How to configure a professional local Kubernetes environment with NGINX"
 date: 2025-10-21T09:00:00.000Z
 description: Complete guide to configuring an NGINX Ingress Controller on a local Kubernetes cluster (kind) to expose services in a stable and professional manner.
-pillar: progettare
+pillar: automatizzare
 category: kubernetes
 tags:
   - Kubernetes

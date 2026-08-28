@@ -1,41 +1,9 @@
 ---
 /**
- * Landing della serie Autorizzazione con OpenFGA.
- * URL canonico: /blog/verificare/openfga/
+ * Landing della serie openfga, italiano.
+ * Testo e metadati vivono in src/data/series.ts.
  */
 import SeriesLanding from '@/components/blog/SeriesLanding.astro';
 ---
 
-<SeriesLanding series="openfga">
-  <section class="mb-12 max-w-2xl">
-    <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-5">
-      Il momento in cui i ruoli smettono di bastare
-    </h2>
-    <div class="space-y-4 text-text-muted leading-relaxed">
-      <p>
-        Finche' i permessi stanno in una colonna <code>role</code> sulla tabella utenti,
-        il modello a ruoli funziona e non c'e' motivo di cambiarlo. Smette di funzionare
-        quando arriva la prima richiesta che non ci sta dentro: <em>questo documento e'
-        condiviso con quell'utente, ma solo in lettura, e solo finche' resta nel progetto
-        di cui e' membro</em>.
-      </p>
-      <p>
-        A quel punto si aggiunge una tabella di eccezioni, poi un flag, poi un
-        <code>if</code> nel controller. Il permesso smette di essere un dato e diventa
-        codice sparso, e nessuno sa piu' rispondere alla domanda che conta:
-        <strong>chi puo' vedere questa risorsa, e perche'?</strong>
-      </p>
-      <p>
-        Google ha affrontato lo stesso problema su scala e ne ha pubblicato il modello,
-        Zanzibar: i permessi diventano tuple di relazione, non ruoli. OpenFGA e'
-        l'implementazione open source di quel modello.
-      </p>
-      <p>
-        La serie parte dai concetti, li collega a Keycloak per separare autenticazione
-        e autorizzazione, e arriva ai problemi che si incontrano davvero: isolare piu'
-        organizzazioni nello stesso sistema, risolvere gerarchie profonde, e il costo
-        delle query inverse quando le risorse diventano molte.
-      </p>
-    </div>
-  </section>
-</SeriesLanding>
+<SeriesLanding series="openfga" lang="it" />

@@ -24,11 +24,10 @@ const nextPost = currentIndex < seriesPosts.length - 1 ? seriesPosts[currentInde
 
 // Se la serie ha una landing, il titolo vero sta li'; altrimenti si ricava dallo slug.
 const meta = seriesMetadata[series];
-const seriesLabel = meta?.title ?? series
+const seriesLabel = (lang === 'en' ? meta?.en.title : meta?.title) ?? series
   .replace(/-/g, ' ')
   .replace(/\b\w/g, c => c.toUpperCase());
-// Le landing esistono solo in italiano.
-const landingHref = meta && lang === 'it' ? `/blog/${meta.pillar}/${series}/` : null;
+const landingHref = meta ? `${lang === 'en' ? '/en' : ''}/blog/${meta.pillar}/${series}/` : null;
 
 const t = {
   series: lang === 'en' ? 'Series' : 'Serie',

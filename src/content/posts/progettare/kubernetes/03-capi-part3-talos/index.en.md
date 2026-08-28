@@ -2,7 +2,7 @@
 title: "CAPI Part 3: Talos Linux - The Operating System for Kubernetes"
 date: 2025-08-05T09:30:00.000Z
 description: Complete guide to deploying and managing Kubernetes clusters using Cluster API (CAPI) for infrastructure automation
-pillar: progettare
+pillar: automatizzare
 category: kubernetes
 tags:
   - Kubernetes

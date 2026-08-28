@@ -15,14 +15,25 @@ import type { SeriesEntry } from '@/utils/series';
 interface Props {
   series: SeriesEntry[];
   singoli: any[];
+  lang?: 'it' | 'en';
 }
-const { series, singoli } = Astro.props;
+const { series, singoli, lang = 'it' } = Astro.props;
+const tr = lang === 'en'
+  ? { articoli: 'articles', serie: 'series', singoli: 'Single pieces' }
+  : { articoli: 'articoli', serie: 'serie', singoli: 'Pezzi singoli' };
 
 export const PILLARS = ['progettare', 'verificare', 'automatizzare'] as const;
-export const introPillar: Record<string, string> = {
-  progettare: 'Decidere cosa costruire e come: architettura, eventi, identità, autorizzazione.',
-  verificare: 'Assicurarsi che funzioni e che si sappia quando smette: test, observability, alerting.',
-  automatizzare: 'Far girare tutto senza intervento manuale: cluster, pipeline, container, homelab.',
+export const introPillar: Record<'it' | 'en', Record<string, string>> = {
+  it: {
+    progettare: 'Decidere cosa costruire e come: architettura, eventi, identità, autorizzazione.',
+    verificare: 'Assicurarsi che funzioni e che si sappia quando smette: test, observability, alerting.',
+    automatizzare: 'Far girare tutto senza intervento manuale: cluster, pipeline, container, homelab.',
+  },
+  en: {
+    progettare: 'Deciding what to build and how: architecture, events, identity, authorization.',
+    verificare: 'Making sure it works, and knowing when it stops: testing, observability, alerting.',
+    automatizzare: 'Keeping it running without anyone watching: clusters, pipelines, containers, homelab.',
+  },
 };
 ---
 
@@ -38,29 +49,29 @@ export const introPillar: Record<string, string> = {
         <div class="mb-6">
           <div class="flex items-baseline gap-3 mb-2">
             <span class={`text-2xl font-mono font-bold ${st.text}`}>{st.num}</span>
-            <h2 class="text-2xl font-bold text-text-dark dark:text-text-light">{getPillarLabel(pil)}</h2>
+            <h2 class="text-2xl font-bold text-text-dark dark:text-text-light">{getPillarLabel(pil, lang)}</h2>
             <span class="text-sm text-text-muted ml-auto tabular-nums">
-              {tot} articoli{mieSerie.length > 0 && ` · ${mieSerie.length} serie`}
+              {tot} {tr.articoli}{mieSerie.length > 0 && ` · ${mieSerie.length} ${tr.serie}`}
             </span>
           </div>
           <div class={`h-0.5 w-full ${st.bg} opacity-40 mb-3`} />
-          <p class="text-text-muted max-w-2xl">{introPillar[pil]}</p>
+          <p class="text-text-muted max-w-2xl">{introPillar[lang][pil]}</p>
         </div>
 
-        {mieSerie.length > 0 && <SeriesGrid series={mieSerie} cols={2} />}
+        {mieSerie.length > 0 && <SeriesGrid series={mieSerie} cols={2} lang={lang} />}
 
         {mieiSingoli.length > 0 && (
           <div class={mieSerie.length > 0 ? 'mt-6' : ''}>
             <div class="flex items-center gap-3 mb-3">
               <span class="text-[10px] font-mono font-semibold uppercase tracking-widest text-text-muted whitespace-nowrap">
-                Pezzi singoli
+                {tr.singoli}
               </span>
               <span class="h-px flex-1 bg-border dark:bg-border-dark" />
             </div>
             <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-6">
               {mieiSingoli.map(p => (
                 <li>
-                  <a href={postHref(p.id)} class="group flex items-baseline gap-3 py-2 border-b border-border/50 dark:border-border-dark/50">
+                  <a href={postHref(p.id, lang)} class="group flex items-baseline gap-3 py-2 border-b border-border/50 dark:border-border-dark/50">
                     <span class="flex-1 text-sm text-text-dark dark:text-text-light group-hover:text-accent transition-colors leading-snug">
                       {p.data.title}
                     </span>

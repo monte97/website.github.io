@@ -1,26 +1,9 @@
 ---
 /**
- * Landing della serie Unit test.
- * URL canonico: /blog/verificare/unit-testing/
+ * Landing della serie unit-testing, italiano.
+ * Testo e metadati vivono in src/data/series.ts.
  */
 import SeriesLanding from '@/components/blog/SeriesLanding.astro';
 ---
 
-<SeriesLanding series="unit-testing">
-  <section class="mb-12 max-w-2xl">
-    <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-5">
-      Ottantotto test, e un mutation score del 19%
-    </h2>
-    <div class="space-y-4 text-text-muted leading-relaxed">
-      <p>
-        La reazione istintiva davanti a una suite che non trova niente e' dare la colpa ai mock: mockiamo troppo, mockiamo male, i test verificano i mock invece del codice. Quasi sempre e' la diagnosi sbagliata.
-      </p>
-      <p>
-        Il problema di solito non e' nel mocking: e' nel codice che vi <em>costringe</em> a mockare. Una connessione a Kafka aperta a livello di modulo, un client MongoDB creato all'import, un singleton che si inizializza da solo: ognuna di quelle righe rende impossibile istanziare la logica senza tirarsi dietro mezzo sistema, e i mock diventano la toppa.
-      </p>
-      <p>
-        La serie parte dall'altro capo: quanto si puo' verificare senza montare niente. Settantadue test su store, composable e helper, e nessun componente montato. Poi mostra dove i mock stanno nascondendo un problema di progettazione. E finisce con il refactoring che li rende superflui: application factory, dipendenze iniettate, e nessun <code>sys.modules</code> da manomettere.
-      </p>
-    </div>
-  </section>
-</SeriesLanding>
+<SeriesLanding series="unit-testing" lang="it" />
