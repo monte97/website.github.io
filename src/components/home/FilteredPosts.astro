@@ -48,7 +48,7 @@ const featuredDate = featured?.data.date.toLocaleDateString(lang === 'it' ? 'it-
     {/* Featured post — full width */}
     {featured && (
       <a href={postHref(featured.id, lang)} class="group block mb-6" data-umami-event="blog-read" data-umami-event-pillar={featured.data.pillar ?? ''} data-umami-event-category={featured.data.category ?? ''}>
-        <div class="rounded-xl border border-border/50 dark:border-border-dark/50 bg-white dark:bg-surface-dark p-6 transition-shadow hover:shadow-md">
+        <div class="surface-link p-6">
           <div class="flex items-center gap-2 mb-3">
             <time class="text-xs text-text-muted tabular-nums" datetime={featured.data.date.toISOString()}>
               {featuredDate}

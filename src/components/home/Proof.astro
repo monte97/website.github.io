@@ -1,0 +1,67 @@
+---
+/**
+ * Le prove: i case study, in home.
+ *
+ * E' il materiale che distingue il sito da un blog tecnico, e fino a ieri dalla
+ * porta d'ingresso non era raggiungibile. Sta subito dopo il metodo, prima di
+ * quello che pubblico.
+ */
+import { getCollection } from 'astro:content';
+
+interface Props {
+  lang?: 'it' | 'en';
+  limit?: number;
+}
+
+const { lang = 'it', limit = 3 } = Astro.props;
+const prefix = lang === 'en' ? '/en' : '';
+
+const all = (await getCollection('projects'))
+  .filter((p) => p.data.type === 'case-study' && !p.data.hold)
+  .sort((a, b) => a.data.weight - b.data.weight);
+const shown = all.slice(0, limit);
+
+const t = lang === 'en'
+  ? {
+      eyebrow: 'The proof',
+      title: 'Real projects, told through the decisions that shaped them.',
+      intro: (n: number) => `${n} technical analyses of systems that already had people working inside them. Client names are omitted, the decisions are not.`,
+      all: 'All the analyses',
+    }
+  : {
+      eyebrow: 'Le prove',
+      title: 'Progetti reali, raccontati dalle decisioni che li hanno formati.',
+      intro: (n: number) => `${n} analisi tecniche di sistemi che avevano già gente dentro. I nomi dei committenti sono omessi, le decisioni no.`,
+      all: 'Tutte le analisi',
+    };
+---
+
+<section class="py-20 border-t border-border/30 dark:border-border-dark/30 fade-in-section" aria-label={t.eyebrow}>
+  <div class="max-w-5xl mx-auto px-5">
+    <p class="label-mono !text-accent">{t.eyebrow}</p>
+    <h2 class="mt-3 text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light max-w-2xl">
+      {t.title}
+    </h2>
+    <p class="mt-4 text-text-muted leading-relaxed max-w-2xl">{t.intro(all.length)}</p>
+
+    <div class="grid md:grid-cols-3 gap-4 mt-8">
+      {shown.map((cs) => (
+        <a href={`${prefix}/case-study/${cs.id}/`} class="group surface-link block p-5">
+          {cs.data.eyebrow && (
+            <p class="label-mono !text-accent">{cs.data.eyebrow.split('·').pop()!.trim()}</p>
+          )}
+          <h3 class="mt-2 font-semibold text-text-dark dark:text-text-light leading-snug group-hover:text-accent transition-colors">
+            {cs.data.title}
+          </h3>
+          {cs.data.esito && (
+            <p class="mt-2 text-sm text-text-muted leading-relaxed line-clamp-3">{cs.data.esito}</p>
+          )}
+        </a>
+      ))}
+    </div>
+
+    <p class="mt-6">
+      <a href={`${prefix}/case-study/`} class="text-sm font-semibold text-accent hover:underline">{t.all} &rarr;</a>
+    </p>
+  </div>
+</section>
