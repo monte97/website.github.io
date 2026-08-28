@@ -16,7 +16,7 @@
           v-model="searchQuery"
           type="text"
           :placeholder="t('searchPlaceholder')"
-          class="w-full pl-9 pr-9 py-2 rounded-lg text-sm border border-border/50 dark:border-border-dark/50 bg-white dark:bg-surface-dark text-text-dark dark:text-text-light placeholder-text-muted focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 transition-colors"
+          class="w-full pl-9 pr-9 py-2 rounded-lg text-sm border border-border/50 dark:border-border-dark/50 bg-surface dark:bg-surface-dark text-text-dark dark:text-text-light placeholder-text-muted focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 transition-colors"
         />
         <button
           v-if="searchQuery"
@@ -92,7 +92,7 @@
               v-if="dropdownOpen"
               role="listbox"
               @keydown.escape="dropdownOpen = false"
-              class="absolute right-0 top-full mt-1 w-56 bg-white dark:bg-surface-dark border border-border/70 dark:border-border-dark/70 rounded-xl shadow-lg z-20 py-1 overflow-hidden"
+              class="absolute right-0 top-full mt-1 w-56 surface-card z-20 py-1 overflow-hidden"
             >
               <button
                 v-for="cat in availableCategories"
@@ -205,7 +205,7 @@
           :data-umami-event-pillar="featuredPost.pillar ?? ''"
           :data-umami-event-category="featuredPost.category ?? ''"
         >
-          <div class="rounded-xl border border-border/50 dark:border-border-dark/50 bg-white dark:bg-surface-dark overflow-hidden transition-shadow hover:shadow-md">
+          <div class="surface-link overflow-hidden">
             <div class="p-6">
               <!-- Meta row -->
               <div class="flex items-center gap-2 mb-3">
@@ -274,8 +274,7 @@
             <div
               :class="[
                 'h-full flex flex-col',
-                'bg-white dark:bg-surface-dark rounded-xl border border-border/70 dark:border-border-dark/70',
-                'hover:border-border dark:hover:border-border-dark hover:shadow-md transition-colors duration-200',
+                'surface-link',
                 post.pillar ? 'border-l-[3px]' : '',
                 post.pillar ? pillarStyles[post.pillar].borderLeft : '',
                 'p-6',
