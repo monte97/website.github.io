@@ -1,6 +1,5 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
-import PageHero from '@/components/ui/PageHero.astro';
 import { talks } from '@/data/talks';
 import { talkImagesFrom } from '@/utils/talks';
 import FinalCta from '@/components/ui/FinalCta.astro';
@@ -32,14 +31,17 @@ const locale = lang === 'en' ? 'en-US' : 'it-IT';
 const fmtDate = (iso: string) =>
   new Date(iso).toLocaleDateString(locale, { year: 'numeric', month: 'long' });
 
+const mono = 'font-mono text-[11px] uppercase tracking-[0.12em] text-text-muted';
+const hair = 'border-border/70 dark:border-border-dark/70';
+
 const t = lang === 'en'
   ? {
       pageTitle: 'Talks',
       pageDesc: 'Conferences and talks by Francesco Montelli: slides, material and recordings.',
       eyebrow: 'Speaking',
       heroTitle: 'Conferences & speaking',
-      heroSubtitle: 'Talks on the same topics I work on every day — brought to a room, with the parts that went wrong included.',
       intro: 'Every talk comes out of a real project. Slides, material and recordings are here; if a topic fits your event or your team, we can adapt it.',
+      note: 'The same topics I work on every day, including the parts that went wrong',
       upcomingTitle: 'Upcoming',
       pastTitle: 'Past talks',
       ctaTitle: 'Looking for a speaker on these topics?',
@@ -52,8 +54,8 @@ const t = lang === 'en'
       pageDesc: 'Conferenze e talk di Francesco Montelli: slide, materiale e registrazioni.',
       eyebrow: 'Speaking',
       heroTitle: 'Conferenze e speaking',
-      heroSubtitle: 'Gli stessi temi su cui lavoro tutti i giorni, portati in una sala — comprese le parti andate storte.',
       intro: 'Ogni talk nasce da un progetto vero. Qui trovi slide, materiale e registrazioni; se un tema è adatto al tuo evento o al tuo team, si adatta.',
+      note: 'Gli stessi temi su cui lavoro tutti i giorni, comprese le parti andate storte',
       upcomingTitle: 'Prossimi',
       pastTitle: 'Talk passati',
       ctaTitle: 'Cerchi uno speaker su questi temi?',
@@ -64,24 +66,31 @@ const t = lang === 'en'
 ---
 
 <PageLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/talks.png" lang={lang}>
-  <PageHero slot="hero" title={t.heroTitle} subtitle={t.heroSubtitle} eyebrow={t.eyebrow} align="center" />
-
-  <p class="text-text-muted text-base md:text-lg leading-relaxed max-w-3xl mx-auto text-center mb-10 md:mb-12 fade-in-section">{t.intro}</p>
+  <section slot="hero" class="bg-accent-subtle border-b border-border/40 dark:border-border-dark/40">
+    <div class="max-w-5xl mx-auto px-5 py-14 md:py-16 fade-in-section">
+      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-4">{t.eyebrow}</p>
+      <h1 class="font-bold tracking-tight text-text-dark dark:text-text-light leading-[1.15] text-3xl sm:text-4xl max-w-2xl">
+        {t.heroTitle}
+      </h1>
+      <p class="mt-4 text-text-muted leading-relaxed max-w-2xl">{t.intro}</p>
+      <p class={`mt-5 ${mono}`}>{t.note}</p>
+    </div>
+  </section>
 
   {upcoming.length > 0 && (
     <section class="mb-16 fade-in-section">
-      <h2 class="text-xs font-semibold uppercase tracking-wide text-accent mb-4">{t.upcomingTitle}</h2>
+      <h2 class="font-mono text-[11px] uppercase tracking-[0.12em] text-accent mb-4">{t.upcomingTitle}</h2>
       <div class="space-y-4">
         {upcoming.map((talk) => {
           const img = coverFor(talk.slug);
           return (
-            <a href={`${prefix}/talks/${talk.slug}/`} class="rounded-xl border border-accent/30 bg-accent/5 overflow-hidden hover:border-accent/50 transition-colors md:flex">
+            <a href={`${prefix}/talks/${talk.slug}/`} class="group rounded-xl border border-accent/40 bg-accent/5 overflow-hidden hover:border-accent transition-all md:flex">
               {img && (
-                <img src={img} alt={talk.title} class="w-full h-48 md:h-auto md:w-64 object-cover shrink-0" loading="lazy" />
+                <img src={img} alt={talk.title} class="w-full h-48 md:h-56 md:w-64 object-cover shrink-0" loading="lazy" />
               )}
               <div class="p-6 flex-1">
-                <p class="text-sm text-accent font-semibold">{talk.event} · {fmtDate(talk.date)} · {talk.location}</p>
-                <h3 class="text-xl font-bold text-text-dark dark:text-text-light mt-1">{talk.title}</h3>
+                <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-accent">{talk.event} &middot; {fmtDate(talk.date)} &middot; {talk.location}</p>
+                <h3 class="text-xl font-bold text-text-dark dark:text-text-light mt-1 group-hover:text-accent transition-colors">{talk.title}</h3>
                 <p class="text-text-muted mt-2 leading-relaxed">{talk.abstract[lang]}</p>
               </div>
             </a>
@@ -93,17 +102,17 @@ const t = lang === 'en'
 
   {past.length > 0 && (
     <section class="mb-16 fade-in-section">
-      <h2 class="text-xs font-semibold uppercase tracking-wide text-text-muted mb-4">{t.pastTitle}</h2>
-      <div class="space-y-8">
+      <h2 class={`${mono} mb-4`}>{t.pastTitle}</h2>
+      <div class="space-y-4">
         {past.map((talk) => {
           const img = coverFor(talk.slug);
           return (
-            <a href={`${prefix}/talks/${talk.slug}/`} class="group rounded-xl border border-border/60 dark:border-border-dark/60 bg-white dark:bg-surface-dark overflow-hidden md:flex">
+            <a href={`${prefix}/talks/${talk.slug}/`} class={`group rounded-xl border ${hair} bg-surface dark:bg-surface-dark overflow-hidden hover:border-accent/40 hover:bg-accent/5 transition-all md:flex`}>
               {img && (
-                <img src={img} alt={talk.title} class="w-full h-48 md:h-auto md:w-64 object-cover shrink-0" loading="lazy" />
+                <img src={img} alt={talk.title} class="w-full h-48 md:h-56 md:w-64 object-cover shrink-0" loading="lazy" />
               )}
               <div class="p-6 flex-1">
-                <p class="text-sm text-text-muted">{talk.event} &middot; {fmtDate(talk.date)} &middot; {talk.location}</p>
+                <p class={mono}>{talk.event} &middot; {fmtDate(talk.date)} &middot; {talk.location}</p>
                 <h3 class="text-xl font-bold text-text-dark dark:text-text-light mt-1 group-hover:text-accent transition-colors">{talk.title}</h3>
                 <p class="text-text-muted mt-2 leading-relaxed">{talk.abstract[lang]}</p>
               </div>
