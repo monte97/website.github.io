@@ -41,18 +41,18 @@ figures:
     at: la-soluzione-separare-le-responsabilità
     label: "Cosa cambia togliendo l'I/O dall'attore"
     beforeLabel: "`while(true)` dentro un attore"
-    afterLabel: "Responsabilita' separate"
+    afterLabel: "Responsabilità separate"
     rows:
       - label: "Thread"
         before: "`poll()` blocca un thread del dispatcher per cinque secondi a ciclo: tre reader saturano un pool da due"
         after: "L'I/O bloccante sta fuori dal dispatcher, su un thread dedicato o dentro un source"
       - label: "Backpressure"
-        before: "Nessuna: se il consumer a valle e' lento, la mailbox cresce fino all'OutOfMemoryError"
+        before: "Nessuna: se il consumer a valle è lento, la mailbox cresce fino all'OutOfMemoryError"
         after: "Lo stream propaga la lentezza a monte e rallenta il consumo"
       - label: "Errori"
         before: "`SupervisorStrategy.restart` ricrea il consumer e ri-sottoscrive: costo sproporzionato per un timeout di rete"
         after: "Il transiente si gestisce dove nasce, senza buttare via la sottoscrizione"
-    caption: "Un attore non dovrebbe fare I/O bloccante: e' la regola da cui discendono tutti e tre gli effetti"
+    caption: "Un attore non dovrebbe fare I/O bloccante: è la regola da cui discendono tutti e tre gli effetti"
 ---
 ## Il pattern di partenza: while(true) dentro un attore
 

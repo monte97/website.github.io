@@ -57,8 +57,8 @@ mode: how-to
 caseStudy:
   slug: "dalla-cecita-alla-traccia"
   hook: >
-    Gli stessi vincoli di conformita' su un sistema in esercizio: cosa e' stato separato,
-    cosa e' stato conservato e per quanto.
+    Gli stessi vincoli di conformita' su un sistema in esercizio: cosa è stato separato,
+    cosa è stato conservato e per quanto.
 ---
 
 Immaginate di ricevere una richiesta dal team compliance: "Servono i log di audit degli ultimi tre anni." Aprite Grafana, cercate in Loki e scoprite che la retention massima è 30 giorni. I log di audit sono stati cancellati insieme ai debug log, perché vivevano tutti nello stesso backend. Nessuna separazione, nessuna policy dedicata.

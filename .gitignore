@@ -35,3 +35,6 @@ org.md
 style.md
 prompt/
 .claude/oc-runs/
+
+# junk macOS
+.DS_Store

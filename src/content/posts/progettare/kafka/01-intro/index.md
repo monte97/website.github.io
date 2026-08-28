@@ -44,31 +44,31 @@ figures:
     rows:
       - label: "Ordine"
         before: "I messaggi arrivano nell'ordine in cui sono stati inviati"
-        after: "In ordine fra loro solo a parita' di chiave, e solo finche' il numero di partizioni non cambia"
+        after: "In ordine fra loro solo a parita' di chiave, e solo finché il numero di partizioni non cambia"
       - label: "Retention"
         before: "Cancellare i dati vecchi ha un costo che cresce con il volume"
         after: "Si eliminano file di segmento interi: un `rm`, con costo indipendente dalla dimensione"
       - label: "Durabilita'"
         before: "`acks=all` basta a non perdere messaggi"
         after: "Dipende da `acks` insieme a `min.insync.replicas`: nessuno dei due da solo"
-    caption: "Le garanzie di Kafka sono piu' strette di quelle che di solito si assumono, ed e' sulle strette che si progetta"
+    caption: "Le garanzie di Kafka sono più strette di quelle che di solito si assumono, ed è sulle strette che si progetta"
   - kind: flow
     at: da-chiamate-sincrone-a-flussi-di-eventi
     label: "Chi scrive, cosa resta, chi legge"
     nodes:
       - kind: "Produttori"
         name: "Servizio Pagamenti, Servizio Utenti, Sensori IoT"
-        desc: "Ognuno pubblica un fatto gia' successo. Non sa chi lo leggera', ne' quando."
+        desc: "Ognuno pubblica un fatto già successo. Non sa chi lo leggera', né quando."
         edge: "scrivono un evento"
       - kind: "Topic eventi"
-        name: "Il log e' l'unica fonte di verita'"
+        name: "Il log è l'unica fonte di verità"
         desc: "L'evento viene aggiunto in coda e resta li' per tutta la retention, indipendentemente da quanti lo leggono."
         key: true
         edge: "ognuno legge al proprio ritmo"
       - kind: "Consumatori"
         name: "Servizio Notifiche, Dashboard Analytics, Sistema di Auditing"
-        desc: "Reagiscono in modo asincrono. Un consumatore lento o fermo non rallenta chi scrive, ne' gli altri lettori."
-    caption: "Aggiungere un consumatore non richiede di toccare chi produce: e' qui che sparisce l'accoppiamento"
+        desc: "Reagiscono in modo asincrono. Un consumatore lento o fermo non rallenta chi scrive, né gli altri lettori."
+    caption: "Aggiungere un consumatore non richiede di toccare chi produce: è qui che sparisce l'accoppiamento"
 ---
 ## Da Chiamate Sincrone a Flussi di Eventi
 

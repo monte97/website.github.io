@@ -37,7 +37,7 @@ caseStudy:
   slug: "dalla-cecita-alla-traccia"
   hook: >
     Lo stesso problema fuori dalla demo: dati personali dentro la telemetria di un
-    sistema gia' in produzione, e cosa e' costato toglierli.
+    sistema già in produzione, e cosa è costato toglierli.
 ---
 
 Abilitare il tracing su Keycloak significa ritrovarsi email, username e token JWT in chiaro negli span. Keycloak gestisce credenziali, token e sessioni — quando il tracing è attivo, tutto questo finisce nel backend di observability senza alcun filtro. Il rischio: data breach e violazione GDPR con un click su Explore.

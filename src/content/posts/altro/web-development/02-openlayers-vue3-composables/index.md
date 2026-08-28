@@ -41,15 +41,15 @@ figures:
     afterLabel: "`shallowRef()`"
     rows:
       - label: "Cosa diventa reattivo"
-        before: "Ogni proprieta' interna, ricorsivamente, convertita in Proxy"
-        after: "Solo il riferimento all'oggetto: le proprieta' restano quello che sono"
+        before: "Ogni proprietà interna, ricorsivamente, convertita in Proxy"
+        after: "Solo il riferimento all'oggetto: le proprietà restano quello che sono"
       - label: "Su un oggetto OpenLayers"
-        before: "Centinaia di proprieta' interne intercettate: rallentamenti misurabili e crash silenziosi, perche' OL non si aspetta di essere osservato"
+        before: "Centinaia di proprietà interne intercettate: rallentamenti misurabili e crash silenziosi, perché OL non si aspetta di essere osservato"
         after: "L'oggetto resta quello che la libreria si aspetta di avere fra le mani"
       - label: "Chi controlla cosa"
         before: "Vue prova a controllare anche la mappa"
         after: "Vue i dati dell'applicazione, OL la mappa, e i composable fanno da ponte"
-    caption: "Il conflitto non e' fra due librerie: e' fra due modelli, uno dichiarativo e uno imperativo"
+    caption: "Il conflitto non è fra due librerie: è fra due modelli, uno dichiarativo e uno imperativo"
 ---
 
 ## Il problema: Vue wrappa ciò che non dovrebbe

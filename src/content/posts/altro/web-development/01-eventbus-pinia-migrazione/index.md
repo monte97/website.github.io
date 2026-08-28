@@ -38,11 +38,11 @@ figures:
   - kind: timeline
     at: pattern-4-migrazione-per-strati-non-per-big-bang
     label: "I quattro strati, in quest'ordine"
-    caption: "A ogni passo l'applicazione funziona: e' la proprieta' che rende la migrazione interrompibile"
+    caption: "A ogni passo l'applicazione funziona: è la proprietà che rende la migrazione interrompibile"
     steps:
       - kind: "Strato 1"
         title: "UI state"
-        desc: "Il piu' semplice e il piu' visibile: sidebar aperta, modale, tema. Nessuna chiamata di rete di mezzo, quindi il primo store si scrive senza rischio."
+        desc: "Il più semplice e il più visibile: sidebar aperta, modale, tema. Nessuna chiamata di rete di mezzo, quindi il primo store si scrive senza rischio."
       - kind: "Strato 2"
         title: "Cache e deduplica"
         desc: "Qui lo store inizia a valere: due componenti che chiedono lo stesso dato producono una sola richiesta invece di due."
@@ -51,7 +51,7 @@ figures:
         desc: "Cosa sopravvive a un reload e cosa no diventa una decisione dichiarata, non un effetto collaterale di dove il dato era finito."
       - kind: "Strato 4"
         title: "L'EventBus va via"
-        desc: "Si toglie quando non resta niente che ci passi. Se qualcosa ancora lo usa, vuol dire che uno strato non e' finito."
+        desc: "Si toglie quando non resta niente che ci passi. Se qualcosa ancora lo usa, vuol dire che uno strato non è finito."
         done: true
 ---
 

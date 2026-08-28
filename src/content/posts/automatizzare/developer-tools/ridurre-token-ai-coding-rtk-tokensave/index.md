@@ -280,7 +280,7 @@ La versione corrente espone 48 tool in totale. Di seguito i principali:
 | `tokensave_diff_context` | Contesto semantico per file modificati |
 | `tokensave_module_api` | API pubblica di un file o directory |
 | `tokensave_circular` | Dipendenze circolari tra file |
-| `tokensave_hotspots` | Simboli piu' connessi (alto rischio di regressioni) |
+| `tokensave_hotspots` | Simboli più connessi (alto rischio di regressioni) |
 | `tokensave_similar` | Simboli con nomi simili |
 | `tokensave_rename_preview` | Anteprima impatto di un rename |
 | `tokensave_unused_imports` | Import mai referenziati |

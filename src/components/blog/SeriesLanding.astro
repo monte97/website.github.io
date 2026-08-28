@@ -4,7 +4,7 @@
  *
  * Le pagine sotto src/pages/blog/<pillar>/<serie>/index.astro sono wrapper di
  * dieci righe: passano lo slug della serie e, nello slot, il cappello in prosa
- * che spiega perche' la serie esiste. Tutto il resto (hero, stats, elenco degli
+ * che spiega perché la serie esiste. Tutto il resto (hero, stats, elenco degli
  * articoli, sidebar) vive qui.
  */
 import { getCollection } from 'astro:content';
@@ -27,7 +27,7 @@ const { series, lang = 'it' } = Astro.props;
 const base = seriesMetadata[series];
 if (!base) throw new Error(`SeriesLanding: nessun metadata per la serie "${series}"`);
 
-// L'italiano e' la sorgente: l'inglese sovrascrive solo i campi tradotti.
+// L'italiano è la sorgente: l'inglese sovrascrive solo i campi tradotti.
 const meta = lang === 'en' ? { ...base, ...base.en } : base;
 
 const t = lang === 'en'
@@ -132,7 +132,7 @@ const pillarLabel = getPillarLabel(meta.pillar);
 
       <!-- ── Main column ── -->
       <div>
-        <!-- Il cappello: perche' la serie esiste. Vive in seriesMetadata. -->
+        <!-- Il cappello: perché la serie esiste. Vive in seriesMetadata. -->
         <section class="mb-12 max-w-2xl">
           <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-5">
             {meta.cappello.h2}

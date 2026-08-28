@@ -46,10 +46,10 @@ figures:
     legend:
       plain: "possibile"
       mark: "la strada di questo articolo"
-    caption: "La 2.6.x e' end-of-life dal 19 ottobre 2023: funziona, ma nessuna correzione futura"
+    caption: "La 2.6.x è end-of-life dal 19 ottobre 2023: funziona, ma nessuna correzione futura"
     note: >
       Le prime due sono legittime e vanno valutate: la scelta dipende da quanto a lungo
-      il sistema deve restare in produzione e da che budget c'e'. Il resto dell'articolo
+      il sistema deve restare in produzione e da che budget c'è. Il resto dell'articolo
       percorre la terza.
 ---
 

@@ -41,7 +41,7 @@ figures:
     at: il-problema-identità-frammentate
     label: "Tre sorgenti, un solo token"
     nodes:
-      - kind: "Sorgenti di identita'"
+      - kind: "Sorgenti di identità"
         name: "Active Directory, Google, Okta"
         desc: "Dipendenti in una directory aziendale, clienti con social login, consulenti su un IdP di terzi. Tre protocolli diversi."
         edge: "federation o brokering"
@@ -53,7 +53,7 @@ figures:
       - kind: "Applicazioni"
         name: "App interna, portale clienti, area partner"
         desc: "Ricevono token con la stessa struttura. Non sanno da dove arrivi l'utente, e non devono saperlo."
-    caption: "Cambiare sorgente di identita' non tocca le applicazioni: il contratto e' il token, non la directory"
+    caption: "Cambiare sorgente di identità non tocca le applicazioni: il contratto è il token, non la directory"
 ---
 
 In molte organizzazioni le identità degli utenti sono distribuite su sistemi eterogenei: un Active Directory con migliaia di dipendenti, un provider di social login per i clienti, un IdP esterno per i partner commerciali. Le applicazioni hanno bisogno di un punto unico di autenticazione, indipendentemente da dove vivono gli utenti.

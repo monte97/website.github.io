@@ -38,11 +38,11 @@ figures:
   - kind: flow
     at: configurazione-e-sharding-per-ridurre-i-tempi-di-feedback
     label: "Da una suite a N runner, e ritorno"
-    caption: "I blob report esistono per l'ultimo passo: sono l'unico formato che si puo' fondere in un report solo"
+    caption: "I blob report esistono per l'ultimo passo: sono l'unico formato che si può fondere in un report solo"
     nodes:
       - kind: "1"
         name: "Una suite, un runner"
-        desc: "Con la configurazione di default Playwright usa meta' dei core: su un runner da due, un worker. Il tempo cresce linearmente con i test."
+        desc: "Con la configurazione di default Playwright usa metà dei core: su un runner da due, un worker. Il tempo cresce linearmente con i test."
         edge: "matrix strategy"
       - kind: "2"
         name: "N shard in parallelo"
@@ -50,7 +50,7 @@ figures:
         edge: "ogni shard produce il suo"
       - kind: "3"
         name: "Un blob report per shard"
-        desc: "Non un report HTML: un formato intermedio pensato per essere fuso. E' il motivo per cui il reporter cambia quando si attiva lo sharding."
+        desc: "Non un report HTML: un formato intermedio pensato per essere fuso. È il motivo per cui il reporter cambia quando si attiva lo sharding."
         edge: "job di merge, dopo tutti gli altri"
       - kind: "4"
         name: "Un report solo"

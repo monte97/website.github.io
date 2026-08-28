@@ -44,15 +44,15 @@ figures:
   - kind: flow
     at: la-freccia-che-mancava
     label: "Il ciclo aperto, e la freccia che lo chiude"
-    caption: "I primi tre passi esistono gia' in qualsiasi repo con mutation testing. Il quarto e' quello che quasi nessuno fa, e senza il quale il report resta un tab del browser"
+    caption: "I primi tre passi esistono già in qualsiasi repo con mutation testing. Il quarto è quello che quasi nessuno fa, e senza il quale il report resta un tab del browser"
     nodes:
       - kind: "1"
         name: "La spec"
-        desc: "Un umano descrive cosa il sistema deve fare. E' l'unico punto in cui entra la conoscenza del dominio."
+        desc: "Un umano descrive cosa il sistema deve fare. È l'unico punto in cui entra la conoscenza del dominio."
         edge: "l'agente legge la spec"
       - kind: "2"
         name: "L'agente scrive i test"
-        desc: "Migliaia di righe in un pomeriggio. Nessuno le rilegge davvero: il collo di bottiglia si e' spostato dallo scrivere al giudicare."
+        desc: "Migliaia di righe in un pomeriggio. Nessuno le rilegge davvero: il collo di bottiglia si è spostato dallo scrivere al giudicare."
         edge: "la suite gira contro i mutanti"
       - kind: "3"
         name: "Il report dei survived"
@@ -60,7 +60,7 @@ figures:
         edge: "qui il ciclo di solito si interrompe"
       - kind: "4"
         name: "Il report torna all'agente"
-        desc: "Lo stesso agente legge i survived e li usa come prompt di ritorno: copri questo caso, che il report ti ha appena indicato. E' il workflow che Meta ha messo in produzione con ACH."
+        desc: "Lo stesso agente legge i survived e li usa come prompt di ritorno: copri questo caso, che il report ti ha appena indicato. È il workflow che Meta ha messo in produzione con ACH."
         key: true
 ---
 

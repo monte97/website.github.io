@@ -36,7 +36,7 @@ figures:
   - kind: flow
     at: il-banco-di-prova-kind-proxmox-e-talos
     label: "I tre pezzi del banco di prova"
-    caption: "Su un cloud provider cambierebbe solo il pezzo di mezzo: e' il senso di avere un'interfaccia standard"
+    caption: "Su un cloud provider cambierebbe solo il pezzo di mezzo: è il senso di avere un'interfaccia standard"
     nodes:
       - kind: "Management"
         name: "Kind"
@@ -44,7 +44,7 @@ figures:
         edge: "chiama le API di Proxmox"
       - kind: "Infrastruttura"
         name: "Proxmox VE"
-        desc: "Controllo completo sull'ambiente virtualizzato e una API REST su cui il provider CAPI puo' agire davvero. Non e' un simulatore: e' la stessa meccanica su scala minore."
+        desc: "Controllo completo sull'ambiente virtualizzato e una API REST su cui il provider CAPI può agire davvero. Non è un simulatore: è la stessa meccanica su scala minore."
         edge: "crea le macchine"
       - kind: "Workload"
         name: "Talos Linux"

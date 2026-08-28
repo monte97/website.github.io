@@ -46,21 +46,21 @@ figures:
         edge: "HTTP"
       - kind: "PC / Docker"
         name: "localhost:80"
-        desc: "La porta 80 della macchina e' mappata sul NodePort statico 32000 del cluster kind."
+        desc: "La porta 80 della macchina è mappata sul NodePort statico 32000 del cluster kind."
         edge: "NodePort 32000"
       - kind: "Ingress Controller"
         name: "Legge il percorso e decide"
-        desc: "Lavora a Layer 7: vede /foo e /bar e applica le regole dichiarate nella risorsa Ingress. E' l'unico punto d'ingresso."
+        desc: "Lavora a Layer 7: vede /foo e /bar e applica le regole dichiarate nella risorsa Ingress. È l'unico punto d'ingresso."
         key: true
         edge: "instrada per percorso"
       - kind: "Service"
         name: "foo-service, bar-service"
-        desc: "Un service per applicazione. Nessuno dei due espone piu' una porta propria verso l'esterno."
+        desc: "Un service per applicazione. Nessuno dei due espone più una porta propria verso l'esterno."
         edge: "verso i pod"
       - kind: "Pod"
         name: "Pod foo, Pod bar"
         desc: "L'applicazione non sa nulla del routing: riceve una richiesta HTTP normale."
-    caption: "Aggiungere un servizio vuol dire aggiungere una regola, non un terminale e una porta in piu'"
+    caption: "Aggiungere un servizio vuol dire aggiungere una regola, non un terminale e una porta in più"
 ---
 
 ## Il Problema: Accedere ai Servizi in un Ambiente di Sviluppo Locale

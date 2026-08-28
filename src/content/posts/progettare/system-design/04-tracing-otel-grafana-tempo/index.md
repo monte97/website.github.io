@@ -53,7 +53,7 @@ figures:
       - label: "Memoria"
         before: "Un elemento alla volta"
         after: "L'intera collezione bufferizzata prima del passo successivo"
-    caption: "La classificazione dell'articolo 3 non e' teorica: e' la forma che la pipeline prende dentro Tempo"
+    caption: "La classificazione dell'articolo 3 non è teorica: è la forma che la pipeline prende dentro Tempo"
 ---
 
 Nei tre articoli precedenti abbiamo visto [cosa sbagliare](/blog/progettare/system-design/01-errori-produzione/), [quanto costa](/blog/progettare/system-design/02-benchmark-net8/) e [cosa succede sotto il cofano](/blog/progettare/system-design/03-compilatore-state-machine/). Abbiamo parlato di complessità computazionale, state machine, allocazioni e streaming. Ma finora era tutto teoria e numeri. Tabelle di benchmark, diagrammi ASCII, ragionamenti sulla deferred execution.

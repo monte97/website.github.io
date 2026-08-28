@@ -40,11 +40,11 @@ figures:
   - kind: flow
     at: schema-evolution-aggiungere-un-campo-senza-rompere
     label: "Writer schema e reader schema"
-    caption: "Il consumer non viene aggiornato e continua a funzionare: e' il meccanismo che JSON senza contratto non ha"
+    caption: "Il consumer non viene aggiornato e continua a funzionare: è il meccanismo che JSON senza contratto non ha"
     nodes:
       - kind: "Producer"
         name: "Scrive con lo schema v2"
-        desc: "Il campo nuovo c'e'. Il payload binario non porta i nomi dei campi: porta solo i valori, piu' l'identificativo dello schema con cui sono stati scritti."
+        desc: "Il campo nuovo c'è. Il payload binario non porta i nomi dei campi: porta solo i valori, più l'identificativo dello schema con cui sono stati scritti."
         edge: "registra e verifica la compatibilita'"
       - kind: "Registry"
         name: "Apicurio"
@@ -52,7 +52,7 @@ figures:
         edge: "il consumer chiede lo schema per id"
       - kind: "Consumer"
         name: "Legge con lo schema v1"
-        desc: "Non e' stato aggiornato e non sa che esiste un campo nuovo. Chiede al registry lo schema con cui il messaggio e' stato scritto."
+        desc: "Non è stato aggiornato e non sa che esiste un campo nuovo. Chiede al registry lo schema con cui il messaggio è stato scritto."
         edge: "risoluzione writer/reader"
       - kind: "Avro"
         name: "Riconcilia i due schema"

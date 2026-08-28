@@ -28,9 +28,9 @@ export interface SeriesMeta {
   serviceDescription: string;
   /** What the reader will learn — displayed as bullet list */
   learningGoals: string[];
-  /** Il cappello della landing: perche' la serie esiste */
+  /** Il cappello della landing: perché la serie esiste */
   cappello: { h2: string; paragrafi: string[] };
-  /** Le stesse cose in inglese. L'italiano resta la sorgente di verita'. */
+  /** Le stesse cose in inglese. L'italiano resta la sorgente di verità. */
   en: {
     title: string;
     subtitle: string;
@@ -73,9 +73,9 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
     cappello: {
       h2: 'Monitoraggio e observability non sono la stessa cosa',
       paragrafi: [
-        'Il monitoraggio risponde a domande che hai previsto: la CPU e\' sopra soglia, il disco si sta riempiendo, il servizio non risponde. Funziona finche\' i guasti somigliano a quelli che avevi immaginato quando hai scritto gli alert.',
-        'In un sistema distribuito i guasti smettono di somigliare a quello che avevi previsto. La domanda diventa <em>perche\' questa richiesta, di questo cliente, ha impiegato dodici secondi</em> — e non e\' una domanda che si puo\' mettere in una dashboard in anticipo. L\'observability e\' la proprieta\' di un sistema che permette di rispondere a domande che nessuno aveva preparato.',
-        'I segnali sono tre, e da soli valgono poco. Le <strong>metriche</strong> dicono che qualcosa e\' cambiato, i <strong>log</strong> dicono cosa e\' successo in un punto, le <strong>tracce</strong> dicono dove il tempo se n\'e\' andato lungo il percorso. Il valore sta nel passare dall\'uno all\'altro senza perdere il filo: dall\'alert alla traccia, dalla traccia al log della riga che ha fallito.',
+        'Il monitoraggio risponde a domande che hai previsto: la CPU è sopra soglia, il disco si sta riempiendo, il servizio non risponde. Funziona finché i guasti somigliano a quelli che avevi immaginato quando hai scritto gli alert.',
+        'In un sistema distribuito i guasti smettono di somigliare a quello che avevi previsto. La domanda diventa <em>perché questa richiesta, di questo cliente, ha impiegato dodici secondi</em> — e non è una domanda che si può mettere in una dashboard in anticipo. L\'observability è la proprietà di un sistema che permette di rispondere a domande che nessuno aveva preparato.',
+        'I segnali sono tre, e da soli valgono poco. Le <strong>metriche</strong> dicono che qualcosa è cambiato, i <strong>log</strong> dicono cosa è successo in un punto, le <strong>tracce</strong> dicono dove il tempo se n\'è andato lungo il percorso. Il valore sta nel passare dall\'uno all\'altro senza perdere il filo: dall\'alert alla traccia, dalla traccia al log della riga che ha fallito.',
         'Questa serie parte da quel filo e lo segue fino in produzione, dove i problemi smettono di essere concettuali e diventano volume di dati, costi di storage e vincoli di conformita\'.',
       ],
     },
@@ -133,7 +133,7 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
       paragrafi: [
         'Diamo per scontata un\'equazione: i test passano, quindi il codice funziona. Quasi sempre regge. Quando non regge, il conto arriva su codice coperto, testato e verde, e nessun test se n\'era accorto.',
         'La coverage risponde a una domanda sola: <em>questo codice viene eseguito?</em> Non risponde a quella che conta: <em>se questo codice fosse sbagliato, i test se ne accorgerebbero?</em> Il mutation testing risponde alla seconda, rompendo il codice apposta e contando quante rotture i test rilevano.',
-        'La serie parte da un bug rimasto tre settimane in produzione con il 93% di coverage, e arriva alla domanda che gli agenti AI rendono urgente: se i test li scrive una macchina, chi controlla che funzionino? La risposta e\' che serve un arbitro esterno e formale, e che quel ruolo il mutation score lo sa fare.',
+        'La serie parte da un bug rimasto tre settimane in produzione con il 93% di coverage, e arriva alla domanda che gli agenti AI rendono urgente: se i test li scrive una macchina, chi controlla che funzionino? La risposta è che serve un arbitro esterno e formale, e che quel ruolo il mutation score lo sa fare.',
       ],
     },
     en: {
@@ -163,7 +163,7 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
     title: 'Test end-to-end con Playwright',
     subtitle: 'Dalla flakiness al Page Object Model, nove articoli su una suite di cui fidarsi',
     description:
-      'Le suite E2E non vengono abbandonate perche\' sono lente: vengono abbandonate quando il team ' +
+      'Le suite E2E non vengono abbandonate perché sono lente: vengono abbandonate quando il team ' +
       'smette di credere ai loro fallimenti. La serie parte dal motivo tecnico per cui i test flaky ' +
       'esistono: il protocollo con cui il test parla al browser. E arriva a una suite che gira in CI, ' +
       'mocka la rete, si correla alle trace del backend e resta leggibile quando cresce.',
@@ -178,7 +178,7 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
       'Posso affiancarvi a riportare i test end-to-end a essere un filtro invece che rumore: ' +
       'diagnosi della flakiness, strategia di parallelizzazione in CI, e una suite che regge la crescita.',
     learningGoals: [
-      'Capire perche\' l\'auto-waiting elimina i timing bug e cosa non elimina',
+      'Capire perché l\'auto-waiting elimina i timing bug e cosa non elimina',
       'Correlare un test fallito con la trace del backend che lo ha fatto fallire',
       'Parallelizzare in CI con lo sharding, e sapere quando il collo di bottiglia si sposta altrove',
       'Mockare la rete: da un singolo endpoint al replay di sessioni HAR',
@@ -188,9 +188,9 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
     cappello: {
       h2: 'Le suite E2E non muoiono di lentezza, muoiono di sfiducia',
       paragrafi: [
-        'Test che passano al terzo tentativo. <code>sleep(5000)</code> sparsi nel codice. Suite che girano venti minuti e falliscono in modo non deterministico, sempre su un test diverso. La spiegazione che si sente di solito e\' che i test end-to-end sono fragili per natura, e che ci si convive.',
-        'Non e\' vero. Quella fragilita\' non e\' una proprieta\' del testing end-to-end: e\' una conseguenza di <strong>come il test parla al browser</strong>. Cambiato quel canale, la maggior parte dei sintomi sparisce senza toccare una riga di logica di test.',
-        'Il momento in cui una suite viene abbandonata non e\' quando diventa lenta: e\' quando il team smette di credere ai suoi fallimenti. Da li\' in avanti continua a costare tempo di CI senza produrre informazione, e chi rilascia impara a premere <em>skip</em>.',
+        'Test che passano al terzo tentativo. <code>sleep(5000)</code> sparsi nel codice. Suite che girano venti minuti e falliscono in modo non deterministico, sempre su un test diverso. La spiegazione che si sente di solito è che i test end-to-end sono fragili per natura, e che ci si convive.',
+        'Non è vero. Quella fragilita\' non è una proprietà del testing end-to-end: è una conseguenza di <strong>come il test parla al browser</strong>. Cambiato quel canale, la maggior parte dei sintomi sparisce senza toccare una riga di logica di test.',
+        'Il momento in cui una suite viene abbandonata non è quando diventa lenta: è quando il team smette di credere ai suoi fallimenti. Da li\' in avanti continua a costare tempo di CI senza produrre informazione, e chi rilascia impara a premere <em>skip</em>.',
         'Questa serie segue il percorso completo: dal protocollo che genera la flakiness fino a una suite che gira in CI parallelizzata, mocka la rete, si correla alle trace del backend e resta leggibile quando i test diventano centinaia.',
       ],
     },
@@ -222,10 +222,10 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
   },
   keycloak: {
     title: 'Keycloak in produzione',
-    subtitle: 'Dall\'Authorization Code Flow alla federazione, sei articoli su identita\' che regge',
+    subtitle: 'Dall\'Authorization Code Flow alla federazione, sei articoli su identità che regge',
     description:
-      'Delegare l\'autenticazione a Keycloak e\' una decisione che si paga per anni: la serie percorre ' +
-      'i punti dove si rompe davvero. Il flusso corretto e perche\' PKCE non e\' opzionale, ' +
+      'Delegare l\'autenticazione a Keycloak è una decisione che si paga per anni: la serie percorre ' +
+      'i punti dove si rompe davvero. Il flusso corretto e perché PKCE non è opzionale, ' +
       'l\'autenticazione machine-to-machine, i test end-to-end su un identity provider, ' +
       'la delega delle policy a OPA e infine la federazione con provider esterni.',
     level: 'Intermedio',
@@ -238,20 +238,20 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
     serviceDescription:
       'Posso affiancarvi sulle scelte che dopo costano una migrazione: modello dei realm, ' +
       'flussi OAuth2 corretti, separazione fra autenticazione e autorizzazione, integrazione con ' +
-      'quello che avete gia\'.',
+      'quello che avete già.',
     learningGoals: [
-      'Scegliere il flusso OAuth2 giusto, e capire perche\' PKCE non e\' un extra',
+      'Scegliere il flusso OAuth2 giusto, e capire perché PKCE non è un extra',
       'Autenticare servizi fra loro senza inventarsi token applicativi',
       'Testare end-to-end un\'applicazione che dipende da un identity provider',
       'Separare autenticazione da autorizzazione delegando le policy a OPA',
-      'Federare provider esterni senza duplicare le identita\'',
+      'Federare provider esterni senza duplicare le identità',
     ],
     cappello: {
-      h2: 'Delegare l\'autenticazione e\' una decisione che si paga per anni',
+      h2: 'Delegare l\'autenticazione è una decisione che si paga per anni',
       paragrafi: [
-        'Scrivere l\'autenticazione a mano e\' un errore che quasi nessuno fa piu\'. Delegarla a un identity provider e\' la scelta giusta, ma non e\' la fine del problema: e\' l\'inizio di una serie di decisioni che si correggono male. Il modello dei realm, quale flusso OAuth2 usare, dove finiscono le policy di autorizzazione, come si testa un\'applicazione che dipende da un servizio esterno.',
-        'Sono tutte scelte che si fanno all\'inizio e si pagano per anni, perche\' cambiarle dopo significa rientrare in ogni servizio che parla con l\'autenticazione.',
-        'Questa serie percorre i punti dove Keycloak si rompe davvero in produzione, uno per articolo: il flusso corretto e perche\' PKCE non e\' un extra, l\'autenticazione fra servizi, i test end-to-end su un identity provider, la separazione fra autenticazione e autorizzazione delegando le policy a OPA, e infine la federazione con provider esterni.',
+        'Scrivere l\'autenticazione a mano è un errore che quasi nessuno fa più. Delegarla a un identity provider è la scelta giusta, ma non è la fine del problema: è l\'inizio di una serie di decisioni che si correggono male. Il modello dei realm, quale flusso OAuth2 usare, dove finiscono le policy di autorizzazione, come si testa un\'applicazione che dipende da un servizio esterno.',
+        'Sono tutte scelte che si fanno all\'inizio e si pagano per anni, perché cambiarle dopo significa rientrare in ogni servizio che parla con l\'autenticazione.',
+        'Questa serie percorre i punti dove Keycloak si rompe davvero in produzione, uno per articolo: il flusso corretto e perché PKCE non è un extra, l\'autenticazione fra servizi, i test end-to-end su un identity provider, la separazione fra autenticazione e autorizzazione delegando le policy a OPA, e infine la federazione con provider esterni.',
       ],
     },
     en: {
@@ -283,8 +283,8 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
     subtitle: 'Da Zanzibar alla multi-tenancy, cinque articoli su permessi che scalano',
     description:
       'Quando i permessi smettono di stare in una colonna `role` sulla tabella utenti, il modello ' +
-      'a ruoli non regge piu\'. La serie parte dai concetti di Google Zanzibar, li collega a Keycloak, ' +
-      'e arriva ai problemi che si incontrano davvero: isolare piu\' organizzazioni, risolvere ' +
+      'a ruoli non regge più. La serie parte dai concetti di Google Zanzibar, li collega a Keycloak, ' +
+      'e arriva ai problemi che si incontrano davvero: isolare più organizzazioni, risolvere ' +
       'gerarchie profonde, e il costo di ListObjects quando le risorse diventano molte.',
     level: 'Avanzato',
     pillar: 'verificare',
@@ -299,17 +299,17 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
     learningGoals: [
       'Capire il modello Zanzibar: tuple di relazione al posto dei ruoli',
       'Collegare OpenFGA a Keycloak separando autenticazione e autorizzazione',
-      'Isolare piu\' organizzazioni nello stesso sistema senza duplicare il modello',
+      'Isolare più organizzazioni nello stesso sistema senza duplicare il modello',
       'Risolvere gerarchie profonde senza scrivere codice applicativo',
       'Riconoscere quando ListObjects diventa il collo di bottiglia, e come aggirarlo',
     ],
     cappello: {
       h2: 'Il momento in cui i ruoli smettono di bastare',
       paragrafi: [
-        'Finche\' i permessi stanno in una colonna <code>role</code> sulla tabella utenti, il modello a ruoli funziona e non c\'e\' motivo di cambiarlo. Smette di funzionare quando arriva la prima richiesta che non ci sta dentro: <em>questo documento e\' condiviso con quell\'utente, ma solo in lettura, e solo finche\' resta nel progetto di cui e\' membro</em>.',
-        'A quel punto si aggiunge una tabella di eccezioni, poi un flag, poi un <code>if</code> nel controller. Il permesso smette di essere un dato e diventa codice sparso, e nessuno sa piu\' rispondere alla domanda che conta: <strong>chi puo\' vedere questa risorsa, e perche\'?</strong>',
-        'Google ha affrontato lo stesso problema su scala e ne ha pubblicato il modello, Zanzibar: i permessi diventano tuple di relazione, non ruoli. OpenFGA e\' l\'implementazione open source di quel modello.',
-        'La serie parte dai concetti, li collega a Keycloak per separare autenticazione e autorizzazione, e arriva ai problemi che si incontrano davvero: isolare piu\' organizzazioni nello stesso sistema, risolvere gerarchie profonde, e il costo delle query inverse quando le risorse diventano molte.',
+        'Finché i permessi stanno in una colonna <code>role</code> sulla tabella utenti, il modello a ruoli funziona e non c\'è motivo di cambiarlo. Smette di funzionare quando arriva la prima richiesta che non ci sta dentro: <em>questo documento è condiviso con quell\'utente, ma solo in lettura, e solo finché resta nel progetto di cui è membro</em>.',
+        'A quel punto si aggiunge una tabella di eccezioni, poi un flag, poi un <code>if</code> nel controller. Il permesso smette di essere un dato e diventa codice sparso, e nessuno sa più rispondere alla domanda che conta: <strong>chi può vedere questa risorsa, e perché?</strong>',
+        'Google ha affrontato lo stesso problema su scala e ne ha pubblicato il modello, Zanzibar: i permessi diventano tuple di relazione, non ruoli. OpenFGA è l\'implementazione open source di quel modello.',
+        'La serie parte dai concetti, li collega a Keycloak per separare autenticazione e autorizzazione, e arriva ai problemi che si incontrano davvero: isolare più organizzazioni nello stesso sistema, risolvere gerarchie profonde, e il costo delle query inverse quando le risorse diventano molte.',
       ],
     },
     en: {
@@ -364,11 +364,11 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
       'Scegliere la strategia di recovery dalla natura dello stato, non per preferenza',
     ],
     cappello: {
-      h2: 'Un evento non e\' una richiesta: e\' un fatto gia\' successo',
+      h2: 'Un evento non è una richiesta: è un fatto già successo',
       paragrafi: [
-        'Una chiamata sincrona chiede a qualcuno di fare qualcosa e aspetta la risposta. Un evento dichiara che qualcosa <em>e\' successo</em>, e chi lo riceve decide da solo cosa farne. La differenza sembra filosofica finche\' non si guarda cosa cambia in produzione: un servizio lento smette di rallentare quelli che lo chiamano, e un servizio fermo smette di fermarli.',
-        'Il prezzo pero\' c\'e\', e questa serie lo paga per intero invece di nominarlo e passare oltre. L\'ordine dei messaggi vale solo per chiave. Lo stato del consumer diventa un problema vostro. Il debug attraversa un componente in piu\'. E due servizi che non sono d\'accordo su cosa contiene un messaggio si rompono a runtime, non a compile-time.',
-        'Il sistema da cui vengono questi articoli e\' una piattaforma di telemetria per mezzi d\'opera: sensori che pubblicano dati odometrici e posizione, tre consumer che leggono lo stesso topic con responsabilita\' diverse. Un caso abbastanza piccolo da stare in una demo e abbastanza vero da avere gia\' rotto qualcosa.',
+        'Una chiamata sincrona chiede a qualcuno di fare qualcosa e aspetta la risposta. Un evento dichiara che qualcosa <em>è successo</em>, e chi lo riceve decide da solo cosa farne. La differenza sembra filosofica finché non si guarda cosa cambia in produzione: un servizio lento smette di rallentare quelli che lo chiamano, e un servizio fermo smette di fermarli.',
+        'Il prezzo pero\' c\'è, e questa serie lo paga per intero invece di nominarlo e passare oltre. L\'ordine dei messaggi vale solo per chiave. Lo stato del consumer diventa un problema vostro. Il debug attraversa un componente in più. E due servizi che non sono d\'accordo su cosa contiene un messaggio si rompono a runtime, non a compile-time.',
+        'Il sistema da cui vengono questi articoli è una piattaforma di telemetria per mezzi d\'opera: sensori che pubblicano dati odometrici e posizione, tre consumer che leggono lo stesso topic con responsabilità diverse. Un caso abbastanza piccolo da stare in una demo e abbastanza vero da avere già rotto qualcosa.',
       ],
     },
     en: {
@@ -400,7 +400,7 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
     subtitle: 'Dalla saturation predittiva al burn-rate sugli SLO, fino a chi riceve la notifica',
     description:
       'Un alert che scatta quando il disco è già pieno ha risposto alla domanda sbagliata. ' +
-      'La domanda e\' sempre la stessa, quando va detto che qualcosa non funziona, e la serie la percorre ' +
+      'La domanda è sempre la stessa, quando va detto che qualcosa non funziona, e la serie la percorre ' +
       'su tre livelli. Si chiude sul tratto che quasi nessuno cura: cosa succede fra la regola che scatta ' +
       'e la persona che deve agire.',
     level: 'Avanzato',
@@ -421,11 +421,11 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
       'Instradare per severity, sopprimere i duplicati e mettere un runbook nel payload',
     ],
     cappello: {
-      h2: 'Un alert che scatta quando il disco e\' pieno ha risposto alla domanda sbagliata',
+      h2: 'Un alert che scatta quando il disco è pieno ha risposto alla domanda sbagliata',
       paragrafi: [
-        'La regola copiata dal primo tutorial segnala che il disco e\' pieno <em>adesso</em>. Quando scatta, l\'occupazione e\' al 90%, i log stanno gia\' fallendo e qualche servizio restituisce <code>ENOSPC</code>. Non e\' un problema di soglia. La domanda giusta era un\'altra: <em>si riempira\' entro una finestra in cui posso ancora intervenire senza svegliare nessuno?</em>',
+        'La regola copiata dal primo tutorial segnala che il disco è pieno <em>adesso</em>. Quando scatta, l\'occupazione è al 90%, i log stanno già fallendo e qualche servizio restituisce <code>ENOSPC</code>. Non è un problema di soglia. La domanda giusta era un\'altra: <em>si riempira\' entro una finestra in cui posso ancora intervenire senza svegliare nessuno?</em>',
         'La serie percorre tre livelli della stessa domanda. Il primo guarda le risorse fisiche e il trend con cui si consumano. Il secondo sposta il soggetto dalla risorsa all\'impatto utente: non quando si satura il disco, ma a che ritmo si sta bruciando l\'error budget del servizio. Il terzo si occupa del tratto che quasi nessun repo cura, quello fra la regola che scatta e la persona che deve agire.',
-        'Il filo comune e\' che alertare bene non e\' una proprieta\' di una singola query. E\' una proprieta\' del sistema intero: dalla metrica alla regola, dalla regola al routing, dal routing al payload, dal payload alla persona che alle tre di notte deve capire cosa fare.',
+        'Il filo comune è che alertare bene non è una proprietà di una singola query. È una proprietà del sistema intero: dalla metrica alla regola, dalla regola al routing, dal routing al payload, dal payload alla persona che alle tre di notte deve capire cosa fare.',
       ],
     },
     en: {
@@ -458,7 +458,7 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
     description:
       'Lo script che aggiunge un nodo funziona finché non fallisce a metà, e lascia una macchina ' +
       'che nessun inventario conosce. La serie sostituisce quello script con un modello dichiarativo: ' +
-      'si dichiara il cluster che si vuole e un controller ci arriva. Il costo e\' dichiarato: ' +
+      'si dichiara il cluster che si vuole e un controller ci arriva. Il costo è dichiarato: ' +
       'il management cluster diventa una dipendenza critica.',
     level: 'Avanzato',
     pillar: 'automatizzare',
@@ -478,11 +478,11 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
       'Costruire un\'immagine Ubuntu quando Talos non è la scelta possibile',
     ],
     cappello: {
-      h2: 'Lo script che aggiunge un nodo funziona finche\' non fallisce a meta\'',
+      h2: 'Lo script che aggiunge un nodo funziona finché non fallisce a metà',
       paragrafi: [
-        'La VM e\' stata creata, <code>kubeadm</code> e\' installato, il <code>join</code> non e\' mai partito perche\' il token era scaduto. Ora c\'e\' una macchina che non e\' un nodo, che nessun inventario conosce, e che scoprirete fra tre mesi guardando le risorse dell\'hypervisor.',
-        'Quello e\' il costo dell\'approccio imperativo, e non e\' la fatica di scrivere lo script. E\' che uno script descrive <em>come si fa</em>, e quando si interrompe lascia dietro stato che nessuno ha dichiarato e nessuno sa ricostruire. Cluster API gira la direzione: si dichiara il cluster che si vuole, e un controller si occupa di arrivarci e di restarci.',
-        'La serie va dal modello ai componenti fino a un cluster in piedi, e dichiara anche il conto: il management cluster diventa una dipendenza critica, e sotto una certa scala imparare e mantenere CAPI costa piu\' di quello che fa risparmiare. Meglio saperlo prima di metterne su uno.',
+        'La VM è stata creata, <code>kubeadm</code> è installato, il <code>join</code> non è mai partito perché il token era scaduto. Ora c\'è una macchina che non è un nodo, che nessun inventario conosce, e che scoprirete fra tre mesi guardando le risorse dell\'hypervisor.',
+        'Quello è il costo dell\'approccio imperativo, e non è la fatica di scrivere lo script. È che uno script descrive <em>come si fa</em>, e quando si interrompe lascia dietro stato che nessuno ha dichiarato e nessuno sa ricostruire. Cluster API gira la direzione: si dichiara il cluster che si vuole, e un controller si occupa di arrivarci e di restarci.',
+        'La serie va dal modello ai componenti fino a un cluster in piedi, e dichiara anche il conto: il management cluster diventa una dipendenza critica, e sotto una certa scala imparare e mantenere CAPI costa più di quello che fa risparmiare. Meglio saperlo prima di metterne su uno.',
       ],
     },
     en: {
@@ -536,8 +536,8 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
     cappello: {
       h2: 'Lo stesso codice, due ordini di grandezza di differenza',
       paragrafi: [
-        '<code>.Contains()</code> su una <code>List</code> e\' O(n). <code>.Contains()</code> su un <code>HashSet</code> e\' O(1). Il codice che scrivete e\' identico. Il profiler racconta due storie diverse.',
-        'E\' il filo di tutta la serie: LINQ e\' dichiarativo, ma l\'esecuzione e\' imperativa, e la stessa sintassi nasconde costi radicalmente diversi a seconda della struttura dati sotto. Il punto di partenza e\' un audit vero, su un dispatcher per una flotta di veicoli commerciali che tiene tutto in memoria per stare sotto i 100ms di latenza: quattro pattern trovati in produzione, e il piu\' costoso faceva 1.400.000 confronti dove ne bastavano 2000.',
+        '<code>.Contains()</code> su una <code>List</code> è O(n). <code>.Contains()</code> su un <code>HashSet</code> è O(1). Il codice che scrivete è identico. Il profiler racconta due storie diverse.',
+        'È il filo di tutta la serie: LINQ è dichiarativo, ma l\'esecuzione è imperativa, e la stessa sintassi nasconde costi radicalmente diversi a seconda della struttura dati sotto. Il punto di partenza è un audit vero, su un dispatcher per una flotta di veicoli commerciali che tiene tutto in memoria per stare sotto i 100ms di latenza: quattro pattern trovati in produzione, e il più costoso faceva 1.400.000 confronti dove ne bastavano 2000.',
         'Da li\' la serie scende: i numeri misurati con BenchmarkDotNet invece che stimati, la state machine che il compilatore genera dietro una <code>Where()</code>, e infine come rendere visibile l\'esecuzione con il tracing invece di doverla leggere nel codice.',
       ],
     },
@@ -589,9 +589,9 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
     cappello: {
       h2: 'I problemi di una SPA arrivano quando smette di essere piccola',
       paragrafi: [
-        'Finche\' i componenti sono pochi, un EventBus funziona e nessuno si lamenta. Il problema arriva dopo: lo stato passa di mano senza che si capisca dove, e per rispondere a <em>chi ha cambiato questo valore</em> bisogna leggere tutto il progetto.',
-        'Questa serie affronta tre casi che si presentano in quell\'ordine. Sostituire l\'EventBus con uno store senza riscrivere l\'applicazione in un colpo solo. Integrare una libreria pesante, nel caso concreto una mappa, tenendola fuori dal sistema reattivo invece di lasciare che il framework la gestisca. Ed estrarre la duplicazione quando lo stesso pezzo di logica e\' finito in cinque componenti.',
-        'L\'ultimo articolo porta anche un anti-pattern, perche\' l\'astrazione sbagliata costa piu\' della duplicazione che voleva togliere.',
+        'Finché i componenti sono pochi, un EventBus funziona e nessuno si lamenta. Il problema arriva dopo: lo stato passa di mano senza che si capisca dove, e per rispondere a <em>chi ha cambiato questo valore</em> bisogna leggere tutto il progetto.',
+        'Questa serie affronta tre casi che si presentano in quell\'ordine. Sostituire l\'EventBus con uno store senza riscrivere l\'applicazione in un colpo solo. Integrare una libreria pesante, nel caso concreto una mappa, tenendola fuori dal sistema reattivo invece di lasciare che il framework la gestisca. Ed estrarre la duplicazione quando lo stesso pezzo di logica è finito in cinque componenti.',
+        'L\'ultimo articolo porta anche un anti-pattern, perché l\'astrazione sbagliata costa più della duplicazione che voleva togliere.',
       ],
     },
     en: {
@@ -642,9 +642,9 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
     cappello: {
       h2: 'Ottantotto test, e un mutation score del 19%',
       paragrafi: [
-        'La reazione istintiva davanti a una suite che non trova niente e\' dare la colpa ai mock: mockiamo troppo, mockiamo male, i test verificano i mock invece del codice. Quasi sempre e\' la diagnosi sbagliata.',
-        'Il problema di solito non e\' nel mocking: e\' nel codice che vi <em>costringe</em> a mockare. Una connessione a Kafka aperta a livello di modulo, un client MongoDB creato all\'import, un singleton che si inizializza da solo: ognuna di quelle righe rende impossibile istanziare la logica senza tirarsi dietro mezzo sistema, e i mock diventano la toppa.',
-        'La serie parte dall\'altro capo: quanto si puo\' verificare senza montare niente. Settantadue test su store, composable e helper, e nessun componente montato. Poi mostra dove i mock stanno nascondendo un problema di progettazione. E finisce con il refactoring che li rende superflui: application factory, dipendenze iniettate, e nessun <code>sys.modules</code> da manomettere.',
+        'La reazione istintiva davanti a una suite che non trova niente è dare la colpa ai mock: mockiamo troppo, mockiamo male, i test verificano i mock invece del codice. Quasi sempre è la diagnosi sbagliata.',
+        'Il problema di solito non è nel mocking: è nel codice che vi <em>costringe</em> a mockare. Una connessione a Kafka aperta a livello di modulo, un client MongoDB creato all\'import, un singleton che si inizializza da solo: ognuna di quelle righe rende impossibile istanziare la logica senza tirarsi dietro mezzo sistema, e i mock diventano la toppa.',
+        'La serie parte dall\'altro capo: quanto si può verificare senza montare niente. Settantadue test su store, composable e helper, e nessun componente montato. Poi mostra dove i mock stanno nascondendo un problema di progettazione. E finisce con il refactoring che li rende superflui: application factory, dipendenze iniettate, e nessun <code>sys.modules</code> da manomettere.',
       ],
     },
     en: {
@@ -694,9 +694,9 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
     cappello: {
       h2: 'Mille richieste al secondo non vogliono dire niente',
       paragrafi: [
-        'E\' un numero senza denominatore. Mille richieste al secondo di cosa, con quanti dati, con quale distribuzione di endpoint, contro quale stato del database, e confrontate con che cosa? Senza una baseline, un test di carico che passa non dice che il sistema regge: dice che quel giorno, con quello scenario, non si e\' rotto.',
-        'La serie mette in fila cosa serve perche\' una misura significhi qualcosa. Prima il contesto: la baseline, lo scenario realistico, e il criterio deciso <em>prima</em> per dire se il risultato e\' accettabile. Poi gli strumenti di lettura, che sono la seconda meta\' del problema.',
-        'Perche\' la media nasconde per costruzione la minoranza che sta male, ed e\' esattamente quella minoranza che chiama l\'assistenza. RED dice quando e\' rotto, USE dice perche\': non sono alternativi, rispondono a due domande diverse e servono tutti e due.',
+        'È un numero senza denominatore. Mille richieste al secondo di cosa, con quanti dati, con quale distribuzione di endpoint, contro quale stato del database, e confrontate con che cosa? Senza una baseline, un test di carico che passa non dice che il sistema regge: dice che quel giorno, con quello scenario, non si è rotto.',
+        'La serie mette in fila cosa serve perché una misura significhi qualcosa. Prima il contesto: la baseline, lo scenario realistico, e il criterio deciso <em>prima</em> per dire se il risultato è accettabile. Poi gli strumenti di lettura, che sono la seconda metà del problema.',
+        'Perché la media nasconde per costruzione la minoranza che sta male, ed è esattamente quella minoranza che chiama l\'assistenza. RED dice quando è rotto, USE dice perché: non sono alternativi, rispondono a due domande diverse e servono tutti e due.',
       ],
     },
     en: {
@@ -745,9 +745,9 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
     cappello: {
       h2: 'Smettere di trattare il cluster come una scatola nera',
       paragrafi: [
-        'Si puo\' usare Kubernetes per mesi senza sapere cosa succede fra un <code>kubectl apply</code> e lo stato che cambia. Funziona, finche\' non si blocca: e a quel punto la differenza fra chi ha un modello mentale e chi no e\' mezza giornata di tentativi.',
-        'Questi due pezzi guardano sotto. Il primo sostituisce il <code>port-forward</code> con un Ingress Controller. Il <code>port-forward</code> va benissimo per una prova e diventa insostenibile quando i servizi sono piu\' di uno; l\'Ingress e\' un indirizzo che smette di dipendere da chi lo esegue.',
-        'Il secondo apre il meccanismo che sta sotto tutto il resto: informer, work queue e reconciliation loop. Serve a capire perche\' un controller non ha una fine ma un punto di equilibrio, e perche\' la stessa riconciliazione verra\' chiamata di nuovo. E\' il motivo per cui deve essere idempotente.',
+        'Si può usare Kubernetes per mesi senza sapere cosa succede fra un <code>kubectl apply</code> e lo stato che cambia. Funziona, finché non si blocca: e a quel punto la differenza fra chi ha un modello mentale e chi no è mezza giornata di tentativi.',
+        'Questi due pezzi guardano sotto. Il primo sostituisce il <code>port-forward</code> con un Ingress Controller. Il <code>port-forward</code> va benissimo per una prova e diventa insostenibile quando i servizi sono più di uno; l\'Ingress è un indirizzo che smette di dipendere da chi lo esegue.',
+        'Il secondo apre il meccanismo che sta sotto tutto il resto: informer, work queue e reconciliation loop. Serve a capire perché un controller non ha una fine ma un punto di equilibrio, e perché la stessa riconciliazione verra\' chiamata di nuovo. È il motivo per cui deve essere idempotente.',
       ],
     },
     en: {
