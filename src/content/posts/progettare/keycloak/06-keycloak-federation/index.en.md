@@ -16,6 +16,24 @@ series: keycloak
 seriesOrder: 60
 lang: en
 reviewed: machine
+figures:
+  - kind: flow
+    at: the-problem-fragmented-identities
+    label: "Three sources, one token"
+    nodes:
+      - kind: "Identity sources"
+        name: "Active Directory, Google, Okta"
+        desc: "Employees in a corporate directory, customers with social login, consultants on a third-party IdP. Three different protocols."
+        edge: "federation or brokering"
+      - kind: "Keycloak"
+        name: "The point of convergence"
+        desc: "It delegates credential checking to the right source, then always signs the token itself with the realm's claims."
+        key: true
+        edge: "a single JWT"
+      - kind: "Applications"
+        name: "Internal app, customer portal, partner area"
+        desc: "They get tokens with the same structure. They do not know where the user came from, and they should not need to."
+    caption: "Changing identity source leaves the applications alone: the contract is the token, not the directory"
 ---
 
 In many organizations, user identities are distributed across heterogeneous systems: an Active Directory holding thousands of employees, a social login provider for customers, an external IdP for business partners. Applications need a single authentication entry point, regardless of where users actually live.
@@ -29,12 +47,6 @@ Keycloak solves this with two distinct mechanisms: **user federation** and **Ide
 In the [introductory article](../01-keycloak-intro) we saw how a centralized identity provider eliminates identity silos. But there is an implicit assumption: that users are created inside Keycloak. In many real-world scenarios, that is not the case.
 
 A typical setup:
-
-```
-Active Directory (3,000 employees)  →
-Google (social login for customers) →  Keycloak  →  Internal App / Customer Portal / Partner Area
-Okta (200 external consultants)     →
-```
 
 Three completely different identity sources, three different protocols — but applications need to see a single JWT with a consistent structure. They do not want to know whether a user came from LDAP, Google, or Okta. They want a token signed by Keycloak, with the right claims.
 

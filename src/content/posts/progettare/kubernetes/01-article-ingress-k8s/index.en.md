@@ -12,9 +12,35 @@ tags:
   - DevOps
   - Local Development
 lang: en
-reviewed: human
+reviewed: false
 series: kubernetes-fondamenti
 seriesOrder: 10
+figures:
+  - kind: flow
+    at: kubernetess-declarative-model-in-action
+    label: "The path of a request through the Ingress"
+    nodes:
+      - kind: "User"
+        name: "curl http://miodominio.local/foo"
+        desc: "One port, port 80, and a URL that looks like the production one."
+        edge: "HTTP"
+      - kind: "PC / Docker"
+        name: "localhost:80"
+        desc: "Port 80 on the machine is mapped to the static NodePort 32000 of the kind cluster."
+        edge: "NodePort 32000"
+      - kind: "Ingress Controller"
+        name: "Reads the path and decides"
+        desc: "It works at Layer 7: it sees /foo and /bar and applies the rules declared in the Ingress resource. It is the single entry point."
+        key: true
+        edge: "routes by path"
+      - kind: "Service"
+        name: "foo-service, bar-service"
+        desc: "One service per application. Neither one exposes a port of its own to the outside any more."
+        edge: "on to the pods"
+      - kind: "Pod"
+        name: "Pod foo, Pod bar"
+        desc: "The application knows nothing about the routing: it receives a plain HTTP request."
+    caption: "Adding a service means adding a rule, not one more terminal and one more port"
 ---
 
 ## The Problem: Accessing Services in a Local Development Environment
@@ -121,20 +147,6 @@ To understand how Kubernetes's declarative model works, consult the [official do
 
 Here's a representation of the traffic flow with an Ingress Controller:
 
-```text
-+----------+      +----------------+      +--------------------+      +-----------------+      +---------+
-|          |      |                |      | Ingress Controller |      |                 |      |         |
-|   User   |----->| localhost:80   |----->| (Service on        |----->|   foo-service   |----->| Pod foo |
-|          |      | (PC/Docker)    |      |  NodePort 32000)   |      |                 |      |         |
-+----------+      +----------------+      |                    |      +-----------------+      +---------+
-                                          | Regole:            |
-                                          | /foo -> foo-service|
-                                          | /bar -> bar-service|      +-----------------+      +---------+
-                                          |                    |      |                 |      |         |
-                                          |                    |----->|   bar-service   |----->| Pod bar |
-                                          |                    |      |                 |      |         |
-                                          +--------------------+      +-----------------+      +---------+
-```
 
 ### Alternatives to NGINX Ingress
 

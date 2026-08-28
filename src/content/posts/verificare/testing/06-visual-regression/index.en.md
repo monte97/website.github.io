@@ -16,6 +16,25 @@ lang: en
 reviewed: machine
 series: playwright
 seriesOrder: 60
+figures:
+  - kind: timeline
+    at: tohavescreenshot-in-30-seconds
+    label: "The life of a baseline"
+    caption: "Failing on the first run is not a bug: it is the moment the baseline does not exist yet"
+    steps:
+      - kind: "First run"
+        title: "There is no baseline, and the test fails"
+        desc: "Playwright writes the screenshot into `__snapshots__` next to the test file and asks for a re-run. There was nothing to compare against."
+      - kind: "Second run"
+        title: "Pixel-by-pixel comparison"
+        desc: "New screenshot against the saved baseline. Identical images: green."
+      - kind: "A difference"
+        title: "Three files in `test-results/`"
+        desc: "Current screenshot, expected baseline, diff image. The failure is a question, not a verdict: that difference is either a regression or an intended change."
+      - kind: "Intended change"
+        title: "`--update-snapshots`, then the commit"
+        desc: "The new baseline replaces the old one and goes into the repository. It is a visual approval: somebody has to look at it before committing."
+        done: true
 ---
 
 The functional test passes: the button exists, the text is correct, the redirect works. But the layout is broken. A CSS override moved the button off-screen, a wrong `z-index` hides the error message beneath another element, an unloaded font makes the text unreadable. Functional tests don't see these problems — they verify DOM structure, not rendering. A `toBeVisible()` check verifies that the element doesn't have `display: none`, not that it's actually readable on screen.

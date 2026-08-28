@@ -36,6 +36,28 @@ openItems:
   - "Passare successivamente a store dedicati è incrementale, ma richiede un layer di routing che mappa ogni tenant sul suo store"
 openNote: "Quando il modello unico smette di bastare, e cosa costa spostarsi su store dedicati."
 mode: explanation
+figures:
+  - kind: flow
+    at: isolamento-strutturale-non-applicativo
+    label: "Il cammino che charlie percorre, e quello che non esiste"
+    caption: "`doc-acme` non compare nel risultato perché non è mai stato raggiunto, non perché è stato scartato"
+    nodes:
+      - kind: "Domanda"
+        name: "`ListObjects` per `user:charlie`, relazione viewer"
+        desc: "Il codice applicativo non passa nessun tenant. Chiede quali documenti l'utente può vedere, e basta."
+        edge: "OpenFGA parte dall'utente, non dai documenti"
+      - kind: "Primo tratto"
+        name: "`user:charlie` è admin di `org:org-beta`"
+        desc: "La tupla esiste. E nel modello `member` include `admin`, quindi charlie è anche member dell'organizzazione."
+        edge: "`member from org` sulla relazione viewer"
+      - kind: "Secondo tratto"
+        name: "`document:doc-beta` ha `org:org-beta` come org"
+        desc: "La risorsa è ancorata all'organizzazione da una relazione nel grafo, non da una colonna in tabella."
+        edge: "il cammino si chiude"
+      - kind: "Risposta"
+        name: "`[\"document:doc-beta\"]`"
+        desc: "Fra charlie e `doc-acme` non esiste nessun cammino: la risoluzione si ferma prima, e quel documento non entra mai nella lista da filtrare."
+        key: true
 ---
 
 Ogni applicazione SaaS, prima o poi, arriva allo stesso punto: il primo cliente funziona, il secondo pure, ma al terzo emerge che l'isolamento tra tenant non è un dettaglio. È l'architettura stessa. Con RBAC tradizionale, la soluzione tipica è un `WHERE tenant_id = ?` in ogni query, un middleware che inietta il contesto del tenant, e il rischio costante che un bug faccia trapelare dati da un'organizzazione all'altra. Con ReBAC il problema si affronta diversamente: l'isolamento non è applicativo, ma **strutturale**. Se un utente non ha relazioni con un'organizzazione, non può accedere a nulla al suo interno. Nessun `WHERE` necessario.

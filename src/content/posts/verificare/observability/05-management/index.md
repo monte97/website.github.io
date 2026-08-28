@@ -44,6 +44,23 @@ openItems:
   - "Le proiezioni assumono ~8 span per trace, ~500 bytes per span e storage S3 a $0.023/GB: i numeri vanno validati sul traffico reale"
 openNote: "Le assunzioni dietro i numeri, e i rischi che il campionamento non tocca."
 mode: how-to
+figures:
+  - kind: beforeAfter
+    at: head-vs-tail-sampling
+    label: "Dove cade la decisione"
+    beforeLabel: "Head sampling"
+    afterLabel: "Tail sampling"
+    rows:
+      - label: "Quando decide"
+        before: "All'inizio della trace, prima di sapere come andrà a finire"
+        after: "Alla fine, quando la trace è completa e si sa cosa è successo"
+      - label: "Su cosa decide"
+        before: "Su una probabilità e basta: tieni il 10%, scarta il 90%"
+        after: "Sul contenuto: errore, latenza oltre 1s, oppure il 10% del resto"
+      - label: "Cosa costa sbagliare"
+        before: "Se l'errore era nel 90% scartato, è perso e non si recupera"
+        after: "Errori e request lente restano al 100%, il volume cala lo stesso"
+    caption: "Le due strategie scartano la stessa quantità di dati: cambia quali dati"
 ---
 
 Nel [tutorial precedente](https://montelli.dev/blog/verificare/observability/04-correlation/) abbiamo strumentato un e-commerce con OpenTelemetry e risolto tre scenari di debug: silent failure, latency spike, fan-out. Tutto funzionava: trace complete, errori visibili, latenza misurabile.
@@ -117,14 +134,6 @@ Nelle prossime sezioni vediamo come configurare entrambi.
 Problema: se il 90% scartato conteneva un errore, è perso.
 
 **Tail sampling** decide alla fine: aspetta che la trace sia completa, poi valuta.
-
-```text
-Head Sampling:            Tail Sampling:
-
-Request -> Keep 10%       Request -> Trace completa -> Errore? -> KEEP
-           Drop 90%                                 -> Lenta?  -> KEEP
-                                                    -> Normale -> Sample 10%
-```
 
 **Vantaggio:** le trace con errori o latenza anomala vengono sempre mantenute, riducendo al contempo il volume complessivo.
 

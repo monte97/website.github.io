@@ -14,6 +14,26 @@ series: openfga
 seriesOrder: 40
 lang: en
 reviewed: machine
+figures:
+  - kind: beforeAfter
+    at: combining-fast-path-and-slow-path
+    label: "Two routes to the same list"
+    beforeLabel: "Slow path: ListObjects"
+    afterLabel: "Fast path: SQL JOIN"
+    rows:
+      - label: "What access it covers"
+        before: "Direct shares on a single resource, granted to a user or a team"
+        after: "Access that follows from organizational membership"
+      - label: "How you get it"
+        before: "A ListObjects call, then the returned IDs passed to `WHERE id = ANY(...)`"
+        after: "A JOIN across `documents`, `folders` and `org_members`"
+      - label: "What it costs"
+        before: "One HTTP call to OpenFGA, plus an index scan per returned ID"
+        after: "Nothing that leaves the database: OpenFGA is never asked"
+      - label: "How much it carries"
+        before: "The remaining 20%, and it grows with peer-to-peer sharing"
+        after: "80% of cases, up to 95% where access is almost entirely organizational"
+    caption: "The difference is not speed as such: one of the two routes never leaves the database"
 ---
 
 In the first three articles of this series we built a complete authorization model: types, relations, tenant stores, Keycloak integration. But the examples so far had at most two levels of nesting: organization and document, or organization and folder. The real world is different. A folder contains subfolders, which contain other subfolders, which contain documents. A user shares a folder and expects all the content below it to become accessible. And when you need to display a list of documents, you cannot run a Check for each one.

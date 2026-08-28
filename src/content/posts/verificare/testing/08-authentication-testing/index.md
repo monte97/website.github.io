@@ -34,6 +34,28 @@ openItems:
   - "`canCheckout` non è un ruolo Keycloak ma un custom claim del JWT: la decisione di autorizzazione sta nel backend che legge il token"
 openNote: "Ciò che resta fuori appartiene alla libreria, al backend o al repository."
 mode: how-to
+figures:
+  - kind: flow
+    at: utenti-multipli--un-progetto-per-ruolo
+    label: "Dall'unico login all'identità di ogni test"
+    caption: "L'identità di un test non è scritta nel test: la decide il progetto che lo raccoglie"
+    nodes:
+      - kind: "Progetto setup"
+        name: "`auth.setup.ts`"
+        desc: "Un login Keycloak reale per ogni utente. È l'unico punto della suite che parla con l'identity provider."
+        edge: "`storageState()` serializza cookie e localStorage"
+      - kind: "File"
+        name: "`mario.json`, `admin.json`, `blocked.json`"
+        desc: "Un file per utente nella directory `.auth/`, esclusa dal repository: sono token validi, non dati di test."
+        edge: "`dependencies: ['setup']`"
+      - kind: "Progetti"
+        name: "chromium, chromium-admin, chromium-blocked"
+        desc: "Ogni progetto carica il proprio `storageState` e raccoglie i file spec con il proprio `testMatch`."
+        edge: "il nome del file spec sceglie l'utente"
+      - kind: "Test"
+        name: "Parte già autenticato"
+        desc: "Nessun login, nessun redirect, nessuna dipendenza da Keycloak mentre i test girano."
+        key: true
 ---
 
 La suite ha 50 test. Ogni test parte dalla pagina di login, compila username e password, clicca "Accedi", aspetta il redirect, verifica il cookie. Tre secondi per ogni login. 50 test per 3 secondi: due minuti e mezzo spesi solo per autenticarsi, prima ancora di verificare qualcosa. Se Keycloak è lento -- e nei runner CI con risorse condivise lo è spesso -- i tempi raddoppiano. Se Keycloak è down, tutta la suite è rossa. Non per un bug, non per una regressione: perché il servizio di autenticazione non risponde.

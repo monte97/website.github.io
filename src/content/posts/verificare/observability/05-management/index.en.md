@@ -25,6 +25,23 @@ series: observability
 seriesOrder: 50
 lang: en
 reviewed: machine
+figures:
+  - kind: beforeAfter
+    at: head-sampling-vs-tail-sampling
+    label: "Where the decision lands"
+    beforeLabel: "Head sampling"
+    afterLabel: "Tail sampling"
+    rows:
+      - label: "When it decides"
+        before: "At the start of the trace, before knowing how it will end"
+        after: "At the end, once the trace is complete and you know what happened"
+      - label: "What it decides on"
+        before: "On a probability and nothing else: keep 10%, drop 90%"
+        after: "On the content: error, latency over 1s, or 10% of the rest"
+      - label: "The cost of being wrong"
+        before: "If the error was in the discarded 90%, it is gone for good"
+        after: "Errors and slow requests stay at 100%, and volume still drops"
+    caption: "Both strategies discard the same amount of data: what changes is which data"
 ---
 
 In the [previous tutorial](/en/blog/verificare/observability/04-correlation/) we instrumented a mock e-commerce with OpenTelemetry and worked through three debug scenarios: silent failure, latency spike, fan-out. Everything worked: complete traces, errors visible, latency measurable.
@@ -108,14 +125,6 @@ The following sections cover how to configure both.
 Problem: if the discarded 90% contained an error, it is gone.
 
 **Tail sampling** decides at the end: it waits until the trace is complete, then evaluates.
-
-```text
-Head Sampling:            Tail Sampling:
-
-Request -> Keep 10%       Request -> Complete trace -> Error?  -> KEEP
-           Drop 90%                                 -> Slow?   -> KEEP
-                                                    -> Normal  -> Sample 10%
-```
 
 **Advantage:** Traces containing errors or anomalous latency are always retained, while overall volume is reduced.
 

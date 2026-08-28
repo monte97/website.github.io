@@ -13,6 +13,26 @@ tags:
 series: observability
 seriesOrder: 60
 lang: en
+figures:
+  - kind: flow
+    at: different-data-different-requirements
+    label: "The single-destination pipeline"
+    caption: "One backend downstream: there is a single retention policy, and it covers debug logs and the audit trail alike"
+    nodes:
+      - kind: "Source"
+        name: "Applications"
+        desc: "Debug logs, application errors and the audit trail leave the same instrumentation, with no distinction."
+        edge: "OTLP"
+      - kind: "Collection"
+        name: "OTel Collector"
+        desc: "Receives every signal and forwards it to a single destination."
+      - kind: "Storage"
+        name: "Loki"
+        desc: "All logs in the same backend, under the same retention policy."
+        key: true
+      - kind: "Querying"
+        name: "Grafana"
+        desc: "Everything together: there is no point left where different data can get a different policy."
 reviewed: machine
 ---
 
@@ -26,20 +46,7 @@ Today everything lands in the same backend: debug logs, application errors, and 
 
 ## Different Data, Different Requirements
 
-In a standard configuration, the Collector receives all signals and forwards them to a single destination:
-
-```text
-Applications
-    |
-    v
-  OTel Collector
-    |
-    v
-  Loki (all logs)
-    |
-    v
-  Grafana (everything together)
-```
+In a standard configuration, the Collector receives all signals and forwards them to a single destination.
 
 All logs, regardless of type, end up in the same place.
 

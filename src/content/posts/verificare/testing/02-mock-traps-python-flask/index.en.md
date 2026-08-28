@@ -17,6 +17,23 @@ lang: en
 reviewed: machine
 series: unit-testing
 seriesOrder: 20
+figures:
+  - kind: beforeAfter
+    at: the-refactoring-extract-inject-filter
+    label: "What it takes to start a test"
+    beforeLabel: "The three services with workarounds"
+    afterLabel: "The five refactored services"
+    rows:
+      - label: "The conftest"
+        before: "`sys.modules`, environment variables, a patch on `threading`, and only then the import"
+        after: "A two-line fixture: the collection is an attribute of the app"
+      - label: "The order of the steps"
+        before: "An undocumented contract: reverse one step and the module crashes, add a top-level import and it breaks silently"
+        after: "No order to respect: the factory receives its dependencies when it is called"
+      - label: "The business logic"
+        before: "Inside the consumer thread, which the test mocks so it never starts"
+        after: "In `process_message`, which takes a dictionary and a collection and returns a count"
+    caption: "The workarounds replicate every import-time side effect inside the conftest; the refactoring removes what there was to replicate"
 ---
 
 Three Flask services, three conftest.py files, one smoke test each: `GET /health` returned 200, all green, CI happy. Then I wrote the second test and everything collapsed.

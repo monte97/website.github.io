@@ -16,6 +16,28 @@ lang: en
 reviewed: machine
 series: playwright
 seriesOrder: 80
+figures:
+  - kind: flow
+    at: multiple-users--one-project-per-role
+    label: "From one login to every test's identity"
+    caption: "A test's identity is not written in the test: the project that picks it up decides it"
+    nodes:
+      - kind: "Setup project"
+        name: "`auth.setup.ts`"
+        desc: "One real Keycloak login per user. It is the only place in the suite that talks to the identity provider."
+        edge: "`storageState()` serializes cookies and localStorage"
+      - kind: "Files"
+        name: "`mario.json`, `admin.json`, `blocked.json`"
+        desc: "One file per user in the `.auth/` directory, kept out of the repository: these are valid tokens, not test data."
+        edge: "`dependencies: ['setup']`"
+      - kind: "Projects"
+        name: "chromium, chromium-admin, chromium-blocked"
+        desc: "Each project loads its own `storageState` and picks up spec files with its own `testMatch`."
+        edge: "the spec filename picks the user"
+      - kind: "Test"
+        name: "Starts already authenticated"
+        desc: "No login, no redirect, no dependency on Keycloak while the tests run."
+        key: true
 ---
 
 The suite has 50 tests. Every test starts at the login page, fills in username and password, clicks "Sign in", waits for the redirect, and verifies the cookie. Three seconds per login. 50 tests times 3 seconds: two and a half minutes spent just authenticating, before verifying anything. If Keycloak is slow — and in CI runners with shared resources it often is — times double. If Keycloak is down, the entire suite is red. Not because of a bug, not because of a regression: because the authentication service isn't responding.

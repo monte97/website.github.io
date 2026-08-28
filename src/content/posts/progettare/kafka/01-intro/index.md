@@ -52,6 +52,23 @@ figures:
         before: "`acks=all` basta a non perdere messaggi"
         after: "Dipende da `acks` insieme a `min.insync.replicas`: nessuno dei due da solo"
     caption: "Le garanzie di Kafka sono piu' strette di quelle che di solito si assumono, ed e' sulle strette che si progetta"
+  - kind: flow
+    at: da-chiamate-sincrone-a-flussi-di-eventi
+    label: "Chi scrive, cosa resta, chi legge"
+    nodes:
+      - kind: "Produttori"
+        name: "Servizio Pagamenti, Servizio Utenti, Sensori IoT"
+        desc: "Ognuno pubblica un fatto gia' successo. Non sa chi lo leggera', ne' quando."
+        edge: "scrivono un evento"
+      - kind: "Topic eventi"
+        name: "Il log e' l'unica fonte di verita'"
+        desc: "L'evento viene aggiunto in coda e resta li' per tutta la retention, indipendentemente da quanti lo leggono."
+        key: true
+        edge: "ognuno legge al proprio ritmo"
+      - kind: "Consumatori"
+        name: "Servizio Notifiche, Dashboard Analytics, Sistema di Auditing"
+        desc: "Reagiscono in modo asincrono. Un consumatore lento o fermo non rallenta chi scrive, ne' gli altri lettori."
+    caption: "Aggiungere un consumatore non richiede di toccare chi produce: e' qui che sparisce l'accoppiamento"
 ---
 ## Da Chiamate Sincrone a Flussi di Eventi
 
@@ -60,13 +77,6 @@ Nei sistemi distribuiti, la comunicazione sincrona tra componenti introduce un a
 La soluzione non è semplicemente "usare una coda di messaggi". Il cambio di paradigma consiste nel passare da comandi diretti a **eventi di business**. Un evento non è una richiesta: è un fatto immutabile. "Un utente ha aggiornato il suo profilo". "Un sensore ha registrato una nuova temperatura". "Un veicolo ha trasmesso la sua posizione GPS".
 
 [**Apache Kafka**](https://kafka.apache.org/) è una piattaforma di *event streaming* - un log distribuito e replicato che agisce come unica fonte di verità per gli eventi, permettendo ai componenti di reagire in modo asincrono, disaccoppiato e resiliente.
-
-```text
-Servizio Pagamenti  ─→
-Servizio Utenti     ─→  [ Topic Eventi ]  ─→  Servizio Notifiche
-Sensori IoT         ─→                    ─→  Dashboard Analytics
-                                          ─→  Sistema di Auditing
-```
 
 ---
 

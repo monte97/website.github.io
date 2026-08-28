@@ -35,6 +35,32 @@ openItems:
   - "Le mappature di porta passano da Docker: il setup è legato a `kind` e non si trasferisce così com'è ad altri ambienti"
   - "Traefik, Istio, HAProxy e Contour compaiono come alternative, ma le istruzioni complete restano quelle del controller NGINX"
 openNote: "Dove la guida si ferma, e cosa resta in carico a chi replica il setup."
+figures:
+  - kind: flow
+    at: il-modello-dichiarativo-di-kubernetes-in-azione
+    label: "Il percorso di una richiesta con l'Ingress"
+    nodes:
+      - kind: "Utente"
+        name: "curl http://miodominio.local/foo"
+        desc: "Una porta sola, la 80, e un URL che somiglia a quello di produzione."
+        edge: "HTTP"
+      - kind: "PC / Docker"
+        name: "localhost:80"
+        desc: "La porta 80 della macchina e' mappata sul NodePort statico 32000 del cluster kind."
+        edge: "NodePort 32000"
+      - kind: "Ingress Controller"
+        name: "Legge il percorso e decide"
+        desc: "Lavora a Layer 7: vede /foo e /bar e applica le regole dichiarate nella risorsa Ingress. E' l'unico punto d'ingresso."
+        key: true
+        edge: "instrada per percorso"
+      - kind: "Service"
+        name: "foo-service, bar-service"
+        desc: "Un service per applicazione. Nessuno dei due espone piu' una porta propria verso l'esterno."
+        edge: "verso i pod"
+      - kind: "Pod"
+        name: "Pod foo, Pod bar"
+        desc: "L'applicazione non sa nulla del routing: riceve una richiesta HTTP normale."
+    caption: "Aggiungere un servizio vuol dire aggiungere una regola, non un terminale e una porta in piu'"
 ---
 
 ## Il Problema: Accedere ai Servizi in un Ambiente di Sviluppo Locale
@@ -141,20 +167,6 @@ Per approfondire come funziona il modello dichiarativo di Kubernetes, consulta l
 
 Ecco una rappresentazione del flusso di traffico con un Ingress Controller:
 
-```text
-+----------+      +----------------+      +--------------------+      +-----------------+      +---------+
-|          |      |                |      | Ingress Controller |      |                 |      |         |
-|   User   |----->| localhost:80   |----->| (Service su        |----->|   foo-service   |----->| Pod foo |
-|          |      | (PC/Docker)    |      |  NodePort 32000)   |      |                 |      |         |
-+----------+      +----------------+      |                    |      +-----------------+      +---------+
-                                          | Regole:            |
-                                          | /foo -> foo-service|
-                                          | /bar -> bar-service|      +-----------------+      +---------+
-                                          |                    |      |                 |      |         |
-                                          |                    |----->|   bar-service   |----->| Pod bar |
-                                          |                    |      |                 |      |         |
-                                          +--------------------+      +-----------------+      +---------+
-```
 
 ### Alternative all'Ingress NGINX
 

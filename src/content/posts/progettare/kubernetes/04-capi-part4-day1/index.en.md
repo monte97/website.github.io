@@ -12,7 +12,7 @@ tags:
   - DevOps
   - Day 1 Operations
 lang: en
-reviewed: human
+reviewed: false
 series: homelab-capi
 seriesOrder: 40
 figures:
@@ -44,6 +44,23 @@ figures:
       The middle column is what this article adds: a verified cluster is no more capable than
       a provisioned one, but if something breaks tomorrow you know it is none of the points
       already proven.
+  - kind: flow
+    at: generator-architecture-overview
+    label: "From the config file to the manifests"
+    nodes:
+      - kind: "Config YAML"
+        name: "The parameters, in a single file"
+        desc: "Cluster name, Kubernetes version, allowed Proxmox nodes, control plane endpoint. It is the only file you edit by hand."
+        edge: "fed to the template"
+      - kind: "Jinja2 template"
+        name: "The logic that stays out of the parameters"
+        desc: "Conditionals and loops live here, not in the config file: changing a value does not mean rereading the template."
+        key: true
+        edge: "rendered"
+      - kind: "Cluster YAML"
+        name: "The Cluster API resources to apply"
+        desc: "The generated manifests, ready for kubectl apply. They are an artifact: you regenerate them, you do not patch them."
+    caption: "Parameters in one file, logic in another: that separation is what makes the deploy repeatable"
 ---
 Between an empty Proxmox and a working Kubernetes cluster there is a list of things that all have to be right at once: a user with the exact permissions, a token that has not expired, a template that clones, a network bridge that answers, a generator producing coherent manifests.
 
@@ -317,15 +334,6 @@ python -c "import jinja2, yaml; print('Dependencies OK')"
 ### Generator Architecture Overview
 
 The Python generator implements a flexible templating system:
-
-```python
-# Generator architecture
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Config YAML   │───▶│  Jinja2 Template │───▶│  Cluster YAML   │
-│   - Parameters  │    │  - Logic         │    │  - Resources    │
-│   - Overrides   │    │  - Conditionals  │    │  - Manifests    │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-```
 
 ### Default Configuration Creation
 

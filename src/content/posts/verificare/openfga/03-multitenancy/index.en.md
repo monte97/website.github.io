@@ -14,6 +14,28 @@ series: openfga
 seriesOrder: 30
 lang: en
 reviewed: machine
+figures:
+  - kind: flow
+    at: structural-isolation-not-applicative
+    label: "The path charlie walks, and the one that does not exist"
+    caption: "`doc-acme` is absent from the result because it was never reached, not because it was discarded"
+    nodes:
+      - kind: "The question"
+        name: "`ListObjects` for `user:charlie`, relation viewer"
+        desc: "The application code passes no tenant. It asks which documents the user can see, and nothing more."
+        edge: "OpenFGA starts from the user, not from the documents"
+      - kind: "First leg"
+        name: "`user:charlie` is admin of `org:org-beta`"
+        desc: "The tuple exists. And in the model `member` includes `admin`, so charlie is a member of the organization too."
+        edge: "`member from org` on the viewer relation"
+      - kind: "Second leg"
+        name: "`document:doc-beta` has `org:org-beta` as its org"
+        desc: "The resource is anchored to the organization by a relationship in the graph, not by a column in a table."
+        edge: "the path closes"
+      - kind: "The answer"
+        name: "`[\"document:doc-beta\"]`"
+        desc: "No path connects charlie to `doc-acme`: resolution stops earlier, and that document never enters a list to be filtered."
+        key: true
 ---
 
 Every SaaS application eventually reaches the same point: the first customer works, the second too, but by the third it becomes clear that tenant isolation is not an implementation detail — it is the architecture itself. With traditional RBAC, the typical solution is a `WHERE tenant_id = ?` on every query, middleware that injects tenant context, and the constant risk that a bug leaks data between organizations. With ReBAC the problem is approached differently: isolation is not applicative but **structural**. If a user has no relationships with an organization, they cannot access anything within it. No `WHERE` clause required.

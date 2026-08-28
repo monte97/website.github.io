@@ -63,6 +63,23 @@ figures:
       La colonna di mezzo e' quella che questo articolo aggiunge: un cluster verificato non
       e' piu' capace di uno provisioned, ma se qualcosa si rompe domani sapete che non e'
       nessuno dei punti gia' provati.
+  - kind: flow
+    at: comè-fatto-il-generatore
+    label: "Dal file di configurazione ai manifest"
+    nodes:
+      - kind: "Config YAML"
+        name: "I parametri, in un file solo"
+        desc: "Nome del cluster, versione di Kubernetes, nodi Proxmox ammessi, endpoint del control plane. E' l'unico file che si modifica a mano."
+        edge: "in ingresso al template"
+      - kind: "Template Jinja2"
+        name: "La logica che sta fuori dai parametri"
+        desc: "Condizionali e ripetizioni vivono qui, non nel file di configurazione: cambiare un valore non richiede di rileggere il template."
+        key: true
+        edge: "reso"
+      - kind: "Cluster YAML"
+        name: "Le risorse Cluster API da applicare"
+        desc: "I manifest generati, pronti per kubectl apply. Sono un artefatto: si rigenerano, non si correggono a mano."
+    caption: "I parametri stanno in un file, la logica in un altro: e' la separazione che rende il deploy ripetibile"
 ---
 
 Fra un Proxmox vuoto e un cluster Kubernetes funzionante c'è una lista di cose che devono essere giuste tutte insieme: un utente con i permessi esatti, un token che non scade, un template che si clona, un bridge di rete che risponde, un generatore che produce manifest coerenti.
@@ -337,15 +354,6 @@ python -c "import jinja2, yaml; print('Dependencies OK')"
 ### Com'è fatto il generatore
 
 Il Python generator implementa un sistema templating flessibile:
-
-```python
-# Architettura generator
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Config YAML   │───▶│  Jinja2 Template │───▶│  Cluster YAML   │
-│   - Parameters  │    │  - Logic         │    │  - Resources    │
-│   - Overrides   │    │  - Conditionals  │    │  - Manifests    │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-```
 
 ### Creare la configurazione di partenza
 

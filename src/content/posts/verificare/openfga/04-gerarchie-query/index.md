@@ -36,6 +36,26 @@ openItems:
   - "Determinare la relazione massima per la mascheratura costa fino a tre Check in sequenza: parallelizzarli o metterli in cache è una scelta implementativa aperta"
 openNote: "Dove finisce ReBAC e inizia il lavoro del layer applicativo."
 mode: how-to
+figures:
+  - kind: beforeAfter
+    at: fast-path-e-slow-path-combinati
+    label: "Le due strade verso la stessa lista"
+    beforeLabel: "Slow path: ListObjects"
+    afterLabel: "Fast path: JOIN SQL"
+    rows:
+      - label: "Quali accessi copre"
+        before: "Le condivisioni dirette su una singola risorsa, concesse a un utente o a un team"
+        after: "L'accesso che deriva dall'appartenenza all'organizzazione"
+      - label: "Come si ottiene"
+        before: "Una chiamata a ListObjects, poi la lista di ID passata a `WHERE id = ANY(...)`"
+        after: "Un JOIN fra `documents`, `folders` e `org_members`"
+      - label: "Cosa costa"
+        before: "Una chiamata HTTP a OpenFGA, più un index scan per ogni ID restituito"
+        after: "Niente che esca dal database: OpenFGA non viene interrogato"
+      - label: "Quanto pesa"
+        before: "Il restante 20%, e cresce con le condivisioni peer-to-peer"
+        after: "L'80% dei casi, fino al 95% dove l'accesso è quasi tutto organizzativo"
+    caption: "La differenza non è la velocità in sé: è che una delle due strade non esce mai dal database"
 caseStudy:
   slug: "il-permesso-che-non-sapeva-pronunciare"
   hook: >

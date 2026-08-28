@@ -49,6 +49,30 @@ figures:
         before: "Quando cambiate una prop CSS"
         after: "Quando cambiate il comportamento"
     caption: "Settantadue test senza montare un solo componente: il confine passa fra il vostro codice e quello della libreria"
+  - kind: inventory
+    at: struttura-dei-file
+    label: "I tredici file di test, e dove stanno"
+    items:
+      - name: "test/stores/app.test.ts · 5 test"
+      - name: "test/stores/reportFilters.test.ts · 5 test"
+      - name: "test/stores/preferences.test.ts · 3 test"
+      - name: "test/stores/registry.test.ts · 10 test"
+      - name: "test/helpers/api/Routes.test.js · 6 test"
+      - name: "test/helpers/api/registry/registryApiGenerator.test.js · 9 test"
+      - name: "test/helpers/api/reports/reportsGenerateApi.test.js · 4 test"
+      - name: "test/helpers/api/reports/reportsAccessApi.test.js · 10 test"
+      - name: "test/helpers/api/C40/C40ApiGenerator.test.js · 6 test"
+      - name: "test/helpers/fileDownload.test.js · 5 test"
+      - name: "composables/__tests__/usePolling.test.ts · 3 test"
+        mark: true
+      - name: "composables/__tests__/useTitle.test.ts · 2 test"
+        mark: true
+      - name: "composables/__tests__/useRegistryDetail.test.js · 4 test"
+        mark: true
+    legend:
+      plain: "file di test"
+      mark: "colocati accanto al codice sorgente"
+    caption: "Questo è tutto il confine della suite: store, helper API e composable. Per i 106 componenti Vue non c'è nessun file"
 ---
 
 Ho un frontend Nuxt 3 con 106 componenti Vue, 4 store Pinia, 6 composable e 11 helper API. Zero test. O meglio: nove test di cui sette rotti -- residui di un tentativo precedente mai completato.
@@ -398,34 +422,6 @@ La prossima volta che qualcuno modifica la logica di caching del registry store,
 
 ## Struttura dei file
 
-Per chi volesse replicare l'approccio, ecco l'organizzazione finale:
-
-```
-app-frontend/
-├── vitest.config.ts
-├── test/
-│   ├── setup.ts                              # Mock globali Nuxt
-│   ├── stores/
-│   │   ├── app.test.ts                       # 5 test
-│   │   ├── reportFilters.test.ts             # 5 test
-│   │   ├── preferences.test.ts               # 3 test
-│   │   └── registry.test.ts                  # 10 test
-│   └── helpers/
-│       ├── api/
-│       │   ├── Routes.test.js                # 6 test
-│       │   ├── registry/
-│       │   │   └── registryApiGenerator.test.js  # 9 test
-│       │   ├── reports/
-│       │   │   ├── reportsGenerateApi.test.js    # 4 test
-│       │   │   └── reportsAccessApi.test.js      # 10 test
-│       │   └── C40/
-│       │       └── C40ApiGenerator.test.js       # 6 test
-│       └── fileDownload.test.js              # 5 test
-├── composables/
-│   └── __tests__/
-│       ├── usePolling.test.ts                # 3 test
-│       ├── useTitle.test.ts                  # 2 test
-│       └── useRegistryDetail.test.js         # 4 test
-```
+Per chi volesse replicare l'approccio, l'organizzazione finale è questa.
 
 I composable hanno i test colocati in `__tests__/` (accanto al codice sorgente). Store e helper li hanno nella directory `test/` centralizzata. È una convenzione ibrida: i composable cambiano spesso e avere il test accanto aiuta; store e helper sono più stabili e averli raggruppati dà una visione d'insieme migliore.

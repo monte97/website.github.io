@@ -39,6 +39,23 @@ openItems:
   - "Un 100% ottenuto filtrando i mutanti infrastrutturali non equivale a un 100% su tutti i mutanti"
 openNote: "Fin dove arrivano le workaround, e cosa richiede un refactoring vero."
 mode: explanation
+figures:
+  - kind: beforeAfter
+    at: il-refactoring-estrarre-iniettare-filtrare
+    label: "Cosa serve per far partire un test"
+    beforeLabel: "I tre servizi con le workaround"
+    afterLabel: "I cinque servizi rifattorizzati"
+    rows:
+      - label: "Il conftest"
+        before: "`sys.modules`, variabili d'ambiente, patch di `threading`, e solo alla fine l'import"
+        after: "Una fixture di due righe: la collection è un attributo dell'app"
+      - label: "L'ordine dei passi"
+        before: "Un contratto non documentato: invertirne uno crasha il modulo, aggiungere un import al top level lo rompe in silenzio"
+        after: "Nessun ordine da rispettare: la factory riceve le dipendenze quando viene chiamata"
+      - label: "La logica di business"
+        before: "Dentro il consumer thread, che nel test viene mockato per non partire"
+        after: "In `process_message`, che prende un dizionario e una collection e ritorna un conteggio"
+    caption: "Le workaround replicano nel conftest ogni side-effect del modulo; il refactoring toglie quello che c'era da replicare"
 ---
 
 Tre servizi Flask, tre conftest.py, un singolo smoke test ciascuno: `GET /health` restituiva 200, tutti verdi, CI felice. Poi ho scritto il secondo test e tutto è crollato.

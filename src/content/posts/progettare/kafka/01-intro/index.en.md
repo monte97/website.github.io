@@ -31,6 +31,23 @@ figures:
         before: "`acks=all` is enough not to lose messages"
         after: "It depends on `acks` together with `min.insync.replicas`: neither one on its own"
     caption: "Kafka's guarantees are tighter than the ones usually assumed, and it is the tight ones you design against"
+  - kind: flow
+    at: from-synchronous-calls-to-event-streams
+    label: "Who writes, what stays, who reads"
+    nodes:
+      - kind: "Producers"
+        name: "Payments Service, Users Service, IoT Sensors"
+        desc: "Each one publishes a fact that already happened. It does not know who will read it, or when."
+        edge: "write an event"
+      - kind: "Events topic"
+        name: "The log is the single source of truth"
+        desc: "The event is appended and stays there for the whole retention, no matter how many readers it has."
+        key: true
+        edge: "each reads at its own pace"
+      - kind: "Consumers"
+        name: "Notifications Service, Analytics Dashboard, Auditing System"
+        desc: "They react asynchronously. A slow or stopped consumer does not slow down the writers, nor the other readers."
+    caption: "Adding a consumer takes no change on the producing side: this is where the coupling disappears"
 ---
 ## From Synchronous Calls to Event Streams
 
@@ -39,13 +56,6 @@ In distributed systems, synchronous communication between components introduces 
 The solution is not simply "use a message queue". The paradigm shift is from direct commands to **business events**. An event is not a request: it is an immutable fact. "A user updated their profile." "A sensor recorded a new temperature." "A vehicle transmitted its GPS position."
 
 [**Apache Kafka**](https://kafka.apache.org/) is an event streaming platform — a distributed, replicated log that acts as the single source of truth for events, allowing components to react asynchronously, in a decoupled and resilient way.
-
-```text
-Payments Service  ─→
-Users Service     ─→  [ Events Topic ]  ─→  Notifications Service
-IoT Sensors       ─→                    ─→  Analytics Dashboard
-                                        ─→  Auditing System
-```
 
 ---
 

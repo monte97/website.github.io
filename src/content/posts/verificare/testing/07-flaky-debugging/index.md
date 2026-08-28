@@ -36,6 +36,26 @@ openItems:
   - "I test E2E della UI non devono dipendere dal database, ma i test di integrazione col database reale restano un livello separato della piramide"
 openNote: "Quello che il retry, da solo, non risolve."
 mode: how-to
+figures:
+  - kind: beforeAfter
+    at: retry-strategico-vs-retry-cieco
+    label: "Lo stesso `retries: 2`, due configurazioni"
+    beforeLabel: "Retry cieco"
+    afterLabel: "Retry strategico"
+    rows:
+      - label: "Com'è configurato"
+        before: "`retries: 2` nel config, e nient'altro"
+        after: "`retries: 2` insieme a `trace: 'on-first-retry'` e `failOnFlakyTests`"
+      - label: "Sul critical path"
+        before: "Homepage, login e checkout vengono riprovati come tutti gli altri"
+        after: "`retries: 0`: se il checkout è flaky lo si scopre subito"
+      - label: "Cosa resta del fallimento"
+        before: "Niente. Il run verde cancella la traccia del problema"
+        after: "La trace del primo tentativo: screenshot, rete, console"
+      - label: "Il risultato finale"
+        before: "Verde. Il test che oggi fallisce il 10% delle volte fra un mese fallisce il 30%"
+        after: "Rosso finché il test non passa a tutti i tentativi"
+    caption: "Il retry resta acceso in entrambi i casi: quello che cambia è se qualcuno viene avvisato"
 ---
 
 Il test passa 9 volte su 10. In CI fallisce una volta a settimana, sempre su un test diverso. Il team aggiunge `retries: 2` nella configurazione, il test passa, nessuno investiga. Dopo un mese la suite ha 15 test flaky mascherati dai retry, e nessuno si fida più dei risultati. Quando un test fallisce davvero -- una regressione reale -- la reazione è "sarà un flaky, rieseguiamo". Il bug arriva in produzione.

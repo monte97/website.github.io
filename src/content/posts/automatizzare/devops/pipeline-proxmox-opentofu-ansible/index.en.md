@@ -13,6 +13,28 @@ tags:
   - Infrastructure as Code
   - DevOps
 lang: en
+figures:
+  - kind: flow
+    at: the-architecture-three-tools-three-responsibilities
+    label: "The three responsibilities, and the interfaces between them"
+    caption: "Every arrow is a narrow interface: swapping out one of the three tools leaves the other two untouched"
+    nodes:
+      - kind: "Orchestration"
+        name: "Jenkins"
+        desc: "Detects new images by polling the registry, holds the credentials and coordinates the steps. It knows nothing about how OpenTofu or Ansible work."
+        edge: "VM template and .tfvars file"
+      - kind: "Provisioning"
+        name: "OpenTofu"
+        desc: "Clones the template on the Proxmox hypervisor and returns the IP of the new VM as output."
+        edge: "VM IP and environment variables"
+      - kind: "Deployment"
+        name: "Semaphore + Ansible"
+        desc: "Takes the IP and the variables, runs the playbook on the machine and brings the Docker Compose stack up."
+        edge: "the application's HTTP endpoint"
+      - kind: "Verification"
+        name: "App VM"
+        desc: "Jenkins closes the loop with an HTTP health check against the VM: the pipeline passes or fails."
+        key: true
 reviewed: machine
 series: cicd
 seriesOrder: 10
@@ -31,18 +53,6 @@ The goal is a pipeline that, given a new set of images, provisions the infrastru
 ## The Architecture: Three Tools, Three Responsibilities
 
 Orchestration, provisioning, and deployment are split into three independent components. Each component has a single responsibility and well-defined interfaces with the others.
-
-```text
-┌──────────────┐     ┌──────────────┐     ┌──────────────────────┐     ┌──────────┐
-│   Jenkins    │────▶│  OpenTofu    │────▶│  Semaphore + Ansible │────▶│ App VM   │
-│  (orchestr.) │     │  (infra)     │     │  (deploy)            │     │ (Docker) │
-└──────────────┘     └──────┬───────┘     └──────────┬───────────┘     └──────────┘
-       │                    │                        │
-       │              Proxmox API              Playbook on VM
-       │              VM + static IP           Docker Compose up
-       │
-       └──── HTTP health check ──────────────────────────────────────▶ Verify
-```
 
 | Phase | Tool | Input | Output |
 |-------|------|-------|--------|

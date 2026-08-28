@@ -12,7 +12,7 @@ tags:
   - Compliance
   - Production
 lang: it
-reviewed: human
+reviewed: false
 series: observability
 seriesOrder: 60
 reproducibility: true
@@ -33,6 +33,26 @@ openItems:
   - "La retention differenziata per stream richiede il compactor Loki con retention_enabled: true ed è disponibile da Loki 2.3+"
   - "Se in dubbio, non marcare: i log non marcati finiscono nel flusso default di Loki e restano disponibili per il debug"
 openNote: "Requisiti di produzione che la demo lascia deliberatamente fuori."
+figures:
+  - kind: flow
+    at: dati-diversi-requisiti-diversi
+    label: "La pipeline a destinazione unica"
+    caption: "Un solo backend a valle: la retention è una sola, e vale per il log di debug come per l'audit trail"
+    nodes:
+      - kind: "Sorgente"
+        name: "Applicazioni"
+        desc: "Log di debug, errori applicativi e audit trail escono dalla stessa strumentazione, senza distinzione."
+        edge: "OTLP"
+      - kind: "Raccolta"
+        name: "OTel Collector"
+        desc: "Riceve tutti i segnali e li inoltra a un'unica destinazione."
+      - kind: "Persistenza"
+        name: "Loki"
+        desc: "Tutti i log nello stesso backend, con la stessa policy di retention."
+        key: true
+      - kind: "Consultazione"
+        name: "Grafana"
+        desc: "Tutto insieme: non c'è nessun punto in cui applicare policy diverse a dati diversi."
 mode: how-to
 caseStudy:
   slug: "dalla-cecita-alla-traccia"
@@ -51,20 +71,7 @@ Oggi tutto finisce nello stesso backend: log di debug, errori applicativi e audi
 
 ## Dati diversi, requisiti diversi
 
-In una configurazione standard, il Collector riceve tutti i segnali e li inoltra a un'unica destinazione:
-
-```text
-Applicazioni
-    |
-    v
-  OTel Collector
-    |
-    v
-  Loki (tutti i log)
-    |
-    v
-  Grafana (tutto insieme)
-```
+In una configurazione standard, il Collector riceve tutti i segnali e li inoltra a un'unica destinazione.
 
 Tutti i log, indipendentemente dal tipo, finiscono nello stesso posto.
 

@@ -35,6 +35,25 @@ openItems:
   - "Restano esclusi API, backend e prodotti in early stage: si introduce quando il design è abbastanza maturo da proteggere"
 openNote: "Dove la rete di sicurezza visiva non va installata."
 mode: how-to
+figures:
+  - kind: timeline
+    at: tohavescreenshot-in-30-secondi
+    label: "La vita di una baseline"
+    caption: "Il fallimento al primo run non è un bug: è il momento in cui la baseline non esiste ancora"
+    steps:
+      - kind: "Primo run"
+        title: "La baseline non c'è, e il test fallisce"
+        desc: "Playwright genera lo screenshot in `__snapshots__` accanto al file di test e chiede di rieseguire. Non c'era niente con cui confrontare."
+      - kind: "Secondo run"
+        title: "Confronto pixel per pixel"
+        desc: "Nuovo screenshot contro baseline salvata. Immagini identiche: verde."
+      - kind: "Differenza"
+        title: "Tre file in `test-results/`"
+        desc: "Screenshot attuale, baseline attesa, immagine diff. Il fallimento è una domanda, non un verdetto: quella differenza può essere una regressione o un cambiamento voluto."
+      - kind: "Cambiamento voluto"
+        title: "`--update-snapshots`, poi il commit"
+        desc: "La nuova baseline sostituisce la vecchia e va nel repository. È un'approvazione visiva: qualcuno deve guardarla prima di committarla."
+        done: true
 ---
 
 Il test funzionale passa: il bottone esiste, il testo è corretto, il redirect funziona. Ma il layout è rotto. Un CSS override ha spostato il bottone fuori dallo schermo, un `z-index` sbagliato nasconde il messaggio di errore sotto un altro elemento, un font non caricato rende il testo illeggibile. I test funzionali non vedono questi problemi -- verificano la struttura del DOM, non il rendering. Un `toBeVisible()` controlla che l'elemento non abbia `display: none`, non che sia effettivamente leggibile a schermo.

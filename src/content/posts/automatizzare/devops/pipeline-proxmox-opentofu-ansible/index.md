@@ -36,6 +36,28 @@ openItems:
   - "L'health check verifica solo la raggiungibilità HTTP: smoke test funzionali e controlli di versione ne restano fuori"
   - "La demo usa insecure = true verso l'API Proxmox perché i certificati sono tipicamente self-signed: il TLS va risolto nell'ambiente reale"
   - "Il template VM resta creato a mano ed è l'unico passaggio manuale rimasto nel processo"
+figures:
+  - kind: flow
+    at: larchitettura-tre-strumenti-tre-responsabilità
+    label: "Le tre responsabilità e le interfacce fra loro"
+    caption: "Ogni freccia è un'interfaccia stretta: sostituire uno dei tre strumenti non tocca gli altri due"
+    nodes:
+      - kind: "Orchestrazione"
+        name: "Jenkins"
+        desc: "Rileva le nuove immagini con il polling sul registry, tiene le credenziali e coordina gli step. Non sa come funzionano OpenTofu e Ansible."
+        edge: "template VM e file .tfvars"
+      - kind: "Provisioning"
+        name: "OpenTofu"
+        desc: "Clona il template sull'hypervisor Proxmox e restituisce come output l'IP della VM creata."
+        edge: "IP della VM e variabili d'ambiente"
+      - kind: "Deploy"
+        name: "Semaphore + Ansible"
+        desc: "Riceve IP e variabili, esegue il playbook sulla macchina e porta su lo stack Docker Compose."
+        edge: "endpoint HTTP dell'applicazione"
+      - kind: "Verifica"
+        name: "App VM"
+        desc: "Jenkins chiude il ciclo con un health check HTTP sulla VM: la pipeline passa o fallisce."
+        key: true
 openNote: "Dove la pipeline descritta si ferma."
 ---
 
@@ -52,18 +74,6 @@ L'obiettivo è una pipeline che, dato un nuovo set di immagini, provisioni l'inf
 ## L'Architettura: Tre Strumenti, Tre Responsabilità
 
 Separiamo orchestrazione, provisioning e deploy in tre componenti indipendenti. Ogni componente ha una singola responsabilità e interfacce definite verso gli altri.
-
-```text
-┌──────────────┐     ┌──────────────┐     ┌──────────────────────┐     ┌──────────┐
-│   Jenkins    │────▶│  OpenTofu    │────▶│  Semaphore + Ansible │────▶│ App VM   │
-│  (orchestr.) │     │  (infra)     │     │  (deploy)            │     │ (Docker) │
-└──────────────┘     └──────┬───────┘     └──────────┬───────────┘     └──────────┘
-       │                    │                        │
-       │              Proxmox API              Playbook su VM
-       │              VM + IP statico          Docker Compose up
-       │
-       └──── Health check HTTP ──────────────────────────────────────▶ Verifica
-```
 
 | Fase | Strumento | Input | Output |
 |------|-----------|-------|--------|

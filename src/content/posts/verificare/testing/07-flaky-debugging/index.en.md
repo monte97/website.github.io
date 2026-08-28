@@ -16,6 +16,26 @@ lang: en
 reviewed: machine
 series: playwright
 seriesOrder: 70
+figures:
+  - kind: beforeAfter
+    at: strategic-retry-vs-blind-retry
+    label: "The same `retries: 2`, two configurations"
+    beforeLabel: "Blind retry"
+    afterLabel: "Strategic retry"
+    rows:
+      - label: "How it is configured"
+        before: "`retries: 2` in the config, and nothing else"
+        after: "`retries: 2` together with `trace: 'on-first-retry'` and `failOnFlakyTests`"
+      - label: "On the critical path"
+        before: "Homepage, login and checkout get retried like everything else"
+        after: "`retries: 0`: if checkout is flaky you find out immediately"
+      - label: "What survives the failure"
+        before: "Nothing. The green run erases every trace of the problem"
+        after: "The trace of the first attempt: screenshots, network, console"
+      - label: "The final result"
+        before: "Green. The test failing 10% of the time today fails 30% in a month"
+        after: "Red until the test passes on every attempt"
+    caption: "Retry stays on in both cases: what changes is whether anyone gets told"
 ---
 
 The test passes 9 times out of 10. In CI it fails once a week, always on a different test. The team adds `retries: 2` to the configuration, the test passes, nobody investigates. After a month the suite has 15 flaky tests hidden behind retries, and nobody trusts the results anymore. When a test genuinely fails — a real regression — the reaction is "probably a flaky, let's re-run it." The bug ships to production.

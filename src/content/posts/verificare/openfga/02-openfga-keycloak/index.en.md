@@ -12,6 +12,52 @@ tags:
   - JWT
 series: openfga
 seriesOrder: 20
+figures:
+  - kind: flow
+    at: jwt-as-the-bridge
+    label: "Where the two systems touch"
+    caption: "Neither one knows the other's world: the only piece of data crossing the boundary is the sub claim"
+    nodes:
+      - kind: "Client"
+        name: "Browser"
+        desc: "Logs in, and from then on presents the JWT as a Bearer token on every protected request."
+        edge: "Authorization Code + PKCE"
+      - kind: "Identity"
+        name: "Keycloak"
+        desc: "Authenticates the user and signs the token with sub, realm_access.roles and groups. It has no idea documents, folders or workspaces exist."
+        edge: "the sub claim, and the user's groups"
+      - kind: "Application"
+        name: "Express"
+        desc: "Validates the signature via JWKS, pulls sub and groups out of the token, and turns the HTTP request into an authorization question."
+        edge: "Check on user:{sub} and the requested resource"
+      - kind: "Authorization"
+        name: "OpenFGA"
+        desc: "Traverses the relationship graph and answers allow or deny. It knows nothing about logins, tokens or sessions."
+        key: true
+  - kind: timeline
+    at: 4-complete-flow
+    label: "One request from Alice, from login to documents"
+    caption: "Synchronization sits at step two and does not repeat: later requests cost only a validation and a ListObjects"
+    steps:
+      - kind: "Login"
+        title: "Alice authenticates against Keycloak"
+        desc: "Authorization Code + PKCE through the vaultdrive-app client. The token comes back carrying the groups claim inherited from the realm client scope."
+      - kind: "Synchronization"
+        title: "POST /auth/callback"
+        desc: "syncUserOnLogin reads the groups from the token, checks whether the member tuple exists in OpenFGA and writes it when missing. This happens here, not on every request."
+      - kind: "Request"
+        title: "GET the documents with the Bearer token"
+        desc: "Express validates the JWT signature and expiry through JWKS, without calling Keycloak on every request."
+      - kind: "Authorization"
+        title: "ListObjects on OpenFGA"
+        desc: "The question is which documents the user can see, not whether they can see this one. OpenFGA answers with the accessible ids."
+      - kind: "Data"
+        title: "SELECT with WHERE id IN"
+        desc: "The database fetches details only for the documents already filtered by permission, inside the requested organization."
+      - kind: "Response"
+        title: "200 with Alice's documents"
+        desc: "OpenFGA traverses the graph, the database filters rows: each does the part it is optimized for."
+        done: true
 lang: en
 reviewed: machine
 ---
@@ -49,27 +95,6 @@ The flow for every protected request:
 6. OpenFGA traverses the relationship graph and responds allow/deny
 
 One important point: the `groups` claim is not configured on each individual client. In Keycloak, you define a **client scope** at the realm level with the `oidc-group-membership-mapper`, then add it to the default client scopes. All clients in the realm inherit it automatically. In VaultDrive, the realm has three clients — `vaultdrive-app` (public SPA), `vaultdrive-admin` (confidential dashboard), `analytics-service` (M2M) — and the first two receive the `groups` claim without any additional configuration. The M2M client, which uses Client Credentials and has no users, does not need it.
-
-```text
-Browser                Keycloak             Express              OpenFGA
-  |                       |                    |                     |
-  |--- login ------------>|                    |                     |
-  |<-- JWT -------------  |                    |                     |
-  |    sub=abc-123        |                    |                     |
-  |    groups=[org-acme]  |                    |                     |
-  |                       |                    |                     |
-  |--- GET /documents ----|--- Bearer JWT ---->|                     |
-  |                       |                    |--- validate JWT --->|
-  |                       |                    |    (JWKS)           |
-  |                       |                    |                     |
-  |                       |                    |--- Check            |
-  |                       |                    |    user:abc-123     |
-  |                       |                    |    can_view         |
-  |                       |                    |    document:X ----->|
-  |                       |                    |                     |
-  |                       |                    |<-- allowed: true ---|
-  |<-- 200 [documents] ---|                    |                     |
-```
 
 In Express, the bridging middleware is straightforward:
 
@@ -444,36 +469,6 @@ app.get('/api/orgs/:orgId/documents', requireAuth, async (req, res) => {
 ```
 
 ### 4. Complete Flow
-
-```text
-Alice          Browser        Express           OpenFGA           Keycloak        DB
-  |               |              |                  |                 |            |
-  |-- login ----->|              |                  |                 |            |
-  |               |-- auth code (vaultdrive-app) -->|                 |            |
-  |               |<-- JWT (sub=a1b2               |                 |            |
-  |               |     groups=[org-acme]) --------|                 |            |
-  |               |              |                  |                 |            |
-  |               |-- POST /auth/callback -------->|                 |            |
-  |               |              |-- syncUserOnLogin                  |            |
-  |               |              |   check member org:org-acme ------>|            |
-  |               |              |<- not found -----|                 |            |
-  |               |              |-- write member ->|                 |            |
-  |               |              |                  |                 |            |
-  |-- GET /docs ->|              |                  |                 |            |
-  |               |-- Bearer --->|                  |                 |            |
-  |               |              |-- validate JWT (JWKS) ----------->|            |
-  |               |              |                  |                 |            |
-  |               |              |-- listObjects -->|                 |            |
-  |               |              |   user:a1b2      |                 |            |
-  |               |              |   can_view       |                 |            |
-  |               |              |   type:document  |                 |            |
-  |               |              |<- [doc-1,doc-3] -|                 |            |
-  |               |              |                  |                 |            |
-  |               |              |-- SELECT WHERE id IN (doc-1,doc-3) ----------->|
-  |               |              |<-- rows ----------------------------------------|
-  |               |<-- 200 ------|                  |                 |            |
-  |<-- documents -|              |                  |                 |            |
-```
 
 The `ListObjects` + `WHERE IN` pattern is the standard approach for filtering resources by permission without loading everything into memory. OpenFGA returns the IDs of accessible resources; the database fetches the details. This scales well because OpenFGA is optimized for traversing relationship graphs and the database is optimized for filtering rows by ID.
 
