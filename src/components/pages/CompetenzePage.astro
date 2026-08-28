@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import PageLayout from '@/layouts/PageLayout.astro';
 import PageHero from '@/components/ui/PageHero.astro';
-import Button from '@/components/ui/Button.astro';
+import FinalCta from '@/components/ui/FinalCta.astro';
 import { pillarStyles } from '@/data/pillar-styles';
 import { pillarLabels, type Pillar } from '@/data/pillars';
 
@@ -254,7 +254,6 @@ const t = lang === 'en'
       heroSubtitle: 'Organized by method, not by logo wall.',
       intro: "What I actually do, grouped around the three pillars of the method. Technologies are secondary tags. Where a blog article makes the competence concrete, the link sits right next to it.",
       readMore: 'Read more',
-      cvLabel: 'Download full CV',
       ctaTitle: 'Want to put this to work?',
       ctaDesc: "If something here matches what you're facing, the fastest way forward is a 30-minute discovery call.",
       ctaPrimary: 'Book a discovery call',
@@ -267,7 +266,6 @@ const t = lang === 'en'
       heroSubtitle: 'Organizzate per metodo, non come parata di loghi.',
       intro: 'Quello che faccio davvero, raccolto attorno ai tre pilastri del metodo. Le tecnologie restano tag secondari. Dove un articolo del blog rende concreta la competenza, il link è lì accanto.',
       readMore: 'Approfondisci',
-      cvLabel: 'Scarica il CV completo',
       ctaTitle: 'Vuoi metterlo in pratica?',
       ctaDesc: 'Se qualcosa qui sopra corrisponde a quello che stai affrontando, il modo più rapido per partire è una discovery call di 30 minuti.',
       ctaPrimary: 'Prenota una discovery call',
@@ -276,26 +274,34 @@ const t = lang === 'en'
 ---
 
 <PageLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/competenze.png" lang={lang}>
-  <PageHero slot="hero" title={t.heroTitle} subtitle={t.heroSubtitle} />
-
-  <section class="mb-16 fade-in-section">
-    <p class="text-text-muted text-lg leading-relaxed max-w-3xl">
-      {t.intro}
-    </p>
-  </section>
+  <PageHero
+    slot="hero"
+    variant="index"
+    eyebrow={t.pageTitle}
+    title={t.heroTitle}
+    subtitle={t.intro}
+    note={t.heroSubtitle}
+  />
 
   {sections.map((section) => {
     const styles = pillarStyles[section.pillar];
     const label = pillarLabels[section.pillar][lang];
     return (
       <section class="mb-20 fade-in-section">
-        <div class={`mb-8 pl-5 border-l-4 ${styles.borderLeft}`}>
-          <h2 class={`text-3xl font-bold ${styles.text}`}>{label}</h2>
-          <p class="text-text-muted mt-2 max-w-2xl">{section.intro}</p>
+        <div class="mb-8">
+          <div class="flex items-baseline gap-3 mb-2">
+            <span class={`text-2xl font-mono font-bold ${styles.text}`}>{styles.num}</span>
+            <h2 class="text-2xl font-bold text-text-dark dark:text-text-light">{label}</h2>
+            <span class="text-sm text-text-muted ml-auto tabular-nums">
+              {section.areas.length} {lang === 'en' ? 'areas' : 'aree'}
+            </span>
+          </div>
+          <div class={`h-0.5 w-full ${styles.bg} opacity-40 mb-3`} />
+          <p class="text-text-muted max-w-2xl">{section.intro}</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 stagger-children">
           {section.areas.map((area) => (
-            <div class={`rounded-xl border border-border/70 dark:border-border-dark/70 border-l-[3px] ${styles.borderLeft} p-6 bg-white dark:bg-surface-dark h-full flex flex-col`}>
+            <div class={`surface-card border-l-[3px] ${styles.borderLeft} p-6 h-full flex flex-col`}>
               <h3 class="font-semibold text-base text-text-dark dark:text-text-light mb-2">
                 {area.title}
               </h3>
@@ -324,22 +330,15 @@ const t = lang === 'en'
     );
   })}
 
-  <section class="mb-16 fade-in-section text-center">
-    <Button href="/files/Francesco_Montelli_CV.pdf" variant="secondary" size="lg">
-      {t.cvLabel}
-    </Button>
-  </section>
-
-  <section class="text-center py-16 fade-in-section">
-    <h2 class="text-3xl font-bold mb-3">{t.ctaTitle}</h2>
-    <p class="text-text-muted text-lg mb-8 max-w-xl mx-auto">{t.ctaDesc}</p>
-    <div class="flex flex-col sm:flex-row gap-4 justify-center">
-      <Button href="https://cal.com/francesco-montelli-4hfojq/30min" variant="primary" size="lg">
-        {t.ctaPrimary}
-      </Button>
-      <Button href={lang === 'en' ? '/en/services/' : '/servizi/'} variant="secondary" size="lg">
-        {t.ctaSecondary}
-      </Button>
-    </div>
-  </section>
+  <FinalCta
+    slot="after"
+    title={t.ctaTitle}
+    desc={t.ctaDesc}
+    ctaLabel={t.ctaPrimary}
+    ctaHref="https://cal.com/francesco-montelli-4hfojq/30min"
+    secondaryLabel={t.ctaSecondary}
+    secondaryHref={lang === 'en' ? '/en/services/' : '/servizi/'}
+    umamiEvent="cta-competenze-final"
+    fullBleed
+  />
 </PageLayout>

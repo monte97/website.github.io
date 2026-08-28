@@ -4,6 +4,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import FinalCta from '@/components/ui/FinalCta.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 import Decisions from '@/components/ui/Decisions.astro';
 import SwapFigure from '@/components/ui/SwapFigure.astro';
 import MatrixFigure from '@/components/ui/MatrixFigure.astro';
@@ -52,7 +53,7 @@ const resultItems = Array.isArray(d.result) ? d.result : d.result ? [d.result] :
 const mailLink = 'mailto:francesco@montelli.dev';
 
 const t = lang === 'en'
-  ? { back: 'All case studies', oggetto: 'Subject', esito: 'Outcome', metodo: 'Method', struttura: 'Structure',
+  ? { oggetto: 'Subject', esito: 'Outcome', metodo: 'Method', struttura: 'Structure',
       anon: 'Anonymisation', toc: 'What this document covers', howto: 'How to read this',
       constraint: 'The constraint', context: 'Context', actions: 'What was done',
       result: 'What was left behind', pillarApplied: 'Pillar applied', related: 'Related article',
@@ -60,7 +61,7 @@ const t = lang === 'en'
       specs: 'In brief', open: 'What remains open', shots: 'What it looks like',
       ctaTitle: 'Same situation on your side?', ctaDesc: 'Tell me where the system is now and what is blocking you.',
       ctaPrimary: 'Book a discovery call', ctaSecondary: 'or write me' }
-  : { back: 'Tutti i case study', oggetto: 'Oggetto', esito: 'Com’è andata', metodo: 'Metodo', struttura: 'Struttura',
+  : { oggetto: 'Oggetto', esito: 'Com’è andata', metodo: 'Metodo', struttura: 'Struttura',
       anon: 'Anonimizzazione', toc: 'Cosa contiene questo documento', howto: 'Come leggerlo',
       constraint: 'Il vincolo', context: 'Contesto', actions: 'Cosa è stato fatto',
       result: 'Cosa è rimasto', pillarApplied: 'Pilastro applicato', related: 'Articolo correlato',
@@ -82,9 +83,16 @@ const metaCells = [
   <Header lang={lang} />
   <main class="max-w-4xl mx-auto px-5 py-12 md:py-16">
 
-    <a href={`${prefix}/case-study/`} class="inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-accent transition-colors mb-8">
-      &larr; {t.back}
-    </a>
+    <Breadcrumb
+      class="mb-8"
+      variant="text"
+      truncateLast
+      items={[
+        { label: 'Home', href: `${prefix}/` },
+        { label: lang === 'en' ? 'Case studies' : 'Case study', href: `${prefix}/case-study/` },
+        { label: d.title },
+      ]}
+    />
 
     {/* COPERTINA */}
     <header class="mb-12">
@@ -107,9 +115,9 @@ const metaCells = [
 
     {/* GRIGLIA META — oggetto / metodo / struttura / anonimizzazione */}
     {metaCells.length > 0 && (
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-px bg-border/50 dark:bg-border-dark/50 rounded-2xl overflow-hidden border border-border/50 dark:border-border-dark/50 mb-12">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-px bg-border/50 dark:bg-border-dark/50 rounded-xl overflow-hidden border border-border/50 dark:border-border-dark/50 mb-12">
         {metaCells.map((cell) => (
-          <div class:list={['p-5 md:p-6', cell.key ? 'bg-accent-subtle' : 'bg-white dark:bg-surface-dark']}>
+          <div class:list={['p-5 md:p-6', cell.key ? 'bg-accent-subtle' : 'bg-surface dark:bg-surface-dark']}>
             <p class="text-[11px] font-semibold uppercase tracking-[0.15em] text-accent mb-2">{cell.label}</p>
             <p class:list={['text-sm leading-relaxed', cell.key ? 'text-text-dark dark:text-text-light font-medium' : 'text-text-muted']}>{cell.value}</p>
           </div>
@@ -119,7 +127,7 @@ const metaCells = [
 
     {/* INDICE + PERCORSI DI LETTURA */}
     {(d.sections?.length > 0 || d.readingPaths?.length > 0) && (
-      <section class="rounded-2xl border border-border/60 dark:border-border-dark/60 bg-accent-subtle/40 p-6 md:p-8 mb-12">
+      <section class="rounded-xl border border-border/60 dark:border-border-dark/60 bg-accent-subtle/40 p-6 md:p-8 mb-12">
         {d.sections?.length > 0 && (
           <>
             <h2 class="text-sm font-bold uppercase tracking-[0.15em] text-text-dark dark:text-text-light mb-5">{t.toc}</h2>
@@ -306,7 +314,7 @@ const metaCells = [
           {d.shots.map((sh: any) => (
             <figure>
               <img src={sh.src} alt={sh.caption} loading="lazy"
-                class="w-full rounded-xl border border-border/60 dark:border-border-dark/60 bg-white dark:bg-surface-dark" />
+                class="w-full rounded-xl border border-border/60 dark:border-border-dark/60 bg-surface dark:bg-surface-dark" />
               <figcaption class="mt-2 text-[10px] font-mono uppercase tracking-[0.15em] text-text-muted leading-relaxed">{sh.caption}</figcaption>
             </figure>
           ))}
@@ -316,7 +324,7 @@ const metaCells = [
 
     {/* COSA RESTA APERTO */}
     {d.openItems?.length > 0 && (
-      <section class="mt-14 rounded-2xl border border-dashed border-border dark:border-border-dark p-6 md:p-7">
+      <section class="mt-14 rounded-xl border border-dashed border-border dark:border-border-dark p-6 md:p-7">
         <h2 class="text-sm font-bold uppercase tracking-[0.15em] text-text-dark dark:text-text-light mb-4">{t.open}</h2>
         <ul class="space-y-2">
           {d.openItems.map((it: string) => (
