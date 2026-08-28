@@ -47,7 +47,9 @@ const projects = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    type: z.enum(['project', 'workshop', 'case-study']).default('project'),
+    /** Resta un enum di uno: la collection ospita solo case study da quando
+     *  /progetti/ e' stata cancellata e i workshop vivono in data/workshops.ts. */
+    type: z.literal('case-study').default('case-study'),
     pillar: z.enum(['progettare', 'verificare', 'automatizzare']),
     featured: z.boolean().default(false),
     tags: z.array(z.string()).default([]),

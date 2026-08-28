@@ -30,7 +30,7 @@ File-based routing in `src/pages/`. Italian is the default language (no URL pref
 Three Astro content collections defined in `src/content.config.ts`:
 
 - **posts** — Blog articles. Organized by pillar: `posts/progettare/`, `posts/verificare/`, `posts/automatizzare/`, `posts/altro/`. Each post is a directory with `index.md` (IT) and optionally `index.en.md` or `index-en.md` (EN). Hero images at `hero.webp` in each post directory.
-- **projects** — Portfolio projects (`type: 'project' | 'workshop'`).
+- **projects** — Case study documents. Il nome della cartella e' storico: la sezione `/progetti/` e' stata cancellata il 2026-08-28 e i workshop vivono in `src/data/workshops.ts`.
 - **services** — Service offerings with pillar association.
 
 ### Key Frontmatter (posts)
