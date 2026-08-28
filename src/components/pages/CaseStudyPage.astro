@@ -12,6 +12,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import FinalCta from '@/components/ui/FinalCta.astro';
+import PageHero from '@/components/ui/PageHero.astro';
 import { pillarLabels } from '@/data/pillars';
 
 interface Props {
@@ -26,7 +27,7 @@ const caseStudies = (await getCollection('projects'))
   .sort((a, b) => a.data.weight - b.data.weight);
 
 const mailLink = 'mailto:francesco@montelli.dev';
-const mono = 'font-mono text-[11px] uppercase tracking-[0.12em] text-text-muted';
+const mono = 'label-mono';
 const hair = 'border-border/70 dark:border-border-dark/70';
 
 const t = lang === 'en'
@@ -72,16 +73,13 @@ const t = lang === 'en'
   <Header lang={lang} />
   <main>
 
-    <section class="bg-accent-subtle border-b border-border/40 dark:border-border-dark/40">
-      <div class="max-w-5xl mx-auto px-5 py-14 md:py-16 fade-in-section">
-        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-4">{t.eyebrow}</p>
-        <h1 class="font-bold tracking-tight text-text-dark dark:text-text-light leading-[1.15] text-3xl sm:text-4xl max-w-2xl">
-          {t.heroTitle}
-        </h1>
-        <p class="mt-4 text-text-muted leading-relaxed max-w-2xl">{t.intro(caseStudies.length)}</p>
-        <p class={`mt-5 ${mono}`}>{t.note}</p>
-      </div>
-    </section>
+    <PageHero
+      variant="index"
+      eyebrow={t.eyebrow}
+      title={t.heroTitle}
+      subtitle={t.intro(caseStudies.length)}
+      note={t.note}
+    />
 
     <div class="max-w-5xl mx-auto px-5 py-12 md:py-16">
       {caseStudies.length === 0 ? (
@@ -94,11 +92,11 @@ const t = lang === 'en'
           {caseStudies.map((cs) => (
             <a
               href={`${prefix}/case-study/${cs.id}/`}
-              class={`group block rounded-xl border ${hair} bg-surface dark:bg-surface-dark p-6 md:p-7 hover:border-accent/40 hover:bg-accent/5 transition-all`}
+              class="group surface-link block p-6 md:p-7"
             >
               <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-3">
                 {cs.data.eyebrow && (
-                  <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-accent">{cs.data.eyebrow}</p>
+                  <p class="label-mono !text-accent">{cs.data.eyebrow}</p>
                 )}
                 <p class={mono}>{pillarLabels[cs.data.pillar][lang]}</p>
               </div>
@@ -118,7 +116,7 @@ const t = lang === 'en'
                   )}
                   {cs.data.esito && (
                     <div class="border-l-2 border-accent pl-4">
-                      <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-accent mb-1.5">{t.outcome}</p>
+                      <p class="label-mono !text-accent mb-1.5">{t.outcome}</p>
                       <p class="text-sm text-text-muted leading-relaxed">{cs.data.esito}</p>
                     </div>
                   )}

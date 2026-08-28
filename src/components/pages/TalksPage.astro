@@ -3,6 +3,7 @@ import PageLayout from '@/layouts/PageLayout.astro';
 import { talks } from '@/data/talks';
 import { talkImagesFrom } from '@/utils/talks';
 import FinalCta from '@/components/ui/FinalCta.astro';
+import PageHero from '@/components/ui/PageHero.astro';
 
 interface Props {
   lang?: 'it' | 'en';
@@ -31,7 +32,7 @@ const locale = lang === 'en' ? 'en-US' : 'it-IT';
 const fmtDate = (iso: string) =>
   new Date(iso).toLocaleDateString(locale, { year: 'numeric', month: 'long' });
 
-const mono = 'font-mono text-[11px] uppercase tracking-[0.12em] text-text-muted';
+const mono = 'label-mono';
 const hair = 'border-border/70 dark:border-border-dark/70';
 
 const t = lang === 'en'
@@ -66,20 +67,18 @@ const t = lang === 'en'
 ---
 
 <PageLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/talks.png" lang={lang}>
-  <section slot="hero" class="bg-accent-subtle border-b border-border/40 dark:border-border-dark/40">
-    <div class="max-w-5xl mx-auto px-5 py-14 md:py-16 fade-in-section">
-      <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-4">{t.eyebrow}</p>
-      <h1 class="font-bold tracking-tight text-text-dark dark:text-text-light leading-[1.15] text-3xl sm:text-4xl max-w-2xl">
-        {t.heroTitle}
-      </h1>
-      <p class="mt-4 text-text-muted leading-relaxed max-w-2xl">{t.intro}</p>
-      <p class={`mt-5 ${mono}`}>{t.note}</p>
-    </div>
-  </section>
+  <PageHero
+    slot="hero"
+    variant="index"
+    eyebrow={t.eyebrow}
+    title={t.heroTitle}
+    subtitle={t.intro}
+    note={t.note}
+  />
 
   {upcoming.length > 0 && (
     <section class="mb-16 fade-in-section">
-      <h2 class="font-mono text-[11px] uppercase tracking-[0.12em] text-accent mb-4">{t.upcomingTitle}</h2>
+      <h2 class="label-mono !text-accent mb-4">{t.upcomingTitle}</h2>
       <div class="space-y-4">
         {upcoming.map((talk) => {
           const img = coverFor(talk.slug);
@@ -89,7 +88,7 @@ const t = lang === 'en'
                 <img src={img} alt={talk.title} class="w-full h-48 md:h-56 md:w-64 object-cover shrink-0" loading="lazy" />
               )}
               <div class="p-6 flex-1">
-                <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-accent">{talk.event} &middot; {fmtDate(talk.date)} &middot; {talk.location}</p>
+                <p class="label-mono !text-accent">{talk.event} &middot; {fmtDate(talk.date)} &middot; {talk.location}</p>
                 <h3 class="text-xl font-bold text-text-dark dark:text-text-light mt-1 group-hover:text-accent transition-colors">{talk.title}</h3>
                 <p class="text-text-muted mt-2 leading-relaxed">{talk.abstract[lang]}</p>
               </div>
@@ -107,7 +106,7 @@ const t = lang === 'en'
         {past.map((talk) => {
           const img = coverFor(talk.slug);
           return (
-            <a href={`${prefix}/talks/${talk.slug}/`} class={`group rounded-xl border ${hair} bg-surface dark:bg-surface-dark overflow-hidden hover:border-accent/40 hover:bg-accent/5 transition-all md:flex`}>
+            <a href={`${prefix}/talks/${talk.slug}/`} class="group surface-link overflow-hidden md:flex">
               {img && (
                 <img src={img} alt={talk.title} class="w-full h-48 md:h-56 md:w-64 object-cover shrink-0" loading="lazy" />
               )}

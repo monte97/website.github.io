@@ -22,7 +22,7 @@ const mailLink = 'mailto:francesco@montelli.dev';
 const linkedinLink = 'https://linkedin.com/in/francesco-montelli';
 const cvHref = '/files/Francesco_Montelli_CV.pdf';
 
-const mono = 'font-mono text-[11px] uppercase tracking-[0.12em] text-text-muted';
+const mono = 'label-mono';
 const hair = 'border-border/70 dark:border-border-dark/70';
 
 const t = lang === 'en'
@@ -143,7 +143,7 @@ const t = lang === 'en'
           {t.links.map((r) => (
             <a
               href={r.href}
-              class={`group flex items-start gap-4 p-5 rounded-xl border ${hair} bg-surface dark:bg-surface-dark hover:border-accent/40 hover:bg-accent/5 transition-all`}
+              class="group surface-link flex items-start gap-4 p-5"
             >
               <span class="flex-1">
                 <span class="block font-semibold text-text-dark dark:text-text-light group-hover:text-accent transition-colors">

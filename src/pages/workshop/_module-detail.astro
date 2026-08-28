@@ -38,7 +38,7 @@ export const getStaticPaths = (() =>
 
 const { w, g, m, prev, next, num } = Astro.props;
 
-const mono = 'font-mono text-[11px] uppercase tracking-[0.12em] text-text-muted';
+const mono = 'label-mono';
 const hair = 'border-border/70 dark:border-border-dark/70';
 const h2 = 'text-xl font-bold text-text-dark dark:text-text-light';
 const calLink = 'https://cal.com/francesco-montelli-4hfojq/30min';
@@ -135,7 +135,7 @@ const todo = (cosa: string) => `[${cosa}]`;
       </div>
 
       <aside class="space-y-6 lg:sticky lg:top-6">
-        <div class={`rounded-xl border ${hair} bg-surface dark:bg-surface-dark p-6`}>
+        <div class="surface-card p-6">
           <p class={mono}>Il workshop</p>
           <a href="/workshop3/landing-2/" class="block mt-2 font-bold text-text-dark dark:text-text-light hover:text-accent transition-colors">
             {w.title}

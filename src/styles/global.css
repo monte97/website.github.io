@@ -295,3 +295,26 @@ html.dark .astro-code span {
   background-position: 0 100%;
   background-repeat: no-repeat;
 }
+
+/* ── Idiomi ricorrenti ──────────────────────────────────────────────────────
+   Tre stringhe di classi che comparivano a mano in una decina di file e stavano
+   divergendo: fondo bianco contro superficie, ombra contro bordo, tracking
+   diverso a ogni etichetta. Qui stanno in un posto solo.
+
+   - label-mono   · micro etichetta: occhielli, conteggi, campi
+   - surface-card · contenitore fermo
+   - surface-link · contenitore cliccabile; va usato insieme a `group` se
+                    dentro c'e' un titolo che deve reagire all'hover
+   ────────────────────────────────────────────────────────────────────────── */
+
+@utility label-mono {
+  @apply font-mono text-[11px] uppercase tracking-[0.12em] text-text-muted;
+}
+
+@utility surface-card {
+  @apply rounded-xl border border-border/70 bg-surface dark:border-border-dark/70 dark:bg-surface-dark;
+}
+
+@utility surface-link {
+  @apply rounded-xl border border-border/70 bg-surface transition-all dark:border-border-dark/70 dark:bg-surface-dark hover:border-accent/40 hover:bg-accent/5;
+}

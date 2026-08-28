@@ -19,7 +19,7 @@ interface Props {
 
 const { lang = 'it' } = Astro.props;
 const workshops = await getWorkshops();
-const mono = 'font-mono text-[11px] uppercase tracking-[0.12em] text-text-muted';
+const mono = 'label-mono';
 
 const t = lang === 'en'
   ? {
@@ -55,8 +55,7 @@ const t = lang === 'en'
       ctaPrimary: 'Prenota una discovery call',
     };
 
-const cardClass =
-  'flex flex-col rounded-xl border border-border dark:border-border-dark bg-surface dark:bg-surface-dark p-6';
+const cardClass = 'flex flex-col surface-card p-6';
 ---
 
 <BaseLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/workshop.png" lang={lang}>

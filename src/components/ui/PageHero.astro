@@ -11,12 +11,36 @@ interface Props {
   image?: { src: string; alt: string };
   cta?: { href: string; label: string };
   ctaSecondary?: { href: string; label: string };
+  /**
+   * 'index' e' la testata degli elenchi (blog, case study, talks): allineata a
+   * sinistra, titolo piu' contenuto, introduzione a misura di prosa e una riga
+   * in mono sotto. Lo slot accoglie quello che una singola pagina aggiunge.
+   */
+  variant?: 'default' | 'index';
+  /** Riga in mono sotto l'introduzione, solo in variant="index". */
+  note?: string;
 }
 
-const { title, subtitle, eyebrow, align = 'left', image, cta, ctaSecondary } = Astro.props;
+const { title, subtitle, eyebrow, align = 'left', image, cta, ctaSecondary, variant = 'default', note } = Astro.props;
 const centered = align === 'center' && !image;
+const isIndex = variant === 'index';
 ---
 
+{isIndex ? (
+  <section class="bg-accent-subtle border-b border-border/40 dark:border-border-dark/40">
+    <div class="max-w-5xl mx-auto px-5 py-14 md:py-16 fade-in-section">
+      {eyebrow && (
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-4">{eyebrow}</p>
+      )}
+      <h1 class="font-bold tracking-tight text-text-dark dark:text-text-light leading-[1.15] text-3xl sm:text-4xl max-w-2xl">
+        {title}
+      </h1>
+      {subtitle && <p class="mt-4 text-text-muted leading-relaxed max-w-2xl">{subtitle}</p>}
+      {note && <p class="mt-5 label-mono">{note}</p>}
+      <slot />
+    </div>
+  </section>
+) : (
 <section class="bg-accent-subtle border-b border-border/40 dark:border-border-dark/40">
   <div class:list={['mx-auto px-5 py-16 md:py-24 fade-in-section', centered ? 'max-w-3xl text-center' : 'max-w-5xl']}>
     <div class:list={[
@@ -65,3 +89,4 @@ const centered = align === 'center' && !image;
     </div>
   </div>
 </section>
+)}
