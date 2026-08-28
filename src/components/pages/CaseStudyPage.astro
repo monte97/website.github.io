@@ -1,11 +1,17 @@
 ---
+/**
+ * Indice dei case study.
+ *
+ * Grammatica visiva allineata all'indice del blog: righe con bordo sottile e
+ * nessuna ombra, pilastro come etichetta mono invece che pastiglia, e occhiello
+ * promosso a prima riga, perche' e' il campo con cui il lettore riconosce la
+ * propria situazione. L'introduzione sta nell'hero invece che sospesa in mezzo.
+ */
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import FinalCta from '@/components/ui/FinalCta.astro';
-import PageHero from '@/components/ui/PageHero.astro';
-import { pillarStyles } from '@/data/pillar-styles';
 import { pillarLabels } from '@/data/pillars';
 
 interface Props {
@@ -15,13 +21,13 @@ interface Props {
 const { lang = 'it' } = Astro.props;
 const prefix = lang === 'en' ? '/en' : '';
 
-const allProjects = await getCollection('projects');
-const caseStudies = allProjects
+const caseStudies = (await getCollection('projects'))
   .filter((p) => p.data.type === 'case-study' && !p.data.hold)
   .sort((a, b) => a.data.weight - b.data.weight);
 
 const mailLink = 'mailto:francesco@montelli.dev';
-
+const mono = 'font-mono text-[11px] uppercase tracking-[0.12em] text-text-muted';
+const hair = 'border-border/70 dark:border-border-dark/70';
 
 const t = lang === 'en'
   ? {
@@ -29,8 +35,9 @@ const t = lang === 'en'
       pageDesc: 'Technical analyses of real projects on systems already in production: the starting constraint, the decisions taken, and where the work stopped.',
       eyebrow: 'Case studies',
       heroTitle: 'What was decided, and why',
-      heroSubtitle: 'Analyses of real projects on systems that already had people working inside them. Client names are omitted; the decisions are not.',
-      intro: 'Each piece starts from the constraint that created the work, walks through the choices one by one (including the rejected ones, and why), and says what the client was left with. If you are looking at a similar problem, what transfers is the reasoning: the technologies change from one project to the next.',
+      intro: (n: number) =>
+        `${n} analyses of real projects on systems that already had people working inside them. Each piece starts from the constraint that created the work, walks through the choices one by one including the rejected ones, and says what the client was left with.`,
+      note: 'Client names are omitted, the decisions are not',
       emptyTitle: 'Nothing published yet',
       emptyDesc: 'The first analyses are being written.',
       readLabel: 'Read the analysis',
@@ -46,8 +53,9 @@ const t = lang === 'en'
       pageDesc: 'Analisi tecniche di progetti reali su sistemi in esercizio: il vincolo di partenza, le decisioni prese, e il punto in cui il lavoro si è fermato.',
       eyebrow: 'Case study',
       heroTitle: 'Cosa è stato deciso, e perché',
-      heroSubtitle: 'Analisi di progetti reali su sistemi che avevano già gente dentro. I nomi dei committenti sono omessi, le decisioni no.',
-      intro: 'Ogni pezzo parte dal vincolo che ha generato il lavoro, ripercorre le scelte una per una (comprese quelle scartate, col motivo), e dice cosa è rimasto in mano a chi ha pagato. Se stai guardando un problema simile, quello che si trasferisce sono i motivi: le tecnologie cambiano da un progetto all’altro.',
+      intro: (n: number) =>
+        `${n} analisi di progetti reali su sistemi che avevano già gente dentro. Ogni pezzo parte dal vincolo che ha generato il lavoro, ripercorre le scelte una per una comprese quelle scartate, e dice cosa è rimasto in mano a chi ha pagato.`,
+      note: 'I nomi dei committenti sono omessi, le decisioni no',
       emptyTitle: 'Ancora niente di pubblicato',
       emptyDesc: 'Le prime analisi sono in scrittura.',
       readLabel: 'Leggi l’analisi',
@@ -64,72 +72,82 @@ const t = lang === 'en'
   <Header lang={lang} />
   <main>
 
-    <PageHero title={t.heroTitle} subtitle={t.heroSubtitle} eyebrow={t.eyebrow} align="center" />
-
-    {/* ELENCO */}
-    <section>
-      <div class="max-w-5xl mx-auto px-5 pt-12 md:pt-16 pb-16 md:pb-20">
-        <p class="text-text-muted text-base md:text-lg leading-relaxed max-w-3xl mx-auto text-center mb-10 md:mb-12">{t.intro}</p>
-
-        {caseStudies.length === 0 ? (
-          <div class="max-w-xl mx-auto text-center rounded-2xl border border-dashed border-border/60 dark:border-border-dark/60 p-10">
-            <h2 class="text-lg font-bold text-text-dark dark:text-text-light mb-2">{t.emptyTitle}</h2>
-            <p class="text-text-muted text-sm">{t.emptyDesc}</p>
-          </div>
-        ) : (
-          <div class="space-y-5 md:space-y-6">
-            {caseStudies.map((cs) => (
-              <a href={`${prefix}/case-study/${cs.id}/`}
-                class="group block rounded-2xl border border-border/60 dark:border-border-dark/60 bg-white dark:bg-surface-dark p-6 md:p-8 shadow-sm hover:shadow-md hover:border-accent/40 transition-all duration-200">
-
-                <div class="flex items-start justify-between gap-4 mb-4">
-                  {cs.data.eyebrow && (
-                    <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-text-muted/80">{cs.data.eyebrow}</p>
-                  )}
-                  <span class={`text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full whitespace-nowrap shrink-0 ${pillarStyles[cs.data.pillar].badge}`}>
-                    {pillarLabels[cs.data.pillar][lang]}
-                  </span>
-                </div>
-
-                <h2 class="text-xl md:text-2xl font-bold text-text-dark dark:text-text-light mb-3 group-hover:text-accent transition-colors text-balance">
-                  {cs.data.title}
-                </h2>
-                <p class="text-text-muted text-sm md:text-base leading-relaxed mb-5 max-w-2xl">{cs.data.description}</p>
-
-                {(cs.data.problem || cs.data.esito) && (
-                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 mb-5">
-                    {cs.data.problem && (
-                      <div class="border-l-2 border-border dark:border-border-dark pl-4">
-                        <p class="text-[10px] font-mono uppercase tracking-[0.15em] text-text-muted/70 mb-1.5">{t.constraint}</p>
-                        <p class="text-sm text-text-muted leading-relaxed">{cs.data.problem}</p>
-                      </div>
-                    )}
-                    {cs.data.esito && (
-                      <div class="border-l-2 border-accent pl-4">
-                        <p class="text-[10px] font-mono uppercase tracking-[0.15em] text-accent mb-1.5">{t.outcome}</p>
-                        <p class="text-sm text-text-muted leading-relaxed">{cs.data.esito}</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-                  <span class="text-sm font-semibold text-accent">{t.readLabel} &rarr;</span>
-                  <div class="flex flex-wrap gap-1.5">
-                    {cs.data.tags.slice(0, 5).map((tg) => (
-                      <span class="text-[11px] text-text-muted/80 bg-text-muted/8 px-1.5 py-0.5 rounded">{tg}</span>
-                    ))}
-                  </div>
-                </div>
-              </a>
-            ))}
-          </div>
-        )}
+    <section class="bg-accent-subtle border-b border-border/40 dark:border-border-dark/40">
+      <div class="max-w-5xl mx-auto px-5 py-14 md:py-16 fade-in-section">
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-4">{t.eyebrow}</p>
+        <h1 class="font-bold tracking-tight text-text-dark dark:text-text-light leading-[1.15] text-3xl sm:text-4xl max-w-2xl">
+          {t.heroTitle}
+        </h1>
+        <p class="mt-4 text-text-muted leading-relaxed max-w-2xl">{t.intro(caseStudies.length)}</p>
+        <p class={`mt-5 ${mono}`}>{t.note}</p>
       </div>
     </section>
 
-    <FinalCta title={t.ctaTitle} desc={t.ctaDesc} ctaLabel={t.ctaPrimary} secondaryLabel={t.ctaSecondary} secondaryHref={mailLink} umamiEvent="cta-case-study-final" fullBleed />
+    <div class="max-w-5xl mx-auto px-5 py-12 md:py-16">
+      {caseStudies.length === 0 ? (
+        <div class={`max-w-xl mx-auto text-center rounded-xl border border-dashed ${hair} p-10`}>
+          <h2 class="text-lg font-bold text-text-dark dark:text-text-light mb-2">{t.emptyTitle}</h2>
+          <p class="text-text-muted text-sm">{t.emptyDesc}</p>
+        </div>
+      ) : (
+        <div class="space-y-4">
+          {caseStudies.map((cs) => (
+            <a
+              href={`${prefix}/case-study/${cs.id}/`}
+              class={`group block rounded-xl border ${hair} bg-surface dark:bg-surface-dark p-6 md:p-7 hover:border-accent/40 hover:bg-accent/5 transition-all`}
+            >
+              <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-3">
+                {cs.data.eyebrow && (
+                  <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-accent">{cs.data.eyebrow}</p>
+                )}
+                <p class={mono}>{pillarLabels[cs.data.pillar][lang]}</p>
+              </div>
 
+              <h2 class="text-xl md:text-2xl font-bold text-text-dark dark:text-text-light leading-snug text-balance group-hover:text-accent transition-colors">
+                {cs.data.title}
+              </h2>
+              <p class="mt-3 text-text-muted leading-relaxed max-w-2xl">{cs.data.description}</p>
+
+              {(cs.data.problem || cs.data.esito) && (
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 mt-5">
+                  {cs.data.problem && (
+                    <div class={`border-l-2 ${hair} pl-4`}>
+                      <p class={`${mono} mb-1.5`}>{t.constraint}</p>
+                      <p class="text-sm text-text-muted leading-relaxed">{cs.data.problem}</p>
+                    </div>
+                  )}
+                  {cs.data.esito && (
+                    <div class="border-l-2 border-accent pl-4">
+                      <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-accent mb-1.5">{t.outcome}</p>
+                      <p class="text-sm text-text-muted leading-relaxed">{cs.data.esito}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div class={`mt-5 pt-4 border-t ${hair} flex flex-wrap items-center gap-x-4 gap-y-2`}>
+                <div class="flex flex-wrap gap-1.5">
+                  {cs.data.tags.slice(0, 5).map((tg) => (
+                    <span class="text-[11px] text-text-muted/80 bg-text-muted/8 px-1.5 py-0.5 rounded">{tg}</span>
+                  ))}
+                </div>
+                <span class="ml-auto text-sm font-semibold text-accent">{t.readLabel} &rarr;</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+
+    <FinalCta
+      title={t.ctaTitle}
+      desc={t.ctaDesc}
+      ctaLabel={t.ctaPrimary}
+      secondaryLabel={t.ctaSecondary}
+      secondaryHref={mailLink}
+      umamiEvent="cta-case-study-final"
+      fullBleed
+    />
   </main>
   <Footer lang={lang} />
 </BaseLayout>
