@@ -19,5 +19,7 @@ const { title, description, ogImage, lang = 'it' } = Astro.props;
   <main class="max-w-5xl mx-auto px-5 py-12">
     <slot />
   </main>
+  <!-- fuori dal container: per le fasce a tutta pagina, come la CTA finale -->
+  <slot name="after" />
   <Footer lang={lang} />
 </BaseLayout>
