@@ -1,379 +1,289 @@
 ---
-import { getCollection, render } from 'astro:content';
+/**
+ * Servizi.
+ *
+ * La pagina dichiara prima come si lavora, poi cosa si fa, poi in che ordine si
+ * procede. I deliverable di ogni servizio stanno nel contenuto, in
+ * src/content/services/, non qui.
+ *
+ * Due blocchi restano spenti finche' non hanno testi veri: il riquadro "non
+ * sono la scelta giusta se" e la relativa sezione, che senza il lato negativo
+ * non regge. Bastano tre righe in `notForYou` per accenderla.
+ */
+import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
-import Button from '@/components/ui/Button.astro';
 import FinalCta from '@/components/ui/FinalCta.astro';
-import { pillarStyles } from '@/data/pillar-styles';
-import { pillarLabels, type Pillar } from '@/data/pillars';
-import { signals as sharedSignals } from '@/data/signals';
+import { signals } from '@/data/signals';
+import { getWorkshops } from '@/utils/workshop';
 
 interface Props {
   lang?: 'it' | 'en';
-  methodVariant?: 'full' | 'slim' | 'link' | 'none';
 }
 
-const { lang = 'it', methodVariant = 'full' } = Astro.props;
+const { lang = 'it' } = Astro.props;
 const prefix = lang === 'en' ? '/en' : '';
 
 const calLink = 'https://cal.com/francesco-montelli-4hfojq/30min';
 const mailLink = 'mailto:francesco@montelli.dev';
 
 const services = (await getCollection('services')).sort((a, b) => a.data.weight - b.data.weight);
-const rendered = await Promise.all(
-  services.map(async (service) => {
-    const { Content } = await render(service);
-    return { service, Content };
-  })
-);
+const workshops = await getWorkshops();
+const caseStudyCount = (await getCollection('projects')).filter(
+  (p) => p.data.type === 'case-study' && !p.data.hold
+).length;
 
-const byPillar = (p: Pillar) => rendered.find(({ service }) => service.data.pillar === p);
-
-const pillarOrder: Array<{
-  pillar: Pillar;
-  anchor: string;
-  order: string;
-  why: { it: string; en: string };
-}> = [
-  {
-    pillar: 'progettare',
-    anchor: 'architecture',
-    order: '01',
-    why: {
-      it: 'Le decisioni architetturali sono le più costose da cambiare in corsa. Vengono prima di tutto: se la base è sbagliata, qualsiasi cosa ci costruisci sopra eredita il problema.',
-      en: 'Architectural decisions are the most expensive ones to change later. They come first: if the foundation is wrong, anything you build on top of it inherits the problem.',
-    },
-  },
-  {
-    pillar: 'verificare',
-    anchor: 'observability-security',
-    order: '02',
-    why: {
-      it: 'Una volta progettato, devi sapere che funziona davvero. Sotto carico, sotto attacco, nel tempo. Senza verifica, automatizzare significa solo amplificare i guasti.',
-      en: "Once it's designed, you need to know it actually works. Under load, under attack, over time. Without verification, automating just means amplifying the failures.",
-    },
-  },
-  {
-    pillar: 'automatizzare',
-    anchor: 'pipeline-automation',
-    order: '03',
-    why: {
-      it: "Solo dopo aver progettato e verificato. L'automazione amplifica tutto quello che le sta sopra, errori compresi. Per questo è l'ultimo step, non il primo.",
-      en: "Only after designing and verifying. Automation amplifies everything sitting above it, mistakes included. That's why it's the last step, not the first.",
-    },
-  },
-];
-
-type Scenario = { scenario: string; problem: string };
-const scenarios: Scenario[] = lang === 'en'
-  ? [
-      { scenario: 'Design without verification', problem: "Good intentions with no proof. The system works as long as nothing changes." },
-      { scenario: 'Tests without CI/CD', problem: "Run by hand, when someone remembers. Eventually, nobody runs them at all." },
-      { scenario: 'CI/CD without observability', problem: "You know the deploy went through. You don't know whether the system actually works." },
-      { scenario: 'Observability without tests', problem: "You see the problems in production, but you can't prevent them. You're stuck in reactive mode." },
-      { scenario: 'All three together', problem: 'You design consciously → verify automatically → observe in production.' },
-    ]
-  : [
-      { scenario: 'Design senza verifica', problem: 'Buone intenzioni senza prove. Il sistema funziona finché non cambia niente.' },
-      { scenario: 'Test senza CI/CD', problem: 'Vengono eseguiti a mano, quando ci si ricorda. Con il tempo si smette.' },
-      { scenario: 'CI/CD senza observability', problem: 'Sai che il deploy è andato a buon fine. Non sai se il sistema funziona davvero.' },
-      { scenario: 'Observability senza test', problem: 'Vedi i problemi in produzione, ma non puoi prevenirli. Sei sempre in modalità reattiva.' },
-      { scenario: 'Tutti e tre insieme', problem: 'Progetti consapevolmente → verifichi automaticamente → osservi in produzione.' },
-    ];
-
-// Slot PROVA — riempire con un caso reale quando disponibile (follow-up #1).
-// Finché è null, la banda 3 non viene renderizzata (niente prove finte).
-const proof: { headline: string; body: string } | null = null;
+const hair = 'border-border/70 dark:border-border-dark/70';
+const h2 = 'text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light';
 
 const t = lang === 'en'
   ? {
       pageTitle: 'Services',
-      pageDesc: 'I design, build and automate your product software: from analysis and architecture to the build, all the way to the automated processes that guarantee quality. From scratch or on a system grown rigid over time. Free 30-minute discovery call.',
-      // Hero
+      pageDesc: 'I design, build and automate the software behind your product: architecture, verification, automation. From scratch or on a system grown rigid over time. Free 30-minute discovery call.',
+      eyebrow: 'The services',
       heroTitle: 'I design, build and automate the software behind your product.',
-      heroForWho: 'From analysis and architecture choices to the actual build, all the way to the automated processes that keep quality high: testing, CI/CD, observability, security. Whether it starts from scratch or from a system that has grown rigid over time, the team is left able to go on without me.',
-      heroAvailability: '',
+      heroBody: 'From analysis and architecture choices to the actual build, all the way to the automated processes that keep quality high. Whether it starts from scratch or from a system that has grown rigid over time, the team is left able to go on without me.',
       heroCta: 'Book a discovery call',
-      // Signals
-      signalsEyebrow: 'Who this is for',
-      signalsTitle: 'You are building something new, or living with a system that has grown rigid over time.',
-      signalsIntro: 'Product companies past the early phase, now hitting friction that was not there before.',
-      signalsClosing: 'If two of these already feel familiar, the right time to act is before the third one shows up.',
-      // Method
-      methodTitle: 'How I work',
-      csTitle: 'What this looks like in practice',
-      csDesc: 'Real projects, told through the decisions that shaped them — including the ones about where to stop. Client names omitted, decisions intact.',
-      csCta: 'Read the case studies',
-      methodIntro: 'Everything I do follows the same order: design, then verify, then automate.',
-      whyLabel: 'Why this order',
-      caseStudyLabel: 'Case study',
-      scenariosTitle: 'Why the order matters',
-      scenariosIntro: 'What happens when you skip a step. Or all of them.',
-      scenariosScenarioCol: 'Scenario',
-      scenariosProblemCol: 'What goes wrong',
-      // Pricing (collapsed)
-      pricingEyebrow: 'How we work',
-      pricingTitle: 'How we work after the call',
-      pricingLead: 'We usually start with a targeted intervention: one area, a concrete result in hand, delivered within two weeks.',
-      pricingStepMain: '€1,200',
-      pricingStepSub: 'fixed price · targeted intervention, delivered in 2 weeks · refunded if you are not satisfied, no questions · the work stays yours either way',
-      pricingContinueLabel: 'How it continues',
-      pricingContinueBody: 'If the problem is bigger than one intervention, we move to an ongoing engagement. From €2,500/month, month to month. One active goal at a time. Everything with the system included: tests that actually catch things, observability, documented decisions.',
-      pricingUnnecessary: 'The goal is to make myself unnecessary: every engagement ends with a handover doc, runbooks and an internal owner I train. The system should not depend on me to keep working.',
-      caseStudiesLink: 'Technical projects and experiments',
-      talksLink: 'I speak about this at conferences',
-      methodMoreLink: 'The method in detail',
-      // Final CTA
-      ctaTitle: "Let's talk.",
-      ctaDesc: '30 minutes, free, to figure out whether we can work together. No commitment, no slides.',
-      ctaPrimary: 'Book a discovery call',
+      heroSecondary: (n: number) => `Read the ${n} analyses`,
+      howTitle: 'How I work',
+      commitments: [
+        { title: 'The goal is to make myself unnecessary', body: 'Every engagement ends with a handover doc, runbooks and an internal owner I train. The system should not depend on me to keep working.' },
+        { title: 'One active goal at a time', body: 'No parallel tracks stealing attention from each other. What is open gets closed, then the next one opens.' },
+        { title: 'The first focused piece is refundable', body: 'Fixed price, delivered in two weeks. If you are not satisfied it is refunded, no questions, and the work stays yours either way.' },
+        { title: 'Decisions stay written down', body: 'The choices made, the alternatives rejected and why. The same format the public case studies are told in.' },
+      ],
+      whatTitle: 'What we can do together',
+      whatBody: 'In the order things have to be faced: design first, then verify, then automate. Automation amplifies everything sitting above it, mistakes included.',
+      trainingTitle: 'Training for the team',
+      trainingBody: 'When the problem is not building but knowing how: a path run with the team, on your stack.',
+      trainingMore: 'Modules chosen during the discovery call',
+      processTitle: 'How it goes',
+      process: [
+        ['01', 'Discovery call', '30 minutes, free. Tell me what the system looks like today and which decision you are stuck on. It is there to see whether there is a problem I can be useful on.'],
+        ['02', 'Focused piece', 'One area, a concrete result in hand, delivered within two weeks. Fixed price, and the work stays yours either way.'],
+        ['03', 'Ongoing engagement', 'If the problem is bigger than one piece. Month to month, one active goal at a time, with everything the system needs included.'],
+        ['04', 'Exit', 'Handover doc, runbooks and a trained internal owner. From there the team goes on by itself.'],
+      ],
+      fitTitle: 'When I am the right choice',
+      fitYes: 'We work well together if…',
+      fitNo: 'I am not the right choice if…',
+      fitExtra: 'you want the team to be able to go on without me at the end',
+      faqTitle: 'Frequently asked',
+      faq: [
+        { q: 'How much does it cost?', a: 'The focused piece has a fixed price of €1,200: one area, delivered in two weeks, refunded if you are not satisfied. The ongoing engagement starts at €2,500 a month, month to month, with one active goal at a time.' },
+        { q: 'How does the first call work?', a: 'Thirty minutes, free, no commitment and no slides. You tell me where the system is and what is blocking you, and we work out whether and how it makes sense to work together.' },
+        { q: 'What is left at the end of an engagement?', a: 'A handover doc, the runbooks and an internal owner I have trained. Plus the code, the tests and the documented decisions: the system should not depend on me to keep working.' },
+      ],
+      ctaTitle: 'Got a technical decision that deserves clarity?',
+      ctaDesc: 'Thirty minutes are enough to see where the problem sits and whether I can be useful. No commitment, no slides.',
+      ctaPrimary: "Let's talk",
       ctaSecondary: 'or write me',
     }
   : {
       pageTitle: 'Servizi',
-      pageDesc: 'Progetto, sviluppo e automatizzo il software del tuo prodotto: dall\'analisi e l\'architettura alla realizzazione, fino ai processi automatici che ne garantiscono la qualità. Da zero o su un sistema irrigidito nel tempo. Discovery call gratuita di 30 minuti.',
-      // Hero
+      pageDesc: "Progetto, sviluppo e automatizzo il software del tuo prodotto: architettura, verifica, automazione. Da zero o su un sistema irrigidito nel tempo. Discovery call gratuita di 30 minuti.",
+      eyebrow: 'I servizi',
       heroTitle: 'Progetto, sviluppo e automatizzo il software del tuo prodotto.',
-      heroForWho: 'Dall\'analisi e le scelte di architettura alla realizzazione, fino ai processi automatici che ne tengono alta la qualità: test, CI/CD, observability, sicurezza. Che parta da zero o da un sistema irrigidito nel tempo, alla fine il team resta capace di andare avanti da solo.',
-      heroAvailability: '',
+      heroBody: "Dall'analisi e le scelte di architettura alla realizzazione, fino ai processi automatici che ne tengono alta la qualità. Che parta da zero o da un sistema irrigidito nel tempo, alla fine il team resta capace di andare avanti da solo.",
       heroCta: 'Prenota una discovery call',
-      // Segnali
-      signalsEyebrow: 'Per chi è',
-      signalsTitle: 'Stai costruendo qualcosa di nuovo, o convivi con un sistema che si è irrigidito nel tempo.',
-      signalsIntro: 'Aziende di prodotto oltre la fase iniziale, che ora incontrano attriti che prima non c’erano.',
-      signalsClosing: 'Se due di queste te le sei già sentite addosso, il momento giusto per intervenire è prima della terza.',
-      // Metodo
-      methodTitle: 'Come lavoro',
-      csTitle: 'Com’è andata, su lavori veri',
-      csDesc: 'Progetti reali raccontati attraverso le decisioni che li hanno formati — comprese quelle su dove fermarsi. Nomi dei committenti omessi, decisioni intatte.',
-      csCta: 'Leggi i case study',
-      methodIntro: 'Tutto quello che faccio segue lo stesso ordine: prima progettare, poi verificare, poi automatizzare.',
-      whyLabel: 'Perché in quest’ordine',
-      caseStudyLabel: 'Case study',
-      scenariosTitle: 'Perché l’ordine conta',
-      scenariosIntro: 'Cosa succede quando salti un passo. O tutti.',
-      scenariosScenarioCol: 'Scenario',
-      scenariosProblemCol: 'Cosa va storto',
-      // Prezzi (collassati)
-      pricingEyebrow: 'Come si lavora',
-      pricingTitle: 'Come si lavora dopo la call',
-      pricingLead: 'Di solito si parte da un affondo mirato: un’area sola, un risultato concreto in mano, consegnato entro due settimane.',
-      pricingStepMain: '€1.200',
-      pricingStepSub: 'prezzo fisso · affondo mirato, consegna in 2 settimane · rimborsato se non sei soddisfatto, senza domande · il lavoro fatto resta comunque tuo',
-      pricingContinueLabel: 'Come prosegue',
-      pricingContinueBody: 'Se il problema è più grande di un affondo, si passa a un affiancamento. Da €2.500/mese, mese per mese. Un obiettivo attivo alla volta. Tutto col sistema incluso: test che verificano davvero, observability, decisioni documentate.',
-      pricingUnnecessary: 'L’obiettivo è rendermi inutile: ogni ingaggio finisce con handover doc, runbook e un owner interno che formo. Il sistema non deve dipendere da me per funzionare.',
-      caseStudiesLink: 'Progetti ed esperimenti tecnici',
-      talksLink: 'Ne parlo alle conferenze',
-      methodMoreLink: 'Il metodo in dettaglio',
-      // CTA finale
-      ctaTitle: 'Parliamone.',
-      ctaDesc: '30 minuti, gratuiti, per capire se possiamo lavorare insieme. Senza impegno, senza slide.',
-      ctaPrimary: 'Prenota una discovery call',
+      heroSecondary: (n: number) => `Leggi le ${n} analisi`,
+      howTitle: 'Come lavoro',
+      commitments: [
+        { title: "L'obiettivo è rendermi inutile", body: 'Ogni ingaggio finisce con un handover doc, i runbook e un owner interno che formo. Il sistema non deve dipendere da me per funzionare.' },
+        { title: 'Un obiettivo attivo per volta', body: 'Niente lavori paralleli che si rubano attenzione. Si chiude quello che è aperto, poi si apre il successivo.' },
+        { title: 'Il primo affondo è rimborsabile', body: 'Prezzo fisso, consegna in due settimane. Se non sei soddisfatto viene rimborsato senza domande, e il lavoro fatto resta comunque tuo.' },
+        { title: 'Le decisioni restano scritte', body: 'Le scelte prese, le alternative scartate e il motivo. È lo stesso formato con cui sono raccontati i case study pubblici.' },
+      ],
+      whatTitle: 'Cosa possiamo fare insieme',
+      whatBody: "Nell'ordine in cui le cose vanno affrontate: prima progettare, poi verificare, poi automatizzare. L'automazione amplifica tutto quello che le sta sopra, errori compresi.",
+      trainingTitle: 'Formazione per il team',
+      trainingBody: 'Quando il problema non è costruire ma saper fare: un percorso con il team, sul vostro stack.',
+      trainingMore: 'Moduli da scegliere in discovery call',
+      processTitle: 'Come si procede',
+      process: [
+        ['01', 'Discovery call', "30 minuti, gratuiti. Raccontami com'è fatto il sistema adesso e qual è la decisione su cui siete fermi. Serve a capire se c'è un problema su cui posso essere utile."],
+        ['02', 'Affondo mirato', "Un'area sola, un risultato concreto in mano, consegnato entro due settimane. Prezzo fisso, e il lavoro resta tuo in ogni caso."],
+        ['03', 'Ingaggio continuativo', 'Se il problema è più grande di un affondo. Mese per mese, un obiettivo attivo per volta, con tutto quello che serve al sistema incluso.'],
+        ['04', 'Uscita', 'Handover doc, runbook e un owner interno formato. Da qui in avanti il team va avanti da solo.'],
+      ],
+      fitTitle: 'Quando sono la scelta giusta',
+      fitYes: 'Lavoriamo bene insieme se…',
+      fitNo: 'Non sono la scelta giusta se…',
+      fitExtra: 'vuoi che alla fine il team resti capace di andare avanti da solo',
+      faqTitle: 'Domande frequenti',
+      faq: [
+        { q: 'Quanto costa?', a: "L'affondo mirato ha un prezzo fisso di €1.200: un'area sola, consegna in due settimane, rimborsato se non sei soddisfatto. L'ingaggio continuativo parte da €2.500 al mese, mese per mese, con un obiettivo attivo per volta." },
+        { q: 'Come funziona la prima call?', a: 'Trenta minuti, gratuiti, senza impegno e senza slide. Mi racconti dove sta il sistema e cosa vi blocca, e ne esce se e come ha senso lavorare insieme.' },
+        { q: 'Cosa resta a fine ingaggio?', a: "Un handover doc, i runbook e un owner interno che ho formato. Più il codice, i test e le decisioni documentate: il sistema non deve dipendere da me per funzionare." },
+      ],
+      ctaTitle: 'Hai una decisione tecnica che merita chiarezza?',
+      ctaDesc: 'Trenta minuti bastano per capire dove sta il problema e se posso essere utile. Senza impegno, senza slide.',
+      ctaPrimary: 'Parliamone',
       ctaSecondary: 'oppure scrivimi',
     };
 
+/**
+ * I casi in cui declinare. Finche' e' vuoto la sezione "quando sono la scelta
+ * giusta" non compare: con una colonna sola non dice niente.
+ */
+const notForYou: string[] = [];
 ---
 
 <BaseLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/servizi.png" lang={lang}>
   <Header lang={lang} />
   <main>
 
-  {/* BANDA 1 — Hero: cosa faccio, per chi, una CTA */}
-  <section class="bg-accent-subtle border-b border-border/40 dark:border-border-dark/40">
-    <div class="max-w-5xl mx-auto px-5 py-16 md:py-24 fade-in-section">
-      <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text-dark dark:text-text-light max-w-4xl leading-[1.15]">
-        {t.heroTitle}
-      </h1>
-      <p class="mt-4 text-base md:text-lg text-text-muted max-w-2xl leading-relaxed">
-        {t.heroForWho}
-      </p>
-      {t.heroAvailability && (
-        <p class="mt-2 text-sm text-text-muted/80">{t.heroAvailability}</p>
-      )}
-      <div class="mt-8">
-        <Button href={calLink} variant="primary" size="lg" data-umami-event="cta-servizi-hero">
-          {t.heroCta} &rarr;
-        </Button>
+    <section class="bg-accent-subtle border-b border-border/40 dark:border-border-dark/40">
+      <div class="max-w-3xl mx-auto px-5 py-20 text-center fade-in-section">
+        <p class="label-mono !text-accent">{t.eyebrow}</p>
+        <h1 class="mt-4 text-3xl sm:text-4xl font-bold tracking-tight leading-[1.15] text-text-dark dark:text-text-light text-balance">
+          {t.heroTitle}
+        </h1>
+        <p class="mt-5 text-text-muted leading-relaxed">{t.heroBody}</p>
+        <div class="mt-8 flex flex-wrap gap-3 justify-center">
+          <a href={calLink} target="_blank" rel="noopener noreferrer" data-umami-event="cta-servizi-hero"
+            class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-accent text-white text-sm font-semibold hover:bg-accent-hover transition-colors">
+            {t.heroCta} &rarr;
+          </a>
+          <a href={`${prefix}/case-study/`}
+            class={`inline-flex items-center gap-2 px-6 py-3 rounded-lg border ${hair} text-sm font-semibold text-text-dark dark:text-text-light hover:border-accent hover:text-accent transition-colors`}>
+            {t.heroSecondary(caseStudyCount)}
+          </a>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  {/* BANDA 2 — Per chi è / i segnali */}
-  <section>
-    <div class="max-w-5xl mx-auto px-5 py-16 md:py-20 fade-in-section">
-      <p class="text-xs text-accent font-semibold uppercase tracking-wide mb-3">{t.signalsEyebrow}</p>
-      <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light mb-4 max-w-3xl">
-        {t.signalsTitle}
-      </h2>
-      <p class="text-text-muted text-lg leading-relaxed mb-10 max-w-3xl">{t.signalsIntro}</p>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 stagger-children">
-        {sharedSignals[lang].map((s) => (
-          <div class="rounded-xl border border-border/70 dark:border-border-dark/70 border-l-[3px] border-l-accent p-6 bg-white dark:bg-surface-dark h-full">
-            <h3 class="font-semibold text-base text-text-dark dark:text-text-light mb-2">{s.title}</h3>
-            <p class="text-text-muted text-sm leading-relaxed">{s.body}</p>
+    <section class="max-w-5xl mx-auto px-5 py-16">
+      <h2 class={h2}>{t.howTitle}</h2>
+      <div class="grid md:grid-cols-2 gap-4 mt-8">
+        {t.commitments.map((c) => (
+          <div class="surface-card p-6">
+            <h3 class="font-semibold text-text-dark dark:text-text-light">{c.title}</h3>
+            <p class="mt-2 text-sm text-text-muted leading-relaxed">{c.body}</p>
           </div>
         ))}
       </div>
-      <p class="text-text-dark dark:text-text-light text-base md:text-lg leading-relaxed mt-10 max-w-3xl border-l-2 border-l-accent pl-5 italic">
-        {t.signalsClosing}
-      </p>
-    </div>
-  </section>
+    </section>
 
-  {/* BANDA 3 — PROVA (slot predisposto, non renderizzato finché proof === null) */}
-  {proof && (
     <section class="bg-surface dark:bg-surface-dark/40 border-y border-border/40 dark:border-border-dark/40">
-      <div class="max-w-5xl mx-auto px-5 py-14 md:py-16 fade-in-section">
-        <p class="text-xs text-accent font-semibold uppercase tracking-wide mb-3">{t.caseStudyLabel}</p>
-        <p class="text-xl md:text-2xl font-semibold text-text-dark dark:text-text-light max-w-3xl leading-snug">
-          {proof.headline}
-        </p>
-        <p class="mt-3 text-text-muted text-base leading-relaxed max-w-3xl">{proof.body}</p>
+      <div class="max-w-5xl mx-auto px-5 py-16">
+        <h2 class={h2}>{t.whatTitle}</h2>
+        <p class="mt-4 text-text-muted leading-relaxed max-w-2xl">{t.whatBody}</p>
+        <div class="grid md:grid-cols-2 gap-4 mt-8">
+          {services.map((s, i) => (
+            <a href={s.data.link ? `${prefix}${s.data.link}` : `${prefix}/case-study/`} class="group surface-link block p-6">
+              <p class="label-mono !text-accent">{String(i + 1).padStart(2, '0')}</p>
+              <h3 class="mt-2 text-lg font-bold text-text-dark dark:text-text-light group-hover:text-accent transition-colors">
+                {s.data.title}
+              </h3>
+              <p class="mt-2 text-sm text-text-muted leading-relaxed">{s.data.description}</p>
+              {s.data.items.length > 0 && (
+                <ul class={`mt-4 pt-4 border-t ${hair} space-y-1.5`}>
+                  {s.data.items.map((it) => (
+                    <li class="flex gap-2 text-sm text-text-muted">
+                      <span class="text-accent">&rsaquo;</span>
+                      <span>{it}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </a>
+          ))}
+
+          <a href={`${prefix}/workshop/`} class="group surface-link block p-6">
+            <p class="label-mono !text-accent">{String(services.length + 1).padStart(2, '0')}</p>
+            <h3 class="mt-2 text-lg font-bold text-text-dark dark:text-text-light group-hover:text-accent transition-colors">
+              {t.trainingTitle}
+            </h3>
+            <p class="mt-2 text-sm text-text-muted leading-relaxed">{t.trainingBody}</p>
+            <ul class={`mt-4 pt-4 border-t ${hair} space-y-1.5`}>
+              {workshops.map((w) => (
+                <li class="flex gap-2 text-sm text-text-muted">
+                  <span class="text-accent">&rsaquo;</span>
+                  <span>{lang === 'en' ? w.titleEn : w.title}</span>
+                </li>
+              ))}
+              <li class="flex gap-2 text-sm text-text-muted">
+                <span class="text-accent">&rsaquo;</span>
+                <span>{t.trainingMore}</span>
+              </li>
+            </ul>
+          </a>
+        </div>
       </div>
     </section>
-  )}
 
-  {/* BANDA 4 — Il metodo (sostanza, sfrondata; nessun link in uscita) */}
-  {methodVariant !== 'none' && (
-    <section class="bg-surface dark:bg-surface-dark/40 border-b border-border/40 dark:border-border-dark/40">
-      <div class="max-w-5xl mx-auto px-5 py-16 md:py-20">
-        <div class="mb-12 fade-in-section">
-          <h2 class="text-3xl font-bold text-text-dark dark:text-text-light mb-4">{t.methodTitle}</h2>
-          <p class="text-text-muted text-lg leading-relaxed max-w-3xl">{t.methodIntro}</p>
-        </div>
-
-        {methodVariant === 'full' && (
-          <>
-            <div class="space-y-8 mb-16">
-              {pillarOrder.map(({ pillar, anchor, order, why }) => {
-                const entry = byPillar(pillar);
-                if (!entry) return null;
-                const styles = pillarStyles[pillar];
-                const label = pillarLabels[pillar][lang];
-                const Content = entry.Content;
-                return (
-                  <section id={anchor} class:list={['rounded-xl border bg-white dark:bg-surface-dark border-border/50 dark:border-border-dark/50 border-l-[3px] p-6 md:p-8 scroll-mt-20 fade-in-section', styles.borderLeft]}>
-                    <div class="flex items-baseline gap-3 mb-3">
-                      <span class={`text-sm font-mono ${styles.text}`}>{order}</span>
-                      <h3 class={`text-2xl font-bold ${styles.text}`}>{label}</h3>
-                      <span class="text-text-muted text-sm">· {entry.service.data.title}</span>
-                    </div>
-                    <div class={`mb-5 pl-3 border-l-2 ${styles.borderLeft}`}>
-                      <p class="text-xs uppercase tracking-wide text-text-muted mb-1">{t.whyLabel}</p>
-                      <p class="text-text-dark dark:text-text-light text-base leading-relaxed">{why[lang]}</p>
-                    </div>
-                    <div class="prose dark:prose-invert max-w-none text-text-muted">
-                      <Content />
-                    </div>
-                  </section>
-                );
-              })}
-            </div>
-
-            {/* Scenari — perché l'ordine conta */}
-            <section class="fade-in-section">
-              <h2 class="text-3xl font-bold text-text-dark dark:text-text-light mb-3">{t.scenariosTitle}</h2>
-              <p class="text-text-muted text-lg leading-relaxed max-w-3xl mb-6">{t.scenariosIntro}</p>
-              <div class="overflow-x-auto rounded-xl border border-border/70 dark:border-border-dark/70">
-                <table class="w-full text-left">
-                  <thead class="bg-accent/5">
-                    <tr>
-                      <th scope="col" class="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-text-dark dark:text-text-light w-1/3">{t.scenariosScenarioCol}</th>
-                      <th scope="col" class="px-5 py-3 text-xs font-semibold uppercase tracking-wide text-text-dark dark:text-text-light">{t.scenariosProblemCol}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {scenarios.map((row, i) => {
-                      const isLast = i === scenarios.length - 1;
-                      return (
-                        <tr class:list={['border-t border-border/50 dark:border-border-dark/50', isLast && 'bg-accent/5']}>
-                          <td class:list={['px-5 py-4 align-top text-sm font-semibold', isLast ? 'text-accent' : 'text-text-dark dark:text-text-light']}>{row.scenario}</td>
-                          <td class="px-5 py-4 align-top text-sm text-text-muted leading-relaxed">{row.problem}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </section>
-
-            {/* Prova: i case study */}
-            <section class="fade-in-section mt-14">
-              <a href={`${prefix}/case-study/`}
-                class="group block rounded-2xl border border-border/60 dark:border-border-dark/60 bg-accent-subtle/30 p-6 md:p-8 hover:border-accent/50 transition-colors">
-                <h2 class="text-2xl font-bold text-text-dark dark:text-text-light mb-3 group-hover:text-accent transition-colors">{t.csTitle}</h2>
-                <p class="text-text-muted leading-relaxed max-w-3xl mb-4">{t.csDesc}</p>
-                <span class="text-sm font-semibold text-accent">{t.csCta} &rarr;</span>
-              </a>
-            </section>
-          </>
-        )}
-
-        {methodVariant === 'slim' && (
-          <div class="space-y-3 fade-in-section">
-            {pillarOrder.map(({ pillar, order, anchor }) => {
-              const entry = byPillar(pillar);
-              if (!entry) return null;
-              const label = pillarLabels[pillar][lang];
-              return (
-                <div id={anchor} class="flex items-baseline gap-3 py-2 border-b border-border/30 dark:border-border-dark/30 scroll-mt-24">
-                  <span class="text-sm font-mono text-accent">{order}</span>
-                  <span class="font-semibold text-text-dark dark:text-text-light">{label}</span>
-                  <span class="text-text-muted text-sm">· {entry.service.data.title}</span>
-                </div>
-              );
-            })}
+    <section class="max-w-5xl mx-auto px-5 py-16">
+      <h2 class={h2}>{t.processTitle}</h2>
+      <div class="grid md:grid-cols-4 gap-8 mt-8">
+        {t.process.map(([n, titolo, desc]) => (
+          <div>
+            <p class="label-mono !text-accent">{n}</p>
+            <h3 class="mt-2 font-semibold text-text-dark dark:text-text-light">{titolo}</h3>
+            <p class="mt-2 text-sm text-text-muted leading-relaxed">{desc}</p>
           </div>
-        )}
-
-        {methodVariant === 'link' && (
-          <p class="fade-in-section">
-            <a href={`${prefix}/about/`} class="text-accent font-medium hover:underline">{t.methodMoreLink} &rarr;</a>
-          </p>
-        )}
+        ))}
       </div>
     </section>
-  )}
 
-  {/* BANDA 5 — Come si lavora dopo la call (prezzi collassati, nessun pulsante concorrente) */}
-  <section class="border-b border-border/40 dark:border-border-dark/40">
-    <div class="max-w-5xl mx-auto px-5 py-16 md:py-20 fade-in-section">
-      <p class="text-xs text-text-muted font-semibold uppercase tracking-wide mb-3">{t.pricingEyebrow}</p>
-      <h2 class="text-2xl md:text-3xl font-bold text-text-dark dark:text-text-light mb-4">{t.pricingTitle}</h2>
-      <p class="text-text-muted text-lg leading-relaxed max-w-3xl mb-6">{t.pricingLead}</p>
-
-      <div class="rounded-xl border border-accent/30 bg-accent/5 p-6 md:p-8 max-w-3xl">
-        <div class="flex items-baseline gap-x-3 gap-y-1 flex-wrap mb-2">
-          <span class="text-2xl md:text-3xl font-bold text-accent">{t.pricingStepMain}</span>
-          <span class="text-sm text-text-muted">{t.pricingStepSub}</span>
+    {notForYou.length > 0 && (
+      <section class="bg-surface dark:bg-surface-dark/40 border-y border-border/40 dark:border-border-dark/40">
+        <div class="max-w-5xl mx-auto px-5 py-16">
+          <h2 class={h2}>{t.fitTitle}</h2>
+          <div class="grid md:grid-cols-2 gap-4 mt-8">
+            <div class="rounded-xl border-2 border-accent p-6">
+              <h3 class="font-semibold text-text-dark dark:text-text-light">{t.fitYes}</h3>
+              <ul class="mt-4 space-y-2.5">
+                {[...signals[lang].map((s) => s.title.charAt(0).toLowerCase() + s.title.slice(1)), t.fitExtra].map((x) => (
+                  <li class="flex gap-2.5 text-sm text-text-muted leading-relaxed">
+                    <span class="text-accent shrink-0">✓</span>
+                    <span>{x}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div class="surface-card p-6">
+              <h3 class="font-semibold text-text-dark dark:text-text-light">{t.fitNo}</h3>
+              <ul class="mt-4 space-y-2.5">
+                {notForYou.map((x) => (
+                  <li class="flex gap-2.5 text-sm text-text-muted leading-relaxed">
+                    <span class="text-text-muted shrink-0">✕</span>
+                    <span>{x}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
-        <p class="text-xs uppercase tracking-wide text-accent font-semibold mt-4">Affondo mirato</p>
+      </section>
+    )}
+
+    <section class="max-w-3xl mx-auto px-5 py-16">
+      <h2 class={h2}>{t.faqTitle}</h2>
+      <div class={`mt-8 border-t ${hair}`}>
+        {t.faq.map((f) => (
+          <details class={`group border-b ${hair}`}>
+            <summary class="flex items-center justify-between gap-4 py-4 cursor-pointer font-semibold text-text-dark dark:text-text-light hover:text-accent transition-colors">
+              {f.q}
+              <span class="text-accent shrink-0 group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="pb-5 text-text-muted leading-relaxed">{f.a}</p>
+          </details>
+        ))}
       </div>
-      <p class="mt-4 text-text-muted text-sm leading-relaxed max-w-3xl italic">{t.pricingUnnecessary}</p>
+    </section>
 
-      <details class="mt-6 max-w-3xl group">
-        <summary class="cursor-pointer text-sm font-semibold text-text-dark dark:text-text-light hover:text-accent transition-colors list-none flex items-center gap-2">
-          <span class="text-accent transition-transform group-open:rotate-90" aria-hidden="true">&rsaquo;</span>
-          {t.pricingContinueLabel}
-        </summary>
-        <div class="mt-4 pl-5 border-l-2 border-accent/30 space-y-3">
-          <p class="text-xs uppercase tracking-wide text-text-muted font-semibold">Affiancamento</p>
-          <p class="text-text-muted text-base leading-relaxed">{t.pricingContinueBody}</p>
-        </div>
-      </details>
-    </div>
-  </section>
-
-  {/* BANDA 6 — CTA finale (una sola azione + link secondari piccoli) */}
-  <FinalCta title={t.ctaTitle} desc={t.ctaDesc} ctaLabel={t.ctaPrimary} secondaryLabel={t.ctaSecondary} secondaryHref={mailLink} umamiEvent="cta-servizi-final" fullBleed>
-    <p class="mt-6 flex flex-wrap gap-x-6 gap-y-2 justify-center">
-      <a href={`${prefix}/talks/`} class="text-sm text-white/70 hover:text-white underline underline-offset-4 transition-colors">{t.talksLink} &rarr;</a>
-      <a href={`${prefix}/progetti/`} class="text-sm text-white/70 hover:text-white underline underline-offset-4 transition-colors">{t.caseStudiesLink} &rarr;</a>
-    </p>
-  </FinalCta>
-
+    <FinalCta
+      title={t.ctaTitle}
+      desc={t.ctaDesc}
+      ctaLabel={t.ctaPrimary}
+      ctaHref={calLink}
+      secondaryLabel={t.ctaSecondary}
+      secondaryHref={mailLink}
+      umamiEvent="cta-servizi-final"
+      fullBleed
+    />
   </main>
   <Footer lang={lang} />
 </BaseLayout>

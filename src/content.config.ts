@@ -202,6 +202,10 @@ const services = defineCollection({
     icon: z.string(),
     cta: z.string(),
     weight: z.number().default(10),
+    /** Cosa comprende, in elenco: compare nella scheda su /servizi/. */
+    items: z.array(z.string()).default([]),
+    /** Dove porta la scheda: un case study, una serie del blog, una landing. */
+    link: z.string().optional(),
   }),
 });
 
