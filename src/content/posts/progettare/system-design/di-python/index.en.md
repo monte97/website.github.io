@@ -12,6 +12,25 @@ tags:
   - Patterns
 lang: en
 reviewed: machine
+figures:
+  - kind: timeline
+    at: adoption-ladder
+    label: "Four levels, not to be skipped"
+    caption: "In 90% of the services seen in production you reach level two or three, and stop there"
+    steps:
+      - kind: "1"
+        title: "Function parameter"
+        desc: "The function receives the collaborator as an argument. No class, no Protocol. If the source changes from MongoDB to PostgreSQL tomorrow, the function does not notice."
+      - kind: "2"
+        title: "Constructor injection with Protocol"
+        desc: "The class declares its dependencies in the constructor, and Protocol formalises the contract. Worth it when several methods use the same dependency."
+      - kind: "3"
+        title: "Application factory"
+        desc: "`create_app(config)` receives the dependencies and attaches them to the app. The `config` dict is the container: no library to add."
+      - kind: "4"
+        title: "Declarative container"
+        desc: "`dependency-injector` or similar. The setup cost pays off on complex graphs, multiple environments and dozens of services, not before."
+        done: true
 ---
 
 I refactored 3 Flask services. Total conftest lines dropped from 228 to 148. The `sys.modules` hacks disappeared. The mutation score on business logic reached zero surviving mutants. But the lesson was not about Flask — it was about how Python manages dependencies.

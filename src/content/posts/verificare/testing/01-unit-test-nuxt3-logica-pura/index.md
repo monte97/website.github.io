@@ -32,6 +32,23 @@ openItems:
   - "La convenzione sui file di test è ibrida per scelta: colocata nei composable, centralizzata in `test/` per store e helper"
 openNote: "Cosa è rimasto fuori dalla suite, e perché è una scelta dichiarata."
 mode: how-to
+figures:
+  - kind: beforeAfter
+    at: perché-non-testare-i-componenti
+    label: "Due modi di spendere lo stesso tempo"
+    beforeLabel: "Montare i componenti"
+    afterLabel: "Testare la logica pura"
+    rows:
+      - label: "Setup"
+        before: "Plugin Vuetify nel test environment, mock delle icone Material, wrapper `v-app` per i componenti che lo richiedono"
+        after: "Un file di configurazione, e nessuna dipendenza dal framework UI"
+      - label: "Cosa verifichi"
+        before: "Che Vuetify renderizzi un bottone, cosa che fa da anni"
+        after: "Store Pinia, factory API e composable: il codice che avete scritto voi"
+      - label: "Quando si rompe"
+        before: "Quando cambiate una prop CSS"
+        after: "Quando cambiate il comportamento"
+    caption: "Settantadue test senza montare un solo componente: il confine passa fra il vostro codice e quello della libreria"
 ---
 
 Ho un frontend Nuxt 3 con 106 componenti Vue, 4 store Pinia, 6 composable e 11 helper API. Zero test. O meglio: nove test di cui sette rotti -- residui di un tentativo precedente mai completato.

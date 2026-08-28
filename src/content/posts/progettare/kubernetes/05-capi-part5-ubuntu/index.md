@@ -36,6 +36,23 @@ openItems:
   - "Il secret del token Proxmox è visibile solo alla creazione: dopo non è più recuperabile"
 openNote: "Decisioni e condizioni esterne alla guida."
 mode: how-to
+figures:
+  - kind: beforeAfter
+    at: perché-ubuntu-invece-di-talos
+    label: "Cosa si guadagna e cosa si lascia"
+    beforeLabel: "Talos"
+    afterLabel: "Ubuntu"
+    rows:
+      - label: "Debugging"
+        before: "Nessuna shell: si passa dall'API, e quello che non e' esposto non si ispeziona"
+        after: "ssh, `journalctl`, e i tool che il team gia' conosce"
+      - label: "Superficie da mantenere"
+        before: "Immagine immutabile: si sostituisce, non si aggiorna a pezzi"
+        after: "Una distribuzione completa, con le sue patch e i suoi pacchetti"
+      - label: "Configuration drift"
+        before: "Impossibile per costruzione: non c'e' niente da modificare a mano"
+        after: "Possibile dal primo `ssh`, e non lascia traccia nel manifest"
+    caption: "Il motivo per scegliere Ubuntu e' quasi sempre il primo rigo, e si paga sugli altri due"
 ---
 
 Dopo aver esplorato Talos Linux nei precedenti articoli, è tempo di cambiare approccio e utilizzare Ubuntu come sistema operativo base per i nostri nodi Kubernetes. In questo post vedremo come creare un cluster Kubernetes su Proxmox utilizzando Cluster API (CAPI) e le immagini ufficiali generate con image-builder.

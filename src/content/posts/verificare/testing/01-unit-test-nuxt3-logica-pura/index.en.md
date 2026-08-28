@@ -15,6 +15,23 @@ lang: en
 reviewed: machine
 series: unit-testing
 seriesOrder: 10
+figures:
+  - kind: beforeAfter
+    at: why-skip-component-tests
+    label: "Two ways to spend the same time"
+    beforeLabel: "Mounting components"
+    afterLabel: "Testing pure logic"
+    rows:
+      - label: "Setup"
+        before: "Vuetify plugin in the test environment, Material icon mocks, a `v-app` wrapper for the components that need one"
+        after: "One configuration file, and no dependency on the UI framework"
+      - label: "What you verify"
+        before: "That Vuetify renders a button, which it has done for years"
+        after: "Pinia stores, API factories and composables: the code you actually wrote"
+      - label: "When it breaks"
+        before: "When you change a CSS prop"
+        after: "When you change the behaviour"
+    caption: "Seventy-two tests without mounting a single component: the line runs between your code and the library's"
 ---
 
 A Nuxt 3 frontend. 106 Vue components, 4 Pinia stores, 6 composables, 11 API helpers. Zero tests. Or rather: nine tests, seven of them broken — leftovers from a previous attempt that never got finished.

@@ -15,6 +15,25 @@ lang: en
 reviewed: machine
 series: web-development
 seriesOrder: 10
+figures:
+  - kind: timeline
+    at: pattern-4-layer-by-layer-migration-not-big-bang
+    label: "The four layers, in this order"
+    caption: "The application works at every step: that is the property making the migration interruptible"
+    steps:
+      - kind: "Layer 1"
+        title: "UI state"
+        desc: "The simplest and the most visible: sidebar open, modal, theme. No network call involved, so the first store is written at no risk."
+      - kind: "Layer 2"
+        title: "Cache and deduplication"
+        desc: "This is where the store starts paying: two components asking for the same data produce one request instead of two."
+      - kind: "Layer 3"
+        title: "Selective persistence"
+        desc: "What survives a reload and what does not becomes a declared decision, instead of a side effect of where the data happened to live."
+      - kind: "Layer 4"
+        title: "The EventBus goes"
+        desc: "You remove it when nothing goes through it any more. If something still does, a layer is not finished."
+        done: true
 ---
 
 ## EventBus: Implicit State Spread Across Components

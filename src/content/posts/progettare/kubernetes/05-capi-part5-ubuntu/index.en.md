@@ -16,6 +16,23 @@ lang: en
 reviewed: human
 series: homelab-capi
 seriesOrder: 50
+figures:
+  - kind: beforeAfter
+    at: why-ubuntu-instead-of-talos
+    label: "What you gain and what you give up"
+    beforeLabel: "Talos"
+    afterLabel: "Ubuntu"
+    rows:
+      - label: "Debugging"
+        before: "No shell: everything goes through the API, and what is not exposed cannot be inspected"
+        after: "ssh, `journalctl`, and the tools the team already knows"
+      - label: "Surface to maintain"
+        before: "Immutable image: you replace it, you do not patch it in place"
+        after: "A full distribution, with its own patches and packages"
+      - label: "Configuration drift"
+        before: "Impossible by construction: there is nothing to change by hand"
+        after: "Possible from the first `ssh`, and it leaves no trace in the manifest"
+    caption: "The reason to pick Ubuntu is almost always the first row, and it is paid for on the other two"
 ---
 
 After exploring Talos Linux in previous articles, it's time to change approach and use Ubuntu as the base operating system for our Kubernetes nodes. In this post we'll see how to create a Kubernetes cluster on Proxmox using Cluster API (CAPI) and the official images generated with image-builder.

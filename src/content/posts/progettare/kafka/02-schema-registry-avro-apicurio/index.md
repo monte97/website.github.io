@@ -36,6 +36,28 @@ openItems:
   - "I payload Avro sono binari: per il debug serve kafka-avro-console-consumer, kafkacat basta solo con il JSON"
 openNote: "Cosa la scelta di Apicurio non risolve da sé."
 mode: explanation
+figures:
+  - kind: flow
+    at: schema-evolution-aggiungere-un-campo-senza-rompere
+    label: "Writer schema e reader schema"
+    caption: "Il consumer non viene aggiornato e continua a funzionare: e' il meccanismo che JSON senza contratto non ha"
+    nodes:
+      - kind: "Producer"
+        name: "Scrive con lo schema v2"
+        desc: "Il campo nuovo c'e'. Il payload binario non porta i nomi dei campi: porta solo i valori, piu' l'identificativo dello schema con cui sono stati scritti."
+        edge: "registra e verifica la compatibilita'"
+      - kind: "Registry"
+        name: "Apicurio"
+        desc: "Confronta il v2 con le versioni precedenti secondo la regola di compatibilita' configurata. Se la aggiunta rompe qualcosa, la registrazione fallisce qui, non in produzione."
+        edge: "il consumer chiede lo schema per id"
+      - kind: "Consumer"
+        name: "Legge con lo schema v1"
+        desc: "Non e' stato aggiornato e non sa che esiste un campo nuovo. Chiede al registry lo schema con cui il messaggio e' stato scritto."
+        edge: "risoluzione writer/reader"
+      - kind: "Avro"
+        name: "Riconcilia i due schema"
+        desc: "Il campo presente nel writer e assente nel reader viene scartato; un campo presente nel reader e assente nel writer prende il default. Nessuno dei due lato codice se ne accorge."
+        key: true
 ---
 ## Il problema: JSON senza contratto
 

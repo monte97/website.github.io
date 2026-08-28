@@ -17,6 +17,28 @@ reviewed: human
 series: kafka
 seriesOrder: 20
 reproducibility: true
+figures:
+  - kind: flow
+    at: schema-evolution-adding-a-field-without-breaking-anything
+    label: "Writer schema and reader schema"
+    caption: "The consumer is never updated and keeps working: this is the mechanism schemaless JSON does not have"
+    nodes:
+      - kind: "Producer"
+        name: "Writes with schema v2"
+        desc: "The new field is there. The binary payload carries no field names: only the values, plus the id of the schema they were written with."
+        edge: "registers and checks compatibility"
+      - kind: "Registry"
+        name: "Apicurio"
+        desc: "Compares v2 against the previous versions under the configured compatibility rule. If the addition breaks something, registration fails here, not in production."
+        edge: "the consumer asks for the schema by id"
+      - kind: "Consumer"
+        name: "Reads with schema v1"
+        desc: "It has not been updated and does not know the new field exists. It asks the registry for the schema the message was written with."
+        edge: "writer/reader resolution"
+      - kind: "Avro"
+        name: "Reconciles the two schemas"
+        desc: "A field present in the writer and absent from the reader is dropped; a field present in the reader and absent from the writer takes its default. Neither side's code notices."
+        key: true
 ---
 ## The problem: JSON without a contract
 

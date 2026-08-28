@@ -32,6 +32,25 @@ openItems:
   - "La scala ha quattro livelli e il consiglio è non saltarli: partire dal più semplice che risolve il problema e salire solo se la complessità cresce"
 openNote: "Quale livello di DI serve, e dove fermarsi."
 mode: explanation
+figures:
+  - kind: timeline
+    at: scala-di-adozione
+    label: "Quattro livelli, da non saltare"
+    caption: "Nel 90% dei servizi visti in produzione si arriva al secondo o al terzo, e li' ci si ferma"
+    steps:
+      - kind: "1"
+        title: "Parametro di funzione"
+        desc: "La funzione riceve il collaboratore come argomento. Nessuna classe, nessun Protocol. Se domani la fonte cambia da MongoDB a PostgreSQL, la funzione non se ne accorge."
+      - kind: "2"
+        title: "Constructor injection con Protocol"
+        desc: "La classe dichiara le dipendenze nel costruttore, e Protocol formalizza il contratto. Serve quando piu' metodi usano la stessa dipendenza."
+      - kind: "3"
+        title: "Application factory"
+        desc: "`create_app(config)` riceve le dipendenze e le attacca all'app. Il dizionario `config` e' il container: nessuna libreria da aggiungere."
+      - kind: "4"
+        title: "Container dichiarativo"
+        desc: "`dependency-injector` o simili. Il costo di setup si ripaga su grafi complessi, ambienti multipli e decine di servizi, non prima."
+        done: true
 ---
 
 Ho refactorizzato 3 servizi Flask. I conftest sono passati da 228 a 148 righe totali. Gli hack su `sys.modules` sono scomparsi. Il mutation score sulla logica di business è arrivato a zero mutanti sopravvissuti. Ma la lezione non era su Flask -- era su come Python gestisce le dipendenze.
