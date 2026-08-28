@@ -1,131 +1,197 @@
 ---
+/**
+ * About: la pagina racconta, non vende. La vendita sta in /servizi/, e da qui
+ * viene solo nominata. Blog, talk e competenze sono rimandi, quindi pesano come
+ * righe e non come capitoli; la colonna destra tiene il profilo e il rimando al
+ * lavoro. Le competenze erano una pagina orfana: ora ci si arriva da due punti.
+ */
 import PageLayout from '@/layouts/PageLayout.astro';
 import PageHero from '@/components/ui/PageHero.astro';
-import SectionHeading from '@/components/ui/SectionHeading.astro';
-import Button from '@/components/ui/Button.astro';
 import FinalCta from '@/components/ui/FinalCta.astro';
 import { author } from '@/data/author';
-import Logo from '@/assets/logo-fra.svg?raw';
 
 interface Props {
   lang?: 'it' | 'en';
 }
 
 const { lang = 'it' } = Astro.props;
-
 const prefix = lang === 'en' ? '/en' : '';
 
 const calLink = 'https://cal.com/francesco-montelli-4hfojq/30min';
 const mailLink = 'mailto:francesco@montelli.dev';
+const linkedinLink = 'https://linkedin.com/in/francesco-montelli';
 const cvHref = '/files/Francesco_Montelli_CV.pdf';
+
+const mono = 'font-mono text-[11px] uppercase tracking-[0.12em] text-text-muted';
+const hair = 'border-border/70 dark:border-border-dark/70';
 
 const t = lang === 'en'
   ? {
       pageTitle: 'About',
       pageDesc: 'Francesco Montelli, freelance Software Engineer. Philosophy, method and how I work.',
-      heroTitle: author.name,
       heroSubtitle: 'Software Engineer · product systems',
-      philosophyQuote: "AI today writes code the way robots assemble cars: fast, at scale, tirelessly. But no one lets a robot design the chassis or sign off on the brakes. That part is still a human responsibility.",
+      skillsCta: 'Skills and stack',
+      cvLabel: 'Download CV',
+      quote: "AI today writes code the way robots assemble cars: fast, at scale, tirelessly. But no one lets a robot design the chassis or sign off on the brakes. That part is still a human responsibility.",
       whoTitle: 'Who I am',
       whoBody: [
         "I started working in 2016 while still studying. I learned almost everything on my own and, over time, developed a precise idea of how software should be built. Not an idea about technologies: those change. An idea about method: what comes first, what comes after, and why the order is not negotiable.",
         "I work with product companies: sometimes from scratch, sometimes on a system grown rigid over time that now fights every change. My ultimate goal is to make myself unnecessary: the system shouldn't depend on me to keep working.",
       ],
-      blogTitle: 'The blog as an extension of the method',
-      blogBody: "I write the kind of articles I would have wanted to find before making a decision. Not summaries of documentation: real cases, tradeoffs made explicit, things I learned by getting them wrong first. If you want to check whether what I claim matches what I do, the blog is the place.",
-      blogCta: 'Read the blog',
-      talksTitle: 'Conferences & speaking',
-      talksBody: 'What I write about on the blog, I also bring to the stage. I am starting to speak at conferences on design, testing and automation.',
-      talksCta: 'See all talks',
+      checkLabel: 'If you want to check',
+      links: [
+        {
+          href: `${prefix}/about/competenze/`,
+          label: 'Skills and stack',
+          desc: 'What I can do, organized by method instead of as a wall of logos.',
+        },
+        {
+          href: `${prefix}/blog/`,
+          label: 'The blog',
+          desc: 'The kind of articles I would have wanted to find before making a decision: real cases, tradeoffs made explicit, things I learned by getting them wrong first.',
+        },
+        {
+          href: `${prefix}/talks/`,
+          label: 'Conferences and speaking',
+          desc: 'What I write about on the blog I also bring on stage, including the parts that went wrong.',
+        },
+      ],
+      linkedinCta: 'Follow me on LinkedIn',
+      workTitle: 'The work',
+      workBody: 'What I do for clients, and the training paths that go with it, live in their own sections.',
+      servicesLabel: 'Services',
+      servicesHref: '/en/services/',
+      caseStudyLabel: 'Case studies',
       ctaTitle: 'Want to talk?',
       ctaDesc: '30 minutes, free, to figure out if we can work together.',
       ctaPrimary: 'Book a discovery call',
       ctaSecondary: 'or write me',
-      cvLabel: 'Download CV',
     }
   : {
       pageTitle: 'About',
       pageDesc: 'Francesco Montelli, Software Engineer freelance. Filosofia, metodo e come lavoro.',
-      heroTitle: author.name,
       heroSubtitle: 'Software Engineer · sistemi di prodotto',
-      philosophyQuote: "La IA oggi scrive codice come i robot assemblano le automobili: veloce, in larga scala, senza stancarsi. Ma nessuno affida a un robot la progettazione di una carrozzeria o il collaudo dei freni. Quella parte è ancora una questione umana.",
+      skillsCta: 'Competenze e stack',
+      cvLabel: 'Scarica il CV',
+      quote: "La IA oggi scrive codice come i robot assemblano le automobili: veloce, in larga scala, senza stancarsi. Ma nessuno affida a un robot la progettazione di una carrozzeria o il collaudo dei freni. Quella parte è ancora una questione umana.",
       whoTitle: 'Chi sono',
       whoBody: [
         "Ho iniziato a lavorare nel 2016 mentre ancora studiavo, ho imparato quasi tutto da solo e ho sviluppato nel tempo un'idea precisa su come il software dovrebbe essere costruito. Non un'idea sulle tecnologie: quelle cambiano. Un'idea sul metodo: cosa viene prima, cosa viene dopo, e perché l'ordine non è negoziabile.",
         "Lavoro con aziende di prodotto: a volte parto da zero, a volte da un sistema irrigidito nel tempo che ora combatte ogni modifica. Il mio obiettivo finale è rendermi inutile: il sistema non deve dipendere da me per funzionare.",
       ],
-      blogTitle: 'Il blog come estensione del metodo',
-      blogBody: "Scrivo il tipo di articoli che mi sarebbe servito trovare prima di prendere una decisione. Non sono riassunti di documentazione: sono casi reali, tradeoff sul tavolo, cose che ho imparato sbagliandole prima. Se vuoi verificare se quello che racconto coincide con quello che faccio, il blog è il posto.",
-      blogCta: 'Vai al blog',
-      talksTitle: 'Conferenze & speaking',
-      talksBody: 'Quello che scrivo sul blog lo porto anche sul palco. Ho iniziato a parlare alle conferenze di progettazione, testing e automazione.',
-      talksCta: 'Vedi tutti i talk',
+      checkLabel: 'Se vuoi verificare',
+      links: [
+        {
+          href: '/about/competenze/',
+          label: 'Competenze e stack',
+          desc: 'Cosa so fare, organizzato per metodo invece che come parata di loghi.',
+        },
+        {
+          href: '/blog/',
+          label: 'Il blog',
+          desc: 'Il tipo di articoli che mi sarebbe servito trovare prima di prendere una decisione: casi reali, tradeoff sul tavolo, cose imparate sbagliandole prima.',
+        },
+        {
+          href: '/talks/',
+          label: 'Conferenze e speaking',
+          desc: 'Quello che scrivo sul blog lo porto anche sul palco, comprese le parti andate storte.',
+        },
+      ],
+      linkedinCta: 'Seguimi su LinkedIn',
+      workTitle: 'Il lavoro',
+      workBody: 'Cosa faccio per i clienti, e con quali percorsi di formazione, sta nelle sezioni dedicate.',
+      servicesLabel: 'Servizi',
+      servicesHref: '/servizi/',
+      caseStudyLabel: 'Case study',
       ctaTitle: 'Vogliamo parlarne?',
       ctaDesc: '30 minuti, gratuiti, per capire se possiamo lavorare insieme.',
       ctaPrimary: 'Prenota una discovery call',
       ctaSecondary: 'oppure scrivimi',
-      cvLabel: 'Scarica il CV',
     };
 ---
 
 <PageLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/about.png" lang={lang}>
   <PageHero
     slot="hero"
-    title={t.heroTitle}
+    title={author.name}
     subtitle={t.heroSubtitle}
     image={{ src: author.image, alt: author.name }}
-    cta={{ href: calLink, label: t.ctaPrimary }}
-    ctaSecondary={{ href: `${prefix}/blog/`, label: t.blogCta }}
+    cta={{ href: `${prefix}/about/competenze/`, label: t.skillsCta }}
+    ctaSecondary={{ href: cvHref, label: t.cvLabel }}
   />
 
-  {/* Apertura filosofica */}
-  <section class="mb-20 fade-in-section">
-    <blockquote class="border-l-4 border-l-accent pl-6 max-w-3xl">
-      <p class="text-xl md:text-2xl leading-relaxed text-text-dark dark:text-text-light italic">
-        {t.philosophyQuote}
-      </p>
-    </blockquote>
-    <div class="max-w-3xl flex justify-end mt-6">
-      <span class="block w-24 h-[84px] [&_svg]:w-full [&_svg]:h-full" set:html={Logo} />
+  <div class="grid lg:grid-cols-[1fr_280px] gap-12 items-start">
+    <div>
+      <blockquote class="border-l-4 border-l-accent pl-6 mb-14">
+        <p class="text-xl md:text-2xl leading-relaxed text-text-dark dark:text-text-light italic">{t.quote}</p>
+      </blockquote>
+
+      <section class="mb-14">
+        <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light mb-5">
+          {t.whoTitle}
+        </h2>
+        <div class="space-y-5">
+          {t.whoBody.map((p) => (
+            <p class="text-text-muted text-lg leading-relaxed">{p}</p>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <p class={`${mono} mb-4`}>{t.checkLabel}</p>
+        <div class="space-y-3">
+          {t.links.map((r) => (
+            <a
+              href={r.href}
+              class={`group flex items-start gap-4 p-5 rounded-xl border ${hair} bg-surface dark:bg-surface-dark hover:border-accent/40 hover:bg-accent/5 transition-all`}
+            >
+              <span class="flex-1">
+                <span class="block font-semibold text-text-dark dark:text-text-light group-hover:text-accent transition-colors">
+                  {r.label}
+                </span>
+                <span class="block text-sm text-text-muted leading-relaxed mt-1">{r.desc}</span>
+              </span>
+              <span class="shrink-0 self-center text-text-muted group-hover:text-accent transition-colors">&rarr;</span>
+            </a>
+          ))}
+        </div>
+      </section>
     </div>
-  </section>
 
-  {/* Chi sono — narrativa */}
-  <section class="mb-20 fade-in-section">
-    <SectionHeading title={t.whoTitle} />
-    <div class="space-y-5 max-w-3xl">
-      {t.whoBody.map((p) => (
-        <p class="text-text-muted text-lg leading-relaxed">{p}</p>
-      ))}
-    </div>
-  </section>
+    <aside class="space-y-6 lg:sticky lg:top-6">
+      <a
+        href={linkedinLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-umami-event="click-social"
+        data-umami-event-platform="linkedin"
+        class="block w-full text-center px-4 py-2.5 rounded-lg bg-[#0077b5] text-white text-sm font-medium hover:bg-[#006399] transition-colors"
+      >
+        {t.linkedinCta}
+      </a>
 
-  {/* Il blog come estensione del metodo */}
-  <section class="mb-20 fade-in-section">
-    <SectionHeading title={t.blogTitle} />
-    <p class="text-text-muted text-lg leading-relaxed max-w-3xl mb-6">
-      {t.blogBody}
-    </p>
-    <Button href={`${prefix}/blog/`} variant="secondary" size="md">
-      {t.blogCta}
-    </Button>
-  </section>
+      <div class={`rounded-xl border ${hair} p-5`}>
+        <p class={mono}>{t.workTitle}</p>
+        <p class="mt-2 text-sm text-text-muted leading-relaxed">{t.workBody}</p>
+        <div class="mt-4 space-y-1.5">
+          <a href={t.servicesHref} class="block text-sm text-accent hover:underline">{t.servicesLabel} &rarr;</a>
+          <a href={`${prefix}/case-study/`} class="block text-sm text-accent hover:underline">
+            {t.caseStudyLabel} &rarr;
+          </a>
+        </div>
+      </div>
+    </aside>
+  </div>
 
-  {/* Teaser talk */}
-  <section class="mb-20 fade-in-section">
-    <SectionHeading title={t.talksTitle} />
-    <p class="text-text-muted text-lg leading-relaxed max-w-3xl mb-6">
-      {t.talksBody}
-    </p>
-    <Button href={`${prefix}/talks/`} variant="secondary" size="md">
-      {t.talksCta} &rarr;
-    </Button>
-  </section>
-
-  {/* CTA finale */}
-  <FinalCta title={t.ctaTitle} desc={t.ctaDesc} ctaLabel={t.ctaPrimary} secondaryLabel={t.ctaSecondary} secondaryHref={mailLink}>
-    <p class="mt-8">
-      <a href={cvHref} class="text-sm text-white/70 hover:text-white underline underline-offset-4 transition-colors">{t.cvLabel} &rarr;</a>
-    </p>
-  </FinalCta>
+  <FinalCta
+    slot="after"
+    title={t.ctaTitle}
+    desc={t.ctaDesc}
+    ctaLabel={t.ctaPrimary}
+    ctaHref={calLink}
+    secondaryLabel={t.ctaSecondary}
+    secondaryHref={mailLink}
+    umamiEvent="cta-about-final"
+    fullBleed
+  />
 </PageLayout>
