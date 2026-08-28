@@ -13,6 +13,7 @@ tags:
   - API
   - TypeScript
 lang: it
+reviewed: false
 series: playwright
 seriesOrder: 40
 reproducibility: true

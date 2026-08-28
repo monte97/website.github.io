@@ -13,6 +13,7 @@ tags:
   - Screenshot
   - TypeScript
 lang: it
+reviewed: false
 series: playwright
 seriesOrder: 60
 reproducibility: true

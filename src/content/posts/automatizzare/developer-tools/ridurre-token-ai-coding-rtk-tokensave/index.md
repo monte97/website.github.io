@@ -7,6 +7,7 @@ pillar: automatizzare
 category: developer-tools
 tags: [Claude Code, MCP, Rust, Developer Tools, AI, RTK, tokensave]
 lang: it
+reviewed: false
 draft: false
 summary:
   - label: "Problema"

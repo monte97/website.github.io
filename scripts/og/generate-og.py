@@ -213,13 +213,8 @@ body {
   display: flex;
   flex-direction: column;
 }
-.logo { display: flex; align-items: center; gap: 15px; }
-.logo .mark {
-  width: 54px; height: 54px; border-radius: 14px;
-  background: __ACCENT__; color: #fff;
-  font-weight: 800; font-size: 32px;
-  display: flex; align-items: center; justify-content: center;
-}
+.logo { display: flex; align-items: center; gap: 14px; }
+.logo svg { width: 58px; height: 50px; }
 .logo .word { font-size: 27px; font-weight: 600; color: __TEXT__; }
 .body { flex: 1; display: flex; flex-direction: column; justify-content: center; }
 .eyebrow {
@@ -269,7 +264,7 @@ def pills_html(pills):
     return '<div class="arrow">&#8594;</div>'.join(parts)
 
 
-def card_html(card):
+def card_html(card, logo_svg=""):
     eyebrow = f'<div class="eyebrow">{esc(card["eyebrow"])}</div>' if card.get("eyebrow") else ""
     middle = ""
     if card.get("pills"):
@@ -281,22 +276,26 @@ def card_html(card):
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>{CSS}</style></head><body>
-<div class="logo"><div class="mark">M</div><div class="word">montelli.dev</div></div>
+<div class="logo">{logo_svg}<div class="word">montelli.dev</div></div>
 <div class="body">{eyebrow}<div class="headline">{esc(card["headline"])}</div>{middle}</div>
 <div class="footer"><span class="tag">{esc(card["tagline"])}</span><span class="dot">&#183;</span><span class="url">{esc(card["url"])}</span></div>
 </body></html>"""
+
+
+LOGO_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "src", "assets", "logo-fra.svg")
 
 
 def main():
     wanted = set(sys.argv[1:])
     cards = [c for c in CARDS if not wanted or c["file"] in wanted]
     os.makedirs(OUT_DIR, exist_ok=True)
+    logo_svg = open(LOGO_PATH, encoding="utf-8").read().strip()
     with sync_playwright() as p:
         browser = p.chromium.launch()
         page = browser.new_page(viewport={"width": 1200, "height": 630},
                                 device_scale_factor=2)
         for card in cards:
-            page.set_content(card_html(card), wait_until="networkidle")
+            page.set_content(card_html(card, logo_svg), wait_until="networkidle")
             try:
                 page.evaluate("document.fonts.ready")
             except Exception:
