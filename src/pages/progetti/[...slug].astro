@@ -4,6 +4,7 @@ import type { GetStaticPaths } from 'astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 import { pillarStyles } from '@/data/pillar-styles';
 import { getPillarLabel } from '@/data/pillars';
 
@@ -41,15 +42,16 @@ const resultItems = Array.isArray(result) ? result : result ? [result] : [];
   <Header lang="it" />
 
   <main class="max-w-5xl mx-auto px-5 py-8">
-    <nav class="text-xs text-text-muted mb-6" aria-label="Breadcrumb">
-      <ol class="flex items-center gap-1.5">
-        <li><a href="/" class="hover:text-accent transition-colors">Home</a></li>
-        <li aria-hidden="true" class="opacity-40">/</li>
-        <li><a href="/progetti/" class="hover:text-accent transition-colors">Case study</a></li>
-        <li aria-hidden="true" class="opacity-40">/</li>
-        <li class="truncate max-w-[200px] text-text-dark dark:text-text-light" title={project.data.title}>{project.data.title}</li>
-      </ol>
-    </nav>
+    <Breadcrumb
+      class="mb-6"
+      variant="text"
+      truncateLast
+      items={[
+        { label: 'Home', href: '/' },
+        { label: 'Case study', href: '/progetti/' },
+        { label: project.data.title },
+      ]}
+    />
 
     <header class="mb-10 max-w-3xl">
       <span class="text-xs text-accent font-semibold uppercase tracking-wide">Case study</span>

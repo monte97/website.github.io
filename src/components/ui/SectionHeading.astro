@@ -1,20 +1,44 @@
 ---
+/**
+ * Testata di una sezione: occhiello, titolo, introduzione, e a destra
+ * l'eventuale rimando "vedi tutti".
+ *
+ * Prima era title + subtitle e lo usava un file solo, mentre sette scrivevano
+ * a mano la stessa tripletta. Le tre parti sono tutte opzionali tranne il
+ * titolo, cosi' copre anche le sezioni che hanno solo quello.
+ */
 interface Props {
   title: string;
+  /** Etichetta in mono sopra il titolo. */
+  eyebrow?: string;
+  /** Riga sotto il titolo, a misura di prosa. */
   subtitle?: string;
+  /** Rimando allineato a destra del titolo. */
+  action?: { href: string; label: string };
   align?: 'left' | 'center';
+  /** Spazio sotto la testata. */
+  class?: string;
 }
 
-const { title, subtitle, align = 'left' } = Astro.props;
+const { title, eyebrow, subtitle, action, align = 'left', class: extra = 'mb-8' } = Astro.props;
+const centered = align === 'center';
 ---
 
-<div class:list={['mb-10', align === 'center' ? 'text-center' : '']}>
-  <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light">
-    {title}
-  </h2>
+<div class:list={[extra, centered && 'text-center']}>
+  {eyebrow && <p class="label-mono !text-accent mb-3">{eyebrow}</p>}
+
+  <div class:list={['flex flex-wrap items-baseline gap-x-4 gap-y-1', action && 'justify-between']}>
+    <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light max-w-2xl">
+      {title}
+    </h2>
+    {action && (
+      <a href={action.href} class="text-sm font-semibold text-accent hover:underline">
+        {action.label} &rarr;
+      </a>
+    )}
+  </div>
+
   {subtitle && (
-    <p class="mt-2 text-text-muted text-base max-w-xl">
-      {subtitle}
-    </p>
+    <p class:list={['mt-4 text-text-muted leading-relaxed max-w-2xl', centered && 'mx-auto']}>{subtitle}</p>
   )}
 </div>

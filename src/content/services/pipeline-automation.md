@@ -10,6 +10,13 @@ items:
   - "Infrastructure as Code"
   - "Jenkins, GitHub Actions, ArgoCD"
   - "Terraform, OpenTofu, Ansible, Kubernetes"
+titleEn: "Pipeline & Automation"
+descriptionEn: "Cutting time-to-production and raising reliability, without amplifying mistakes."
+itemsEn:
+  - "CI/CD and GitOps"
+  - "Infrastructure as Code"
+  - "Jenkins, GitHub Actions, ArgoCD"
+  - "Terraform, OpenTofu, Ansible, Kubernetes"
 link: "/blog/"
 ---
 

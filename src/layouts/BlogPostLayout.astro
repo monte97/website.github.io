@@ -6,6 +6,7 @@ import Badge from '@/components/ui/Badge.astro';
 import TOC from '@/components/blog/TOC.astro';
 import PostCTA from '@/components/blog/PostCTA.astro';
 import AuthorCard from '@/components/ui/AuthorCard.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 import SeriesNav from '@/components/blog/SeriesNav.astro';
 import { getPillarLabel } from '@/data/pillars';
 import { getCollection } from 'astro:content';
@@ -107,23 +108,12 @@ const relatedPosts = pillar
   <Header lang={lang} altHref={alternateUrl ?? null} />
 
   <main class="max-w-5xl mx-auto px-5 py-8">
-    <!-- Breadcrumb -->
-    <nav class="text-xs text-text-muted mb-6" aria-label="Breadcrumb">
-      <ol class="flex items-center gap-1.5">
-        {breadcrumbs.map((crumb, i) => (
-          <>
-            {i > 0 && <li aria-hidden="true" class="opacity-40">/</li>}
-            <li>
-              <a href={crumb.href} class="hover:text-accent transition-colors">
-                {crumb.label}
-              </a>
-            </li>
-          </>
-        ))}
-        <li aria-hidden="true" class="opacity-40">/</li>
-        <li class="truncate max-w-[200px] text-text-dark dark:text-text-light" title={title}>{title}</li>
-      </ol>
-    </nav>
+    <Breadcrumb
+      class="mb-6"
+      variant="text"
+      truncateLast
+      items={[...breadcrumbs, { label: title }]}
+    />
 
     <!-- Title block -->
     <header class="mb-10 max-w-3xl">

@@ -19,10 +19,12 @@ interface Crumb {
 interface Props {
   items: Crumb[];
   variant?: 'mono' | 'text';
+  /** Tronca l'ultima voce: i titoli degli articoli mandano a capo il resto. */
+  truncateLast?: boolean;
   class?: string;
 }
 
-const { items, variant = 'mono', class: extra = '' } = Astro.props;
+const { items, variant = 'mono', truncateLast = false, class: extra = '' } = Astro.props;
 
 const base =
   variant === 'mono'
@@ -39,7 +41,11 @@ const base =
           {crumb.href ? (
             <a href={crumb.href} class="hover:text-accent transition-colors">{crumb.label}</a>
           ) : (
-            <span aria-current="page" class="text-text-dark dark:text-text-light">{crumb.label}</span>
+            <span
+              aria-current="page"
+              title={truncateLast ? crumb.label : undefined}
+              class:list={['text-text-dark dark:text-text-light', truncateLast && 'block truncate max-w-[200px]']}
+            >{crumb.label}</span>
           )}
         </li>
       </>

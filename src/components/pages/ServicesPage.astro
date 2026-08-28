@@ -1,4 +1,5 @@
 ---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
 /**
  * Servizi.
  *
@@ -35,7 +36,6 @@ const caseStudyCount = (await getCollection('projects')).filter(
 ).length;
 
 const hair = 'border-border/70 dark:border-border-dark/70';
-const h2 = 'text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light';
 
 const t = lang === 'en'
   ? {
@@ -169,8 +169,8 @@ const notForYou: string[] = [];
     </section>
 
     <section class="max-w-5xl mx-auto px-5 py-16">
-      <h2 class={h2}>{t.howTitle}</h2>
-      <div class="grid md:grid-cols-2 gap-4 mt-8">
+      <SectionHeading title={t.howTitle} />
+      <div class="grid md:grid-cols-2 gap-4">
         {t.commitments.map((c) => (
           <div class="surface-card p-6">
             <h3 class="font-semibold text-text-dark dark:text-text-light">{c.title}</h3>
@@ -182,19 +182,20 @@ const notForYou: string[] = [];
 
     <section class="bg-surface dark:bg-surface-dark/40 border-y border-border/40 dark:border-border-dark/40">
       <div class="max-w-5xl mx-auto px-5 py-16">
-        <h2 class={h2}>{t.whatTitle}</h2>
-        <p class="mt-4 text-text-muted leading-relaxed max-w-2xl">{t.whatBody}</p>
-        <div class="grid md:grid-cols-2 gap-4 mt-8">
+        <SectionHeading title={t.whatTitle} subtitle={t.whatBody} />
+        <div class="grid md:grid-cols-2 gap-4">
           {services.map((s, i) => (
             <a href={s.data.link ? `${prefix}${s.data.link}` : `${prefix}/case-study/`} class="group surface-link block p-6">
               <p class="label-mono !text-accent">{String(i + 1).padStart(2, '0')}</p>
               <h3 class="mt-2 text-lg font-bold text-text-dark dark:text-text-light group-hover:text-accent transition-colors">
-                {s.data.title}
+                {lang === 'en' ? (s.data.titleEn ?? s.data.title) : s.data.title}
               </h3>
-              <p class="mt-2 text-sm text-text-muted leading-relaxed">{s.data.description}</p>
+              <p class="mt-2 text-sm text-text-muted leading-relaxed">
+                {lang === 'en' ? (s.data.descriptionEn ?? s.data.description) : s.data.description}
+              </p>
               {s.data.items.length > 0 && (
                 <ul class={`mt-4 pt-4 border-t ${hair} space-y-1.5`}>
-                  {s.data.items.map((it) => (
+                  {(lang === 'en' ? (s.data.itemsEn ?? s.data.items) : s.data.items).map((it) => (
                     <li class="flex gap-2 text-sm text-text-muted">
                       <span class="text-accent">&rsaquo;</span>
                       <span>{it}</span>
@@ -229,8 +230,8 @@ const notForYou: string[] = [];
     </section>
 
     <section class="max-w-5xl mx-auto px-5 py-16">
-      <h2 class={h2}>{t.processTitle}</h2>
-      <div class="grid md:grid-cols-4 gap-8 mt-8">
+      <SectionHeading title={t.processTitle} />
+      <div class="grid md:grid-cols-4 gap-8">
         {t.process.map(([n, titolo, desc]) => (
           <div>
             <p class="label-mono !text-accent">{n}</p>
@@ -244,8 +245,8 @@ const notForYou: string[] = [];
     {notForYou.length > 0 && (
       <section class="bg-surface dark:bg-surface-dark/40 border-y border-border/40 dark:border-border-dark/40">
         <div class="max-w-5xl mx-auto px-5 py-16">
-          <h2 class={h2}>{t.fitTitle}</h2>
-          <div class="grid md:grid-cols-2 gap-4 mt-8">
+          <SectionHeading title={t.fitTitle} />
+          <div class="grid md:grid-cols-2 gap-4">
             <div class="rounded-xl border-2 border-accent p-6">
               <h3 class="font-semibold text-text-dark dark:text-text-light">{t.fitYes}</h3>
               <ul class="mt-4 space-y-2.5">
@@ -274,8 +275,8 @@ const notForYou: string[] = [];
     )}
 
     <section class="max-w-3xl mx-auto px-5 py-16">
-      <h2 class={h2}>{t.faqTitle}</h2>
-      <div class={`mt-8 border-t ${hair}`}>
+      <SectionHeading title={t.faqTitle} />
+      <div class={`border-t ${hair}`}>
         {t.faq.map((f) => (
           <details class={`group border-b ${hair}`}>
             <summary class="flex items-center justify-between gap-4 py-4 cursor-pointer font-semibold text-text-dark dark:text-text-light hover:text-accent transition-colors">

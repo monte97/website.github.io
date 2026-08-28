@@ -109,6 +109,10 @@ TypeScript modules for structured site data:
 ## Conventions
 
 - Italian is always created first, English second.
+- **English is the door, Italian carries the depth.** Index pages exist in both
+  languages; long pages (workshop landings, catalogues) are written in Italian,
+  and the English index says so instead of linking to a dead end. Translate a
+  deep page only when there is a real request for it.
 - `import.meta.glob` for hero images must stay in the consuming file (Vite static analysis). Pass the result to `getHeroImage()` from `@/utils/blog`.
 - Path alias `@/` maps to `src/`.
 - Blog post IDs follow the pattern `pillar/category/slug/index` (e.g., `progettare/kafka/01-intro/index`).

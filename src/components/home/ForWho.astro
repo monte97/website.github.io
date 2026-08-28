@@ -1,4 +1,5 @@
 ---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
 import { signals as sharedSignals } from '@/data/signals';
 
 interface Props {
@@ -27,15 +28,7 @@ const t = text[lang];
 
 <section class="py-20 border-t border-border/30 dark:border-border-dark/30 fade-in-section" aria-label={t.eyebrow}>
   <div class="max-w-5xl mx-auto px-5">
-    <p class="label-mono !text-accent mb-3">
-      {t.eyebrow}
-    </p>
-    <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light mb-4 max-w-3xl">
-      {t.title}
-    </h2>
-    <p class="text-text-muted text-lg leading-relaxed mb-10 max-w-3xl">
-      {t.intro}
-    </p>
+    <SectionHeading eyebrow={t.eyebrow} title={t.title} subtitle={t.intro} class="mb-10" />
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 stagger-children">
       {sharedSignals[lang].map((s) => (

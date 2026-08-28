@@ -7,6 +7,7 @@
  */
 import PageLayout from '@/layouts/PageLayout.astro';
 import PageHero from '@/components/ui/PageHero.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
 import FinalCta from '@/components/ui/FinalCta.astro';
 import { author } from '@/data/author';
 
@@ -127,9 +128,7 @@ const t = lang === 'en'
       </blockquote>
 
       <section class="mb-14">
-        <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light mb-5">
-          {t.whoTitle}
-        </h2>
+        <SectionHeading title={t.whoTitle} class="mb-5" />
         <div class="space-y-5">
           {t.whoBody.map((p) => (
             <p class="text-text-muted text-lg leading-relaxed">{p}</p>

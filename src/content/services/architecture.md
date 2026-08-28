@@ -10,6 +10,13 @@ items:
   - "CQRS e modellazione del dominio"
   - "API design"
   - ".NET, Go, Kafka, PostgreSQL"
+titleEn: "System Design & Architecture"
+descriptionEn: "Designing scalable software architectures. From the requirement to the diagram, from the diagram to the code."
+itemsEn:
+  - "Microservices and event-driven systems"
+  - "CQRS and domain modelling"
+  - "API design"
+  - ".NET, Go, Kafka, PostgreSQL"
 link: "/case-study/"
 ---
 

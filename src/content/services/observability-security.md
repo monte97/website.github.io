@@ -10,6 +10,13 @@ items:
   - "Loki, Tempo, Mimir"
   - "Identity management con Keycloak"
   - "OAuth 2.0 e OpenID Connect"
+titleEn: "Observability & Security"
+descriptionEn: "Knowing the system actually works: under load, under attack, over time."
+itemsEn:
+  - "Observability stack with OpenTelemetry and Grafana"
+  - "Loki, Tempo, Mimir"
+  - "Identity management with Keycloak"
+  - "OAuth 2.0 and OpenID Connect"
 link: "/blog/verificare/observability/"
 ---
 
