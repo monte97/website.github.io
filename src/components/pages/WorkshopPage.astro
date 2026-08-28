@@ -1,135 +1,142 @@
 ---
-import { getCollection } from 'astro:content';
+/**
+ * Indice della sezione formazione: i workshop che vengono erogati davvero.
+ *
+ * In inglese esiste solo questa pagina, le landing sono in italiano: la scheda
+ * lo dice invece di portare l'utente su una pagina che non sa leggere.
+ */
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
-import Button from '@/components/ui/Button.astro';
 import FinalCta from '@/components/ui/FinalCta.astro';
 import PageHero from '@/components/ui/PageHero.astro';
-import { pillarStyles } from '@/data/pillar-styles';
-import { pillarLabels } from '@/data/pillars';
+import { alsoDelivered } from '@/data/workshops';
+import { getWorkshops } from '@/utils/workshop';
 
 interface Props {
   lang?: 'it' | 'en';
 }
 
 const { lang = 'it' } = Astro.props;
-const prefix = lang === 'en' ? '/en' : '';
-
-const allProjects = await getCollection('projects');
-const workshops = allProjects
-  .filter((p) => p.data.type === 'workshop')
-  .sort((a, b) => a.data.weight - b.data.weight);
-
-const calLink = 'https://cal.com/francesco-montelli-4hfojq/30min';
-const mailLink = 'mailto:francesco@montelli.dev';
+const workshops = await getWorkshops();
+const mono = 'font-mono text-[11px] uppercase tracking-[0.12em] text-text-muted';
 
 const t = lang === 'en'
   ? {
-      pageTitle: 'Workshops',
-      pageDesc: 'Hands-on workshops and training for engineering teams. Focused sessions on a specific topic, run with the team that has to apply what they learn.',
+      pageTitle: 'Training',
+      pageDesc: 'Hands-on workshops for engineering teams: AI agents in Python, observability, end-to-end testing. Modules are a menu, not a programme to complete.',
       eyebrow: 'Training',
       heroTitle: 'Hands-on workshops for engineering teams',
-      heroSubtitle: 'One specific topic, on your real stack, with the team that has to apply it.',
-      intro: "Workshops are hands-on training on a specific topic, run with the team that has to apply what they learn. Every session adapts to the team's level and stack, and if the topic you need isn't listed, we build it around your needs.",
-      customTitle: 'Tailored workshop',
-      customDesc: "Can't find the right topic? We build it around your team's needs, on your real stack.",
-      customCta: "Let's talk",
-      ctaTitle: 'Need a tailored session for your team?',
-      ctaDesc: "Tell me where the team is now and what you want them to walk away with. We'll define scope and format together.",
+      heroSubtitle: 'One topic at a time, on your stack. The modules are available to choose from, not a programme to complete: they get picked during the discovery call.',
+      modules: (n: number) => `${n} modules available`,
+      custom: 'Tailored path',
+      alsoTitle: 'Training also already delivered on',
+      itOnly: 'The detailed pages are in Italian',
+      articles: (n: number) => (n === 1 ? '1 article' : `${n} articles`),
+      talks: (n: number) => (n === 1 ? '1 talk' : `${n} talks`),
+      ctaTitle: 'Shall we talk about the path for your team?',
+      ctaDesc: 'Tell me where the team is now and what it has to be able to do at the end.',
       ctaPrimary: 'Book a discovery call',
-      ctaSecondary: 'or write me',
-      durationLabel: 'Duration',
-      audienceLabel: 'For',
     }
   : {
-      pageTitle: 'Workshop',
-      pageDesc: 'Workshop e formazione hands-on per team di sviluppo. Sessioni mirate su un tema specifico, fatte con il team che dovrà applicare quello che impara.',
+      pageTitle: 'Formazione',
+      pageDesc: 'Workshop hands-on per team di sviluppo: agenti AI in Python, observability, testing end-to-end. I moduli sono a disposizione, non un programma da completare.',
       eyebrow: 'Formazione',
       heroTitle: 'Workshop hands-on per team di sviluppo',
-      heroSubtitle: 'Un tema specifico, sul vostro stack reale, con il team che dovrà applicarlo. Si esce sapendo fare.',
-      intro: 'I workshop sono formazione hands-on su un tema specifico, fatta con il team che dovrà applicare quello che impara. Ogni sessione si adatta al livello e allo stack del team, e se il tema che ti serve non è in elenco, lo costruiamo su misura sulle vostre esigenze.',
-      customTitle: 'Workshop su misura',
-      customDesc: 'Non trovi il tema giusto? Lo costruiamo sulle esigenze del tuo team, sul vostro stack reale.',
-      customCta: 'Parliamone',
-      ctaTitle: 'Serve una sessione su misura per il tuo team?',
-      ctaDesc: "Raccontami dove sta il team ora e cosa vuoi che si porti a casa. Definiamo insieme scope e formato.",
+      heroSubtitle: 'Un tema per volta, sul vostro stack. I moduli sono a disposizione, non un programma da completare: si scelgono in discovery call.',
+      modules: (n: number) => `${n} moduli a disposizione`,
+      custom: 'Percorso su misura',
+      alsoTitle: 'Formazione già erogata anche su',
+      itOnly: '',
+      articles: (n: number) => (n === 1 ? '1 articolo' : `${n} articoli`),
+      talks: (n: number) => (n === 1 ? '1 talk' : `${n} talk`),
+      ctaTitle: 'Parliamo del percorso per il tuo team?',
+      ctaDesc: 'Raccontami dove sta il team ora e cosa deve saper fare alla fine.',
       ctaPrimary: 'Prenota una discovery call',
-      ctaSecondary: 'oppure scrivimi',
-      durationLabel: 'Durata',
-      audienceLabel: 'Per',
     };
+
+const cardClass =
+  'flex flex-col rounded-xl border border-border dark:border-border-dark bg-surface dark:bg-surface-dark p-6';
 ---
 
 <BaseLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/workshop.png" lang={lang}>
   <Header lang={lang} />
   <main>
-
     <PageHero title={t.heroTitle} subtitle={t.heroSubtitle} eyebrow={t.eyebrow} align="center" />
 
-    {/* CONTENUTO */}
-    <section>
-      <div class="max-w-5xl mx-auto px-5 pt-12 md:pt-16 pb-16 md:pb-20">
-        <p class="text-text-muted text-base md:text-lg leading-relaxed max-w-3xl mx-auto text-center mb-10 md:mb-12">{t.intro}</p>
+    <div class="max-w-5xl mx-auto px-5 py-14">
+      <div class="grid md:grid-cols-3 gap-5 items-stretch">
+        {workshops.map((w) => {
+          const Tag = lang === 'it' ? 'a' : 'div';
+          return (
+            <Tag
+              href={lang === 'it' ? `/workshop/${w.slug}/` : undefined}
+              class:list={[
+                cardClass,
+                lang === 'it' && 'group hover:border-accent/40 hover:bg-accent/5 transition-all',
+              ]}
+            >
+              <p class={mono}>{w.moduleCount > 0 ? t.modules(w.moduleCount) : t.custom}</p>
+              <h2 class="mt-3 text-xl font-bold text-text-dark dark:text-text-light leading-snug group-hover:text-accent transition-colors">
+                {lang === 'en' ? w.titleEn : w.title}
+              </h2>
+              <p class="mt-3 text-sm text-text-muted leading-relaxed">{lang === 'en' ? w.goalEn : w.goal}</p>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6 stagger-children items-stretch">
-    {workshops.map((ws) => {
-      const styles = pillarStyles[ws.data.pillar];
-      return (
-        <a
-          href={`${prefix}/workshop/${ws.id}/`}
-          class="group flex flex-col rounded-2xl border border-border/60 dark:border-border-dark/60 bg-white dark:bg-surface-dark p-6 md:p-7 shadow-sm hover:shadow-md hover:border-accent/40 transition-all duration-200"
-        >
-          <div class="flex items-center justify-between mb-5">
-            <span class="flex items-center justify-center w-11 h-11 rounded-xl border border-accent/30 text-accent shrink-0">
-              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.3c-1.9-1.2-4.2-1.5-6.3-1v11.4c2.1-0.5 4.4-0.2 6.3 1 1.9-1.2 4.2-1.5 6.3-1V5.3c-2.1-0.5-4.4-0.2-6.3 1Zm0 0V18" />
-              </svg>
-            </span>
-            <span class={`text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full whitespace-nowrap shrink-0 ${styles.badge}`}>
-              {pillarLabels[ws.data.pillar][lang]}
-            </span>
-          </div>
-          <h2 class="text-lg md:text-xl font-bold text-text-dark dark:text-text-light mb-3 group-hover:text-accent transition-colors">
-            {ws.data.title}
-          </h2>
-          <p class="text-text-muted text-sm leading-relaxed mb-4 flex-1">{ws.data.description}</p>
-          {ws.data.tags.length > 0 && (
-            <div class="flex flex-wrap gap-1.5">
-              {ws.data.tags.slice(0, 5).map((tag) => (
-                <span class="text-[11px] text-text-muted/80 bg-text-muted/8 px-1.5 py-0.5 rounded">{tag}</span>
-              ))}
-            </div>
-          )}
-        </a>
-      );
-    })}
+              {lang === 'it' && w.groups.length > 0 && (
+                <ul class="mt-5 space-y-1.5">
+                  {w.groups[w.groups.length - 1].modules.slice(0, 4).map((m) => (
+                    <li class="flex gap-2 text-sm text-text-muted">
+                      <span class="mt-2 shrink-0 w-1 h-1 rounded-full bg-accent" />
+                      <span>{m.name}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
 
-    {/* Workshop su misura — la customizzazione resa esplicita come card */}
-    <a
-      href={calLink}
-      class="group flex flex-col rounded-2xl border border-dashed border-accent/40 bg-accent-subtle/40 p-6 md:p-7 hover:border-accent hover:bg-accent-subtle/70 transition-all duration-200"
-    >
-      <div class="flex items-center mb-5">
-        <span class="flex items-center justify-center w-11 h-11 rounded-xl border border-accent/40 text-accent shrink-0">
-          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-          </svg>
-        </span>
+              {lang === 'it' && w.delivered && (
+                <p class="mt-5 text-sm text-text-muted leading-relaxed">{w.delivered}</p>
+              )}
+
+              <div class="mt-auto pt-5 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-border/60 dark:border-border-dark/60">
+                <span class={mono}>{t.articles(w.postCount)}</span>
+                {w.talks.length > 0 && <span class={mono}>{t.talks(w.talks.length)}</span>}
+                {lang === 'it' && <span class="ml-auto text-accent text-sm font-semibold">Vedi &rarr;</span>}
+              </div>
+            </Tag>
+          );
+        })}
       </div>
-      <h2 class="text-lg md:text-xl font-bold text-text-dark dark:text-text-light mb-3 group-hover:text-accent transition-colors">
-        {t.customTitle}
-      </h2>
-      <p class="text-text-muted text-sm leading-relaxed mb-4 flex-1">{t.customDesc}</p>
-      <span class="text-sm font-semibold text-accent">{t.customCta} &rarr;</span>
-    </a>
-        </div>
-      </div>
-    </section>
 
-    {/* CTA */}
-    <FinalCta title={t.ctaTitle} desc={t.ctaDesc} ctaLabel={t.ctaPrimary} secondaryLabel={t.ctaSecondary} secondaryHref={mailLink} umamiEvent="cta-workshop-final" fullBleed />
+      {lang === 'en' && (
+        <p class="mt-6 text-sm text-text-muted">
+          {t.itOnly}: <a href="/workshop/" class="text-accent hover:underline">montelli.dev/workshop</a>
+        </p>
+      )}
 
+      <section class="mt-16 pt-8 border-t border-border/70 dark:border-border-dark/70">
+        <p class={mono}>{t.alsoTitle}</p>
+        <ul class="mt-4 flex flex-wrap gap-x-8 gap-y-2">
+          {alsoDelivered.map((d) => (
+            <li class="text-sm text-text-muted">
+              {d.title}
+              {d.repo && (
+                <a href={d.repo} target="_blank" rel="noopener noreferrer" class="text-accent hover:underline ml-2">
+                  repository
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </section>
+    </div>
+
+    <FinalCta
+      title={t.ctaTitle}
+      desc={t.ctaDesc}
+      ctaLabel={t.ctaPrimary}
+      umamiEvent="cta-workshop-final"
+      fullBleed
+    />
   </main>
   <Footer lang={lang} />
 </BaseLayout>

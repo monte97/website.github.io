@@ -1,0 +1,243 @@
+---
+/**
+ * Pagina di un workshop.
+ *
+ * I moduli sono un elenco, non link: la pagina di dettaglio del singolo modulo
+ * esiste gia' come impaginazione (src/pages/workshop/_module-detail.astro) ma
+ * resta spenta finche' i cataloghi non hanno i testi per riempirla.
+ */
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import { author } from '@/data/author';
+import type { EnrichedWorkshop } from '@/utils/workshop';
+
+interface Props {
+  w: EnrichedWorkshop;
+}
+
+const { w } = Astro.props;
+
+const mono = 'font-mono text-[11px] uppercase tracking-[0.12em] text-text-muted';
+const hair = 'border-border/70 dark:border-border-dark/70';
+const h2 = 'text-xl font-bold text-text-dark dark:text-text-light';
+const calLink = 'https://cal.com/francesco-montelli-4hfojq/30min';
+
+let n = 0;
+---
+
+<BaseLayout title={w.title} description={w.goal} ogImage="/og/workshop.png" lang="it">
+  <Header lang="it" altHref={null} />
+  <main>
+    <section class="relative overflow-hidden border-b border-border dark:border-border-dark">
+      <div class="absolute top-0 left-0 right-0 h-1 bg-accent" />
+      <div class="max-w-5xl mx-auto px-5 pt-14 pb-10">
+        <nav class={`${mono} flex flex-wrap items-center gap-2 mb-8`} aria-label="Breadcrumb">
+          <a href="/" class="hover:text-accent transition-colors">Home</a>
+          <span class="opacity-40">/</span>
+          <a href="/workshop/" class="hover:text-accent transition-colors">Formazione</a>
+          <span class="opacity-40">/</span>
+          <span class="text-text-dark dark:text-text-light">{w.title}</span>
+        </nav>
+
+        <div class="grid lg:grid-cols-[1fr_auto] gap-8 items-start">
+          <div>
+            <span class={`inline-flex items-center gap-1.5 ${mono} px-3 py-1 rounded-full bg-surface dark:bg-surface-dark mb-4`}>
+              <span class="w-1.5 h-1.5 rounded-full bg-accent" />
+              Workshop hands-on
+            </span>
+            <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-text-dark dark:text-text-light leading-tight">
+              {w.title}
+            </h1>
+            <p class="mt-4 text-lg text-text-muted leading-relaxed max-w-2xl">{w.goal}</p>
+          </div>
+
+          <div class="lg:min-w-[210px] rounded-xl border border-border dark:border-border-dark bg-surface dark:bg-surface-dark p-5 space-y-4">
+            {w.moduleCount > 0 && (
+              <>
+                <div>
+                  <div class="text-2xl font-bold text-text-dark dark:text-text-light">{w.moduleCount}</div>
+                  <div class="text-xs text-text-muted uppercase tracking-wide">Moduli a disposizione</div>
+                </div>
+                <div class={`border-t ${hair}`} />
+              </>
+            )}
+            <div>
+              <div class="text-2xl font-bold text-text-dark dark:text-text-light">{w.postCount}</div>
+              <div class="text-xs text-text-muted uppercase tracking-wide">Articoli pubblicati</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="max-w-5xl mx-auto px-5 py-12 grid lg:grid-cols-[1fr_320px] gap-12 items-start">
+      <div>
+        {w.basis && (
+          <section class="mb-12 max-w-2xl">
+            <h2 class={h2}>Su cosa si lavora</h2>
+            <p class="mt-3 text-text-muted leading-relaxed">{w.basis}</p>
+          </section>
+        )}
+
+        {w.groups.length > 0 && (
+          <section class="mb-12">
+            <h2 class={h2}>I moduli</h2>
+            <p class="mt-3 text-text-muted leading-relaxed max-w-2xl">
+              Sono a disposizione, non un programma da completare: si configurano secondo le esigenze del team in
+              fase di discovery call.
+            </p>
+            {w.groups.map((g) => (
+              <div class="mt-6">
+                <p class={`${mono} mb-3`}>{g.label}</p>
+                <ol class="space-y-3">
+                  {g.modules.map((m) => (
+                    <li class={`grid grid-cols-[3rem_1fr] gap-4 p-4 rounded-xl border ${hair} bg-surface dark:bg-surface-dark`}>
+                      <span class="font-mono text-sm font-medium text-accent pt-0.5">
+                        {String(++n).padStart(2, '0')}
+                      </span>
+                      <span>
+                        <span class="flex flex-wrap items-baseline justify-between gap-2">
+                          <span class="font-semibold text-text-dark dark:text-text-light">{m.name}</span>
+                          <span class={mono}>{m.note ? `${m.note} · ` : ''}{m.duration}</span>
+                        </span>
+                        {m.desc && <span class="block text-sm text-text-muted leading-relaxed mt-1">{m.desc}</span>}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            ))}
+          </section>
+        )}
+
+        {w.delivered && (
+          <section class="mb-12 max-w-2xl">
+            <h2 class={h2}>Già erogato</h2>
+            <p class="mt-3 text-text-muted leading-relaxed">{w.delivered}</p>
+            {w.repo && (
+              <p class="mt-3">
+                <a href={w.repo} target="_blank" rel="noopener noreferrer" class="text-sm text-accent hover:underline">
+                  Repository pubblico &rarr;
+                </a>
+              </p>
+            )}
+          </section>
+        )}
+
+        <section class="mb-12">
+          <h2 class={h2}>Cosa resta al team</h2>
+          <ul class="mt-5 space-y-3">
+            {w.takeaway.map((t) => (
+              <li class="flex items-start gap-3">
+                <span class="mt-1 shrink-0 w-5 h-5 rounded-full bg-accent text-white flex items-center justify-center text-xs font-bold">✓</span>
+                <span class="text-text-muted leading-relaxed">
+                  <span class="font-semibold text-text-dark dark:text-text-light">{t.title}.</span> {t.desc}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        {w.notCovered && (
+          <section class="mb-12 max-w-2xl">
+            <h2 class={h2}>Cosa non copre</h2>
+            <p class="mt-3 text-text-muted leading-relaxed">{w.notCovered}</p>
+          </section>
+        )}
+
+        <section>
+          <h2 class={h2}>Articoli e talk di riferimento</h2>
+          <p class="mt-2 text-sm text-text-muted">
+            Quello che è già pubblicato su questo tema, leggibile prima di qualsiasi conversazione.
+          </p>
+          {w.series.filter((s) => s.posts.length > 0).map((s) => (
+            <div class="mt-6">
+              <div class="flex flex-wrap items-baseline justify-between gap-2 mb-3">
+                <p class="font-semibold text-text-dark dark:text-text-light">{s.title}</p>
+                {s.href && <a href={s.href} class="text-sm text-accent hover:underline">Landing della serie &rarr;</a>}
+              </div>
+              <ul class="space-y-2">
+                {s.posts.map((p) => (
+                  <li>
+                    <a href={p.href} class={`flex items-baseline justify-between gap-4 p-3 rounded-lg border ${hair} bg-surface dark:bg-surface-dark hover:border-accent/40 hover:bg-accent/5 transition-all`}>
+                      <span class="text-sm text-text-dark dark:text-text-light">{p.title}</span>
+                      <span class={`${mono} shrink-0`}>{p.readingTime} min</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+
+          {w.talks.length > 0 && (
+            <div class="mt-6">
+              <p class="font-semibold text-text-dark dark:text-text-light mb-3">Talk</p>
+              <ul class="space-y-2">
+                {w.talks.map((talk) => (
+                  <li>
+                    <a href={`/talks/${talk.slug}/`} class={`block p-3 rounded-lg border ${hair} bg-surface dark:bg-surface-dark hover:border-accent/40 hover:bg-accent/5 transition-all`}>
+                      <span class="block text-sm text-text-dark dark:text-text-light">{talk.title}</span>
+                      <span class={`block ${mono} mt-1`}>{talk.event} · {talk.location}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
+      </div>
+
+      <aside class="space-y-6 lg:sticky lg:top-6">
+        <div class={`rounded-xl border ${hair} bg-surface dark:bg-surface-dark p-6`}>
+          <p class={mono}>Formato</p>
+          <p class="mt-2 text-sm text-text-muted leading-relaxed">{w.format}</p>
+          <p class={`${mono} mt-5`}>Per chi è</p>
+          <p class="mt-2 text-sm text-text-muted leading-relaxed">{w.audience}</p>
+        </div>
+
+        <div class="rounded-xl border-2 border-accent p-6">
+          <p class="text-xs font-semibold uppercase tracking-widest text-accent mb-3">Discovery call</p>
+          <h3 class="text-lg font-bold text-text-dark dark:text-text-light mb-3 leading-snug">
+            Parliamo del percorso per il tuo team?
+          </h3>
+          <p class="text-sm text-text-muted leading-relaxed mb-5">
+            Raccontami dove sta il team ora e cosa deve saper fare alla fine.
+          </p>
+          <a
+            href={calLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            data-umami-event="cta-workshop-landing"
+            class="block w-full text-center px-4 py-2.5 rounded-lg bg-accent text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+          >
+            Prenota una call &rarr;
+          </a>
+          <a href="mailto:francesco@montelli.dev" class="block w-full text-center mt-2 px-4 py-2.5 rounded-lg text-sm font-medium text-text-muted hover:text-accent bg-text-muted/10 transition-colors">
+            Scrivimi direttamente
+          </a>
+        </div>
+
+        <div class={`rounded-xl border ${hair} p-5`}>
+          <div class="flex items-center gap-3 mb-3">
+            <img src={author.image} alt={author.name} width="40" height="40" class="w-10 h-10 rounded-full object-cover" />
+            <div>
+              <div class="text-sm font-semibold text-text-dark dark:text-text-light">{author.name}</div>
+              <div class="text-xs text-text-muted">Software Engineer freelance</div>
+            </div>
+          </div>
+          <p class="text-sm text-text-muted leading-relaxed mb-4">{author.bio.it}</p>
+          <a
+            href="https://linkedin.com/in/francesco-montelli"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="block w-full text-center px-4 py-2 rounded-lg bg-[#0077b5] text-white text-sm font-medium hover:bg-[#006399] transition-colors"
+          >
+            Seguimi su LinkedIn
+          </a>
+        </div>
+      </aside>
+    </div>
+  </main>
+  <Footer lang="it" />
+</BaseLayout>

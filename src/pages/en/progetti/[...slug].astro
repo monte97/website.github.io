@@ -18,7 +18,10 @@ export const getStaticPaths = (async () => {
 const { project } = Astro.props;
 
 if (project.data.type === 'workshop') {
-  const target = `/en/workshop/${project.id}/`;
+  const workshopTarget = {
+    'e2e-testing-infrastructure': '/en/workshop/testing-e2e/',
+  };
+  const target = workshopTarget[project.id] ?? '/en/workshop/';
   return new Response(
     `<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Redirecting</title><link rel="canonical" href="${target}"><meta http-equiv="refresh" content="0; url=${target}"><meta name="robots" content="noindex"></head><body><p>This page has moved. <a href="${target}">Go to workshop</a>.</p><script>window.location.replace(${JSON.stringify(target)});</script></body></html>`,
     { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } }

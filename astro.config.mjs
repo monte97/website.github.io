@@ -21,6 +21,16 @@ export default defineConfig({
     // 01-intro diviso in due articoli il 2026-08-25
     '/blog/verificare/testing/01-intro/': '/blog/verificare/testing/performance-senza-baseline/',
     '/en/blog/verificare/testing/01-intro/': '/en/blog/verificare/testing/performance-senza-baseline/',
+    // sezione formazione ripensata il 2026-08-28: il primo livello sono i tre
+    // workshop erogati, i vecchi slug non hanno piu' una pagina propria
+    '/workshop/e2e-testing-infrastructure/': '/workshop/testing-e2e/',
+    '/en/workshop/e2e-testing-infrastructure/': '/en/workshop/',
+    '/workshop/keycloak-workshop/': '/workshop/',
+    '/en/workshop/keycloak-workshop/': '/en/workshop/',
+    '/workshop/mutation-testing-workshop/': '/workshop/',
+    '/en/workshop/mutation-testing-workshop/': '/en/workshop/',
+    '/workshop/k6-performance-training/': '/workshop/',
+    '/en/workshop/k6-performance-training/': '/en/workshop/',
     '/cv': '/files/Francesco_Montelli_CV.pdf',
     '/cv-europass': '/files/Francesco_Montelli_CV_Europass.pdf',
     '/cv-eu': '/files/Francesco_Montelli_CV_Europass.pdf',

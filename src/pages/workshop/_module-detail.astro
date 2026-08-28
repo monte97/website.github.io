@@ -1,0 +1,187 @@
+---
+/**
+ * Pagina di un singolo modulo.
+ *
+ * I campi che i cataloghi non contengono ancora restano fra parentesi quadre,
+ * come nei modelli vuoti della catena documenti: si vede l'impaginazione senza
+ * che nessun testo di prova passi per vero.
+ */
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/layout/Header.astro';
+import Footer from '@/components/layout/Footer.astro';
+import { author } from '@/data/author';
+import { workshops3 } from '@/data/workshops3';
+import { moduleSlug } from '@/utils/workshop3';
+
+export const getStaticPaths = (() =>
+  workshops3.flatMap((w) =>
+    w.groups.flatMap((g) =>
+      g.modules.map((m, i) => {
+        const all = w.groups.flatMap((gg) => gg.modules);
+        const idx = all.findIndex((x) => x.id === m.id);
+        return {
+          params: { slug: moduleSlug(w.slug, m.name) },
+          props: {
+            w,
+            g,
+            m,
+            prev: all[idx - 1] ?? null,
+            next: all[idx + 1] ?? null,
+            num: String(idx + 1).padStart(2, '0'),
+          },
+        };
+      })
+    )
+  )
+) satisfies GetStaticPaths;
+
+const { w, g, m, prev, next, num } = Astro.props;
+
+const mono = 'font-mono text-[11px] uppercase tracking-[0.12em] text-text-muted';
+const hair = 'border-border/70 dark:border-border-dark/70';
+const h2 = 'text-xl font-bold text-text-dark dark:text-text-light';
+const calLink = 'https://cal.com/francesco-montelli-4hfojq/30min';
+
+/** Campo che il catalogo non contiene ancora. */
+const todo = (cosa: string) => `[${cosa}]`;
+---
+
+<BaseLayout title={`${m.name} · ${w.title}`} description={m.desc ?? m.name} lang="it">
+  <Header lang="it" />
+  <main>
+    <section class="relative overflow-hidden border-b border-border dark:border-border-dark">
+      <div class="absolute top-0 left-0 right-0 h-1 bg-accent" />
+      <div class="max-w-5xl mx-auto px-5 pt-14 pb-10">
+        <nav class={`${mono} flex flex-wrap items-center gap-2 mb-8`} aria-label="Breadcrumb">
+          <a href="/workshop3/" class="hover:text-accent transition-colors">Prove v3</a>
+          <span class="opacity-40">/</span>
+          <a href="/workshop3/landing-2/" class="hover:text-accent transition-colors">{w.title}</a>
+          <span class="opacity-40">/</span>
+          <span class="text-text-dark dark:text-text-light">Modulo</span>
+        </nav>
+
+        <div class="grid lg:grid-cols-[1fr_auto] gap-8 items-start">
+          <div>
+            <span class={`inline-flex items-center gap-2 ${mono} px-3 py-1 rounded-full bg-surface dark:bg-surface-dark mb-4`}>
+              <span class="font-medium text-accent">{num}</span>
+              {g.label}
+            </span>
+            <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-text-dark dark:text-text-light leading-tight">
+              {m.name}
+            </h1>
+            {m.desc && <p class="mt-4 text-lg text-text-muted leading-relaxed max-w-2xl">{m.desc}</p>}
+          </div>
+
+          <dl class={`lg:min-w-[210px] rounded-xl border ${hair} bg-surface dark:bg-surface-dark p-5 space-y-4`}>
+            <div>
+              <dt class="text-xs text-text-muted uppercase tracking-wide">Durata</dt>
+              <dd class="text-2xl font-bold text-text-dark dark:text-text-light">{m.duration ?? '—'}</dd>
+            </div>
+            <div class={`border-t ${hair}`} />
+            <div>
+              <dt class="text-xs text-text-muted uppercase tracking-wide">Prerequisiti</dt>
+              <dd class="text-sm font-semibold text-text-dark dark:text-text-light mt-1">{m.note ?? 'nessuno'}</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <div class="max-w-5xl mx-auto px-5 py-12 grid lg:grid-cols-[1fr_320px] gap-12 items-start">
+      <div>
+        <section class="mb-12 max-w-2xl">
+          <h2 class={h2}>Cosa si fa</h2>
+          <p class="mt-3 text-text-muted leading-relaxed">
+            {todo('come si svolge il modulo: da cosa si parte, cosa si costruisce, dove si arriva')}
+          </p>
+        </section>
+
+        <section class="mb-12 max-w-2xl">
+          <h2 class={h2}>L'esercizio</h2>
+          <p class="mt-3 text-text-muted leading-relaxed">
+            {todo("il guasto da cui parte l'esercizio, e cosa il team scopre quando lo lancia")}
+          </p>
+        </section>
+
+        <section class="mb-12 max-w-2xl">
+          <h2 class={h2}>Come si verifica</h2>
+          <p class="mt-3 text-text-muted leading-relaxed">
+            {todo("l'esito osservabile che chiude il modulo")}
+          </p>
+        </section>
+
+        <section class="mb-12 max-w-2xl">
+          <h2 class={h2}>Cosa resta al team</h2>
+          <p class="mt-3 text-text-muted leading-relaxed">
+            {todo('cosa il team si porta via da questo modulo')}
+          </p>
+        </section>
+
+        <nav class={`grid sm:grid-cols-2 gap-4 pt-8 border-t ${hair}`}>
+          {prev ? (
+            <a href={`/workshop3/moduli/${moduleSlug(w.slug, prev.name)}/`} class={`p-4 rounded-xl border ${hair} hover:border-accent/40 hover:bg-accent/5 transition-all`}>
+              <span class={`block ${mono}`}>&larr; Modulo precedente</span>
+              <span class="block text-sm font-semibold text-text-dark dark:text-text-light mt-1">{prev.name}</span>
+            </a>
+          ) : <span />}
+          {next && (
+            <a href={`/workshop3/moduli/${moduleSlug(w.slug, next.name)}/`} class={`p-4 rounded-xl border ${hair} hover:border-accent/40 hover:bg-accent/5 transition-all sm:text-right`}>
+              <span class={`block ${mono}`}>Modulo successivo &rarr;</span>
+              <span class="block text-sm font-semibold text-text-dark dark:text-text-light mt-1">{next.name}</span>
+            </a>
+          )}
+        </nav>
+      </div>
+
+      <aside class="space-y-6 lg:sticky lg:top-6">
+        <div class={`rounded-xl border ${hair} bg-surface dark:bg-surface-dark p-6`}>
+          <p class={mono}>Il workshop</p>
+          <a href="/workshop3/landing-2/" class="block mt-2 font-bold text-text-dark dark:text-text-light hover:text-accent transition-colors">
+            {w.title}
+          </a>
+          <p class="mt-3 text-sm text-text-muted leading-relaxed">{w.format}</p>
+          <a href="/workshop3/landing-2/" class="inline-block mt-4 text-sm text-accent hover:underline">
+            Tutti i moduli &rarr;
+          </a>
+        </div>
+
+        <div class="rounded-xl border-2 border-accent p-6">
+          <p class="text-xs font-semibold uppercase tracking-widest text-accent mb-3">Discovery call</p>
+          <h3 class="text-lg font-bold text-text-dark dark:text-text-light mb-3 leading-snug">
+            Parliamo del percorso per il tuo team?
+          </h3>
+          <p class="text-sm text-text-muted leading-relaxed mb-5">
+            Raccontami dove sta il team ora e cosa deve saper fare alla fine.
+          </p>
+          <a href={calLink} class="block w-full text-center px-4 py-2.5 rounded-lg bg-accent text-white text-sm font-semibold hover:opacity-90 transition-opacity">
+            Prenota una call &rarr;
+          </a>
+          <a href="mailto:francesco@montelli.dev" class="block w-full text-center mt-2 px-4 py-2.5 rounded-lg text-sm font-medium text-text-muted hover:text-accent bg-text-muted/10 transition-colors">
+            Scrivimi direttamente
+          </a>
+        </div>
+
+        <div class={`rounded-xl border ${hair} p-5`}>
+          <div class="flex items-center gap-3 mb-3">
+            <img src={author.image} alt={author.name} width="40" height="40" class="w-10 h-10 rounded-full object-cover" />
+            <div>
+              <div class="text-sm font-semibold text-text-dark dark:text-text-light">{author.name}</div>
+              <div class="text-xs text-text-muted">Software Engineer freelance</div>
+            </div>
+          </div>
+          <p class="text-sm text-text-muted leading-relaxed mb-4">{author.bio.it}</p>
+          <a
+            href="https://linkedin.com/in/francesco-montelli"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="block w-full text-center px-4 py-2 rounded-lg bg-[#0077b5] text-white text-sm font-medium hover:bg-[#006399] transition-colors"
+          >
+            Seguimi su LinkedIn
+          </a>
+        </div>
+      </aside>
+    </div>
+  </main>
+  <Footer lang="it" />
+</BaseLayout>

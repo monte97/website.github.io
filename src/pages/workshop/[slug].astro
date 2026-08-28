@@ -1,0 +1,14 @@
+---
+import type { GetStaticPaths } from 'astro';
+import WorkshopLandingPage from '@/components/pages/WorkshopLandingPage.astro';
+import { getWorkshops } from '@/utils/workshop';
+
+export const getStaticPaths = (async () => {
+  const workshops = await getWorkshops();
+  return workshops.map((w) => ({ params: { slug: w.slug }, props: { w } }));
+}) satisfies GetStaticPaths;
+
+const { w } = Astro.props;
+---
+
+<WorkshopLandingPage w={w} />

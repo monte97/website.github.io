@@ -19,7 +19,10 @@ const { project } = Astro.props;
 
 // Workshop legacy URL → redirect to /workshop/{slug}
 if (project.data.type === 'workshop') {
-  const target = `/workshop/${project.id}/`;
+  const workshopTarget = {
+    'e2e-testing-infrastructure': '/workshop/testing-e2e/',
+  };
+  const target = workshopTarget[project.id] ?? '/workshop/';
   return new Response(
     `<!doctype html><html lang="it"><head><meta charset="utf-8"><title>Reindirizzamento</title><link rel="canonical" href="${target}"><meta http-equiv="refresh" content="0; url=${target}"><meta name="robots" content="noindex"></head><body><p>Questa pagina si è spostata. <a href="${target}">Vai al workshop</a>.</p><script>window.location.replace(${JSON.stringify(target)});</script></body></html>`,
     { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
