@@ -16,6 +16,23 @@ lang: en
 reviewed: machine
 series: linq
 seriesOrder: 40
+figures:
+  - kind: beforeAfter
+    at: streaming-vs-non-streaming-visual-proof
+    label: "How the difference shows up in the waterfall"
+    beforeLabel: "Streaming: `Where`, `Select`"
+    afterLabel: "Non-streaming: `OrderBy`, `GroupBy`"
+    rows:
+      - label: "First result"
+        before: "Comes out after the first element is processed"
+        after: "Comes out after the last one: nothing is emitted before everything has been seen"
+      - label: "Shape in the trace"
+        before: "Short overlapping spans, the pipeline flows"
+        after: "One long span blocking the chain, with the rest waiting underneath"
+      - label: "Memory"
+        before: "One element at a time"
+        after: "The whole collection buffered before the next step"
+    caption: "The classification from article 3 is not theory: it is the shape the pipeline takes inside Tempo"
 ---
 
 In the three previous articles we saw [what to get wrong](/en/blog/progettare/system-design/01-errori-produzione/), [how much it costs](/en/blog/progettare/system-design/02-benchmark-net8/), and [what happens under the hood](/en/blog/progettare/system-design/03-compilatore-state-machine/). We talked about computational complexity, state machines, allocations, and streaming. But so far everything was theory and numbers — benchmark tables, ASCII diagrams, reasoning about deferred execution.

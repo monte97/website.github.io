@@ -34,6 +34,35 @@ openItems:
   - "Le versioni indicate definiscono lo scenario: clusterctl 1.10.3, provider Proxmox 0.6.2, Kubernetes v1.32.0"
   - "Al termine del Day 1 il metrics server può non essere ancora disponibile: `kubectl top` è previsto fallire"
   - "Il perimetro si ferma a un cluster minimale verificato su nodi, DNS e connettività esterna: storage, ingress e monitoraggio restano esclusi"
+figures:
+  - kind: matrix
+    at: il-cluster-cè-cosa-vuol-dire-davvero
+    label: "Provisioned, verificato, utilizzabile"
+    columns: ["Provisioned", "Verificato", "Utilizzabile"]
+    rows:
+      - label: "Il control plane risponde"
+        cells: [full, full, full]
+      - label: "I nodi sono Ready"
+        cells: [full, full, full]
+      - label: "etcd, scheduler e controller-manager in piedi"
+        note: "provato, non assunto"
+        cells: [empty, full, full]
+      - label: "Storage persistente"
+        cells: [empty, empty, full]
+      - label: "Ingress"
+        cells: [empty, empty, full]
+      - label: "Observability"
+        cells: [empty, empty, full]
+      - label: "Politiche di accesso"
+        cells: [empty, empty, full]
+    legend:
+      full: "c'e'"
+      empty: "non ancora"
+    caption: "Dove finisce il Day 1 e comincia il Day 2"
+    note: >
+      La colonna di mezzo e' quella che questo articolo aggiunge: un cluster verificato non
+      e' piu' capace di uno provisioned, ma se qualcosa si rompe domani sapete che non e'
+      nessuno dei punti gia' provati.
 ---
 
 Fra un Proxmox vuoto e un cluster Kubernetes funzionante c'è una lista di cose che devono essere giuste tutte insieme: un utente con i permessi esatti, un token che non scade, un template che si clona, un bridge di rete che risponde, un generatore che produce manifest coerenti.

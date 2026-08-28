@@ -37,6 +37,23 @@ openItems:
   - "Lo stack LGTM monolitico copre lo sviluppo locale: collector, storage e retention di un ambiente produttivo non sono toccati"
 openNote: "Quello che questo strumento non decide, e che va pesato prima di portarlo in produzione."
 mode: how-to
+figures:
+  - kind: beforeAfter
+    at: streaming-vs-non-streaming-la-prova-visiva
+    label: "Come si vede la differenza nella waterfall"
+    beforeLabel: "Streaming: `Where`, `Select`"
+    afterLabel: "Non-streaming: `OrderBy`, `GroupBy`"
+    rows:
+      - label: "Primo risultato"
+        before: "Esce dopo il primo elemento processato"
+        after: "Esce dopo l'ultimo: prima di emettere qualcosa serve aver visto tutto"
+      - label: "Forma nella trace"
+        before: "Span brevi e sovrapposti, la pipeline scorre"
+        after: "Uno span lungo che blocca la catena, e sotto il resto che aspetta"
+      - label: "Memoria"
+        before: "Un elemento alla volta"
+        after: "L'intera collezione bufferizzata prima del passo successivo"
+    caption: "La classificazione dell'articolo 3 non e' teorica: e' la forma che la pipeline prende dentro Tempo"
 ---
 
 Nei tre articoli precedenti abbiamo visto [cosa sbagliare](/blog/progettare/system-design/01-errori-produzione/), [quanto costa](/blog/progettare/system-design/02-benchmark-net8/) e [cosa succede sotto il cofano](/blog/progettare/system-design/03-compilatore-state-machine/). Abbiamo parlato di complessità computazionale, state machine, allocazioni e streaming. Ma finora era tutto teoria e numeri. Tabelle di benchmark, diagrammi ASCII, ragionamenti sulla deferred execution.

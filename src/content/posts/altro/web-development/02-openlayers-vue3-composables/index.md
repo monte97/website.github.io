@@ -33,6 +33,23 @@ openItems:
   - "Il pattern `shallowRef` vale per qualsiasi libreria imperativa con stato interno complesso: Three.js, D3, Leaflet"
 openNote: "Confini dei pattern così come usati nella demo."
 mode: explanation
+figures:
+  - kind: beforeAfter
+    at: il-problema-vue-wrappa-ciò-che-non-dovrebbe
+    label: "Dove passa il confine fra Vue e OpenLayers"
+    beforeLabel: "`ref()`"
+    afterLabel: "`shallowRef()`"
+    rows:
+      - label: "Cosa diventa reattivo"
+        before: "Ogni proprieta' interna, ricorsivamente, convertita in Proxy"
+        after: "Solo il riferimento all'oggetto: le proprieta' restano quello che sono"
+      - label: "Su un oggetto OpenLayers"
+        before: "Centinaia di proprieta' interne intercettate: rallentamenti misurabili e crash silenziosi, perche' OL non si aspetta di essere osservato"
+        after: "L'oggetto resta quello che la libreria si aspetta di avere fra le mani"
+      - label: "Chi controlla cosa"
+        before: "Vue prova a controllare anche la mappa"
+        after: "Vue i dati dell'applicazione, OL la mappa, e i composable fanno da ponte"
+    caption: "Il conflitto non e' fra due librerie: e' fra due modelli, uno dichiarativo e uno imperativo"
 ---
 
 ## Il problema: Vue wrappa ciò che non dovrebbe

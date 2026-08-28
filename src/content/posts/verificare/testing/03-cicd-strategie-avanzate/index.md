@@ -34,6 +34,28 @@ openItems:
   - "Con matrici multi-dimensionali `strategy.job-total` restituisce il prodotto di tutte le dimensioni, non il numero di shard: meglio hardcodare il totale"
   - "In pipeline il mobile è emulazione di viewport, user agent ed eventi touch: non è coinvolto nessun dispositivo fisico"
   - "Senza test chiari e semantici l'automazione agent-driven non è praticabile: la suite ne è il prerequisito"
+figures:
+  - kind: flow
+    at: configurazione-e-sharding-per-ridurre-i-tempi-di-feedback
+    label: "Da una suite a N runner, e ritorno"
+    caption: "I blob report esistono per l'ultimo passo: sono l'unico formato che si puo' fondere in un report solo"
+    nodes:
+      - kind: "1"
+        name: "Una suite, un runner"
+        desc: "Con la configurazione di default Playwright usa meta' dei core: su un runner da due, un worker. Il tempo cresce linearmente con i test."
+        edge: "matrix strategy"
+      - kind: "2"
+        name: "N shard in parallelo"
+        desc: "Ogni job riceve `--shard=i/N` e prende la sua fetta della suite. I job non si parlano: nessuno sa cosa hanno trovato gli altri."
+        edge: "ogni shard produce il suo"
+      - kind: "3"
+        name: "Un blob report per shard"
+        desc: "Non un report HTML: un formato intermedio pensato per essere fuso. E' il motivo per cui il reporter cambia quando si attiva lo sharding."
+        edge: "job di merge, dopo tutti gli altri"
+      - kind: "4"
+        name: "Un report solo"
+        desc: "I blob vengono uniti in un unico report HTML: chi apre la PR vede una suite, non N frammenti da mettere insieme a mano."
+        key: true
 ---
 
 Una suite di test E2E completa che passa in locale e fallisce in CI - timeout, browser che non si avviano, report frammentati - è uno scenario comune. Una suite di test ha valore solo se viene eseguita in modo sistematico e affidabile. Integrare Playwright in una pipeline CI/CD non si limita ad aggiungere un `npx playwright test` nel workflow: servono configurazioni specifiche per runner con risorse limitate, strategie di parallelizzazione su più macchine e reporter adatti all'ambiente.

@@ -14,6 +14,28 @@ lang: en
 reviewed: machine
 series: playwright
 seriesOrder: 30
+figures:
+  - kind: flow
+    at: configuration-and-sharding-to-reduce-feedback-time
+    label: "From one suite to N runners, and back"
+    caption: "Blob reports exist for the last step: they are the only format that can be merged into a single report"
+    nodes:
+      - kind: "1"
+        name: "One suite, one runner"
+        desc: "With the default configuration Playwright uses half the cores: on a two-core runner, one worker. Time grows linearly with the tests."
+        edge: "matrix strategy"
+      - kind: "2"
+        name: "N shards in parallel"
+        desc: "Each job gets `--shard=i/N` and takes its slice of the suite. The jobs do not talk: none of them knows what the others found."
+        edge: "each shard produces its own"
+      - kind: "3"
+        name: "One blob report per shard"
+        desc: "Not an HTML report: an intermediate format meant to be merged. It is why the reporter changes as soon as sharding is on."
+        edge: "merge job, after all the others"
+      - kind: "4"
+        name: "A single report"
+        desc: "The blobs are merged into one HTML report: whoever opens the PR sees a suite, not N fragments to reassemble by hand."
+        key: true
 ---
 
 A complete E2E test suite that passes locally and fails in CI — timeouts, browsers that won't start, fragmented reports — is a familiar scenario. A test suite only has value if it runs systematically and reliably. Integrating Playwright into a CI/CD pipeline isn't just a matter of adding `npx playwright test` to a workflow: you need specific configurations for resource-constrained runners, parallelization strategies across multiple machines, and reporters suited to each environment.

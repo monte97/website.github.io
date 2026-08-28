@@ -15,6 +15,35 @@ lang: en
 reviewed: human
 series: homelab-capi
 seriesOrder: 40
+figures:
+  - kind: matrix
+    at: the-cluster-exists-what-that-actually-means
+    label: "Provisioned, verified, usable"
+    columns: ["Provisioned", "Verified", "Usable"]
+    rows:
+      - label: "The control plane answers"
+        cells: [full, full, full]
+      - label: "The nodes are Ready"
+        cells: [full, full, full]
+      - label: "etcd, scheduler and controller-manager up"
+        note: "proven, not assumed"
+        cells: [empty, full, full]
+      - label: "Persistent storage"
+        cells: [empty, empty, full]
+      - label: "Ingress"
+        cells: [empty, empty, full]
+      - label: "Observability"
+        cells: [empty, empty, full]
+      - label: "Access policies"
+        cells: [empty, empty, full]
+    legend:
+      full: "there"
+      empty: "not yet"
+    caption: "Where Day 1 ends and Day 2 begins"
+    note: >
+      The middle column is what this article adds: a verified cluster is no more capable than
+      a provisioned one, but if something breaks tomorrow you know it is none of the points
+      already proven.
 ---
 Between an empty Proxmox and a working Kubernetes cluster there is a list of things that all have to be right at once: a user with the exact permissions, a token that has not expired, a template that clones, a network bridge that answers, a generator producing coherent manifests.
 

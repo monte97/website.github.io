@@ -15,6 +15,23 @@ lang: en
 reviewed: machine
 series: web-development
 seriesOrder: 20
+figures:
+  - kind: beforeAfter
+    at: the-problem-vue-wraps-what-it-shouldnt
+    label: "Where the line between Vue and OpenLayers falls"
+    beforeLabel: "`ref()`"
+    afterLabel: "`shallowRef()`"
+    rows:
+      - label: "What becomes reactive"
+        before: "Every internal property, recursively, converted into a Proxy"
+        after: "Only the reference to the object: the properties stay what they are"
+      - label: "On an OpenLayers object"
+        before: "Hundreds of internal properties intercepted: measurable slowdowns and silent crashes, because OL does not expect to be observed"
+        after: "The object stays what the library expects to be holding"
+      - label: "Who controls what"
+        before: "Vue tries to control the map as well"
+        after: "Vue the application data, OL the map, and the composables bridge the two"
+    caption: "The conflict is not between two libraries: it is between two models, one declarative and one imperative"
 ---
 
 ## The Problem: Vue Wraps What It Shouldn't
