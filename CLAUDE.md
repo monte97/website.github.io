@@ -82,14 +82,16 @@ TypeScript modules for structured site data:
 | `pillars.ts` | Pillar type, labels |
 | `pillar-styles.ts` | Shared Tailwind class mappings for pillar colors |
 | `blog-labels.ts` | Display labels for categories and series |
-| `experiences.ts` | Work experience entries |
-| `education.ts` | Education entries |
-| `skills.ts` | Technical skills |
-| `publications.ts` | Publications |
+| `talks.ts` | Talks: event, date, abstract (IT/EN), links |
+| `workshops.ts` | Workshops: goal, modules, published material |
+| `series.ts` | Blog series metadata, for landings and nav |
+| `signals.ts` | Home page signals |
+| `qr-events.ts` | Per-event QR landing pages |
 
 ### Utilities (`src/utils/`)
 
-`blog.ts` contains shared functions: `postHref()`, `yearsExperience()`, `estimateReadingTime()`, `getHeroImage()`.
+`blog.ts` contains shared functions: `postHref()`, `estimateReadingTime()`, `getHeroImage()`.
+`workshop.ts` resolves each workshop's published material from the posts collection.
 
 ## Styling
 

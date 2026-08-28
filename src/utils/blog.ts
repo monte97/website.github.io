@@ -6,13 +6,6 @@ export function postHref(postId: string, lang: 'it' | 'en' = 'it'): string {
   return `${prefix}/blog/${slug}/`;
 }
 
-/** Career start year — used to compute years of experience. */
-const CAREER_START = 2021;
-
-export function yearsExperience(): number {
-  return new Date().getFullYear() - CAREER_START;
-}
-
 /** Estimate reading time from raw body text (~200 wpm, min 1 min). */
 export function estimateReadingTime(body: string | undefined): number {
   const words = body?.split(/\s+/).length || 0;
