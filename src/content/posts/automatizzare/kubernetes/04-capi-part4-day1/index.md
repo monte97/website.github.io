@@ -86,7 +86,7 @@ Fra un Proxmox vuoto e un cluster Kubernetes funzionante c'è una lista di cose 
 
 Se una sola sbaglia, il cluster non fallisce: **resta in `Provisioning`**, che è la modalità di fallimento più costosa perché non dice cosa manca. E il tempo che serve a scoprirlo cresce con quanto sei andato avanti prima di accorgertene.
 
-Questo articolo è la sequenza del giorno uno nell'ordine in cui va eseguita, con il controllo che chiude ogni passo prima di passare al successivo. La [parte precedente](/blog/progettare/kubernetes/02-capi-part2-internals/) spiega quali controller entrano in gioco e come leggerne lo stato: serve esattamente quando uno di questi controlli non passa.
+Questo articolo è la sequenza del giorno uno nell'ordine in cui va eseguita, con il controllo che chiude ogni passo prima di passare al successivo. La [parte precedente](/blog/automatizzare/kubernetes/02-capi-part2-internals/) spiega quali controller entrano in gioco e come leggerne lo stato: serve esattamente quando uno di questi controlli non passa.
 
 ## Configurazione Proxmox VE
 
@@ -652,4 +652,4 @@ Manca ancora tutto quello che rende un cluster utilizzabile da qualcun altro: st
 
 Rifate gli ultimi tre controlli su un cluster che *sapete* essere sano, e leggete cosa restituiscono. Riconoscere l'output di un cluster a posto è l'unico modo per riconoscere in fretta quello di un cluster che non lo è.
 
-La [parte successiva](/blog/progettare/kubernetes/05-capi-part5-ubuntu/) cambia il sistema operativo dei nodi: Ubuntu al posto di Talos, con Image Builder, e il motivo per cui a volte conviene.
+La [parte successiva](/blog/automatizzare/kubernetes/05-capi-part5-ubuntu/) cambia il sistema operativo dei nodi: Ubuntu al posto di Talos, con Image Builder, e il motivo per cui a volte conviene.

@@ -66,7 +66,7 @@ Between an empty Proxmox and a working Kubernetes cluster there is a list of thi
 
 If a single one is wrong, the cluster does not fail: **it sits in `Provisioning`**, which is the most expensive failure mode because it does not tell you what is missing. And the time it takes to find out grows with how far you got before noticing.
 
-This article is the day-one sequence in the order it has to be run, with the check that closes each step before moving to the next. The [previous part](/en/blog/progettare/kubernetes/02-capi-part2-internals/) explains which controllers are involved and how to read their state: that is exactly what you need when one of these checks does not pass.
+This article is the day-one sequence in the order it has to be run, with the check that closes each step before moving to the next. The [previous part](/en/blog/automatizzare/kubernetes/02-capi-part2-internals/) explains which controllers are involved and how to read their state: that is exactly what you need when one of these checks does not pass.
 
 ## Proxmox VE Configuration
 
@@ -632,4 +632,4 @@ Everything that makes a cluster usable by somebody else is still missing: persis
 
 Re-run the last three checks against a cluster you *know* is healthy, and read what they return. Recognising the output of a cluster in good shape is the only way to quickly recognise one that is not.
 
-The [next part](/en/blog/progettare/kubernetes/05-capi-part5-ubuntu/) changes the nodes' operating system: Ubuntu instead of Talos, with Image Builder, and why that is sometimes the better call.
+The [next part](/en/blog/automatizzare/kubernetes/05-capi-part5-ubuntu/) changes the nodes' operating system: Ubuntu instead of Talos, with Image Builder, and why that is sometimes the better call.

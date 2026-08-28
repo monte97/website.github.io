@@ -34,8 +34,9 @@ export function getSeriesIndex(posts: any[], lang: 'it' | 'en' = 'it'): SeriesEn
     const base = seriesMetadata[key];
     const meta = base && lang === 'en' ? { ...base, ...base.en } : base;
     // Il pillar della serie e' quello dichiarato dalla maggioranza dei suoi
-    // articoli: `homelab-capi` oggi ne dichiara due diversi, e prendere il
-    // primo darebbe un risultato che dipende dall'ordine.
+    // articoli. Oggi tutte le serie sono uniformi, ma se una tornasse a
+    // dichiararne due il risultato resta stabile invece di dipendere
+    // dall'ordine di lettura.
     const conteggio = new Map<string, number>();
     for (const p of items) {
       const k = p.data.pillar;

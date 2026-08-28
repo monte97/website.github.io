@@ -3,7 +3,7 @@ title: "Il cluster è fermo in Provisioning. Chi sta aspettando?"
 seoTitle: "Cluster API: le CRD e il provisioning"
 date: 2025-10-23T09:00:00.000Z
 description: "Quattro CRD annidate e cinque fasi fra il kubectl apply e il cluster pronto. Sapere dove passa il controllo è l'unico modo per capire dove si è fermato."
-pillar: progettare
+pillar: automatizzare
 category: kubernetes
 mode: explanation
 tags:
@@ -41,11 +41,11 @@ La domanda non è cosa sia andato storto: è **dove guardare**. Perché in mezzo
 
 Questo articolo è la mappa di quel percorso. Non serve a costruire niente: serve a sapere, quando si blocca, quale risorsa interrogare.
 
-> La teoria generale dei controller Kubernetes — informer, cache locale, work queue, riconciliazione — è il tema di [Il meccanismo dietro kubectl apply](/blog/progettare/kubernetes/02-k8s-controller/). Qui si dà per acquisita.
+> La teoria generale dei controller Kubernetes — informer, cache locale, work queue, riconciliazione — è il tema di [Il meccanismo dietro kubectl apply](/blog/automatizzare/kubernetes/02-k8s-controller/). Qui si dà per acquisita.
 
 ## Chi gestisce chi
 
-Due ruoli, come [nella parte precedente](/blog/progettare/kubernetes/01-capi-part1-intro/): il **management cluster** ospita i controller e le risorse che descrivono la flotta, i **workload cluster** eseguono i carichi e non sanno di essere gestiti.
+Due ruoli, come [nella parte precedente](/blog/automatizzare/kubernetes/01-capi-part1-intro/): il **management cluster** ospita i controller e le risorse che descrivono la flotta, i **workload cluster** eseguono i carichi e non sanno di essere gestiti.
 
 ![Il management cluster ospita i controller CAPI e i provider, e agisce sull'infrastruttura per portare i workload cluster nello stato dichiarato](/images/posts/kubernetes/02-capi-part2-internals/management-cluster.svg)
 
@@ -157,4 +157,4 @@ Un provisioning che si ferma senza una mappa diventa mezza giornata di tentativi
 
 Su un cluster CAPI già in piedi, lanciate `kubectl get machines -A -o wide` e `kubectl describe cluster <nome>` anche quando va tutto bene. Leggere le condizioni di un cluster sano è il modo più veloce per riconoscere, la prossima volta, quale non lo è.
 
-La parte successiva entra in [Talos Linux](/blog/progettare/kubernetes/03-capi-part3-talos/) e nel motivo per cui un sistema operativo immutabile toglie di mezzo una classe intera di problemi sui nodi.
+La parte successiva entra in [Talos Linux](/blog/automatizzare/kubernetes/03-capi-part3-talos/) e nel motivo per cui un sistema operativo immutabile toglie di mezzo una classe intera di problemi sui nodi.

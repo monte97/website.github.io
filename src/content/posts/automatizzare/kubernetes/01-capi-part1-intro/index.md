@@ -3,7 +3,7 @@ title: "Un cluster Kubernetes come risorsa Kubernetes"
 seoTitle: "Cluster API: cos'è e quando conviene"
 date: 2025-10-21T09:00:00.000Z
 description: "Lo script che aggiunge un nodo funziona finché non fallisce a metà. Cluster API rende il cluster una risorsa dichiarativa, con gli strumenti che usate già."
-pillar: progettare
+pillar: automatizzare
 category: kubernetes
 mode: explanation
 tags:
@@ -109,4 +109,4 @@ Prima di installare qualcosa: contate i cluster che gestite e chiedetevi quante 
 
 Se la risposta è "sono due cluster e cambiano una volta l'anno", CAPI probabilmente è più macchinario di quanto serva — e vale la pena saperlo prima, non dopo aver montato un management cluster.
 
-La parte successiva entra nei componenti: [le CRD e il flusso di provisioning](/blog/progettare/kubernetes/02-capi-part2-internals/), cioè cosa succede davvero fra il `kubectl apply` e il cluster funzionante.
+La parte successiva entra nei componenti: [le CRD e il flusso di provisioning](/blog/automatizzare/kubernetes/02-capi-part2-internals/), cioè cosa succede davvero fra il `kubectl apply` e il cluster funzionante.

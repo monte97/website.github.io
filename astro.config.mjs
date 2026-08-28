@@ -9,6 +9,23 @@ export default defineConfig({
   site: 'https://montelli.dev',
   output: 'static',
   redirects: {
+    // kubernetes spostato da progettare/ a automatizzare/ il 2026-08-28:
+    // la tassonomia mette K8s e platform engineering sotto Automatizzare,
+    // e la serie homelab-capi era spaccata fra i due pillar
+    '/blog/progettare/kubernetes/01-article-ingress-k8s/': '/blog/automatizzare/kubernetes/01-article-ingress-k8s/',
+    '/en/blog/progettare/kubernetes/01-article-ingress-k8s/': '/en/blog/automatizzare/kubernetes/01-article-ingress-k8s/',
+    '/blog/progettare/kubernetes/01-capi-part1-intro/': '/blog/automatizzare/kubernetes/01-capi-part1-intro/',
+    '/en/blog/progettare/kubernetes/01-capi-part1-intro/': '/en/blog/automatizzare/kubernetes/01-capi-part1-intro/',
+    '/blog/progettare/kubernetes/02-capi-part2-internals/': '/blog/automatizzare/kubernetes/02-capi-part2-internals/',
+    '/en/blog/progettare/kubernetes/02-capi-part2-internals/': '/en/blog/automatizzare/kubernetes/02-capi-part2-internals/',
+    '/blog/progettare/kubernetes/02-k8s-controller/': '/blog/automatizzare/kubernetes/02-k8s-controller/',
+    '/en/blog/progettare/kubernetes/02-k8s-controller/': '/en/blog/automatizzare/kubernetes/02-k8s-controller/',
+    '/blog/progettare/kubernetes/03-capi-part3-talos/': '/blog/automatizzare/kubernetes/03-capi-part3-talos/',
+    '/en/blog/progettare/kubernetes/03-capi-part3-talos/': '/en/blog/automatizzare/kubernetes/03-capi-part3-talos/',
+    '/blog/progettare/kubernetes/04-capi-part4-day1/': '/blog/automatizzare/kubernetes/04-capi-part4-day1/',
+    '/en/blog/progettare/kubernetes/04-capi-part4-day1/': '/en/blog/automatizzare/kubernetes/04-capi-part4-day1/',
+    '/blog/progettare/kubernetes/05-capi-part5-ubuntu/': '/blog/automatizzare/kubernetes/05-capi-part5-ubuntu/',
+    '/en/blog/progettare/kubernetes/05-capi-part5-ubuntu/': '/en/blog/automatizzare/kubernetes/05-capi-part5-ubuntu/',
     // /blog/series/<serie>/ come scorciatoia stabile verso ogni landing
     '/blog/series/homelab-capi/': '/blog/automatizzare/homelab-capi/',
     '/en/blog/series/homelab-capi/': '/en/blog/automatizzare/homelab-capi/',

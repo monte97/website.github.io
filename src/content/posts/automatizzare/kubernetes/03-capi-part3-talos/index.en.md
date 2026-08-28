@@ -705,4 +705,4 @@ The cost has to be stated in full: when something does not work, you diagnose it
 
 Take two nodes that should be identical and actually compare them: package versions, kernel, configuration files. The distance you find is the drift you are already paying for, and knowing how large it is tells you whether this trade is worth it for you.
 
-The [next part](/en/blog/progettare/kubernetes/04-capi-part4-day1/) is the practical sequence: from an empty Proxmox to a first verified workload cluster.
+The [next part](/en/blog/automatizzare/kubernetes/04-capi-part4-day1/) is the practical sequence: from an empty Proxmox to a first verified workload cluster.

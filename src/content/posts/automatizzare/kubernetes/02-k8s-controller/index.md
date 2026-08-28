@@ -65,7 +65,7 @@ Quando si esegue `kubectl apply -f deployment.yaml`, i Pod appaiono nel cluster.
 
 Il controller pattern è il meccanismo fondamentale su cui poggia l'intera piattaforma. Ogni risorsa applicata - Deployment, Service, Ingress - è gestita da un controller dedicato che osserva, confronta e agisce in un ciclo continuo. Nonostante questo, viene spesso trattato come una black box.
 
-Questo articolo esplora la teoria dietro i controller Kubernetes, dalla loro architettura interna fino alla costruzione di un controller custom con `controller-runtime`. La [serie su Cluster API](/blog/progettare/kubernetes/01-capi-part1-intro/) introduce concetti come *reconciliation loop* e *controller pattern* - qui vengono analizzati nel dettaglio.
+Questo articolo esplora la teoria dietro i controller Kubernetes, dalla loro architettura interna fino alla costruzione di un controller custom con `controller-runtime`. La [serie su Cluster API](/blog/automatizzare/kubernetes/01-capi-part1-intro/) introduce concetti come *reconciliation loop* e *controller pattern* - qui vengono analizzati nel dettaglio.
 
 👉 Il codice completo dell'esempio è nel repository: [monte97/k8s-controller-demo](https://github.com/monte97/k8s-controller-demo)
 
@@ -247,7 +247,7 @@ Il ReplicaSet Controller ha un compito più semplice ma altrettanto critico: gar
 
 ### Il Pattern si Ripete
 
-Questo schema - osserva, confronta, agisci - si ripete in ogni angolo di Kubernetes. L'[Ingress Controller](/blog/progettare/kubernetes/01-article-ingress-k8s/) osserva le risorse Ingress e riconfigura il reverse proxy. I [controller di Cluster API](/blog/progettare/kubernetes/02-capi-part2-internals/) osservano le Custom Resource che descrivono cluster e macchine, e riconciliano l'infrastruttura sottostante. Il pattern è lo stesso, cambiano solo le risorse osservate e le azioni intraprese.
+Questo schema - osserva, confronta, agisci - si ripete in ogni angolo di Kubernetes. L'[Ingress Controller](/blog/automatizzare/kubernetes/01-article-ingress-k8s/) osserva le risorse Ingress e riconfigura il reverse proxy. I [controller di Cluster API](/blog/automatizzare/kubernetes/02-capi-part2-internals/) osservano le Custom Resource che descrivono cluster e macchine, e riconciliano l'infrastruttura sottostante. Il pattern è lo stesso, cambiano solo le risorse osservate e le azioni intraprese.
 
 ---
 
@@ -573,8 +573,8 @@ Il codice completo dell'EchoConfig Controller è disponibile nel repository:
 
 * **[Custom Resource Definitions - Documentazione Ufficiale](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/)**: Guida completa alle CRD, dalla definizione dello schema alla validazione.
 
-* **[CAPI Parte 1: Dal Chaos all'Automazione](/blog/progettare/kubernetes/01-capi-part1-intro/)**: Il primo articolo della serie su Cluster API, che utilizza estensivamente il controller pattern.
+* **[CAPI Parte 1: Dal Chaos all'Automazione](/blog/automatizzare/kubernetes/01-capi-part1-intro/)**: Il primo articolo della serie su Cluster API, che utilizza estensivamente il controller pattern.
 
-* **[CAPI Parte 2: Anatomia di Cluster API](/blog/progettare/kubernetes/02-capi-part2-internals/)**: Approfondimento sull'architettura interna di CAPI e i suoi controller.
+* **[CAPI Parte 2: Anatomia di Cluster API](/blog/automatizzare/kubernetes/02-capi-part2-internals/)**: Approfondimento sull'architettura interna di CAPI e i suoi controller.
 
-* **[Da port-forward a Ingress](/blog/progettare/kubernetes/01-article-ingress-k8s/)**: Come funziona l'Ingress Controller, un altro esempio pratico del pattern descritto in questo articolo.
+* **[Da port-forward a Ingress](/blog/automatizzare/kubernetes/01-article-ingress-k8s/)**: Come funziona l'Ingress Controller, un altro esempio pratico del pattern descritto in questo articolo.

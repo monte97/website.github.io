@@ -725,4 +725,4 @@ Il costo va detto per intero: quando qualcosa non funziona, si diagnostica via A
 
 Prendete due nodi che dovrebbero essere identici e confrontateli davvero: versioni dei pacchetti, kernel, file di configurazione. La distanza che trovate è il drift che state già pagando, e sapere quanto è grande è il modo per capire se questo baratto conviene a voi.
 
-La [parte successiva](/blog/progettare/kubernetes/04-capi-part4-day1/) è la sequenza pratica: da Proxmox vuoto al primo cluster workload verificato.
+La [parte successiva](/blog/automatizzare/kubernetes/04-capi-part4-day1/) è la sequenza pratica: da Proxmox vuoto al primo cluster workload verificato.

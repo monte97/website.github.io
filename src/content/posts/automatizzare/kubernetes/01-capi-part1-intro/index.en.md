@@ -3,7 +3,7 @@ title: "A Kubernetes cluster as a Kubernetes resource"
 seoTitle: "Cluster API: what it is, when it pays off"
 date: 2025-10-21T09:00:00.000Z
 description: "The script that adds a node works until it fails halfway. Cluster API makes the cluster a declarative resource, handled with the tools you already use."
-pillar: progettare
+pillar: automatizzare
 category: kubernetes
 mode: explanation
 tags:
@@ -109,4 +109,4 @@ Before installing anything: count the clusters you run and ask yourself how many
 
 If the answer is "two clusters and they change once a year", CAPI is probably more machinery than you need — and it is worth knowing that beforehand, not after standing up a management cluster.
 
-The next part goes into the components: [the CRDs and the provisioning flow](/en/blog/progettare/kubernetes/02-capi-part2-internals/), meaning what actually happens between the `kubectl apply` and a working cluster.
+The next part goes into the components: [the CRDs and the provisioning flow](/en/blog/automatizzare/kubernetes/02-capi-part2-internals/), meaning what actually happens between the `kubectl apply` and a working cluster.
