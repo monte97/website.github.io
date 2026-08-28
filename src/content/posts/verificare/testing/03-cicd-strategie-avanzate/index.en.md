@@ -1,6 +1,6 @@
 ---
 title: "Playwright in CI/CD: Sharding, Mobile Testing, and Agent-Driven Automation"
-date: 2025-01-24T09:00:00.000Z
+date: 2026-01-24T09:00:00.000Z
 description: "How to integrate Playwright into your CI/CD pipeline with sharding, mobile emulation, and API testing for fast, reliable E2E suites ready for agent-driven automation"
 pillar: verificare
 category: testing
