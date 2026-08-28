@@ -9,7 +9,9 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
-import { author } from '@/data/author';
+import AuthorCard from '@/components/ui/AuthorCard.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
+import StatList from '@/components/ui/StatList.astro';
 import type { EnrichedWorkshop } from '@/utils/workshop';
 
 interface Props {
@@ -32,13 +34,14 @@ let n = 0;
     <section class="relative overflow-hidden border-b border-border dark:border-border-dark">
       <div class="absolute top-0 left-0 right-0 h-1 bg-accent" />
       <div class="max-w-5xl mx-auto px-5 pt-14 pb-10">
-        <nav class={`${mono} flex flex-wrap items-center gap-2 mb-8`} aria-label="Breadcrumb">
-          <a href="/" class="hover:text-accent transition-colors">Home</a>
-          <span class="opacity-40">/</span>
-          <a href="/workshop/" class="hover:text-accent transition-colors">Formazione</a>
-          <span class="opacity-40">/</span>
-          <span class="text-text-dark dark:text-text-light">{w.title}</span>
-        </nav>
+        <Breadcrumb
+          class="mb-8"
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'Formazione', href: '/workshop/' },
+            { label: w.title },
+          ]}
+        />
 
         <div class="grid lg:grid-cols-[1fr_auto] gap-8 items-start">
           <div>
@@ -52,21 +55,13 @@ let n = 0;
             <p class="mt-4 text-lg text-text-muted leading-relaxed max-w-2xl">{w.goal}</p>
           </div>
 
-          <div class="lg:min-w-[210px] rounded-xl border border-border dark:border-border-dark bg-surface dark:bg-surface-dark p-5 space-y-4">
-            {w.moduleCount > 0 && (
-              <>
-                <div>
-                  <div class="text-2xl font-bold text-text-dark dark:text-text-light">{w.moduleCount}</div>
-                  <div class="text-xs text-text-muted uppercase tracking-wide">Moduli a disposizione</div>
-                </div>
-                <div class={`border-t ${hair}`} />
-              </>
-            )}
-            <div>
-              <div class="text-2xl font-bold text-text-dark dark:text-text-light">{w.postCount}</div>
-              <div class="text-xs text-text-muted uppercase tracking-wide">Articoli pubblicati</div>
-            </div>
-          </div>
+          <StatList
+            class="lg:min-w-[210px]"
+            items={[
+              ...(w.moduleCount > 0 ? [{ value: w.moduleCount, label: 'Moduli a disposizione' }] : []),
+              { value: w.postCount, label: 'Articoli pubblicati' },
+            ]}
+          />
         </div>
       </div>
     </section>
@@ -218,24 +213,7 @@ let n = 0;
           </a>
         </div>
 
-        <div class={`rounded-xl border ${hair} p-5`}>
-          <div class="flex items-center gap-3 mb-3">
-            <img src={author.image} alt={author.name} width="40" height="40" class="w-10 h-10 rounded-full object-cover" />
-            <div>
-              <div class="text-sm font-semibold text-text-dark dark:text-text-light">{author.name}</div>
-              <div class="text-xs text-text-muted">Software Engineer freelance</div>
-            </div>
-          </div>
-          <p class="text-sm text-text-muted leading-relaxed mb-4">{author.bio.it}</p>
-          <a
-            href="https://linkedin.com/in/francesco-montelli"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="block w-full text-center px-4 py-2 rounded-lg bg-[#0077b5] text-white text-sm font-medium hover:bg-[#006399] transition-colors"
-          >
-            Seguimi su LinkedIn
-          </a>
-        </div>
+        <AuthorCard lang="it" />
       </aside>
     </div>
   </main>

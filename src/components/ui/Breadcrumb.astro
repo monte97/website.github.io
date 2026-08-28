@@ -1,0 +1,48 @@
+---
+/**
+ * Briciole di pane.
+ *
+ * Esisteva in tre forme scritte a mano, e due su tre senza semantica di lista:
+ * solo `<a>` e `<span>` in fila, quindi uno screen reader non annunciava ne'
+ * quante voci ci sono ne' dove siamo. Qui e' un `<ol>`, e l'ultima voce e'
+ * marcata `aria-current`.
+ *
+ * `variant` sceglie la taglia: `mono` e' quella delle pagine nuove, `text`
+ * quella del blog e dei progetti.
+ */
+interface Crumb {
+  label: string;
+  /** Assente sull'ultima voce, che e' la pagina corrente. */
+  href?: string;
+}
+
+interface Props {
+  items: Crumb[];
+  variant?: 'mono' | 'text';
+  class?: string;
+}
+
+const { items, variant = 'mono', class: extra = '' } = Astro.props;
+
+const base =
+  variant === 'mono'
+    ? 'label-mono'
+    : 'text-xs text-text-muted';
+---
+
+<nav class:list={[base, extra]} aria-label="Breadcrumb">
+  <ol class="flex flex-wrap items-center gap-2">
+    {items.map((crumb, i) => (
+      <>
+        {i > 0 && <li aria-hidden="true" class="opacity-40">/</li>}
+        <li>
+          {crumb.href ? (
+            <a href={crumb.href} class="hover:text-accent transition-colors">{crumb.label}</a>
+          ) : (
+            <span aria-current="page" class="text-text-dark dark:text-text-light">{crumb.label}</span>
+          )}
+        </li>
+      </>
+    ))}
+  </ol>
+</nav>

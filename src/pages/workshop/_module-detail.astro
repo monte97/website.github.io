@@ -10,7 +10,9 @@ import type { GetStaticPaths } from 'astro';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
-import { author } from '@/data/author';
+import AuthorCard from '@/components/ui/AuthorCard.astro';
+import Breadcrumb from '@/components/ui/Breadcrumb.astro';
+import StatList from '@/components/ui/StatList.astro';
 import { workshops3 } from '@/data/workshops3';
 import { moduleSlug } from '@/utils/workshop3';
 
@@ -53,13 +55,14 @@ const todo = (cosa: string) => `[${cosa}]`;
     <section class="relative overflow-hidden border-b border-border dark:border-border-dark">
       <div class="absolute top-0 left-0 right-0 h-1 bg-accent" />
       <div class="max-w-5xl mx-auto px-5 pt-14 pb-10">
-        <nav class={`${mono} flex flex-wrap items-center gap-2 mb-8`} aria-label="Breadcrumb">
-          <a href="/workshop3/" class="hover:text-accent transition-colors">Prove v3</a>
-          <span class="opacity-40">/</span>
-          <a href="/workshop3/landing-2/" class="hover:text-accent transition-colors">{w.title}</a>
-          <span class="opacity-40">/</span>
-          <span class="text-text-dark dark:text-text-light">Modulo</span>
-        </nav>
+        <Breadcrumb
+          class="mb-8"
+          items={[
+            { label: 'Formazione', href: '/workshop/' },
+            { label: w.title, href: `/workshop/${w.slug}/` },
+            { label: m.name },
+          ]}
+        />
 
         <div class="grid lg:grid-cols-[1fr_auto] gap-8 items-start">
           <div>
@@ -73,17 +76,13 @@ const todo = (cosa: string) => `[${cosa}]`;
             {m.desc && <p class="mt-4 text-lg text-text-muted leading-relaxed max-w-2xl">{m.desc}</p>}
           </div>
 
-          <dl class={`lg:min-w-[210px] rounded-xl border ${hair} bg-surface dark:bg-surface-dark p-5 space-y-4`}>
-            <div>
-              <dt class="text-xs text-text-muted uppercase tracking-wide">Durata</dt>
-              <dd class="text-2xl font-bold text-text-dark dark:text-text-light">{m.duration ?? '—'}</dd>
-            </div>
-            <div class={`border-t ${hair}`} />
-            <div>
-              <dt class="text-xs text-text-muted uppercase tracking-wide">Prerequisiti</dt>
-              <dd class="text-sm font-semibold text-text-dark dark:text-text-light mt-1">{m.note ?? 'nessuno'}</dd>
-            </div>
-          </dl>
+          <StatList
+            class="lg:min-w-[210px]"
+            items={[
+              { value: m.duration ?? '—', label: 'Durata' },
+              { value: m.note ?? 'nessuno', label: 'Prerequisiti', small: true },
+            ]}
+          />
         </div>
       </div>
     </section>
@@ -162,24 +161,7 @@ const todo = (cosa: string) => `[${cosa}]`;
           </a>
         </div>
 
-        <div class={`rounded-xl border ${hair} p-5`}>
-          <div class="flex items-center gap-3 mb-3">
-            <img src={author.image} alt={author.name} width="40" height="40" class="w-10 h-10 rounded-full object-cover" />
-            <div>
-              <div class="text-sm font-semibold text-text-dark dark:text-text-light">{author.name}</div>
-              <div class="text-xs text-text-muted">Software Engineer freelance</div>
-            </div>
-          </div>
-          <p class="text-sm text-text-muted leading-relaxed mb-4">{author.bio.it}</p>
-          <a
-            href="https://linkedin.com/in/francesco-montelli"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="block w-full text-center px-4 py-2 rounded-lg bg-[#0077b5] text-white text-sm font-medium hover:bg-[#006399] transition-colors"
-          >
-            Seguimi su LinkedIn
-          </a>
-        </div>
+        <AuthorCard lang="it" />
       </aside>
     </div>
   </main>

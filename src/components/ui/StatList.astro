@@ -1,0 +1,36 @@
+---
+/**
+ * La scheda dei numeri che sta accanto alle testate: un valore grande, la sua
+ * etichetta, un filetto fra una voce e l'altra.
+ *
+ * I numeri arrivano contati dal contenuto, mai scritti a mano: e' la regola che
+ * tiene la scheda vera quando il contenuto cresce.
+ */
+interface Stat {
+  value: string | number;
+  label: string;
+  /** Per le voci che non sono un numero: le rende alla taglia del testo. */
+  small?: boolean;
+}
+
+interface Props {
+  items: Stat[];
+  class?: string;
+}
+
+const { items, class: extra = '' } = Astro.props;
+---
+
+<dl class:list={['surface-card p-5 space-y-4', extra]}>
+  {items.map((s, i) => (
+    <>
+      {i > 0 && <div class="border-t border-border/70 dark:border-border-dark/70" />}
+      <div>
+        <dt class:list={[
+          s.small ? 'text-sm font-semibold text-text-dark dark:text-text-light' : 'text-2xl font-bold text-text-dark dark:text-text-light',
+        ]}>{s.value}</dt>
+        <dd class="text-xs text-text-muted uppercase tracking-wide">{s.label}</dd>
+      </div>
+    </>
+  ))}
+</dl>
