@@ -62,7 +62,7 @@ const linkLabel: Record<LinkKey, string> = {
 };
 ---
 
-<PageLayout title={talk.title} description={talk.abstract[lang]} ogImage="/og/talks.png" lang={lang}>
+<PageLayout title={talk.title} description={talk.abstract[lang].split("\n\n")[0]} ogImage="/og/talks.png" lang={lang}>
   <a href={`${prefix}/talks/`} class="inline-block text-sm text-accent hover:underline mb-8">&larr; {t.back}</a>
 
   <header class="mb-6">
@@ -75,7 +75,7 @@ const linkLabel: Record<LinkKey, string> = {
     </h1>
   </header>
 
-  <p class="text-text-muted text-lg leading-relaxed max-w-3xl mb-8">{talk.abstract[lang]}</p>
+  <p class="text-text-muted text-lg leading-relaxed max-w-3xl mb-8 whitespace-pre-line">{talk.abstract[lang]}</p>
 
   {talk.links && (
     <div class="flex flex-wrap gap-3 mb-12">

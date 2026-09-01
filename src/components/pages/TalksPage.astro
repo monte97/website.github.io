@@ -90,7 +90,7 @@ const t = lang === 'en'
               <div class="p-6 flex-1">
                 <p class="label-mono !text-accent">{talk.event} &middot; {fmtDate(talk.date)} &middot; {talk.location}</p>
                 <h3 class="text-xl font-bold text-text-dark dark:text-text-light mt-1 group-hover:text-accent transition-colors">{talk.title}</h3>
-                <p class="text-text-muted mt-2 leading-relaxed">{talk.abstract[lang]}</p>
+                <p class="text-text-muted mt-2 leading-relaxed">{talk.abstract[lang].split("\n\n")[0]}</p>
               </div>
             </a>
           );
@@ -113,7 +113,7 @@ const t = lang === 'en'
               <div class="p-6 flex-1">
                 <p class={mono}>{talk.event} &middot; {fmtDate(talk.date)} &middot; {talk.location}</p>
                 <h3 class="text-xl font-bold text-text-dark dark:text-text-light mt-1 group-hover:text-accent transition-colors">{talk.title}</h3>
-                <p class="text-text-muted mt-2 leading-relaxed">{talk.abstract[lang]}</p>
+                <p class="text-text-muted mt-2 leading-relaxed">{talk.abstract[lang].split("\n\n")[0]}</p>
               </div>
             </a>
           );
