@@ -21,16 +21,12 @@ const t = lang === 'en'
       title: 'Or I train the team',
       intro: 'When the problem is not building but knowing how: a path run with the team, on your stack.',
       all: 'The workshops',
-      modules: (n: number) => `${n} modules`,
-      delivered: 'Already delivered',
     }
   : {
       eyebrow: 'Formazione',
       title: 'Oppure formo il team',
       intro: 'Quando il problema non è costruire ma saper fare: un percorso con il team, sul vostro stack.',
       all: 'I workshop',
-      modules: (n: number) => `${n} moduli`,
-      delivered: 'Già erogato',
     };
 ---
 
@@ -44,8 +40,7 @@ const t = lang === 'en'
       {workshops.map((w) => (
         <a href={lang === 'en' ? '/en/workshop/' : `/workshop/${w.slug}/`}
           class="group surface-link block p-5">
-          <p class="label-mono !text-accent">{t.modules(w.moduleCount)}{w.delivered ? ` · ${t.delivered}` : ''}</p>
-          <h3 class="mt-2 font-semibold text-text-dark dark:text-text-light leading-snug group-hover:text-accent transition-colors">
+          <h3 class="font-semibold text-text-dark dark:text-text-light leading-snug group-hover:text-accent transition-colors">
             {lang === 'en' ? w.titleEn : w.title}
           </h3>
           <p class="mt-2 text-sm text-text-muted leading-relaxed line-clamp-4">{lang === 'en' ? w.goalEn : w.goal}</p>
