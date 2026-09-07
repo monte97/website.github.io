@@ -1,9 +1,9 @@
 ---
 import SectionHeading from '@/components/ui/SectionHeading.astro';
 /**
- * La formazione, in home: una riga sola con i percorsi che vengono erogati.
- * Sta piu' in basso delle prove perche' e' la seconda cosa che si vende, non la
- * prima.
+ * La formazione, in home: i percorsi che vengono erogati, con abbastanza testo
+ * per capire cosa si porta a casa. Sta piu' in basso delle prove perche' e' la
+ * seconda cosa che si vende, non la prima.
  */
 import { getWorkshops } from '@/utils/workshop';
 
@@ -21,12 +21,16 @@ const t = lang === 'en'
       title: 'Or I train the team',
       intro: 'When the problem is not building but knowing how: a path run with the team, on your stack.',
       all: 'The workshops',
+      modules: (n: number) => `${n} modules`,
+      delivered: 'Already delivered',
     }
   : {
       eyebrow: 'Formazione',
       title: 'Oppure formo il team',
       intro: 'Quando il problema non è costruire ma saper fare: un percorso con il team, sul vostro stack.',
       all: 'I workshop',
+      modules: (n: number) => `${n} moduli`,
+      delivered: 'Già erogato',
     };
 ---
 
@@ -34,18 +38,20 @@ const t = lang === 'en'
   <div class="max-w-5xl mx-auto px-5">
     <SectionHeading eyebrow={t.eyebrow} title={t.title} subtitle={t.intro} />
 
-    <ul class="flex flex-wrap gap-3">
+    <div class="grid md:grid-cols-3 gap-4">
+      {/* Le landing dei singoli workshop sono solo in italiano: in inglese
+          le schede portano all'indice, che esiste in entrambe. */}
       {workshops.map((w) => (
-        <li>
-          {/* Le landing dei singoli workshop sono solo in italiano: in inglese
-              le pastiglie portano all'indice, che esiste in entrambe. */}
-          <a href={lang === 'en' ? '/en/workshop/' : `/workshop/${w.slug}/`}
-            class="inline-flex items-center gap-2 px-4 py-2 rounded-lg surface-link text-sm font-medium text-text-dark dark:text-text-light">
+        <a href={lang === 'en' ? '/en/workshop/' : `/workshop/${w.slug}/`}
+          class="group surface-link block p-5">
+          <p class="label-mono !text-accent">{t.modules(w.moduleCount)}{w.delivered ? ` · ${t.delivered}` : ''}</p>
+          <h3 class="mt-2 font-semibold text-text-dark dark:text-text-light leading-snug group-hover:text-accent transition-colors">
             {lang === 'en' ? w.titleEn : w.title}
-          </a>
-        </li>
+          </h3>
+          <p class="mt-2 text-sm text-text-muted leading-relaxed line-clamp-4">{lang === 'en' ? w.goalEn : w.goal}</p>
+        </a>
       ))}
-    </ul>
+    </div>
 
     <p class="mt-6">
       <a href={`${prefix}/workshop/`} class="text-sm font-semibold text-accent hover:underline">{t.all} &rarr;</a>
