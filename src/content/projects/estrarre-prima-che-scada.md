@@ -41,7 +41,7 @@ context: >
   a chi l'aveva fatta.
 specs:
   - label: "Perimetro"
-    value: "Estrazione e conservazione locale delle panoramiche, con tutto ciò che serve a navegarle"
+    value: "Estrazione e conservazione locale delle panoramiche, con tutto ciò che serve a navigarle"
     note: "Disattivazione e riattivazione dei modelli: fuori perimetro, restano al fornitore"
   - label: "Accesso"
     value: "Interfacce ufficiali del servizio, credenziali proprie, modello ancora attivo"

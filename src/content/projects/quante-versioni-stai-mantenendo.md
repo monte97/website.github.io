@@ -123,7 +123,7 @@ matrix:
       note: "Tutti i moduli, utenze gestite dal prodotto"
       cells: [full, full, full]
     - label: "Cliente con Keycloak proprio"
-      note: "Le utenze arrivano dal sistema dell'cliente"
+      note: "Le utenze arrivano dal sistema del cliente"
       cells: [full, full, partial]
     - label: "Sede con rete isolata"
       note: "Nessuna uscita verso l'esterno"
@@ -188,7 +188,7 @@ Il commerciale rispose come rispondono i commerciali quando la richiesta è ragi
 
 Mesi dopo mi trovai a fare un conto che nessuno aveva mai fatto: quante versioni diverse di quel prodotto erano vive, in quel momento, presso i clienti che l'avevano comprato.
 
-Il conto si ferma intorno alla decina, e già così è più di quanto chiunque si aspettasse. Ma il numero da solo dice poco: quelle configurazioni mettono in gioco **una tredicina di servizi diversi**, in combinazioni che vanno da due a tutti. Non è una domanda con una risposta ovvia, perché le configurazioni non si sommano. Si moltiplicano. Una struttura porta le proprie utenze dal proprio Keycloak, un altro le lascia gestire al prodotto. Un sede ha la rete isolata verso l'esterno, un altro no. Qui i laboratori sono tre sulla stessa installazione, là uno solo. Ogni scelta è indipendente dalle altre, e ogni combinazione è una cosa che deve funzionare.
+Il conto si ferma intorno alla decina, e già così è più di quanto chiunque si aspettasse. Ma il numero da solo dice poco: quelle configurazioni mettono in gioco **poco più di una dozzina di servizi diversi**, in combinazioni che vanno da due a tutti. Non è una domanda con una risposta ovvia, perché le configurazioni non si sommano. Si moltiplicano. Una struttura porta le proprie utenze dal proprio Keycloak, un'altra le lascia gestire al prodotto. Una sede ha la rete isolata verso l'esterno, un'altra no. Qui i laboratori sono tre sulla stessa installazione, là uno solo. Ogni scelta è indipendente dalle altre, e ogni combinazione è una cosa che deve funzionare.
 
 Nessuna di queste varianti era stata decisa da un architetto. Erano state tutte concesse in trattativa, una alla volta, ognuna in un momento in cui dire di sì costava meno che dire di no.
 
@@ -206,7 +206,7 @@ La prima reazione, quando conti quel numero, è cercare i test.
 
 I test c'erano, ed erano verdi. Migliaia di asserzioni sul prodotto, scritte bene, mantenute nel tempo. Non servivano a niente per questo problema, e ci volle un po' per accettarlo.
 
-Il motivo è che **l'applicazione è la stessa ovunque**. Lo stesso identico codice gira dentro tutte quelle sedi. Non è lì che si rompe qualcosa: si rompe nel modo in cui quel codice viene messo in piedi. Una struttura ruota il certificato di firma del proprio Keycloak e le utenze smettono di arrivare; un altro rinnova la rete e un modulo non raggiunge più il servizio che gli serve. In entrambi i casi la suite del prodotto resta verde, perché il prodotto non ha nulla che non va.
+Il motivo è che **l'applicazione è la stessa ovunque**. Lo stesso identico codice gira dentro tutte quelle sedi. Non è lì che si rompe qualcosa: si rompe nel modo in cui quel codice viene messo in piedi. Una struttura ruota il certificato di firma del proprio Keycloak e le utenze smettono di arrivare; un'altra rinnova la rete e un modulo non raggiunge più il servizio che gli serve. In entrambi i casi la suite del prodotto resta verde, perché il prodotto non ha nulla che non va.
 
 L'oggetto da verificare non era il software. Era **l'installazione**, con la sua configurazione, dentro il suo ambiente.
 

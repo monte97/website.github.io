@@ -64,7 +64,7 @@ decisions:
     appeal: "Nessuna schermata blu, nessuna spiegazione da scrivere."
 decisionsNote: >
   Il filo che tiene insieme i tre bivi è lo stesso: ogni scelta sposta conoscenza dal
-  lato dell'utente a quello del prodotto: prima che l'attrite arrivi, non mentre lo
+  lato dell'utente a quello del prodotto: prima che l'attrito arrivi, non mentre lo
   sta attraversando.
 beforeAfter:
   label: "Il primo incontro col programma"

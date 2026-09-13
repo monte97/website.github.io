@@ -22,7 +22,7 @@ esito: >
   L'autorizzazione per singola risorsa è diventata esprimibile in OpenFGA: da tre ruoli
   globali a un'ottantina di relazioni su sei tipi: senza migrare un solo record, e con la
   possibilità di ricostruire a posteriori chi vedeva cosa. Il percorso vecchio è stato
-  rimosso dopo il periodo di doppia modalita': i permessi vecchi non erano dati, erano condizioni sparse nel codice. Il
+  rimosso dopo il periodo di doppia modalità: i permessi vecchi non erano dati, erano condizioni sparse nel codice. Il
   percorso precedente resta attivo dietro un flag, ed è la parte onesta del risultato.
 anonimizzazione: >
   Il dominio è sostituito: piattaforma di gestione cantieri edili al posto di quello
@@ -210,7 +210,7 @@ La risposta naturale alla richiesta del direttore lavori era aggiungere il quart
 
 Funzionava. Si aggiungeva il ruolo, si metteva l'utente dentro, il subappaltatore vedeva quello che gli serviva. Poi è arrivata la richiesta per il collaudatore, e si è fatto lo stesso: nuovo ruolo, nuovo utente, tutto a posto. Anche quello funzionava.
 
-Ed è qui che la trappola va descritta per bene, perché non è la trappola ovvia. **La soluzione sbagliata non fallisce mai.** Ogni ruolo nuovo funziona la mattina stessa in cui lo aggiungi. Nessun errore, nessun incidente, nessuna mail di protesta: solo un'altra chiave globale che apre tutte le porte allo stesso modo. Il conto non arriva mai in una data precisa: arriva distribuito, in decennali piccole concessioni, finché i ruoli non sono più una descrizione delle persone ma una lista di eccezioni con nome proprio.
+Ed è qui che la trappola va descritta per bene, perché non è la trappola ovvia. **La soluzione sbagliata non fallisce mai.** Ogni ruolo nuovo funziona la mattina stessa in cui lo aggiungi. Nessun errore, nessun incidente, nessuna mail di protesta: solo un'altra chiave globale che apre tutte le porte allo stesso modo. Il conto non arriva mai in una data precisa: arriva distribuito, in decenni di piccole concessioni, finché i ruoli non sono più una descrizione delle persone ma una lista di eccezioni con nome proprio.
 
 Il costo si misurava in **settimane**. Non di sviluppo: di analisi, di riunioni per mettere d'accordo le persone anche solo sul nome del ruolo, e di verifiche per capire se davvero funzionava. Alla fine di tutto questo, la fiducia in quello che era stato fatto restava bassa.
 
