@@ -77,7 +77,7 @@ E qui va detto il rovescio: **kernel condiviso significa isolamento più debole 
 
 OpenTofu — il fork open source di Terraform — descrive il container come risorsa: template, risorse assegnate, rete bridge con IP dedicato.
 
-Il punto che conta non è la sintassi, è **lo stato**. OpenTofu tiene traccia di cosa ha creato, e questo rende la differenza fra rilanciare e ricreare: applicare due volte lo stesso file non produce due container.
+Il punto che conta è **lo stato**, non la sintassi. OpenTofu tiene traccia di cosa ha creato, e questo rende la differenza fra rilanciare e ricreare: applicare due volte lo stesso file non produce due container.
 
 ## La configurazione: cosa ci sta sopra
 

@@ -80,7 +80,7 @@ Il codice applicativo diventa responsabile dell'isolamento. Ogni endpoint, ogni 
 
 Il problema non è tecnico in senso stretto: il pattern funziona. Il problema è che l'isolamento vive nel codice applicativo, distribuito su decine di file, e la correttezza dipende da ogni singolo sviluppatore che lo applichi ovunque.
 
-Con ReBAC, l'isolamento è diverso. Non filtri i risultati dopo averli recuperati: chiedi direttamente "quali documenti può vedere alice?" e il grafo delle relazioni restituisce solo quelli raggiungibili tramite le sue relazioni. Se alice non ha relazioni con `org-beta`, nessun documento di `org-beta` comparirà mai nei risultati. L'isolamento non è un filtro, è una proprietà del grafo.
+Con ReBAC, l'isolamento è diverso. Non filtri i risultati dopo averli recuperati: chiedi direttamente "quali documenti può vedere alice?" e il grafo delle relazioni restituisce solo quelli raggiungibili tramite le sue relazioni. Se alice non ha relazioni con `org-beta`, nessun documento di `org-beta` comparirà mai nei risultati. L'isolamento costituisce una proprietà del grafo, non un filtro.
 
 ---
 
@@ -171,7 +171,7 @@ type document
 
 I punti chiave del modello:
 
-- **`org` come relazione**: ogni `folder` e ogni `document` ha una relazione `org` che la collega alla sua organizzazione. Non è un attributo, è una relazione nel grafo.
+- **`org` come relazione**: ogni `folder` e ogni `document` ha una relazione `org` che la collega alla sua organizzazione. È una relazione nel grafo, non un attributo.
 - **Ereditarietà dal org**: `member from org` significa "chi è member dell'organizzazione collegata a questa risorsa". L'admin di `org-acme` è automaticamente editor di tutti i documenti che hanno `org:org-acme` come organizzazione.
 - **Ereditarietà dalla cartella**: `can_view from parent` consente di ereditare i permessi dalla cartella genitore, come visto negli articoli precedenti.
 

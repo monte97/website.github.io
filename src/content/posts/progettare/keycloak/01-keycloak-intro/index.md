@@ -57,7 +57,7 @@ Finché sono tre, sembra gestibile. I costi che crescono sono altri quattro, e n
 - **La sicurezza diverge.** MFA, lockout dopo N tentativi falliti, audit degli accessi: ogni app li implementa a modo suo, o non li implementa. Nessuno sa quale sia messa peggio.
 - **La disattivazione è N interventi.** Quello di cui sopra.
 
-E le architetture di oggi peggiorano il conto invece di migliorarlo. Un singolo prodotto può avere una SPA, un'API REST, cinque microservizi e un'app mobile: ognuno deve sapere chi sta chiamando. Riscrivere l'autenticazione in ognuno non è faticoso, è insostenibile.
+E le architetture di oggi peggiorano il conto invece di migliorarlo. Un singolo prodotto può avere una SPA, un'API REST, cinque microservizi e un'app mobile: ognuno deve sapere chi sta chiamando. Riscrivere l'autenticazione in ognuno è insostenibile, prima ancora che faticoso.
 
 ## Se il codice non tocca le password, non può gestirle male
 

@@ -123,7 +123,7 @@ Va detta anche l'altra metà: **il vantaggio si sta riducendo.** Selenium 4 ha i
 
 Il secondo costo — l'esecuzione — si affronta in modo più banale, ma con un vincolo che vale la pena capire.
 
-Playwright esegue i test in parallelo su più worker, e ogni worker ottiene un **contesto browser isolato**: cookie, storage e sessione separati. Non è una comodità, è ciò che rende la parallelizzazione sicura: senza isolamento, due test concorrenti che scrivono nello stesso `localStorage` si rompono a vicenda in modo non riproducibile — cioè producono esattamente la flakiness che stavamo togliendo.
+Playwright esegue i test in parallelo su più worker, e ogni worker ottiene un **contesto browser isolato**: cookie, storage e sessione separati. È ciò che rende la parallelizzazione sicura, non una comodità: senza isolamento, due test concorrenti che scrivono nello stesso `localStorage` si rompono a vicenda in modo non riproducibile — cioè producono esattamente la flakiness che stavamo togliendo.
 
 Su una suite di 100 test: **da ~10 minuti con un worker a ~2.5 minuti con quattro.** Nessuna modifica ai test.
 

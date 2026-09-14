@@ -109,7 +109,7 @@ Pensando a [VaultDrive](https://github.com/monte97/VaultDrive) — una demo che 
 { "user": "user:charlie","relation": "viewer", "object": "folder:progetto-x" }
 ```
 
-"Alice è owner di document:readme" non è un ruolo globale. Alice non è "owner" in generale, è owner *di quel documento specifico*. Se crea un secondo documento, servirà una seconda tupla.
+"Alice è owner di document:readme" non è un ruolo globale. Alice è owner *di quel documento specifico*, non "owner" in generale. Se crea un secondo documento, servirà una seconda tupla.
 
 ### Oggetti come soggetti
 

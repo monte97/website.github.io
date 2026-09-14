@@ -46,7 +46,7 @@ I quattro articoli precedenti della serie si sono fermati al momento in cui una 
 
 L'assunzione nascosta nella maggior parte dei repo di alerting è che il tratto che va dalla regola alla persona che deve agire sia un dettaglio di configurazione, da risolvere con un webhook Slack e poco altro. La conseguenza è osservabile in produzione: alert precisi e ben scritti che finiscono tutti nello stesso canale, senza severity differenziata, senza runbook, con più notifiche per lo stesso incidente.
 
-Il problema non è la PromQL, è che manca un contratto con chi riceve il messaggio.
+Il problema sta nell'assenza di un contratto con chi riceve il messaggio, non nella PromQL.
 
 Tre domande a cui un repo di alerting maturo deve poter rispondere, e che questo articolo prova a coprire con gli strumenti nativi di Alertmanager: chi riceve ciascun alert e con quale urgenza, cosa succede quando due regole correlate scattano insieme, cosa trova chi apre il messaggio di notifica.
 

@@ -573,7 +573,7 @@ Il confine è chiaro:
 
 - **Keycloak** si occupa dell'identità: chi sei, quali claim hai nel token. Ne abbiamo parlato nell'[articolo sull'integrazione con Keycloak](/blog/verificare/openfga/02-openfga-keycloak/).
 - **OpenFGA** si occupa delle relazioni: chi può fare cosa su quale risorsa. Il modello ReBAC copre accesso gerarchico, condivisioni, team.
-- **Data Masking** si occupa della granularità a livello di campo: non è una relazione, è una classificazione.
+- **Data Masking** si occupa della granularità a livello di campo: si tratta di una classificazione, non di una relazione.
 
 Chi ha esperienza con OPA (ne ho scritto nell'[articolo su OPA e Keycloak](/blog/progettare/keycloak/05-keycloak-opa/)) noterà una differenza fondamentale: OPA valuta policy arbitrarie su input arbitrario, ReBAC valuta relazioni in un grafo. Sono strumenti diversi per problemi diversi. OpenFGA è più vincolato, ma quel vincolo è anche il suo punto di forza: il modello è ispezionabile, testabile, e la risoluzione ha garanzie di performance note.
 

@@ -475,7 +475,7 @@ Riepilogo delle verifiche da effettuare prima di portare un'integrazione Keycloa
 
 - **L'audience validation è il gap di sicurezza più sottile.** Tutto funziona senza, fino a quando un token viene usato su un servizio a cui non era destinato. Il problema non genera errori: genera accessi non autorizzati.
 
-- **Il token caching M2M non è un'ottimizzazione, è un requisito.** Senza lock sulle richieste concorrenti, il token endpoint di Keycloak diventa un single point of failure sotto carico.
+- **Il token caching M2M è un requisito, non un'ottimizzazione.** Senza lock sulle richieste concorrenti, il token endpoint di Keycloak diventa un single point of failure sotto carico.
 
 - **I claim custom sono fragili per design.** Il formato del valore nel token dipende dalla versione di Keycloak, dal tipo di mapper, e dalla configurazione. I ruoli sono più stabili degli attributi per le decisioni di authorization.
 

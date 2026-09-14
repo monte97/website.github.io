@@ -186,7 +186,7 @@ thesis: "Un seam è un posto dove si abita per un periodo, e poi si smonta: sape
 
 «Al subappaltatore del cantiere 12 fai vedere il capitolato, però non farlo modificare.»
 
-A dirla era il direttore lavori, in una di quelle chiamate che durano meno del caffè. Dieci parole, dette senza alcuna enfasi: per lui non era una richiesta, era una cosa ovvia che una piattaforma di gestione cantieri doveva saper fare. Una persona, una cosa specifica, un verbo concesso e uno negato.
+A dirla era il direttore lavori, in una di quelle chiamate che durano meno del caffè. Dieci parole, dette senza alcuna enfasi: per lui era una cosa ovvia, non una richiesta che una piattaforma di gestione cantieri doveva saper fare. Una persona, una cosa specifica, un verbo concesso e uno negato.
 
 Ho aperto il sistema per cercare dove si scrive una frase del genere. Non c'era.
 
@@ -214,7 +214,7 @@ Ed è qui che la trappola va descritta per bene, perché non è la trappola ovvi
 
 Il costo si misurava in **settimane**. Non di sviluppo: di analisi, di riunioni per mettere d'accordo le persone anche solo sul nome del ruolo, e di verifiche per capire se davvero funzionava. Alla fine di tutto questo, la fiducia in quello che era stato fatto restava bassa.
 
-E c'è la parte che il conteggio dei ruoli non racconta: **il costo non era aggiungere il ruolo, era verificarlo**. Ogni ruolo nuovo si traduce in molte modifiche piccole sparse nel codice, e ognuna va provata, perché sono fattori di sicurezza, e sbagliare significa mostrare a qualcuno qualcosa che non deve vedere.
+E c'è la parte che il conteggio dei ruoli non racconta: **il costo stava nel verificare il ruolo, non nell'aggiungerlo**. Ogni ruolo nuovo si traduce in molte modifiche piccole sparse nel codice, e ognuna va provata, perché sono fattori di sicurezza, e sbagliare significa mostrare a qualcuno qualcosa che non deve vedere.
 
 Non solo. In quella piattaforma certe funzioni non dovevano essere nascoste: **non dovevano essere note nella loro esistenza**. Un utente non autorizzato non doveva vedere il pulsante disabilitato, non doveva sapere che quel pulsante esiste. Che è un requisito diverso, e molto più difficile: costringe a verificare anche l'interfaccia, non solo la logica, e trasforma ogni ruolo nuovo in una campagna di prove che tocca schermate e permessi insieme.
 

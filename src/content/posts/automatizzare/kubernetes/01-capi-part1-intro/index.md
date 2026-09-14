@@ -58,7 +58,7 @@ Poi una volta fallisce a metà. La VM è stata creata su Proxmox, il pacchetto `
 
 **Questo è il costo dell'approccio imperativo, e non è la fatica di scrivere lo script.** È che uno script descrive *come fare*, e quando si interrompe a metà lascia uno stato che nessuno ha dichiarato e che nessuno sa ricostruire.
 
-## Il problema non è creare un cluster, è la sesta volta
+## Il problema è la sesta volta, non la prima
 
 Il primo cluster lo si monta a mano e va benissimo. La difficoltà arriva quando i cluster diventano più di uno e devono restare allineati nel tempo:
 
@@ -73,7 +73,7 @@ Il denominatore comune è che ogni intervento manuale introduce un punto di fall
 
 [Cluster API](https://cluster-api.sigs.k8s.io/) ribalta la direzione: invece di descrivere i passi, **si dichiara il cluster che si vuole** e un controller si occupa di arrivarci — e di restarci.
 
-L'idea in sé è quella che Kubernetes applica già ai container. Il cambio è nel soggetto: qui l'oggetto riconciliato non è un Pod, è un cluster intero, con le sue macchine e la sua infrastruttura sottostante.
+L'idea in sé è quella che Kubernetes applica già ai container. Il cambio è nel soggetto: qui l'oggetto riconciliato è un cluster intero, con le sue macchine e la sua infrastruttura sottostante.
 
 La conseguenza pratica è quella che rende l'adozione ragionevole: **non serve imparare un nuovo modo di lavorare.** Un cluster si crea con `kubectl apply`, si ispeziona con `kubectl describe`, si versiona in Git e si applica con lo stesso flusso GitOps che già usate per i deployment. Gli stessi strumenti, la stessa forma mentale, un oggetto diverso.
 
