@@ -25,7 +25,7 @@ summary:
     value: "Sei problemi raccontati con sintomo, causa nel codice e correzione"
     note: "Dall'issuer mismatch alla race condition sul token endpoint M2M"
   - label: "Scoperta"
-    value: "Senza audience validation, ogni token valido apre qualsiasi porta"
+    value: "Senza audience validation, ogni token valido è accettato da ogni servizio"
     note: "Il problema non genera errori: genera accessi non autorizzati"
   - label: "Correzioni"
     value: "URL configurabili, audience mapper, parsing difensivo, lock sulla cache token"
@@ -163,7 +163,7 @@ Lo stesso pattern si ripete in `notification/server.js` e `payment/server.js`. N
 
 ### Conseguenza
 
-Il claim `aud` (audience) nel JWT indica a quale risorsa il token è destinato. Senza validazione, un token emesso per `shop-ui` (il frontend) è accettabile anche per `payment-service` o `notification-service`. In un realm con più applicazioni, qualsiasi token valido apre qualsiasi porta.
+Il claim `aud` (audience) nel JWT indica a quale risorsa il token è destinato. Senza validazione, un token emesso per `shop-ui` (il frontend) è accettabile anche per `payment-service` o `notification-service`. In un realm con più applicazioni, qualsiasi token valido è accettato da qualsiasi servizio.
 
 Scenario concreto: un attaccante intercetta un token frontend (es. da un log, da un proxy, da un'estensione browser). Senza audience validation, quel token può chiamare API interne che non dovrebbero essere raggiungibili dal frontend.
 

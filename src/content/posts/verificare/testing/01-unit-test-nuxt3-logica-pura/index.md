@@ -95,11 +95,11 @@ Quando pensi "test frontend", la prima cosa che viene in mente è montare un com
 
 E il ritorno? Stai testando che Vuetify renderizzi un bottone. Lo fa. Lo fa da anni.
 
-Il vero valore anti-regressione sta altrove: negli store che gestiscono stato condiviso, nelle factory API che costruiscono URL, nei composable che orchestrano logica. Roba che quando si rompe non te ne accorgi finché un utente non ti scrive.
+Il vero valore anti-regressione sta altrove: negli store che gestiscono stato condiviso, nelle factory API che costruiscono URL, nei composable che orchestrano logica. Codice che quando si rompe non te ne accorgi finché un utente non ti scrive.
 
 ---
 
-## Il setup: un file per domarli tutti
+## Il setup: un file per tutti gli stub
 
 Il primo problema di Nuxt 3 nei test è che metà del codice si basa su auto-import. `useRuntimeConfig()`, `useRoute()`, `useNuxtApp()`, `onMounted()` -- funzionano magicamente nel browser ma non esistono quando esegui Vitest.
 

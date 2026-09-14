@@ -80,7 +80,7 @@ Il ciclo classico è aperto: scrivete una spec, un agente genera test da quella 
 
 La chiusura del loop è semplice da descrivere: lo stesso agente che ha scritto i test legge anche il report dei survived, e li usa come prompt di ritorno per migliorarsi. Il prompt diventa preciso: "copri esattamente questo caso, che il report ti ha appena indicato". È esattamente il workflow che Meta ha messo in produzione con il sistema **ACH (Automated Compliance Hardening)**.
 
-## Mutanti che sanno di cosa hanno paura
+## Mutanti specifici per dominio
 
 Uno Stryker "classico" muta a tappeto: `+` diventa `-`, `>` diventa `>=`, `Sum` diventa `Max`. Sono mutazioni generiche, cieche rispetto al dominio.
 
