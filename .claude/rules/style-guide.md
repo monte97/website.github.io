@@ -194,6 +194,36 @@ Da [Google Technical Writing](https://developers.google.com/tech-writing/one/sho
   dettagliata di" → "descrive", "in questo momento" → "ora".
 - **Niente linguaggio da gatekeeping**: "ovviamente", "semplicemente", "banalmente",
   "come è noto". Se fosse ovvio non lo staresti scrivendo.
+- **Niente metafora a effetto dove serve un termine tecnico.** È il difetto più
+  ricorrente emerso dalla revisione di registro del 2026-09-14 su 34 articoli, e
+  l'unico su cui tre revisori indipendenti hanno convergiuto. Non sono intercalari
+  né antropomorfismi: sono immagini da conversazione infilate per rendere concreto
+  un concetto astratto, che al lettore tecnico tolgono il dato invece di darglielo.
+
+  | Trovato nel corpus | Riscritto |
+  |---|---|
+  | "quel 3% è la tua casella di posta" | "quel 3% genera le segnalazioni al supporto" |
+  | "quante persone si sono arrabbiate" | "quante persone hanno subito l'errore" |
+  | "l'utente lancia e poi va a prendere un caffè" | "l'utente lancia e poi abbandona per minuti" |
+  | "intervenire senza drammi" | "intervenire" |
+  | "La Magia della Riconciliazione" | "La riconciliazione" |
+  | "la cosa fantastica del modello dichiarativo" | "il vantaggio del modello dichiarativo" |
+
+  Il test: **la frase riscritta dice qualcosa di più preciso, o solo di più solenne?**
+  Se è più solenne, la metafora era meglio e va tenuta. L'obiettivo è la precisione,
+  non la formalità: "si procede all'effettuazione" è peggio del problema che risolve.
+
+  Casi limite frequenti: "la cosa" al posto del soggetto già nominato, l'iperbole da
+  recensione ("esperienza molto piacevole"), la battuta finale che ammicca al lettore
+  ("Anche di venerdì"), il punto esclamativo.
+
+- **Il trattino lungo (—) non si usa.** Al suo posto: due punti per una spiegazione o
+  una conseguenza, virgole o parentesi per un inciso, punto fermo dove la frase sta
+  meglio spezzata. Resta legittimo dentro blocchi di codice, output, comandi e tabelle.
+  Attenzione: sostituirlo meccanicamente con una virgola rompe le frasi in cui reggeva
+  un inciso, e quando la frase continua con "che" dopo i due punti il periodo diventa
+  scorretto («sta malissimo — che è una diagnosi diversa» → «sta malissimo: è una
+  diagnosi diversa»).
 
 Seconda persona plurale o impersonale, come nel corpus. Non c'è una regola contro
 la prima persona: le storie vere (`system-design/01`, `mutation-testing`) sono in
