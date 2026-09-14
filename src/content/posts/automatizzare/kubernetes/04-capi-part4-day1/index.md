@@ -646,7 +646,7 @@ Un cluster in `Provisioned` con i controlli di base superati non è un cluster d
 
 Manca ancora tutto quello che rende un cluster utilizzabile da qualcun altro: storage persistente, ingress, osservabilità, politiche di accesso. Sono le Day 2 Operations, e cominciano da qui.
 
-**Detto a chi non scrive `kubectl`:** la differenza fra questa sequenza e uno script che fa le stesse cose è che qui ogni passo lascia una prova. Quando fra sei mesi il cluster andrà ricostruito — perché l'hardware muore, o perché ne serve un secondo identico — la ricostruzione è una procedura ripetibile invece di una giornata di archeologia.
+**Detto a chi non scrive `kubectl`:** la differenza fra questa sequenza e uno script che fa le stesse cose è che qui ogni passo lascia una prova. Quando fra sei mesi il cluster andrà ricostruito (perché l'hardware muore, o perché ne serve un secondo identico) la ricostruzione è una procedura ripetibile invece di una giornata di archeologia.
 
 ## Prima di passare oltre
 

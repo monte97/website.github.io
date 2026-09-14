@@ -338,7 +338,7 @@ Una suite E2E che gira solo in locale è una suite che qualcuno deve ricordarsi 
 
 Lo sharding serve a rendere quella inevitabilità sopportabile: 200 test su quattro shard scendono a circa un quarto del tempo, ed è la differenza fra un controllo che si aspetta e uno che si salta.
 
-**Tradotto per chi guarda i tempi di rilascio:** una regressione trovata in pipeline costa i minuti della pipeline; la stessa regressione trovata da un cliente costa una segnalazione, un'indagine e un rilascio d'emergenza — più la fiducia, che non si misura in minuti.
+**Tradotto per chi guarda i tempi di rilascio:** una regressione trovata in pipeline costa i minuti della pipeline; la stessa regressione trovata da un cliente costa una segnalazione, un'indagine e un rilascio d'emergenza, più la fiducia, che non si misura in minuti.
 
 ## Da provare domani
 

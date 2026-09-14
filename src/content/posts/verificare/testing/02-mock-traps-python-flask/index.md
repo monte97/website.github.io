@@ -62,7 +62,7 @@ Tre servizi Flask, tre conftest.py, un singolo smoke test ciascuno: `GET /health
 
 Ma non è una storia di mock. È una storia di **design**.
 
-Tutti e tre i servizi creavano connessioni Kafka e MongoDB **al momento dell'import** — a livello di modulo, fuori da qualsiasi funzione. Nessun lazy loading, nessuna factory, nessuna dependency injection. L'`import` stesso era un side-effect. Questo è il motivo per cui i mock erano rotti: non stavano mockando la cosa sbagliata per negligenza. Stavano combattendo un'architettura che rende il testing intrinsecamente fragile.
+Tutti e tre i servizi creavano connessioni Kafka e MongoDB **al momento dell'import**: a livello di modulo, fuori da qualsiasi funzione. Nessun lazy loading, nessuna factory, nessuna dependency injection. L'`import` stesso era un side-effect. Questo è il motivo per cui i mock erano rotti: non stavano mockando la cosa sbagliata per negligenza. Stavano combattendo un'architettura che rende il testing intrinsecamente fragile.
 
 Il risultato finale: **88 nuovi test**, mutation score che va dal **19% al 46%** sui tre servizi. I numeri raccontano una storia chiara: puoi coprire tutti gli endpoint, ma se la logica di business vive dentro il consumer Kafka (che parte all'import), i tuoi test non la toccheranno mai.
 
@@ -122,7 +122,7 @@ with patch("kafka.KafkaConsumer", return_value=MagicMock()):
 
 Il problema: `current.py` non importa `kafka.KafkaConsumer` da mesi. Usa `confluent_kafka.DeserializingConsumer`. Il codice era stato migrato da `kafka-python` a `confluent-kafka`, ma nessuno aveva aggiornato i conftest. Il `patch("kafka.KafkaConsumer")` non generava errore perché il modulo `kafka` era ancora installato come dipendenza transitiva.
 
-In un servizio con side-effect al top level, un conftest che mocka la libreria sbagliata non fallisce — semplicemente non mocka nulla. E se l'unico test è `GET /health` (che non tocca Kafka), non te ne accorgi mai.
+In un servizio con side-effect al top level, un conftest che mocka la libreria sbagliata non fallisce: semplicemente non mocka nulla. E se l'unico test è `GET /health` (che non tocca Kafka), non te ne accorgi mai.
 
 **Perché questo è un problema di design, non di mock**: se il servizio usasse dependency injection, non avresti bisogno di indovinare quale `patch()` target corrisponde a quale import. Inietteresti direttamente il collaboratore fake.
 
@@ -227,7 +227,7 @@ L'endpoint `/locations/today/equipment` fa `list(collection.find(query, projecti
 mock_collection.find.return_value = [{"base": {"code": "EX001"}}]
 ```
 
-Quando il secondo pattern viene eseguito, `find.return_value` diventa una **lista Python reale**. `.sort` non è più un metodo di `MagicMock` — è `list.sort()`, un built-in che non ha `return_value`.
+Quando il secondo pattern viene eseguito, `find.return_value` diventa una **lista Python reale**. `.sort` non è più un metodo di `MagicMock`: è `list.sort()`, un built-in che non ha `return_value`.
 
 Il colpo di grazia: `reset_mock()` **non risolve il problema**. `reset_mock()` resetta contatori e child mock, ma `find.return_value` è stato sostituito con un oggetto reale. Il reset non lo ripristina.
 
@@ -258,11 +258,11 @@ Dopo aver risolto le quattro trappole, ho 88 test che passano e coprono tutti gl
 
 Un mutation score del 19% su `current` significa che l'81% delle mutazioni al codice non vengono rilevate dai test. `history` e `usage` se la cavano meglio (41-46%) perché hanno più logica nelle route Flask e funzioni pure testabili (`compute_delta`, `timestamp_to_date`). Ma i mutanti nelle procedure imperative del consumer Kafka sopravvivono quasi tutti.
 
-Il motivo è strutturale: la logica di business vive nelle funzioni chiamate dal consumer thread Kafka (`consume_data`, `handle_message`, `compute_delta`). Quel thread è stato mockato nel conftest per impedirgli di partire. I test coprono le Flask route — `GET /health`, `GET /equipment`, `GET /search` — che sono essenzialmente thin wrapper su un dizionario in-memory o su una query MongoDB.
+Il motivo è strutturale: la logica di business vive nelle funzioni chiamate dal consumer thread Kafka (`consume_data`, `handle_message`, `compute_delta`). Quel thread è stato mockato nel conftest per impedirgli di partire. I test coprono le Flask route (`GET /health`, `GET /equipment`, `GET /search`) che sono essenzialmente thin wrapper su un dizionario in-memory o su una query MongoDB.
 
-I test alle funzioni pure (`compute_delta`, `timestamp_to_date`, `should_compute_delta`) funzionano bene e uccidono mutanti. Ma la maggior parte del codice non è in funzioni pure — è in procedure imperative che leggono da Kafka, scrivono su MongoDB, e aggiornano stato globale. Quel codice è strutturalmente non raggiungibile dai test senza refactoring del modulo.
+I test alle funzioni pure (`compute_delta`, `timestamp_to_date`, `should_compute_delta`) funzionano bene e uccidono mutanti. Ma la maggior parte del codice non è in funzioni pure: è in procedure imperative che leggono da Kafka, scrivono su MongoDB, e aggiornano stato globale. Quel codice è strutturalmente non raggiungibile dai test senza refactoring del modulo.
 
-**Il mutation testing conferma la tesi**: il problema sta nel design, non nel mocking. Puoi avere 88 test verdi e un mutation score tra il 19% e il 46%. I test ti dicono che gli endpoint rispondono. I mutanti ti dicono che metà della logica di business è scoperta — e per il servizio più semplice (current), quattro quinti.
+**Il mutation testing conferma la tesi**: il problema sta nel design, non nel mocking. Puoi avere 88 test verdi e un mutation score tra il 19% e il 46%. I test ti dicono che gli endpoint rispondono. I mutanti ti dicono che metà della logica di business è scoperta, e per il servizio più semplice (current), quattro quinti.
 
 ---
 
@@ -284,7 +284,7 @@ Ma se hai servizi in produzione e devi aggiungere test *adesso*, queste sono le 
 
 4. **Riassegna i mock, non limitarti a `reset_mock()`.** Se imposti `find.return_value = [lista]`, il mock è perso. Crea un nuovo `MagicMock()` ad ogni test.
 
-E quando hai finito, lancia il mutation testing. I numeri ti diranno esattamente quanto del tuo codice è davvero sotto test — e probabilmente sarà molto meno di quello che pensi.
+E quando hai finito, lancia il mutation testing. I numeri ti diranno esattamente quanto del tuo codice è davvero sotto test, e probabilmente sarà molto meno di quello che pensi.
 
 ---
 
@@ -377,7 +377,7 @@ mutmut genera mutanti su ogni riga di codice Python. Questo include:
 - `sys.path.insert(0, ...)` -> `sys.path.insert(1, ...)`
 - `jsonify({"error": "Missing required fields"})` -> `jsonify({"error": "XXMissing required fieldsXX"})`
 
-Nessuno di questi è logica di business. Stringhe di errore, flag di sicurezza, infrastruttura di import, chiamate di logging — sono rumore che gonfia il conteggio dei sopravvissuti e nasconde i problemi reali.
+Nessuno di questi è logica di business. Stringhe di errore, flag di sicurezza, infrastruttura di import, chiamate di logging: sono rumore che gonfia il conteggio dei sopravvissuti e nasconde i problemi reali.
 
 mutmut supporta un hook `pre_mutation` in un file `mutmut_config.py` nella root del progetto. La funzione riceve un `context` con la riga corrente e il numero di riga, e può impostare `context.skip = True` per saltare il mutante.
 
@@ -481,7 +481,7 @@ def pre_mutation(context):
 
 ### Pattern 3: filtrare le stringhe di messaggio
 
-I test verificano status code, non il testo dei messaggi di errore. Mutare `"Missing required fields"` in `"XXMissing required fieldsXX"` genera un mutante che sopravvive sempre — e correttamente, perché nessun test asserisce (né dovrebbe asserire) sul testo esatto dell'errore.
+I test verificano status code, non il testo dei messaggi di errore. Mutare `"Missing required fields"` in `"XXMissing required fieldsXX"` genera un mutante che sopravvive sempre, e correttamente, perché nessun test asserisce (né dovrebbe asserire) sul testo esatto dell'errore.
 
 ```python
 def _is_message_string(line):
@@ -504,6 +504,6 @@ def pre_mutation(context):
 
 ### Il risultato
 
-Con i tre pattern combinati, ogni servizio raggiunge zero mutanti sopravvissuti. Non perché i mutanti infrastrutturali vengono uccisi dai test — vengono esclusi a priori. I mutanti rimanenti sono tutti sulla logica di business, e i test li uccidono tutti.
+Con i tre pattern combinati, ogni servizio raggiunge zero mutanti sopravvissuti. Non perché i mutanti infrastrutturali vengono uccisi dai test: vengono esclusi a priori. I mutanti rimanenti sono tutti sulla logica di business, e i test li uccidono tutti.
 
-La distinzione è importante: un mutation score del 100% ottenuto filtrando metà dei mutanti non è la stessa cosa di un 100% su tutti i mutanti. Ma è un numero più utile. Dice: "ogni mutazione alla logica di business viene rilevata dai test". I mutanti su `print()` e su `Content-Type` non aggiungono informazione — aggiungono rumore.
+La distinzione è importante: un mutation score del 100% ottenuto filtrando metà dei mutanti non è la stessa cosa di un 100% su tutti i mutanti. Ma è un numero più utile. Dice: "ogni mutazione alla logica di business viene rilevata dai test". I mutanti su `print()` e su `Content-Type` non aggiungono informazione: aggiungono rumore.

@@ -101,7 +101,7 @@ Tutto in OpenFGA parte dalla tupla. Una tupla ha tre campi obbligatori:
 
 `user` e `object` seguono il formato `tipo:id`. Il tipo non è decorativo: è parte del sistema di tipi del modello di autorizzazione. `user:alice` è un'entità di tipo `user` con id `alice`; `document:readme` è un'entità di tipo `document` con id `readme`.
 
-Pensando a [VaultDrive](https://github.com/monte97/VaultDrive) — una demo che ho costruito appositamente per questa serie, con codice riproducibile e setup containerizzato — le prime tuple che scrivi sono assegnazioni dirette:
+Pensando a [VaultDrive](https://github.com/monte97/VaultDrive) (una demo che ho costruito appositamente per questa serie, con codice riproducibile e setup containerizzato) le prime tuple che scrivi sono assegnazioni dirette:
 
 ```json
 { "user": "user:alice", "relation": "owner",  "object": "document:readme" }
@@ -119,7 +119,7 @@ Il campo `user` non deve necessariamente contenere un utente. Può contenere qua
 { "user": "folder:progetto-x", "relation": "parent", "object": "document:readme" }
 ```
 
-"La cartella progetto-x è parent del documento readme." Non c'è nessun utente coinvolto in questa tupla — è una relazione strutturale tra due oggetti. Il modello di autorizzazione userà questa relazione per propagare i permessi: chi ha accesso alla cartella lo eredita sul documento.
+"La cartella progetto-x è parent del documento readme." Non c'è nessun utente coinvolto in questa tupla: è una relazione strutturale tra due oggetti. Il modello di autorizzazione userà questa relazione per propagare i permessi: chi ha accesso alla cartella lo eredita sul documento.
 
 ### Userset: un insieme come soggetto
 
@@ -129,7 +129,7 @@ Il terzo tipo di soggetto è l'**userset**: non un singolo utente né un singolo
 { "user": "folder:progetto-x#viewer", "relation": "viewer", "object": "document:readme" }
 ```
 
-`folder:progetto-x#viewer` significa "chiunque sia viewer della cartella progetto-x". Questa tupla dice: "tutti i viewer della cartella sono anche viewer del documento". OpenFGA risolve l'userset a runtime — quando arriva un Check per `user:charlie viewer document:readme`, verifica se charlie è viewer della cartella, e lo trova tramite la tupla che lo assegna alla cartella.
+`folder:progetto-x#viewer` significa "chiunque sia viewer della cartella progetto-x". Questa tupla dice: "tutti i viewer della cartella sono anche viewer del documento". OpenFGA risolve l'userset a runtime: quando arriva un Check per `user:charlie viewer document:readme`, verifica se charlie è viewer della cartella, e lo trova tramite la tupla che lo assegna alla cartella.
 
 Questa è la forma che OpenFGA costruisce internamente ogni volta che nel DSL scrivi `viewer from parent`. È anche la notazione che vedrai nelle risposte dell'API Expand e nei file di test `.fga.yaml`.
 
@@ -497,17 +497,17 @@ Il codice completo del setup minimale e del modello VaultDrive è disponibile ne
 ### Risorse
 
 **Paper originale:**
-- [Zanzibar: Google's Consistent, Global Authorization System](https://research.google/pubs/pub48190/) — il paper Google (2019) da cui nasce il modello
+- [Zanzibar: Google's Consistent, Global Authorization System](https://research.google/pubs/pub48190/): il paper Google (2019) da cui nasce il modello
 
 **Repository demo:**
 - [VaultDrive su GitHub](https://github.com/monte97/VaultDrive)
 
 **Documentazione OpenFGA:**
-- [Concetti fondamentali](https://openfga.dev/docs/concepts) — tuple, store, modelli di autorizzazione
-- [Configuration Language (DSL)](https://openfga.dev/docs/configuration-language) — riferimento completo del DSL
+- [Concetti fondamentali](https://openfga.dev/docs/concepts): tuple, store, modelli di autorizzazione
+- [Configuration Language (DSL)](https://openfga.dev/docs/configuration-language): riferimento completo del DSL
 - [Setup con Docker](https://openfga.dev/docs/getting-started/setup-openfga/docker)
 - [OpenFGA CLI (`fga`)](https://openfga.dev/docs/getting-started/cli)
-- [Playground interattivo](https://play.fga.dev/) — sperimenta modelli e query nel browser
+- [Playground interattivo](https://play.fga.dev/): sperimenta modelli e query nel browser
 - [OpenFGA su CNCF](https://www.cncf.io/projects/openfga/)
 
 **Articoli correlati:**

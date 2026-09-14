@@ -38,8 +38,8 @@ mode: explanation
 caseStudy:
   slug: "quante-versioni-stai-mantenendo"
   hook: >
-    Lo stesso riflesso — fidarsi del verde invece della cosa che il verde dovrebbe
-    misurare — l'ho ritrovato su un sistema installato presso decine di clienti, dove
+    Lo stesso riflesso (fidarsi del verde invece della cosa che il verde dovrebbe
+    misurare) l'ho ritrovato su un sistema installato presso decine di clienti, dove
     alcuni controlli rispondevano verde da mesi senza aver verificato nulla.
 ---
 

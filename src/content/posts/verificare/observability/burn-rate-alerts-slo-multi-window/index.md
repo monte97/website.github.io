@@ -43,7 +43,7 @@ mode: how-to
 
 Il ragionamento sul burn rate finisce con un numero puro: 14.4× significa che state bruciando l'error budget quattordici volte più in fretta del sostenibile. Resta la domanda operativa, che è un'altra: **su quale finestra lo misurate, e a che soglia svegliate qualcuno?**
 
-Il SRE Workbook risponde con una tabella, la 5-8, e la risposta non è una coppia di finestre ma tre. Non sono alternative fra cui scegliere quella che vi convince: sono tre regimi di guasto diversi, e installarne una sola lascia scoperti gli altri due — che sono esattamente i casi in cui [la soglia statica falliva](/blog/verificare/observability/error-budget-soglia-statica/).
+Il SRE Workbook risponde con una tabella, la 5-8, e la risposta non è una coppia di finestre ma tre. Non sono alternative fra cui scegliere quella che vi convince: sono tre regimi di guasto diversi, e installarne una sola lascia scoperti gli altri due: sono esattamente i casi in cui [la soglia statica falliva](/blog/verificare/observability/error-budget-soglia-statica/).
 
 Qui la tabella viene smontata riga per riga, con i conti che producono i numeri, una demo che mostra le coppie in azione, e i quattro errori che tornano più spesso in adozione.
 

@@ -45,7 +45,7 @@ Module Federation è una risposta concreta a questo problema: un meccanismo di c
 
 Cinque team, una SPA. Il setup iniziale è `npm run build` e tutto finisce in un bundle. Funziona fino a quando:
 
-- Ogni modifica — anche minima — fa ripartire il build dell'intera applicazione: tutti i team aspettano
+- Ogni modifica, anche minima, fa ripartire il build dell'intera applicazione: tutti i team aspettano
 - Il deploy di una feature piccola richiede il rilascio dell'intera applicazione
 - Le dipendenze di un team (una libreria di charting pesante, per esempio) appesantiscono il bundle di tutti
 - Un team vuole migrare da Vue 2 a Vue 3 senza bloccare gli altri
@@ -96,7 +96,7 @@ apps/
             └── CheckoutView.vue
 ```
 
-Ogni `apps/` directory è un progetto Vite indipendente con il proprio `package.json`. La shell non conosce i remote a compile time — li scopre solo tramite la configurazione di federation.
+Ogni `apps/` directory è un progetto Vite indipendente con il proprio `package.json`. La shell non conosce i remote a compile time: li scopre solo tramite la configurazione di federation.
 
 **Nota sul workflow di sviluppo**: `@originjs/vite-plugin-federation` supporta il dev server solo per la shell (host). I remote vanno buildati (`vite build --watch`) e serviti come build statici (es. `vite preview`). In sviluppo ogni remote gira autonomamente sulla propria porta; la shell li consuma come build.
 
@@ -150,7 +150,7 @@ export default defineConfig({
 });
 ```
 
-Il `remoteEntry.js` è il manifest del remote: contiene la lista dei moduli esposti e gestisce il caricamento lazy delle dipendenze condivise. Il path `/assets/remoteEntry.js` riflette la struttura di output di Vite (`dist/assets/`) — cambia se si modifica `build.outDir` o `build.assetsDir`.
+Il `remoteEntry.js` è il manifest del remote: contiene la lista dei moduli esposti e gestisce il caricamento lazy delle dipendenze condivise. Il path `/assets/remoteEntry.js` riflette la struttura di output di Vite (`dist/assets/`): cambia se si modifica `build.outDir` o `build.assetsDir`.
 
 ---
 
@@ -257,7 +257,7 @@ Questo file va aggiornato manualmente quando il remote cambia interfaccia. Il co
 
 ## Routing nella shell
 
-Vue Router richiede che le route component siano componenti Vue validi — non `defineAsyncComponent`. Il pattern corretto per caricare un remote in una route è il dynamic import diretto:
+Vue Router richiede che le route component siano componenti Vue validi, non `defineAsyncComponent`. Il pattern corretto per caricare un remote in una route è il dynamic import diretto:
 
 ```typescript
 // apps/shell/src/router/index.ts
@@ -330,17 +330,17 @@ catalog:  Vue 3.5.0    ← versione diversa
 
 Con `singleton: true` e `requiredVersion: '^3.4.0'`, Module Federation usa l'istanza con la versione più alta compatibile. Se le versioni non sono compatibili tra loro, il plugin usa la prima istanza caricata ed emette un warning a console - l'app continua a girare, ma il comportamento è imprevedibile e difficile da diagnosticare.
 
-La regola pratica: **Vue, Vue Router e Pinia devono sempre essere `singleton: true`** sia nella shell che nei remote. Le librerie utility (lodash, date-fns, axios) non hanno questo vincolo — ogni remote può portare la propria copia senza conseguenze.
+La regola pratica: **Vue, Vue Router e Pinia devono sempre essere `singleton: true`** sia nella shell che nei remote. Le librerie utility (lodash, date-fns, axios) non hanno questo vincolo: ogni remote può portare la propria copia senza conseguenze.
 
 ---
 
 ## State condiviso tra remoti
 
-Module Federation non risolve il problema dello state condiviso — lo sposta. Tre opzioni con trade-off diversi:
+Module Federation non risolve il problema dello state condiviso: lo sposta. Tre opzioni con trade-off diversi:
 
 **1. Store ridichiarato con la stessa chiave**
 
-Pinia è singleton: se shell e remote dichiarano lo stesso store (stessa `id`) e Pinia è condivisa, accedono allo stesso stato in memoria. Non serve importare lo store dalla shell — basta ridichiararlo con la stessa struttura.
+Pinia è singleton: se shell e remote dichiarano lo stesso store (stessa `id`) e Pinia è condivisa, accedono allo stesso stato in memoria. Non serve importare lo store dalla shell: basta ridichiararlo con la stessa struttura.
 
 ```typescript
 // apps/catalog/src/stores/auth.ts
@@ -379,7 +379,7 @@ I [custom events](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/C
 
 ## Deploy indipendente
 
-Ogni remote ha la propria pipeline CI/CD. La shell non si ridistribuisce quando cambia un modulo — carica il `remoteEntry.js` a runtime dall'URL configurato.
+Ogni remote ha la propria pipeline CI/CD. La shell non si ridistribuisce quando cambia un modulo: carica il `remoteEntry.js` a runtime dall'URL configurato.
 
 ```yaml
 # catalog/.github/workflows/deploy.yml
@@ -398,13 +398,13 @@ jobs:
 
 ### Versioning e rollback
 
-L'insidia principale: se catalog deploya una breaking change al contratto (rinomina una prop, cambia il tipo di un evento), la shell smette di funzionare senza essere modificata — e senza un build error che lo segnali.
+L'insidia principale: se catalog deploya una breaking change al contratto (rinomina una prop, cambia il tipo di un evento), la shell smette di funzionare senza essere modificata, e senza un build error che lo segnali.
 
 Le strategie per gestirlo:
 
-1. **URL con versione**: `catalog.app.example.com/v2/assets/remoteEntry.js` — la shell sceglie esplicitamente quale versione caricare
+1. **URL con versione**: `catalog.app.example.com/v2/assets/remoteEntry.js`, la shell sceglie esplicitamente quale versione caricare
 2. **Contract testing**: test automatici che verificano che il remote esponga l'interfaccia attesa dalla shell (pattern [consumer-driven contract test](https://docs.pact.io/))
-3. **Coordinamento esplicito**: shell e remote aggiornano il contratto in un'unica PR — si perde parte dell'indipendenza, ma si guadagna in sicurezza
+3. **Coordinamento esplicito**: shell e remote aggiornano il contratto in un'unica PR. Si perde parte dell'indipendenza, ma si guadagna in sicurezza
 
 ---
 
@@ -428,20 +428,20 @@ Il segnale non è "siamo tanti": è "ci blocchiamo a vicenda nel deploy".
 
 Module Federation in Vue 3 con Vite si configura in poche righe, ma richiede quattro decisioni esplicite:
 
-- **Il contratto**: cosa espone il remote, con quali props e quali eventi. Va documentato e versionato come un'API — non c'è generazione automatica dei tipi.
+- **Il contratto**: cosa espone il remote, con quali props e quali eventi. Va documentato e versionato come un'API: non c'è generazione automatica dei tipi.
 - **Le dipendenze singleton**: Vue, Vue Router e Pinia devono essere una sola istanza. Una configurazione sbagliata rompe l'applicazione senza un errore chiaro.
-- **Il workflow di sviluppo**: i remote si buildano con `vite build --watch`, non si servono via dev server. Il DX è diverso da una SPA classica — meglio saperlo prima.
+- **Il workflow di sviluppo**: i remote si buildano con `vite build --watch`, non si servono via dev server. Il DX è diverso da una SPA classica: meglio saperlo prima.
 - **Il versioning del contratto**: il deploy indipendente è un vantaggio reale, ma una breaking change non coordinata blocca la shell in produzione senza avvisi.
 
 Il costo è la complessità distribuita: invece di un build che fallisce, hai runtime error che dipendono da quale versione del remote è in produzione.
 
 ### Risorse
 
-- **[`@originjs/vite-plugin-federation`](https://github.com/originjs/vite-plugin-federation)** — plugin Vite per Module Federation
-- **[Webpack 5 Module Federation](https://webpack.js.org/concepts/module-federation/)** — specifica originale e concetti base
-- **[Module Federation Examples](https://github.com/module-federation/module-federation-examples)** — esempi ufficiali con Vue, React, Angular
-- **[Vue 3 — Async Components](https://vuejs.org/guide/components/async)** — `defineAsyncComponent`, loading/error state, Suspense
-- **[Vue Router — Lazy Loading Routes](https://router.vuejs.org/guide/advanced/lazy-loading)** — dynamic import e route-level code splitting
-- **[Pinia](https://pinia.vuejs.org/)** — documentazione ufficiale dello store manager
-- **[Vite — Env Variables](https://vitejs.dev/guide/env-and-mode)** — `loadEnv` e gestione variabili per ambiente
-- **[Pact](https://docs.pact.io/)** — framework per consumer-driven contract testing
+- **[`@originjs/vite-plugin-federation`](https://github.com/originjs/vite-plugin-federation)**: plugin Vite per Module Federation
+- **[Webpack 5 Module Federation](https://webpack.js.org/concepts/module-federation/)**: specifica originale e concetti base
+- **[Module Federation Examples](https://github.com/module-federation/module-federation-examples)**: esempi ufficiali con Vue, React, Angular
+- **[Vue 3: Async Components](https://vuejs.org/guide/components/async)**: `defineAsyncComponent`, loading/error state, Suspense
+- **[Vue Router: Lazy Loading Routes](https://router.vuejs.org/guide/advanced/lazy-loading)**: dynamic import e route-level code splitting
+- **[Pinia](https://pinia.vuejs.org/)**: documentazione ufficiale dello store manager
+- **[Vite: Env Variables](https://vitejs.dev/guide/env-and-mode)**: `loadEnv` e gestione variabili per ambiente
+- **[Pact](https://docs.pact.io/)**: framework per consumer-driven contract testing

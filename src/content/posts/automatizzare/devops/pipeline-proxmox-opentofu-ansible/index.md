@@ -67,7 +67,7 @@ Il problema non è la mezz'ora. È che quei passi vivono nella testa di chi li h
 
 ## Cosa gira, e perché la mano ci finisce sopra
 
-L'applicazione è fatta di più servizi containerizzati — API di backend, frontend, PostgreSQL e Keycloak come identity provider — e ogni ambiente, staging e produzione, sta su una VM dedicata su un hypervisor Proxmox.
+L'applicazione è fatta di più servizi containerizzati (API di backend, frontend, PostgreSQL e Keycloak come identity provider) e ogni ambiente, staging e produzione, sta su una VM dedicata su un hypervisor Proxmox.
 
 L'obiettivo è una pipeline che, dato un nuovo set di immagini, provisioni l'infrastruttura se serve e rilasci l'applicazione senza che nessuno tocchi niente. Il codice completo è nella cartella `demo/` accanto a questo articolo.
 
@@ -297,7 +297,7 @@ dns_servers = ["8.8.8.8", "8.8.4.4"]
 vm_tags = ["managed-by-opentofu", "staging"]
 ```
 
-Questi file sono committati nel repository — contengono solo valori non sensibili. I secret (endpoint Proxmox, token API, connection string PostgreSQL) sono iniettati da Jenkins come variabili d'ambiente `TF_VAR_*`.
+Questi file sono committati nel repository: contengono solo valori non sensibili. I secret (endpoint Proxmox, token API, connection string PostgreSQL) sono iniettati da Jenkins come variabili d'ambiente `TF_VAR_*`.
 
 ### Backend State su PostgreSQL
 
@@ -451,8 +451,8 @@ I file di configurazione committati (`*.tfvars`, `group_vars/all.yml`) contengon
 
 I secret seguono due percorsi separati:
 
-* **Credenziali infrastrutturali** (token Proxmox, connection string OpenTofu) — Jenkins Credentials, iniettate come variabili d'ambiente `TF_VAR_*` e `PG_CONN_STR`
-* **Credenziali applicative** (password DB, admin Keycloak) — Semaphore Environment, passate come extra-vars Ansible
+* **Credenziali infrastrutturali** (token Proxmox, connection string OpenTofu): Jenkins Credentials, iniettate come variabili d'ambiente `TF_VAR_*` e `PG_CONN_STR`
+* **Credenziali applicative** (password DB, admin Keycloak): Semaphore Environment, passate come extra-vars Ansible
 
 Nessun secret transita dal repository. Jenkins e Semaphore li iniettano a runtime nei rispettivi contesti.
 
@@ -496,9 +496,9 @@ La proprietà che regge tutta l'architettura è una sola: **ogni strumento ha un
 
 Il modo di misurarla è chiedersi cosa costa sostituirne uno. Passare da Jenkins a GitLab CI tocca il livello di orchestrazione e basta: provisioning e deploy non se ne accorgono. Se invece la sostituzione richiedesse di riscrivere anche gli altri, i livelli sarebbero separati solo sulla carta.
 
-Il prezzo di questa separazione va detto: sono quattro strumenti da conoscere, aggiornare e far dialogare, contro uno script che li farebbe tutti. Sotto una certa scala — un ambiente solo, che cambia di rado — quel prezzo non si ripaga.
+Il prezzo di questa separazione va detto: sono quattro strumenti da conoscere, aggiornare e far dialogare, contro uno script che li farebbe tutti. Sotto una certa scala (un ambiente solo, che cambia di rado) quel prezzo non si ripaga.
 
-**Sopra quella scala, invece, il conto si legge così:** niente più deploy manuali, niente più drift fra ambienti, niente più *«ma su staging funzionava»*. Un `git push`, e il resto succede da solo — con la conseguenza che ricreare un ambiente da zero smette di essere un progetto e diventa un'attesa.
+**Sopra quella scala, invece, il conto si legge così:** niente più deploy manuali, niente più drift fra ambienti, niente più *«ma su staging funzionava»*. Un `git push`, e il resto succede da solo: con la conseguenza che ricreare un ambiente da zero smette di essere un progetto e diventa un'attesa.
 
 ## Da dove partire
 

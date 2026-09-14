@@ -40,7 +40,7 @@ kill $CONTAINER_PID
 # Il container si ferma
 ```
 
-Non hai spento una macchina. Hai terminato un processo — un processo normale, che compare in `ps aux` dell'host insieme a tutti gli altri, che ha un genitore, e che il kernel tratta come qualunque altro.
+Non hai spento una macchina. Hai terminato un processo: un processo normale, che compare in `ps aux` dell'host insieme a tutti gli altri, che ha un genitore, e che il kernel tratta come qualunque altro.
 
 È la cosa che conviene tenere a mente quando si ragiona su cosa un container garantisce e cosa no: **non c'è nessuna macchina isolata sotto**. Ci sono due meccanismi del kernel Linux che limitano quello che quel processo *vede* e quello che *può prendersi*. Si chiamano namespaces e cgroups, e sapere dove finisce ognuno dei due è la differenza fra usare Docker e fidarsi di Docker.
 
@@ -72,7 +72,7 @@ kill $CONTAINER_PID
 # Il container si fermerà
 ```
 
-Il passo 5 è quello che spiega tutto il resto. `/proc/$PID/status` mostra due PID per lo stesso processo: quello valido nel namespace del container — di solito 1, perché lì dentro è il processo di init — e quello valido sull'host. Un processo, due identità, a seconda di chi guarda.
+Il passo 5 è quello che spiega tutto il resto. `/proc/$PID/status` mostra due PID per lo stesso processo: quello valido nel namespace del container (di solito 1, perché lì dentro è il processo di init) e quello valido sull'host. Un processo, due identità, a seconda di chi guarda.
 
 I namespace PID sono organizzati **gerarchicamente**: ogni namespace ha un padre, e i processi al suo interno restano visibili dai livelli superiori. L'isolamento va in una direzione sola. Dall'host vedi dentro il container; dal container non vedi fuori.
 
@@ -80,7 +80,7 @@ I namespace PID sono organizzati **gerarchicamente**: ogni namespace ha un padre
 
 ## Namespaces: cosa quel processo riesce a vedere
 
-Un namespace limita la porzione di sistema che un processo percepisce. Linux ne ha otto tipi — mount, PID, network, IPC, UTS, user, cgroup, time — e Docker li usa quasi tutti insieme, ma due meritano attenzione perché è lì che le aspettative sbagliano più spesso.
+Un namespace limita la porzione di sistema che un processo percepisce. Linux ne ha otto tipi (mount, PID, network, IPC, UTS, user, cgroup, time) e Docker li usa quasi tutti insieme, ma due meritano attenzione perché è lì che le aspettative sbagliano più spesso.
 
 **PID**, appena visto: ogni container ha il suo processo con PID 1, che non interferisce con gli altri container né con l'host. Con l'asimmetria che ne consegue.
 
@@ -113,7 +113,7 @@ nsenter --target $CONTAINER_PID --net --mount --pid bash
 curl localhost:80         # Funziona - siamo nel namespace del container
 ```
 
-Il passo 6 è il seguito del ragionamento di prima: `nsenter` entra nei namespace di un processo. Non c'è nessuna porta da forzare, nessun hypervisor da bucare — basta essere root sull'host.
+Il passo 6 è il seguito del ragionamento di prima: `nsenter` entra nei namespace di un processo. Non c'è nessuna porta da forzare, nessun hypervisor da bucare: basta essere root sull'host.
 
 ![Comunicazione fra processi attraverso i network namespace: reti virtuali condivise fra gruppi ristretti di processi, senza esposizione verso l'esterno](./imgs/net_ns.jpg)
 
@@ -125,11 +125,11 @@ Se i namespace decidono cosa il processo vede, i **cgroups** decidono quanto pu�
 
 Cinque categorie di risorse:
 
-- **Memoria** — quantitativo massimo e uso dello swap. Il limite può essere *soft*, e allora la memoria viene reclamata quando serve, oppure *hard*, e allora superarlo scatena l'OOM Killer.
-- **CPU** — superare il limite non fa fallire il processo: lo mette in throttle.
-- **Blkio** — operazioni di I/O, con throttling su letture e scritture eccessive.
-- **Network** — limiti sul traffico.
-- **Device** — quali dispositivi il processo può scrivere.
+- **Memoria**: quantitativo massimo e uso dello swap. Il limite può essere *soft*, e allora la memoria viene reclamata quando serve, oppure *hard*, e allora superarlo scatena l'OOM Killer.
+- **CPU**: superare il limite non fa fallire il processo, lo mette in throttle.
+- **Blkio**: operazioni di I/O, con throttling su letture e scritture eccessive.
+- **Network**: limiti sul traffico.
+- **Device**: quali dispositivi il processo può scrivere.
 
 La differenza fra il limite soft e quello hard non è un dettaglio di configurazione: decide se sotto pressione l'applicazione rallenta o muore. Si vede lanciando un container contro il proprio limite.
 
@@ -185,7 +185,7 @@ cat /sys/fs/cgroup/cpu/docker/$CONTAINER_ID/cpu.stat
 
 Qui sta la conseguenza che vale la pena portarsi via, ed è il rovescio della tesi iniziale.
 
-Una macchina virtuale ha un kernel proprio: l'hypervisor separa due sistemi operativi completi. Un container **condivide il kernel dell'host**. Namespaces e cgroups sono funzionalità di quel kernel condiviso — sono un limite imposto dall'interno, non un muro fra due sistemi.
+Una macchina virtuale ha un kernel proprio: l'hypervisor separa due sistemi operativi completi. Un container **condivide il kernel dell'host**. Namespaces e cgroups sono funzionalità di quel kernel condiviso: sono un limite imposto dall'interno, non un muro fra due sistemi.
 
 Le conseguenze sono tre, e sono operative:
 
@@ -193,7 +193,7 @@ Le conseguenze sono tre, e sono operative:
 - **Root sull'host è root ovunque.** `nsenter` della sezione precedente non è un exploit: è un comando documentato.
 - **In compenso non c'è un sistema operativo da avviare**, ed è per questo che un container parte in un secondo e una VM in un minuto.
 
-È un compromesso, non un difetto, ma va scelto sapendo cosa si sta scegliendo. Container per densità e velocità di ciclo; macchina virtuale quando l'isolamento deve reggere anche contro chi gira nel processo accanto — codice di terzi, tenant che non si fidano fra loro, requisiti di conformità che chiedono separazione fisica.
+È un compromesso, non un difetto, ma va scelto sapendo cosa si sta scegliendo. Container per densità e velocità di ciclo; macchina virtuale quando l'isolamento deve reggere anche contro chi gira nel processo accanto: codice di terzi, tenant che non si fidano fra loro, requisiti di conformità che chiedono separazione fisica.
 
 **Tradotto in una frase da portare fuori dal team**: la densità di container che permette di far girare quaranta servizi su un server invece di quaranta VM è la stessa scelta che mette quei quaranta servizi dietro un unico kernel, e la seconda metà di quella frase è quella che di solito nessuno dice quando si presenta il risparmio sull'infrastruttura.
 
@@ -201,4 +201,4 @@ Le conseguenze sono tre, e sono operative:
 
 Prendi un container che gira in produzione da voi e fai i tre passaggi della prima demo: trova il PID sull'host, guarda `/proc/$PID/ns/`, leggi `/proc/$PID/status`. Dieci minuti, e il modello mentale cambia da «macchina» a «processo con una vista ristretta».
 
-Poi guarda i limiti di memoria dei vostri container. Se non sono impostati, il primo che perde memoria se la prende tutta e il kernel decide da solo chi uccidere. Se sono impostati troppo stretti, li state uccidendo voi — e in `dmesg`, non nei vostri log.
+Poi guarda i limiti di memoria dei vostri container. Se non sono impostati, il primo che perde memoria se la prende tutta e il kernel decide da solo chi uccidere. Se sono impostati troppo stretti, li state uccidendo voi, e in `dmesg`, non nei vostri log.

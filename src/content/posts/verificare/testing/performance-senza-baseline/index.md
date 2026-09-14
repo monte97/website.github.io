@@ -61,7 +61,7 @@ La seconda metà del problema è che il numero, anche con un riferimento, non di
 
 Nessuno strumento può saperlo. k6 non sa che il tuo p99 sull'export può stare a otto secondi perché è un'operazione che l'utente lancia e poi va a prendere un caffè, mentre sulla ricerca a tendina trecento millisecondi sono già troppi. Quella distinzione non sta nel codice né nell'infrastruttura: sta nel prodotto.
 
-Da qui la parte scomoda: **i criteri di accettazione devono venire da chi conosce il valore di business della funzionalità.** Non è una decisione che il team di sviluppo può prendere per conto proprio, e non è una decisione che si può rimandare al momento in cui il report è già verde — a quel punto il numero c'è già e la soglia si adatta al numero.
+Da qui la parte scomoda: **i criteri di accettazione devono venire da chi conosce il valore di business della funzionalità.** Non è una decisione che il team di sviluppo può prendere per conto proprio, e non è una decisione che si può rimandare al momento in cui il report è già verde: a quel punto il numero c'è già e la soglia si adatta al numero.
 
 La domanda da portare a quella conversazione non è «quanto deve essere veloce». È: *cosa succede al business quando questa operazione impiega dieci secondi invece di uno?* La risposta produce una soglia difendibile; «il più veloce possibile» no.
 
@@ -97,7 +97,7 @@ Vale la vecchia regola dello *shift-left*: più tardi emerge un problema di perf
 
 Un bug funzionale si isola: c'è un input che produce l'output sbagliato, si riproduce, si corregge. Un problema di performance in produzione spesso non è *un* problema: è una query, più una cache che non c'è, più un indice mancante, più una scelta di architettura fatta due anni fa. E l'unica finestra in cui puoi cambiare quella scelta di architettura è prima di costruirci sopra.
 
-È qui che sta il ponte con il resto dell'organizzazione: **una baseline presa prima della prima riga di codice costa mezza giornata, mentre scoprire a sistema costruito che la latenza non regge il carico atteso costa una riprogettazione — con il team fermo e la data di rilascio già comunicata al cliente.**
+È qui che sta il ponte con il resto dell'organizzazione: **una baseline presa prima della prima riga di codice costa mezza giornata, mentre scoprire a sistema costruito che la latenza non regge il carico atteso costa una riprogettazione, con il team fermo e la data di rilascio già comunicata al cliente.**
 
 ## Cosa fare prima del prossimo test
 

@@ -303,9 +303,9 @@ Il pattern del consumer merita un'analisi più attenta:
 
 Kafka non promette che i messaggi arrivino in ordine. Promette che **i messaggi con la stessa chiave arrivino in ordine fra loro**, e solo finché il numero di partizioni non cambia. È una garanzia più stretta di quella che la gente assume, ed è quella su cui si progetta.
 
-Le altre due che contano stanno nella stessa forma: la retention è economica perché si cancellano segmenti interi e non record, e la durabilità dipende da `acks` insieme a `min.insync.replicas` — non da uno dei due da solo.
+Le altre due che contano stanno nella stessa forma: la retention è economica perché si cancellano segmenti interi e non record, e la durabilità dipende da `acks` insieme a `min.insync.replicas`, non da uno dei due da solo.
 
-**Detto a chi non scrive codice: passare agli eventi non rende il sistema più veloce, lo rende meno accoppiato.** Un servizio lento smette di rallentare quelli che lo chiamano, e un servizio fermo smette di fermarli — il che significa che un guasto su un pezzo non diventa un guasto sul prodotto.
+**Detto a chi non scrive codice: passare agli eventi non rende il sistema più veloce, lo rende meno accoppiato.** Un servizio lento smette di rallentare quelli che lo chiamano, e un servizio fermo smette di fermarli, il che significa che un guasto su un pezzo non diventa un guasto sul prodotto.
 
 Il prezzo lo si paga altrove, ed è il tema del resto della serie: l'ordine vale solo per chiave, lo stato del consumer diventa un problema vostro, e il debug attraversa un componente in più.
 

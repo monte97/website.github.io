@@ -30,7 +30,7 @@ summary:
 openItems:
   - "L'upgrade a Pekko 1.1.x è una decisione separata: introduce evoluzioni proprie e divergenze da Akka, quindi non è più una migrazione meccanica"
   - "La migrazione ha toccato HTTP, Streams e Kafka: chi usa Cluster o sharding ha una superficie diversa da verificare"
-  - "La verifica è stata compilazione, test, avvio dei container e controllo delle risposte — non c'è una misura del comportamento a regime dopo il cambio"
+  - "La verifica è stata compilazione, test, avvio dei container e controllo delle risposte: non c'è una misura del comportamento a regime dopo il cambio"
   - "Le dipendenze di terze parti che portano un reference.conf con chiavi akka vanno controllate una per una: non esiste una regola generale"
 openNote: "Quello che questa migrazione non copre, e che va deciso o verificato caso per caso."
 mode: how-to

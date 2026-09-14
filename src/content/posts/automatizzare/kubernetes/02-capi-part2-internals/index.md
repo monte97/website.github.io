@@ -21,7 +21,7 @@ summary:
     value: "Un cluster resta in Provisioning e l'errore non è in un posto solo"
     note: "Il controllo passa fra quattro controller: senza sapere dove, si cerca a caso"
   - label: "Scelta"
-    value: "Quattro CRD annidate — Cluster, MachineDeployment, MachineSet, Machine"
+    value: "Quattro CRD annidate: Cluster, MachineDeployment, MachineSet, Machine"
     note: "Le stesse relazioni di Deployment, ReplicaSet e Pod, applicate alle macchine"
   - label: "Strumento"
     value: "Provider separati per infrastruttura, bootstrap e control plane"
@@ -31,7 +31,7 @@ summary:
 openItems:
   - "Le CRD mostrate sono in `v1beta1`: campi e nomi possono cambiare nelle versioni successive dell'API"
   - "I comandi di ispezione presuppongono il provider Proxmox: con un altro provider cambiano i nomi delle risorse di infrastruttura, non il metodo"
-  - "La teoria generale dei controller Kubernetes — informer, cache, work queue — non è trattata qui: si dà per acquisita"
+  - "La teoria generale dei controller Kubernetes (informer, cache, work queue) non è trattata qui: si dà per acquisita"
   - "Il flusso descritto è quello del percorso felice più i punti di blocco più frequenti: non è un catalogo completo dei modi in cui un provisioning può fallire"
 ---
 
@@ -41,7 +41,7 @@ La domanda non è cosa sia andato storto: è **dove guardare**. Perché in mezzo
 
 Questo articolo è la mappa di quel percorso. Non serve a costruire niente: serve a sapere, quando si blocca, quale risorsa interrogare.
 
-> La teoria generale dei controller Kubernetes — informer, cache locale, work queue, riconciliazione — è il tema di [Il meccanismo dietro kubectl apply](/blog/automatizzare/kubernetes/02-k8s-controller/). Qui si dà per acquisita.
+> La teoria generale dei controller Kubernetes (informer, cache locale, work queue, riconciliazione) è il tema di [Il meccanismo dietro kubectl apply](/blog/automatizzare/kubernetes/02-k8s-controller/). Qui si dà per acquisita.
 
 ## Chi gestisce chi
 
@@ -51,10 +51,10 @@ Due ruoli, come [nella parte precedente](/blog/automatizzare/kubernetes/01-capi-
 
 Nel management cluster convivono quattro tipi di controller, e la separazione non è pedanteria: è ciò che permette di cambiare infrastruttura senza riscrivere le risorse.
 
-- **Core controller** — gestisce `Cluster` e `Machine`, cioè le astrazioni indipendenti dalla piattaforma
-- **Infrastructure provider** — parla con Proxmox: crea VM, dischi, rete
-- **Bootstrap provider** — genera la configurazione che trasforma una macchina in un nodo
-- **Control plane provider** — si occupa dell'inizializzazione e della salute del control plane
+- **Core controller**: gestisce `Cluster` e `Machine`, cioè le astrazioni indipendenti dalla piattaforma
+- **Infrastructure provider**: parla con Proxmox: crea VM, dischi, rete
+- **Bootstrap provider**: genera la configurazione che trasforma una macchina in un nodo
+- **Control plane provider**: si occupa dell'inizializzazione e della salute del control plane
 
 Un cluster su Proxmox e uno su un cloud pubblico condividono le stesse risorse `Cluster` e `Machine`. Cambia solo chi le esegue.
 

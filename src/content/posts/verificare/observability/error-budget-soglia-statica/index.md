@@ -152,7 +152,7 @@ Un budget di errore è l'unico modo di dire a chi non scrive codice quanto può 
 
 ## Da dove partire
 
-Prendete un servizio che ha già uno SLO scritto da qualche parte — anche solo in una slide — e calcolatene l'error budget in minuti al mese. Poi guardate l'ultimo incidente e chiedetevi quanti di quei minuti ha consumato.
+Prendete un servizio che ha già uno SLO scritto da qualche parte (anche solo in una slide) e calcolatene l'error budget in minuti al mese. Poi guardate l'ultimo incidente e chiedetevi quanti di quei minuti ha consumato.
 
 Se la risposta è "non lo so", non è un problema di alerting: è che nessuno sta misurando il budget, e finché non lo si misura non c'è niente su cui alertare.
 

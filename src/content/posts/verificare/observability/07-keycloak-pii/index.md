@@ -40,9 +40,9 @@ caseStudy:
     sistema già in produzione, e cosa è costato toglierli.
 ---
 
-Abilitare il tracing su Keycloak significa ritrovarsi email, username e token JWT in chiaro negli span. Keycloak gestisce credenziali, token e sessioni — quando il tracing è attivo, tutto questo finisce nel backend di observability senza alcun filtro. Il rischio: data breach e violazione GDPR con un click su Explore.
+Abilitare il tracing su Keycloak significa ritrovarsi email, username e token JWT in chiaro negli span. Keycloak gestisce credenziali, token e sessioni: quando il tracing è attivo, tutto questo finisce nel backend di observability senza alcun filtro. Il rischio: data breach e violazione GDPR con un click su Explore.
 
-Questo articolo mostra come filtrare i dati sensibili direttamente nell'OTel Collector, prima che raggiungano Tempo. La strategia si basa su quattro tecniche — DELETE, REDACT, HASH e SANITIZE — per mantenere piena visibilità senza esporre PII.
+Questo articolo mostra come filtrare i dati sensibili direttamente nell'OTel Collector, prima che raggiungano Tempo. La strategia si basa su quattro tecniche (DELETE, REDACT, HASH e SANITIZE) per mantenere piena visibilità senza esporre PII.
 
 ---
 
@@ -378,20 +378,20 @@ docker compose -f docker-compose.keycloak-pii.yml down -v
 
 Se ti stai chiedendo se perdi capacità diagnostica, la risposta è no. Dopo il filtering hai ancora tutto quello che ti serve:
 
-- **Trace ID** — Correlazione end-to-end
-- **Span timing** — Performance analysis (quanto tempo login?)
-- **Service topology** — Quali servizi chiamati (Keycloak → Postgres)
-- **HTTP status codes** — Success/failure (200, 401, 500)
-- **Error messages** — Stack traces (senza PII)
-- **Hashed user ID** — Per-user analysis (hash deterministico, stesso utente = stesso hash)
+- **Trace ID**: correlazione end-to-end
+- **Span timing**: performance analysis (quanto tempo login?)
+- **Service topology**: quali servizi chiamati (Keycloak → Postgres)
+- **HTTP status codes**: success/failure (200, 401, 500)
+- **Error messages**: stack traces (senza PII)
+- **Hashed user ID**: per-user analysis (hash deterministico, stesso utente = stesso hash)
 
 **Dati rimossi:**
 
-- **Username/email in chiaro** — rimossi
-- **Passwords** — rimosse
-- **Token content** — rimosso
-- **Session IDs** — rimossi
-- **Valori in database queries** — rimossi
+- **Username/email in chiaro**: rimossi
+- **Passwords**: rimosse
+- **Token content**: rimosso
+- **Session IDs**: rimossi
+- **Valori in database queries**: rimossi
 
 **Trade-off: Hash Lookup**
 

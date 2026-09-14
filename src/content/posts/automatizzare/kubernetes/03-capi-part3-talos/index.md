@@ -713,13 +713,13 @@ talosctl -n 192.168.1.100 get services
 
 ## Cosa si compra con quel vincolo
 
-L'immutabilità non è una proprietà elegante: è un baratto. Si rinuncia alla possibilità di intervenire su un nodo — niente shell, niente patch al volo, niente debug con gli strumenti a cui si è abituati — e in cambio si ottiene che **ogni nodo sia identico a ogni altro per costruzione**, non per disciplina.
+L'immutabilità non è una proprietà elegante: è un baratto. Si rinuncia alla possibilità di intervenire su un nodo (niente shell, niente patch al volo, niente debug con gli strumenti a cui si è abituati) e in cambio si ottiene che **ogni nodo sia identico a ogni altro per costruzione**, non per disciplina.
 
 È il rovescio esatto dell'apertura: se non puoi modificare un nodo, non puoi nemmeno farlo divergere.
 
 Il costo va detto per intero: quando qualcosa non funziona, si diagnostica via API con `talosctl` invece che entrando nella macchina, e questo richiede al team di imparare uno strumento nuovo proprio nel momento peggiore, cioè durante un incidente. Chi arriva da anni di Ubuntu lo sente.
 
-**Tradotto per chi decide:** un parco nodi immutabile trasforma la sostituzione di una macchina da un intervento con esito incerto a un'operazione ripetibile — e la stessa proprietà rende la superficie d'attacco un fatto verificabile invece di una stima, perché non c'è niente da indurire che non sia già assente.
+**Tradotto per chi decide:** un parco nodi immutabile trasforma la sostituzione di una macchina da un intervento con esito incerto a un'operazione ripetibile, e la stessa proprietà rende la superficie d'attacco un fatto verificabile invece di una stima, perché non c'è niente da indurire che non sia già assente.
 
 ## Da dove partire
 

@@ -147,7 +147,7 @@ La teoria è interessante, ma in pratica serve sapere "per questa risorsa specif
 
 Aprite il vostro `alerts.yml` e classificate ogni regola con la tabella qui sopra: reattiva dove la risorsa si satura in secondi, predittiva dove la finestra è di ore o giorni. Le righe che non stanno da nessuna delle due parti sono quelle da guardare per prime.
 
-**Ogni alert predittivo va giustificato dal lead time che offre davvero rispetto alla sua controparte reattiva.** Se non ne offre, è un alert in più da mantenere e una sveglia in più senza finestra d'azione — e il costo di un canale di notifica che l'oncall impara a ignorare si paga sull'incidente successivo, non su questo.
+**Ogni alert predittivo va giustificato dal lead time che offre davvero rispetto alla sua controparte reattiva.** Se non ne offre, è un alert in più da mantenere e una sveglia in più senza finestra d'azione. E il costo di un canale di notifica che l'oncall impara a ignorare si paga sull'incidente successivo, non su questo.
 
 ## Risorse
 

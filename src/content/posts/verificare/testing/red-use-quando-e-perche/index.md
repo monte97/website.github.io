@@ -47,7 +47,7 @@ Un percentile risponde a: *sotto quale valore sta questa frazione delle richiest
 - **p90**: l'esperienza del 10% più lento.
 - **p99**: l'esperienza dell'1% più lento.
 
-Il salto fra p50 e p99 è l'informazione che la media distrugge. Un p50 a 90 millisecondi con un p99 a dodici secondi descrive un sistema in cui quasi tutti stanno bene e una minoranza stabile sta malissimo — che è una diagnosi completamente diversa da «il sistema è mediamente lento», e porta a interventi completamente diversi.
+Il salto fra p50 e p99 è l'informazione che la media distrugge. Un p50 a 90 millisecondi con un p99 a dodici secondi descrive un sistema in cui quasi tutti stanno bene e una minoranza stabile sta malissimo: è una diagnosi completamente diversa da «il sistema è mediamente lento», e porta a interventi completamente diversi.
 
 Ragionare per percentili cambia tre cose in concreto:
 
@@ -61,13 +61,13 @@ Il resto dell'articolo dà per scontato che si guardino distribuzioni, non medie
 
 Il metodo RED guarda il sistema da fuori, come lo vede chi lo usa. Tre metriche, tre domande.
 
-**Rate — quanto viene usato?** Il conteggio delle richieste gestite: richieste HTTP per un servizio web, query per un database, messaggi consumati per una coda. Da solo dice poco, ma è il denominatore di tutto il resto: senza il rate non puoi sapere se un aumento degli errori è un peggioramento o solo più traffico.
+**Rate: quanto viene usato?** Il conteggio delle richieste gestite: richieste HTTP per un servizio web, query per un database, messaggi consumati per una coda. Da solo dice poco, ma è il denominatore di tutto il resto: senza il rate non puoi sapere se un aumento degli errori è un peggioramento o solo più traffico.
 
 ![Il rate come fondamento delle altre misurazioni: il volume di richieste nel tempo contestualizza errori e latenza](imgs/red_rate.png)
 
-**Errors — quante falliscono?** Ogni richiesta che si chiude con un risultato diverso da quello atteso, quale che sia il motivo: errore esplicito, timeout, risposta formalmente valida ma sbagliata. Va misurato in due modi insieme, perché rispondono a domande diverse: la **percentuale** dice quanto è grave rispetto al traffico, il **valore assoluto** dice quante persone si sono arrabbiate.
+**Errors: quante falliscono?** Ogni richiesta che si chiude con un risultato diverso da quello atteso, quale che sia il motivo: errore esplicito, timeout, risposta formalmente valida ma sbagliata. Va misurato in due modi insieme, perché rispondono a domande diverse: la **percentuale** dice quanto è grave rispetto al traffico, il **valore assoluto** dice quante persone si sono arrabbiate.
 
-**Duration — quanto ci mettono?** È qui che vivono i percentili della sezione precedente.
+**Duration: quanto ci mettono?** È qui che vivono i percentili della sezione precedente.
 
 RED risponde a: **cosa sta andando storto per chi usa il sistema?** È la metrica giusta su cui costruire gli alert, perché è l'unica che corrisponde a qualcosa che qualcuno sta subendo. Un alert su «CPU all'85%» sveglia qualcuno di notte per un sistema che magari funziona benissimo; un alert su «il p99 del checkout è sopra i tre secondi» sveglia qualcuno perché il checkout è lento.
 
@@ -77,13 +77,13 @@ Il [metodo USE](https://www.brendangregg.com/usemethod.html) di Brendan Gregg gu
 
 > For every resource, check utilization, saturation, and errors.
 
-Il passo che si salta più spesso non è nessuno dei tre: è quello prima, cioè **stabilire quali sono le risorse.** CPU, memoria, dischi, rete, ma anche i limiti imposti — connection pool, thread pool, quote API, descrittori di file. Se l'inventario è incompleto, USE non troverà il collo di bottiglia: guarderà nel posto sbagliato con grande precisione.
+Il passo che si salta più spesso non è nessuno dei tre: è quello prima, cioè **stabilire quali sono le risorse.** CPU, memoria, dischi, rete, ma anche i limiti imposti (connection pool, thread pool, quote API, descrittori di file). Se l'inventario è incompleto, USE non troverà il collo di bottiglia: guarderà nel posto sbagliato con grande precisione.
 
-**Utilization — quanto è impegnata?** La percentuale di tempo in cui la risorsa è occupata. Vicino al 100% è quasi sempre un collo di bottiglia. Ma anche valori più bassi ingannano, per due motivi: un valore aggregato su cinque minuti nasconde burst molto peggiori, e alcune risorse non sono interrompibili — un disco impegnato in un'operazione la finisce, e un'operazione più urgente si accoda comunque.
+**Utilization: quanto è impegnata?** La percentuale di tempo in cui la risorsa è occupata. Vicino al 100% è quasi sempre un collo di bottiglia. Ma anche valori più bassi ingannano, per due motivi: un valore aggregato su cinque minuti nasconde burst molto peggiori, e alcune risorse non sono interrompibili: un disco impegnato in un'operazione la finisce, e un'operazione più urgente si accoda comunque.
 
-**Saturation — quanto lavoro non riesco a smaltire?** Il lavoro in eccesso che si accumula: lunghezza delle code, tempi di attesa, load average, uso dello swap, coda I/O del disco, richieste in attesa nel pool. È la metrica più diagnostica delle tre, e va letta con una soglia diversa: mentre per l'utilization il 70% è discutibile, **per la saturation qualsiasi valore diverso da zero è già un segnale.** Una risorsa può essere satura senza essere al 100% di utilizzo.
+**Saturation: quanto lavoro non riesco a smaltire?** Il lavoro in eccesso che si accumula: lunghezza delle code, tempi di attesa, load average, uso dello swap, coda I/O del disco, richieste in attesa nel pool. È la metrica più diagnostica delle tre, e va letta con una soglia diversa: mentre per l'utilization il 70% è discutibile, **per la saturation qualsiasi valore diverso da zero è già un segnale.** Una risorsa può essere satura senza essere al 100% di utilizzo.
 
-**Errors — quanto si rompe?** Errori a livello di risorsa: errori di rete, errori del file system, errori di I/O sui dischi. Non diventano subito errori applicativi, e per questo passano inosservati fino a quando non diventano un guasto. Il valore sta nel correlarli: errori di rete che salgono insieme all'utilizzo della rete raccontano una storia che nessuna delle due metriche racconta da sola.
+**Errors: quanto si rompe?** Errori a livello di risorsa: errori di rete, errori del file system, errori di I/O sui dischi. Non diventano subito errori applicativi, e per questo passano inosservati fino a quando non diventano un guasto. Il valore sta nel correlarli: errori di rete che salgono insieme all'utilizzo della rete raccontano una storia che nessuna delle due metriche racconta da sola.
 
 ![Il diagramma di flusso del metodo USE: per ogni risorsa si controllano in sequenza errori, utilizzo e saturazione per isolare il collo di bottiglia](imgs/usemethod_flow.png)
 
@@ -102,7 +102,7 @@ L'ordine non è arbitrario, ed è la parte che vale la pena portarsi via:
 
 **Si allerta su RED, si indaga con USE.** Un alert su una risorsa produce rumore, perché una risorsa carica non è un problema finché qualcuno non ne soffre. Un alert su RED corrisponde per costruzione a un utente che sta aspettando. Quando quell'alert scatta, USE dice dove guardare: quale risorsa è satura, quale sta accumulando errori.
 
-Il caso interessante è quando la sequenza si rompe. **RED degrada e USE non mostra niente**: nessuna risorsa satura, nessun errore, eppure il p99 sale. Vuol dire che il collo di bottiglia non è in questo inventario — è a valle, in un servizio terzo, in un lock applicativo, in una dipendenza che non stai misurando. Quel silenzio è un'informazione, e senza aver guardato entrambi i lati non l'avresti.
+Il caso interessante è quando la sequenza si rompe. **RED degrada e USE non mostra niente**: nessuna risorsa satura, nessun errore, eppure il p99 sale. Vuol dire che il collo di bottiglia non è in questo inventario: è a valle, in un servizio terzo, in un lock applicativo, in una dipendenza che non stai misurando. Quel silenzio è un'informazione, e senza aver guardato entrambi i lati non l'avresti.
 
 ![Dashboard USE: utilizzo, saturazione ed errori delle risorse infrastrutturali nel tempo](imgs/use_dashboard.png)
 
@@ -110,7 +110,7 @@ Il caso interessante è quando la sequenza si rompe. **RED degrada e USE non mos
 
 La ragione per cui questa distinzione vale il tempo di impararla è che si paga in ore di persona, e sempre nel momento peggiore.
 
-Un team che allerta sulle risorse riceve notifiche per sistemi che funzionano, e dopo qualche settimana smette di guardarle — così quando arriva quella vera nessuno la vede. Un team che misura solo le risorse sa che un disco è pieno ma non sa quali clienti ne stanno soffrendo, e non può decidere cosa sistemare per primo. **Separare i due livelli è quello che permette di dire «questo tocca il 3% degli utenti sul checkout» invece di «la CPU è alta», che è la differenza fra una decisione di priorità e una discussione.**
+Un team che allerta sulle risorse riceve notifiche per sistemi che funzionano, e dopo qualche settimana smette di guardarle: così quando arriva quella vera nessuno la vede. Un team che misura solo le risorse sa che un disco è pieno ma non sa quali clienti ne stanno soffrendo, e non può decidere cosa sistemare per primo. **Separare i due livelli è quello che permette di dire «questo tocca il 3% degli utenti sul checkout» invece di «la CPU è alta», che è la differenza fra una decisione di priorità e una discussione.**
 
 ## Cosa fare domani
 

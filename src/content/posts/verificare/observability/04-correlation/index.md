@@ -46,11 +46,11 @@ openItems:
 openNote: "Quello che la demo non copre, e che distingue uno scenario simulato dalla produzione."
 ---
 
-Il checkout risponde `200`. Il cliente vede la conferma dell'ordine. La notifica non parte mai, e nessuno se ne accorge finché non arriva la segnalazione — due giorni dopo, quando ricostruire cosa è successo quel pomeriggio è già archeologia.
+Il checkout risponde `200`. Il cliente vede la conferma dell'ordine. La notifica non parte mai, e nessuno se ne accorge finché non arriva la segnalazione: due giorni dopo, quando ricostruire cosa è successo quel pomeriggio è già archeologia.
 
 È il fallimento silenzioso: nessun errore nei log del checkout, perché il checkout ha fatto il suo lavoro. L'errore è di un altro servizio, in un altro log, senza niente che colleghi i due.
 
-Strumentare con OpenTelemetry serve esattamente a questo, ma avere trace e log centralizzati non basta: bisogna sapere cosa guardare. Questo articolo lo mostra su tre scenari riproducibili — il fallimento silenzioso qui sopra, un picco di latenza, e un fan-out con quattro servizi da isolare.
+Strumentare con OpenTelemetry serve esattamente a questo, ma avere trace e log centralizzati non basta: bisogna sapere cosa guardare. Questo articolo lo mostra su tre scenari riproducibili: il fallimento silenzioso qui sopra, un picco di latenza, e un fan-out con quattro servizi da isolare.
 
 Il setup dettagliato sta in appendice: serve solo a chi vuole replicare la demo, non a chi legge per capire.
 
@@ -545,9 +545,9 @@ con campionamento al 10%:              ~2,16 GB al giorno
 
 Il fattore dieci fra le due righe è il motivo per cui il campionamento non è un'ottimizzazione ma una decisione di architettura. Come si sceglie *cosa* tenere è il tema di [tail sampling e retention](/blog/verificare/observability/05-management/), dove quei numeri diventano una proiezione a dodici mesi.
 
-**Cosa non deve finirci dentro.** Token e credenziali, dati personali — email, nomi, indirizzi — e qualunque cosa che, finita in uno span, diventi un problema di conformità invece che di diagnosi. Il filtraggio si fa nel Collector, prima dello storage, ed è il tema di [PII filtering](/blog/verificare/observability/07-keycloak-pii/).
+**Cosa non deve finirci dentro.** Token e credenziali, dati personali (email, nomi, indirizzi) e qualunque cosa che, finita in uno span, diventi un problema di conformità invece che di diagnosi. Il filtraggio si fa nel Collector, prima dello storage, ed è il tema di [PII filtering](/blog/verificare/observability/07-keycloak-pii/).
 
-Sul resto vale la nota in fondo: **gli scenari qui sopra sono simulazioni controllate.** Il template lento è un `setTimeout(3000)`, l'email invalida è un flag di configurazione. In produzione gli stessi problemi sono intermittenti e nascono da combinazioni di fattori — ed è esattamente per quello che serve la strumentazione: cattura il caso quando accade, senza doverlo riprodurre.
+Sul resto vale la nota in fondo: **gli scenari qui sopra sono simulazioni controllate.** Il template lento è un `setTimeout(3000)`, l'email invalida è un flag di configurazione. In produzione gli stessi problemi sono intermittenti e nascono da combinazioni di fattori, ed è esattamente per quello che serve la strumentazione: cattura il caso quando accade, senza doverlo riprodurre.
 
 ## Appendice: Setup OpenTelemetry
 

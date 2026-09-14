@@ -31,7 +31,7 @@ openItems:
   - "Il modello dichiarativo sposta la complessità, non la elimina: il controller va aggiornato, osservato e capito quando si ferma"
   - "Il management cluster diventa una dipendenza critica: se non è disponibile, nessun workload cluster può essere modificato"
   - "Proxmox è la scelta di questo percorso perché offre controllo completo a costo contenuto: su un provider cloud i provider CAPI cambiano, i concetti no"
-  - "Sotto una certa scala — due o tre cluster che cambiano di rado — il costo di imparare e mantenere CAPI può superare quello che fa risparmiare"
+  - "Sotto una certa scala, due o tre cluster che cambiano di rado, il costo di imparare e mantenere CAPI può superare quello che fa risparmiare"
 figures:
   - kind: flow
     at: il-banco-di-prova-kind-proxmox-e-talos
@@ -63,7 +63,7 @@ Poi una volta fallisce a metà. La VM è stata creata su Proxmox, il pacchetto `
 Il primo cluster lo si monta a mano e va benissimo. La difficoltà arriva quando i cluster diventano più di uno e devono restare allineati nel tempo:
 
 - **Script personalizzati** che nascono per un caso e vengono adattati agli altri, finché nessuno sa più quale sia la versione buona
-- **Procedure manuali** documentate — si spera — in una pagina che è ferma a due upgrade fa
+- **Procedure manuali** documentate, si spera, in una pagina che è ferma a due upgrade fa
 - **Configurazioni statiche** difficili da versionare, e quindi difficili da confrontare quando due cluster si comportano diversamente
 - **Upgrade coordinati del control plane**, che è il momento in cui tutto quanto sopra si paga insieme
 
@@ -71,7 +71,7 @@ Il denominatore comune è che ogni intervento manuale introduce un punto di fall
 
 ## Se il cluster è una risorsa, valgono le abitudini che hai già
 
-[Cluster API](https://cluster-api.sigs.k8s.io/) ribalta la direzione: invece di descrivere i passi, **si dichiara il cluster che si vuole** e un controller si occupa di arrivarci — e di restarci.
+[Cluster API](https://cluster-api.sigs.k8s.io/) ribalta la direzione: invece di descrivere i passi, **si dichiara il cluster che si vuole** e un controller si occupa di arrivarci, e di restarci.
 
 L'idea in sé è quella che Kubernetes applica già ai container. Il cambio è nel soggetto: qui l'oggetto riconciliato è un cluster intero, con le sue macchine e la sua infrastruttura sottostante.
 
@@ -87,7 +87,7 @@ Il **management cluster** ospita i controller e le risorse che descrivono gli al
 
 I **workload cluster** sono quelli veri, dove stanno i carichi. Non sanno di essere gestiti: sono il risultato della riconciliazione fatta altrove.
 
-Il vantaggio è che l'intera flotta si descrive in un posto solo, versionabile. Il costo va detto subito: **il management cluster diventa una dipendenza critica.** Se non è disponibile, i workload continuano a girare — non è un proxy sul percorso del traffico — ma nessuno può più crearli, aggiornarli o scalarli finché non torna.
+Il vantaggio è che l'intera flotta si descrive in un posto solo, versionabile. Il costo va detto subito: **il management cluster diventa una dipendenza critica.** Se non è disponibile, i workload continuano a girare (non è un proxy sul percorso del traffico) ma nessuno può più crearli, aggiornarli o scalarli finché non torna.
 
 ## Il banco di prova: Kind, Proxmox e Talos
 
@@ -101,12 +101,12 @@ Su un provider cloud cambierebbe il provider di infrastruttura e resterebbe iden
 
 ## Quanto vale, fuori dal team infrastrutturale
 
-La differenza non è il tempo per creare un cluster: quello si misura in minuti in entrambi i modi. È che **la conoscenza di come sono fatti i vostri cluster smette di stare nella testa di chi ha scritto gli script e passa in un file che si legge, si rivede e si applica** — con la conseguenza che ricostruire un ambiente dopo un guasto diventa un'operazione ripetibile invece di un progetto.
+La differenza non è il tempo per creare un cluster: quello si misura in minuti in entrambi i modi. È che **la conoscenza di come sono fatti i vostri cluster smette di stare nella testa di chi ha scritto gli script e passa in un file che si legge, si rivede e si applica**: con la conseguenza che ricostruire un ambiente dopo un guasto diventa un'operazione ripetibile invece di un progetto.
 
 ## Da dove partire
 
 Prima di installare qualcosa: contate i cluster che gestite e chiedetevi quante persone saprebbero ricrearne uno da zero oggi. Se la risposta è "una", il problema di questo articolo ce l'avete già.
 
-Se la risposta è "sono due cluster e cambiano una volta l'anno", CAPI probabilmente è più macchinario di quanto serva — e vale la pena saperlo prima, non dopo aver montato un management cluster.
+Se la risposta è "sono due cluster e cambiano una volta l'anno", CAPI probabilmente è più macchinario di quanto serva, e vale la pena saperlo prima, non dopo aver montato un management cluster.
 
 La parte successiva entra nei componenti: [le CRD e il flusso di provisioning](/blog/automatizzare/kubernetes/02-capi-part2-internals/), cioè cosa succede davvero fra il `kubectl apply` e il cluster funzionante.

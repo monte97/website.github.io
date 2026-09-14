@@ -1,5 +1,5 @@
 ---
-title: Cosa Genera il Compilatore Quando Scrivi una Where() — State Machine, Iteratori e IL
+title: "Cosa Genera il Compilatore Quando Scrivi una Where(): State Machine, Iteratori e IL"
 seoTitle: "LINQ: state machine, iteratori e IL"
 date: 2026-03-07T08:00:00.000Z
 description: "Dietro ogni Where() c'è una state machine generata dal compilatore. In .NET 8 Enumerable.Where usa iteratori specializzati, e un cast li disattiva."

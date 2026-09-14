@@ -53,7 +53,7 @@ Il costo cresce con tre variabili:
 - **Numero di oggetti**: se ci sono 100.000 documenti nello store, OpenFGA deve valutare (almeno parzialmente) 100.000 cammini. Internamente applica ottimizzazioni, ma il bound superiore è proporzionale alla cardinalità.
 - **Condivisioni dirette**: ogni tupla `user:alice viewer document:X` è un caso da valutare separatamente.
 
-In [VaultDrive](https://github.com/monte97/VaultDrive) — la demo che ho costruito per questa serie — con pochi utenti e qualche centinaio di documenti la latenza di ListObjects è nell'ordine dei 5-15ms. Con 50.000 documenti e gerarchie a 4 livelli, si sale facilmente a 200-500ms. Non è un problema di OpenFGA in sé: è la natura del problema che si sta risolvendo.
+In [VaultDrive](https://github.com/monte97/VaultDrive) (la demo che ho costruito per questa serie) con pochi utenti e qualche centinaio di documenti la latenza di ListObjects è nell'ordine dei 5-15ms. Con 50.000 documenti e gerarchie a 4 livelli, si sale facilmente a 200-500ms. Non è un problema di OpenFGA in sé: è la natura del problema che si sta risolvendo.
 
 La soluzione non è evitare ListObjects. È non chiamarla quando il risultato è già noto.
 
@@ -511,9 +511,9 @@ async function instrumentedListObjects(userId, relation, type) {
 
 Le metriche da guardare in fase di ottimizzazione:
 
-- **`fga_list_objects_duration_seconds{cache_hit="false"}` P99** — latenza reale verso OpenFGA, senza cache
-- **`fga_list_objects_result_size`** — distribuzione del numero di oggetti restituiti; code con risultati da 1000+ oggetti indicano che serve pre-materializzazione
-- **Hit rate della cache** — se è sotto il 60-70%, il TTL è troppo basso o la chiave non è abbastanza specifica
+- **`fga_list_objects_duration_seconds{cache_hit="false"}` P99**: latenza reale verso OpenFGA, senza cache
+- **`fga_list_objects_result_size`**: distribuzione del numero di oggetti restituiti; code con risultati da 1000+ oggetti indicano che serve pre-materializzazione
+- **Hit rate della cache**: se è sotto il 60-70%, il TTL è troppo basso o la chiave non è abbastanza specifica
 
 ---
 

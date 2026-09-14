@@ -38,11 +38,11 @@ openNote: "Confini da conoscere prima di riusare lo stack così com'è."
 
 Il servizio in homelab l'avete montato otto mesi fa. Funziona. E non avete la più pallida idea di cosa ci sia dentro: quale versione, quali variabili d'ambiente, quale pacchetto avete installato a mano quella sera che non partiva.
 
-Finché gira, non è un problema. Diventa un problema il giorno in cui il disco muore, o volete spostarlo su un altro nodo, o semplicemente aggiornarlo — e scoprite che l'unica documentazione era la vostra memoria di allora.
+Finché gira, non è un problema. Diventa un problema il giorno in cui il disco muore, o volete spostarlo su un altro nodo, o semplicemente aggiornarlo, e scoprite che l'unica documentazione era la vostra memoria di allora.
 
 **Self-hostare un servizio significa sostituire una dipendenza da un fornitore con una dipendenza da voi stessi.** È un buon affare a una condizione sola: che voi siate ricostruibili. Altrimenti avete solo cambiato il nome del punto singolo di guasto.
 
-Questo è il percorso per [n8n](https://n8n.io/) — automazione di workflow, l'alternativa self-hosted a Zapier o Make — fatto in modo che il servizio si ricrei da Git. Il codice è su [monte97/homelab-n8n](https://github.com/monte97/homelab-n8n).
+Questo è il percorso per [n8n](https://n8n.io/) (automazione di workflow, l'alternativa self-hosted a Zapier o Make) fatto in modo che il servizio si ricrei da Git. Il codice è su [monte97/homelab-n8n](https://github.com/monte97/homelab-n8n).
 
 ## Tre livelli, tre responsabilità
 
@@ -60,7 +60,7 @@ Il valore della separazione si vede quando qualcosa cambia. Spostare il servizio
 
 La scelta di fondo è dove far girare la cosa, e vale la pena capirla perché è la meno reversibile.
 
-LXC e Docker sono entrambi container e usano gli stessi meccanismi del kernel — namespace e cgroup, gli stessi [di cui è fatto un container Docker](/blog/automatizzare/docker/docker-internals/). Cambia cosa ci si mette dentro:
+LXC e Docker sono entrambi container e usano gli stessi meccanismi del kernel: namespace e cgroup, gli stessi [di cui è fatto un container Docker](/blog/automatizzare/docker/docker-internals/). Cambia cosa ci si mette dentro:
 
 | | LXC — *system container* | Docker — *application container* |
 |---|---|---|
@@ -75,7 +75,7 @@ E qui va detto il rovescio: **kernel condiviso significa isolamento più debole 
 
 ## Il provisioning: cosa deve esistere
 
-OpenTofu — il fork open source di Terraform — descrive il container come risorsa: template, risorse assegnate, rete bridge con IP dedicato.
+OpenTofu, il fork open source di Terraform, descrive il container come risorsa: template, risorse assegnate, rete bridge con IP dedicato.
 
 Il punto che conta è **lo stato**, non la sintassi. OpenTofu tiene traccia di cosa ha creato, e questo rende la differenza fra rilanciare e ricreare: applicare due volte lo stesso file non produce due container.
 
@@ -112,7 +112,7 @@ vars:
 
 Il Compose finale è deliberatamente povero:
 
-- **Configurazione minima** — solo le variabili d'ambiente strettamente necessarie. Ogni opzione in più è una cosa da ricordare quando qualcosa non parte.
+- **Configurazione minima**: solo le variabili d'ambiente strettamente necessarie. Ogni opzione in più è una cosa da ricordare quando qualcosa non parte.
 - **Volume nominato** (`n8n_data`) per la persistenza: database SQLite interno, workflow, credenziali. È l'unica cosa che vale la pena salvare, ed è in un posto solo.
 - **`restart: unless-stopped`**, perché un riavvio del nodo non deve richiedere un intervento.
 - **Template Ansible** al posto dei valori: lo stesso file serve ambienti diversi.
@@ -121,13 +121,13 @@ Il Compose finale è deliberatamente povero:
 
 Una cosa va detta prima che qualcuno lo lanci: **il playbook cancella container e volumi esistenti prima del deploy.**
 
-Per un provisioning da zero è corretto — garantisce che il risultato sia sempre lo stesso, che è il punto dell'idempotenza. Su un'istanza con dentro workflow e credenziali che vi servono, cancella tutto.
+Per un provisioning da zero è corretto: garantisce che il risultato sia sempre lo stesso, che è il punto dell'idempotenza. Su un'istanza con dentro workflow e credenziali che vi servono, cancella tutto.
 
 Se riusate questo stack su qualcosa che contiene già dati, quella fase va ripensata prima, non dopo.
 
 ## Quanto vale, in concreto
 
-Il guadagno non è avere n8n gratis: il piano a pagamento di un SaaS costa meno di quanto valgono le vostre ore. **È che il servizio smette di essere un'installazione e diventa un file** — che si legge, si versiona, si applica su un altro nodo, e si ricostruisce dopo un guasto senza dipendere da cosa vi ricordate.
+Il guadagno non è avere n8n gratis: il piano a pagamento di un SaaS costa meno di quanto valgono le vostre ore. **È che il servizio smette di essere un'installazione e diventa un file**: che si legge, si versiona, si applica su un altro nodo, e si ricostruisce dopo un guasto senza dipendere da cosa vi ricordate.
 
 È la stessa differenza che c'è, su scala aziendale, fra un server che nessuno osa toccare e un ambiente che si ricrea. Cambia la dimensione, non il ragionamento.
 
@@ -135,11 +135,11 @@ Il guadagno non è avere n8n gratis: il piano a pagamento di un SaaS costa meno 
 
 Prendete il servizio di homelab che vi seccherebbe di più perdere e provate a scrivere, senza guardarlo, cosa ci gira sopra e come è configurato. Quello che non riuscite a scrivere è il debito.
 
-Poi cominciate da un livello solo — il Compose versionato è già metà del lavoro. OpenTofu e Ansible hanno senso quando i servizi diventano più d'uno, e prima di allora sono macchinario.
+Poi cominciate da un livello solo: il Compose versionato è già metà del lavoro. OpenTofu e Ansible hanno senso quando i servizi diventano più d'uno, e prima di allora sono macchinario.
 
 ## Risorse
 
-- [Documentazione n8n](https://docs.n8n.io/) — configurazione e variabili d'ambiente
-- [OpenTofu](https://opentofu.org/docs/) — il fork open source di Terraform
+- [Documentazione n8n](https://docs.n8n.io/): configurazione e variabili d'ambiente
+- [OpenTofu](https://opentofu.org/docs/): il fork open source di Terraform
 - [Ansible: playbook e best practice](https://docs.ansible.com/ansible/latest/playbook_guide/index.html)
 - [Proxmox VE: container LXC](https://pve.proxmox.com/wiki/Linux_Container)

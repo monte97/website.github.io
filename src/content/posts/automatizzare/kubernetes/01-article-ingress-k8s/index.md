@@ -520,7 +520,7 @@ Il guadagno non è risparmiare i terminali del `port-forward`. È che **l'indiri
 
 Da lì discendono le cose che si notano dopo: un servizio nuovo si espone aggiungendo una regola invece che una procedura, la configurazione TLS si prova prima di scoprirla in staging, e un collega che arriva sul progetto non ha bisogno di sapere quali porte tenere aperte.
 
-**Detto fuori dal team infrastrutturale:** ogni differenza fra ambiente locale e produzione è un posto in cui un bug può nascondersi fino al rilascio. Toglierne una — l'accesso ai servizi — non elimina la categoria, ma ne restringe la superficie.
+**Detto fuori dal team infrastrutturale:** ogni differenza fra ambiente locale e produzione è un posto in cui un bug può nascondersi fino al rilascio. Toglierne una, l'accesso ai servizi, non elimina la categoria, ma ne restringe la superficie.
 
 ## Da dove partire
 
