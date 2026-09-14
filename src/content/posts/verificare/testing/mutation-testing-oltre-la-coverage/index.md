@@ -148,7 +148,7 @@ Lanciate Stryker (o mutmut per Python, pitest per Java, cargo-mutants per Rust).
 
 Con `--since:main` in CI muta solo il codice cambiato nella PR: il tempo di esecuzione rimane proporzionale alla modifica, non al progetto. Con una soglia (`break: 60`) blocchi le regressioni senza richiedere la perfezione.
 
-L'obiettivo è costruire fiducia, strato dopo strato, con prove concrete. Così potete rilasciare senza la paura di rompere qualcosa. Anche di venerdì.
+L'obiettivo è costruire fiducia, strato dopo strato, con prove concrete. Così potete rilasciare senza la paura di rompere qualcosa.
 
 ---
 

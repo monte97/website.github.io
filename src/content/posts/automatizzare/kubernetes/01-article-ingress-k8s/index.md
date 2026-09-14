@@ -172,7 +172,7 @@ Ecco una rappresentazione del flusso di traffico con un Ingress Controller:
 
 Sebbene NGINX Ingress Controller sia una scelta molto popolare e stabile, esistono altre ottime opzioni che potrebbero essere più adatte a specifici casi d'uso:
 
-*   **[Traefik](https://doc.traefik.io/traefik/providers/kubernetes-ingress/)**: Un ingress controller moderno con molte funzionalità integrate come il supporto per Let's Encrypt, dashboard di monitoraggio integrate e riconoscimento automatico delle configurazioni. Offre un'esperienza utile molto piacevole ed è particolarmente adatto per ambienti dinamici.
+*   **[Traefik](https://doc.traefik.io/traefik/providers/kubernetes-ingress/)**: Un ingress controller moderno con molte funzionalità integrate come il supporto per Let's Encrypt, dashboard di monitoraggio integrate e riconoscimento automatico delle configurazioni. Offre una configurazione efficiente ed è particolarmente adatto per ambienti dinamici.
 
 *   **[Istio](https://istio.io/)**: Una piattaforma di service mesh che offre funzionalità avanzate di gestione del traffico oltre alle capacità di ingress standard. Istio è particolarmente utile quando hai bisogno di gestione avanzata del traffico, osservabilità e sicurezza tra i servizi, ma ha una curva di apprendimento più ripida.
 
@@ -375,7 +375,7 @@ Per ulteriori informazioni sui TLS secrets in Kubernetes, consulta la [documenta
 
 ### Test del Setup Iniziale
 
-Ora, dal tuo terminale (niente più porte strane!):
+Ora, dal tuo terminale (una sola porta, senza numeri da ricordare):
 
 ```bash
 # Testiamo il primo endpoint
@@ -394,7 +394,7 @@ Se eseguiamo `kubectl get pods -o wide`, vedremo che Kubernetes (tramite il suo 
 
 Questo è il cuore dell'astrazione di Kubernetes: grazie al `Service` che ci fornisce un indirizzo stabile, **non ci interessa dove si trovino fisicamente i Pod**. Questo segue il noto mantra della community Kubernetes **"Cattle, not Pets"** (trattare i server come bestiame, non come animali domestici): i Pod sono considerati risorse effimere e intercambiabili, non server unici e insostituibili.
 
-### Aggiungere un Nuovo Servizio (La Magia Dichiarativa)
+### Aggiungere un Nuovo Servizio (l'approccio dichiarativo)
 
 Per aggiungere un nuovo servizio "baz", il processo è semplice.
 
@@ -432,7 +432,7 @@ Per aggiungere un nuovo servizio "baz", il processo è semplice.
     curl http://miodominio.local/baz
     # Risposta: Servizio BAZ in linea!
     ```
-> **La Magia della "Riconciliazione"**: Non abbiamo riavviato NGINX. L'Ingress Controller ha notato il cambiamento nella risorsa `Ingress` e ha aggiornato la sua configurazione al volo. Questo è il potere del modello dichiarativo di Kubernetes.
+> **La riconciliazione**: non abbiamo riavviato NGINX. L'Ingress Controller ha notato il cambiamento nella risorsa `Ingress` e ha aggiornato la sua configurazione al volo. Questo è il potere del modello dichiarativo di Kubernetes.
 
 ---
 
@@ -440,7 +440,7 @@ Per aggiungere un nuovo servizio "baz", il processo è semplice.
 
 Finora abbiamo usato il routing basato su *percorso* (`/foo`, `/bar`). Un'alternativa molto comune e pulita è il **routing basato su host**, dove ogni servizio risponde a un suo sottodominio dedicato (es. `foo.miodominio.local`).
 
-La cosa fantastica del modello dichiarativo di Kubernetes è che **non è necessario distruggere e ricreare nulla** per fare questo cambio. Possiamo passare da una strategia di routing all'altra semplicemente modificando e ri-applicando i nostri file di configurazione. Il cluster si occuperà di riconciliare lo stato.
+Il vantaggio del modello dichiarativo di Kubernetes è che **non è necessario distruggere e ricreare nulla** per fare questo cambio. Possiamo passare da una strategia di routing all'altra semplicemente modificando e ri-applicando i nostri file di configurazione. Il cluster si occuperà di riconciliare lo stato.
 
 Questo approccio è spesso preferibile perché isola completamente i servizi e permette di avere percorsi (`/api`, `/v2`, etc.) indipendenti per ciascuno di essi.
 

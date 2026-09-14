@@ -59,7 +59,7 @@ Senza nessuno dei tre, il risultato del performance testing non è bianco o nero
 
 La seconda metà del problema è che il numero, anche con un riferimento, non dice se va bene.
 
-Nessuno strumento può saperlo. k6 non sa che il tuo p99 sull'export può stare a otto secondi perché è un'operazione che l'utente lancia e poi va a prendere un caffè, mentre sulla ricerca a tendina trecento millisecondi sono già troppi. Quella distinzione non sta nel codice né nell'infrastruttura: sta nel prodotto.
+Nessuno strumento può saperlo. k6 non sa che il tuo p99 sull'export può stare a otto secondi perché è un'operazione che l'utente lancia e poi abbandona per minuti, mentre sulla ricerca a tendina trecento millisecondi sono già troppi. Quella distinzione non sta nel codice né nell'infrastruttura: sta nel prodotto.
 
 Da qui la parte scomoda: **i criteri di accettazione devono venire da chi conosce il valore di business della funzionalità.** Non è una decisione che il team di sviluppo può prendere per conto proprio, e non è una decisione che si può rimandare al momento in cui il report è già verde: a quel punto il numero c'è già e la soglia si adatta al numero.
 

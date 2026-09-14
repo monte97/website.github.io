@@ -36,7 +36,7 @@ openItems:
 openNote: "Confini da conoscere prima di riusare lo stack così com'è."
 ---
 
-Il servizio in homelab l'avete montato otto mesi fa. Funziona. E non avete la più pallida idea di cosa ci sia dentro: quale versione, quali variabili d'ambiente, quale pacchetto avete installato a mano quella sera che non partiva.
+Il servizio in homelab l'avete montato otto mesi fa. Funziona. E non sapete cosa ci sia dentro: quale versione, quali variabili d'ambiente, quale pacchetto avete installato a mano quella sera che non partiva.
 
 Finché gira, non è un problema. Diventa un problema il giorno in cui il disco muore, o volete spostarlo su un altro nodo, o semplicemente aggiornarlo, e scoprite che l'unica documentazione era la vostra memoria di allora.
 
@@ -58,7 +58,7 @@ Il valore della separazione si vede quando qualcosa cambia. Spostare il servizio
 
 ## Perché un container LXC e non una VM
 
-La scelta di fondo è dove far girare la cosa, e vale la pena capirla perché è la meno reversibile.
+La scelta di fondo è dove far girare il servizio, e vale la pena capirla perché è la meno reversibile.
 
 LXC e Docker sono entrambi container e usano gli stessi meccanismi del kernel: namespace e cgroup, gli stessi [di cui è fatto un container Docker](/blog/automatizzare/docker/docker-internals/). Cambia cosa ci si mette dentro:
 

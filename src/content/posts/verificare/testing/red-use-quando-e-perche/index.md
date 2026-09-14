@@ -35,7 +35,7 @@ openItems:
 
 Il grafico della latenza media è una linea piatta a 180 millisecondi. È piatta da settimane. Nello stesso periodo il supporto raccoglie segnalazioni di lentezza, sempre dagli stessi tre clienti.
 
-Il grafico non sta mentendo: la media *è* 180 millisecondi. Sta facendo esattamente quello che una media fa, cioè nascondere la coda. Se il 97% delle richieste risponde in 90 millisecondi e il 3% in dodici secondi, la media resta buona e quel 3% è la tua casella di posta.
+Il grafico non sta mentendo: la media *è* 180 millisecondi. Sta facendo esattamente quello che una media fa, cioè nascondere la coda. Se il 97% delle richieste risponde in 90 millisecondi e il 3% in dodici secondi, la media resta buona e quel 3% genera le segnalazioni al supporto.
 
 Il pezzo precedente della serie, [Mille richieste al secondo non vogliono dire niente](/blog/verificare/testing/performance-senza-baseline/), è su cosa decidere prima di misurare. Questo è su cosa guardare nei numeri una volta che ci sono.
 
@@ -65,7 +65,7 @@ Il metodo RED guarda il sistema da fuori, come lo vede chi lo usa. Tre metriche,
 
 ![Il rate come fondamento delle altre misurazioni: il volume di richieste nel tempo contestualizza errori e latenza](imgs/red_rate.png)
 
-**Errors: quante falliscono?** Ogni richiesta che si chiude con un risultato diverso da quello atteso, quale che sia il motivo: errore esplicito, timeout, risposta formalmente valida ma sbagliata. Va misurato in due modi insieme, perché rispondono a domande diverse: la **percentuale** dice quanto è grave rispetto al traffico, il **valore assoluto** dice quante persone si sono arrabbiate.
+**Errors: quante falliscono?** Ogni richiesta che si chiude con un risultato diverso da quello atteso, quale che sia il motivo: errore esplicito, timeout, risposta formalmente valida ma sbagliata. Va misurato in due modi insieme, perché rispondono a domande diverse: la **percentuale** dice quanto è grave rispetto al traffico, il **valore assoluto** dice quante persone hanno subito l'errore.
 
 **Duration: quanto ci mettono?** È qui che vivono i percentili della sezione precedente.
 
