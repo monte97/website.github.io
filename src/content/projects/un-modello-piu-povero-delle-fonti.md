@@ -1,6 +1,6 @@
 ---
 title: "Un modello più povero delle fonti"
-description: "Progettazione da zero di uno strato di raccolta dati a due fonti. Il modello interno è deliberatamente più povero dell'unione delle sorgenti, e il confine fra codice e configurazione sta dove lo mette l'ammortamento."
+description: "Progettazione da zero di uno strato di raccolta su fornitori con modelli di accesso incompatibili. Il modello interno è deliberatamente più povero dell'unione delle sorgenti, e il confine fra codice e configurazione sta dove lo mette l'ammortamento."
 type: case-study
 pillar: progettare
 pillarApplied: progettare
@@ -14,9 +14,9 @@ thesis: >
   Standardizzare non è mettere insieme ciò che le fonti mandano: è decidere cosa non
   portare. Un modello più povero delle sorgenti rende il numero di sorgenti irrilevante.
 oggetto: >
-  Uno strato di raccolta dati costruito da zero su due fornitori di localizzazione già
-  scelti, con API di forma diversa: uno espone il parco intero in una chiamata, l'altro
-  obbliga a chiedere unità per unità.
+  Uno strato di raccolta costruito da zero su fornitori di localizzazione già selezionati,
+  con modelli di accesso incompatibili: alcuni espongono l'insieme in una chiamata, altri
+  impongono di interrogare una unità per volta.
 metodo: >
   Due proprietà dichiarate prima di scrivere una riga, aggiungere una fonte costa un
   pezzo nuovo e nessuna modifica altrove, chi consuma non sa da dove arriva il dato, e
@@ -27,8 +27,7 @@ esito: >
   N lettori da mantenere, un limite di chiamate per fonte, e un modello che dal giorno in
   cui viene trasportato a valle si cambia solo con una migrazione.
 anonimizzazione: >
-  Committente, settore e fornitori sono omessi. Le due fonti sono reali e la differenza
-  fra le loro API è quella descritta; il dominio in cui la storia è ambientata no. Le
+  Committente, settore e fornitori sono omessi. Le sorgenti e la differenza fra i loro modelli di accesso sono reali; il dominio in cui la storia è ambientata no. Le
   assenze elencate sotto "cosa il sistema non contiene" sono fatti sul risultato, non
   decisioni prese in riunione.
 ---
@@ -39,22 +38,22 @@ anonimizzazione: >
 
 Il parco è distribuito su impianti di conferimento, mezzi in transito e piazzali di
 sosta. Ogni cassone monta un dispositivo di localizzazione che ne trasmette la posizione, e
-i dispositivi provengono da due fornitori distinti, entrambi già sotto contratto quando il
-progetto è iniziato.
+i dispositivi provengono da fornitori distinti, già sotto contratto quando il progetto è
+iniziato.
 
-Il requisito era costruire da zero lo strato di raccolta: leggere entrambe le sorgenti e
-consegnare a valle un'unica rappresentazione del parco, non due insiemi da riconciliare
+Il requisito era costruire da zero lo strato di raccolta: leggere tutte le sorgenti e
+consegnare a valle un'unica rappresentazione del parco, non insiemi separati da riconciliare
 a posteriori.
 
-## Due fornitori, due modelli di accesso diversi
+## Modelli di accesso incompatibili
 
-Il primo fornitore espone il parco intero in una chiamata sola: una richiesta, e torna
-l'elenco con le posizioni aggiornate.
+Un fornitore espone l'intero parco in una chiamata: una richiesta, e restituisce l'elenco
+con le posizioni aggiornate.
 
-Il secondo no. Il secondo richiede prima l'elenco delle matricole, poi una chiamata per ciascuna. Il parco intero è altrettante chiamate, che diventano un ritmo da
+Un altro richiede prima l'elenco delle matricole, poi una chiamata per ciascuna. Il parco intero è altrettante chiamate, che diventano un ritmo da
 rispettare: se lo interroghi come vorresti ti chiude fuori.
 
-Nessuno dei due è sbagliato. Il primo ha costruito un prodotto per chi guarda una flotta; il
+Nessuno dei due approcci è sbagliato. Il primo ha costruito un prodotto per chi guarda una flotta; il
 secondo per chi guarda una singola unità. Risolvono due problemi diversi, li risolvono bene entrambi,
 e non si sono mai parlati, non hanno nessun motivo per farlo.
 
@@ -78,8 +77,9 @@ Sono due frasi banali. Tutto l'interesse sta in cosa si è dovuto rinunciare per
 
 ## L'alternativa praticabile, e perché non regge
 
-Il modo ovvio di riconciliare due fonti è un modello interno che le contiene entrambe. Prendi
-i campi del primo, aggiungi quelli del secondo, quelli che una fonte non manda restano vuoti.
+Il modo ovvio di riconciliare sorgenti eterogenee è un modello interno che le contiene
+tutte. Si prendono i campi di ciascuna e si sommano; quelli che una sorgente non trasmette
+restano vuoti.
 È una soluzione praticabile e funzionante.
 
 Funziona il primo giorno. Funziona anche il secondo.
@@ -97,8 +97,7 @@ prudenza.
 
 ## Standardizzare è sottrarre
 
-La decisione è stata fare il contrario: **il modello interno è più povero di tutte e due le
-fonti.**
+La decisione è stata fare il contrario: **il modello interno è più povero di ogni sorgente che lo alimenta.**
 
 Contiene ciò che serve a valle (posizione del cassone, istante della rilevazione,
 matricola) e nient'altro. Ciò che una sorgente trasmette in eccesso viene scartato al bordo, deliberatamente.
@@ -119,8 +118,8 @@ da due lati.
 In un pezzo di codice per fonte, e in nessun altro posto.
 
 Ogni fonte ha il suo lettore, e ogni lettore può adottare la forma che la sorgente impone.
-Quello del secondo fornitore fa due giri, prima chiede l'elenco delle matricole, poi le
-posizioni una per una, e ha un ritmo diverso dall'altro. Il vincolo è imposto dal fornitore, e il lettore lo assorbe.
+Il lettore di una sorgente che impone l'interrogazione per unità esegue due passaggi e
+adotta una propria cadenza. Il vincolo è imposto dal fornitore, e il lettore lo assorbe.
 
 Il ritmo, in particolare, non è una decisione di progetto: è un vincolo del fornitore, e
 cambia senza preavviso quando cambia il loro contratto. Per questo vive in configurazione e
@@ -128,7 +127,7 @@ non nel codice. È la differenza fra "abbiamo scelto di interrogare ogni dodici 
 "ogni dodici secondi è quello che ci lasciano fare oggi".
 
 L'uscita è una sola. Tutti i lettori producono lo stesso oggetto e lo consegnano allo stesso
-posto, e da lì in poi il sistema non sa più che i fornitori erano due.
+posto, e da lì in poi il sistema non distingue più la sorgente di provenienza.
 
 ## Cosa il sistema non contiene
 
@@ -157,7 +156,7 @@ qualcuno a valle sta leggendo dentro quel campo.
 Tre, e vanno dichiarati: una progettazione di cui non si espone il costo non è
 valutabile.
 
-**Si mantengono N lettori invece di un'integrazione sola.** Due oggi. Ogni fonte nuova è
+**Si mantiene un lettore per sorgente invece di un'integrazione unica.** Ogni fonte nuova è
 codice nuovo da scrivere, testare e tenere in vita quando il fornitore cambia qualcosa.
 
 **Ogni fonte porta il suo limite di chiamate**, e quel numero vive in configurazione. Esiste quindi un parametro che può essere impostato in modo errato, e una restrizione
@@ -174,10 +173,11 @@ costo.
 Qui il pezzo esce dal proprio caso, perché chi legge sta quasi sempre pensando a un numero
 più grande di due.
 
-Un lettore per fonte è giusto a due. **Non è giusto a cento.**
+Questo caso ha due sorgenti, ed è giusto dirlo: un lettore per sorgente è la scelta
+corretta a quell'ordine di grandezza. **Non lo è a cento.**
 
-La ragione è di ammortamento. L'adapter generico che a due fonti è un
-prodotto inutile da mantenere, a molte fonti è l'unica strada praticabile: la scrittura manuale di cento lettori non è sostenibile, e la qualità degrada ben prima
+La ragione è di ammortamento. L'adapter generico, superfluo quando le sorgenti sono poche, diventa l'unica strada
+praticabile quando sono molte: la scrittura manuale di cento lettori non è sostenibile, e la qualità degrada ben prima
 di arrivare in fondo.
 
 Ma la forma che prende non è nemmeno "un file di configurazione gigante", che è il modo in
@@ -188,7 +188,7 @@ l'architettura: si contano le forme di accesso davvero diverse, e di solito sono
 delle fonti.
 
 E la cosa che **non** cambia con la scala, anzi si irrigidisce: il modello interno più povero
-dell'unione delle fonti. A due sorgenti si può tollerare qualche campo superfluo, e il costo emerge dopo mesi. A cento sorgenti il modello esteso non supera la fase di progettazione: l'unione di cento
+dell'unione delle fonti. Con poche sorgenti si può tollerare qualche campo superfluo, e il costo emerge dopo mesi. A cento sorgenti il modello esteso non supera la fase di progettazione: l'unione di cento
 schemi non è governabile.
 
 Chi ha letto un articolo dice "un lettore per fonte". Chi l'ha costruito sa dove cade la
@@ -209,5 +209,5 @@ differenza fra un debito e una sorpresa.
 
 ---
 
-*Il committente, il settore e i fornitori sono omessi. Le due fonti sono reali e la
-differenza fra le loro API è quella descritta; il dominio in cui la storia è ambientata no.*
+*Il committente, il settore e i fornitori sono omessi. Le sorgenti e la differenza fra i
+loro modelli di accesso sono reali; il dominio in cui la vicenda è ambientata no.*

@@ -2,7 +2,7 @@
 title: "Cento sorgenti aperte, un modello solo"
 seoTitle: "Aggregare dati aperti: un modello solo"
 date: 2026-09-14T09:00:00.000Z
-description: "Cosa cambia passando da due fonti a centinaia: dove passa il confine fra codice e configurazione, perché la provenienza diventa un requisito, e qual è la parte che fa fallire questi progetti."
+description: "Cosa cambia quando le sorgenti da aggregare passano da poche a centinaia: dove passa il confine fra codice e configurazione, perché la provenienza diventa un requisito, e qual è la parte che fa fallire questi progetti."
 pillar: progettare
 category: system-design
 tags:
@@ -15,7 +15,7 @@ draft: false
 reviewed: false
 caseStudy:
   slug: un-modello-piu-povero-delle-fonti
-  hook: "Il caso a due fonti da cui parte questo ragionamento."
+  hook: "Il caso da cui parte questo ragionamento."
 ---
 
 # Cento sorgenti aperte, un modello solo
@@ -24,7 +24,8 @@ caseStudy:
 > significano quando due enti chiamano la stessa cosa in due modi, e nessuno dei due
 > risponde al telefono.
 
-Ho costruito uno strato di raccolta dati con due fonti, e ne ho scritto altrove. Questo
+Ho progettato uno strato di raccolta su un numero ridotto di sorgenti, e ne ho scritto
+altrove. Questo
 pezzo parte da lì e va dove quel caso non arriva: **cosa cambia davvero quando le fonti
 sono centinaia**, e quale parte del problema resta fuori.
 
@@ -35,7 +36,7 @@ interessante. Le cose che cambiano sono due, e solo una è architettura.
 
 Il modello interno deve essere **più povero dell'unione delle fonti**.
 
-A due sorgenti si può tollerare qualche campo superfluo, lasciando vuoto ciò che una fonte
+Con poche sorgenti si può tollerare qualche campo superfluo, lasciando vuoto ciò che una fonte
 non trasmette; il costo emerge dopo mesi, quando a valle compare il primo `if` che discrimina
 sulla provenienza.
 
@@ -44,19 +45,19 @@ progettazione.
 nessuno riesce a tenere in testa l'unione di cento schemi, e chi ci prova produce un
 dizionario di trecento campi di cui duecento sono nulli per quasi tutte le righe.
 
-Il criterio è lo stesso a due e a cento: **il modello contiene quello che serve a chi
+Il criterio non dipende dal numero di sorgenti: **il modello contiene quello che serve a chi
 consuma, non quello che le fonti offrono.** È una decisione di sottrazione, e va presa
 all'inizio perché dopo non si può più prendere: da un modello che contiene tutto non si
 toglie niente, perché non sai chi sta leggendo cosa.
 
 ## La prima cosa che cambia: dove passa il confine fra codice e configurazione
 
-A due fonti ho scritto un lettore per fonte, e non ho costruito l'adapter generico guidato
-da configurazione. Era la scelta giusta a quel numero, e non lo è al vostro.
+Su poche sorgenti ho scritto un lettore per sorgente, senza costruire l'adapter generico
+guidato da configurazione. È la scelta corretta a quell'ordine di grandezza, e non lo è al
+vostro.
 
 La ragione è di **ammortamento**. Un adapter generico è un prodotto: va
-progettato, testato, documentato e mantenuto. A due fonti non si ripaga. A cento è l'unica
-strada, perché nessuno scrive cento lettori a mano, e la qualità degrada ben prima di arrivare in fondo all'elenco.
+progettato, testato, documentato e mantenuto. Su poche sorgenti non si ripaga. Su molte è l'unica strada praticabile, perché nessuno scrive cento lettori a mano, e la qualità degrada ben prima di arrivare in fondo all'elenco.
 
 Ma la forma che prende non è "un file di configurazione gigante", che è il modo in cui
 questa idea fallisce di solito: si sposta la complessità dal codice, dove si legge e si
@@ -77,7 +78,7 @@ parla un protocollo nuovo è un tipo nuovo, e capita raramente.
 
 ## La seconda cosa che cambia, ed è il rovescio di una regola
 
-Nel caso a due fonti una delle due proprietà volute era che **chi consuma non sappia da dove
+In quel caso una delle proprietà volute era che **chi consuma non sappia da dove
 arriva il dato**. Serviva a impedire che il consumatore si accorgesse della differenza fra i
 fornitori e ci costruisse sopra un ramo.
 
@@ -106,14 +107,13 @@ aggiornato una volta l'anno convivono nello stesso modello, e il dato aggregato 
 quanto il suo pezzo più vecchio. Se questa informazione non arriva fino a chi consuma, il
 sistema produce con sicurezza una risposta che ha dentro un numero del 2019.
 
-**Il ritmo lo impongono loro.** Vale con due fornitori commerciali e vale con cento enti: la
+**Il ritmo lo impongono loro.** Vale con i fornitori commerciali e vale con gli enti pubblici: la
 cadenza di interrogazione costituisce un vincolo esterno, soggetto a variazioni
 senza preavviso. Per questo vive in configurazione, per sorgente, e non nel codice.
 
 ## La parte che questo caso non copre
 
-Nel caso a due fonti l'identità era data. Ogni unità aveva una matricola, entrambi i
-fornitori parlavano di quella, e mettere insieme i loro dati era un'operazione meccanica.
+In quel caso l'identità era data. Ogni unità aveva una matricola, tutte le sorgenti vi facevano riferimento, e mettere insieme i loro dati era un'operazione meccanica.
 
 **Nel vostro problema non è così, e questa è la parte difficile.**
 
@@ -149,6 +149,6 @@ senza segnalazioni.
 
 ---
 
-*Questo pezzo estende un caso reale a due fonti, che ho raccontato altrove in forma
+*Questo testo estende un caso reale, di dimensioni ridotte, raccontato altrove in forma
 anonimizzata. Le considerazioni sulla scala sono ragionamento di progetto, non misure: dove
 parlo di cento sorgenti sto descrivendo una direzione, non un sistema che ho costruito.*
