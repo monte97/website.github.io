@@ -35,11 +35,12 @@ interessante. Le cose che cambiano sono due, e solo una è architettura.
 
 Il modello interno deve essere **più povero dell'unione delle fonti**.
 
-A due fonti si può barare: tieni qualche campo di troppo, lasci vuoto quello che una fonte
-non manda, e te ne accorgi dopo mesi quando a valle è spuntato il primo `if` che chiede "ma
-questo dato da dove viene?".
+A due sorgenti si può tollerare qualche campo superfluo, lasciando vuoto ciò che una fonte
+non trasmette; il costo emerge dopo mesi, quando a valle compare il primo `if` che discrimina
+sulla provenienza.
 
-A centinaia non si bara, perché il modello ricco muore prima della fase di progettazione:
+A centinaia questa tolleranza non è praticabile: il modello esteso non supera la fase di
+progettazione.
 nessuno riesce a tenere in testa l'unione di cento schemi, e chi ci prova produce un
 dizionario di trecento campi di cui duecento sono nulli per quasi tutte le righe.
 
@@ -53,10 +54,9 @@ toglie niente, perché non sai chi sta leggendo cosa.
 A due fonti ho scritto un lettore per fonte, e non ho costruito l'adapter generico guidato
 da configurazione. Era la scelta giusta a quel numero, e non lo è al vostro.
 
-La ragione non è ideologica, è di **ammortamento**. Un adapter generico è un prodotto: va
+La ragione è di **ammortamento**. Un adapter generico è un prodotto: va
 progettato, testato, documentato e mantenuto. A due fonti non si ripaga. A cento è l'unica
-strada, perché nessuno scrive cento lettori a mano — e chi ci prova li scrive male dal
-ventesimo in poi, quando ha smesso di divertirsi.
+strada, perché nessuno scrive cento lettori a mano, e la qualità degrada ben prima di arrivare in fondo all'elenco.
 
 Ma la forma che prende non è "un file di configurazione gigante", che è il modo in cui
 questa idea fallisce di solito: si sposta la complessità dal codice, dove si legge e si
@@ -70,8 +70,8 @@ endpoint di interrogazione semantica. Una pagina HTML da cui si estrae una tabel
 nessuno ama ma che c'è sempre. Cinque o sei famiglie coprono la stragrande maggioranza di un
 catalogo nazionale.
 
-Il criterio per contare i tipi non è architetturale, è empirico: **si contano le forme di
-accesso davvero diverse**, non le sorgenti. Il codice sta nel tipo, la differenza sta nel
+Il criterio per contare i tipi è empirico: **si contano le forme di accesso effettivamente
+diverse**, non le sorgenti. Il codice sta nel tipo, la differenza sta nel
 dato. Una sorgente nuova che parla un protocollo noto è una riga di configurazione; una che
 parla un protocollo nuovo è un tipo nuovo, e capita raramente.
 
@@ -85,21 +85,20 @@ Con i dati aperti quella regola si rovescia a metà, e la distinzione è sottile
 
 La **provenienza è un requisito**, non un dettaglio: ogni sorgente ha la sua licenza, la sua
 attribuzione, la sua data di aggiornamento, e un dato aggregato che non sa dire da dove viene
-è inutilizzabile — legalmente prima ancora che tecnicamente.
+è inutilizzabile, legalmente prima ancora che tecnicamente.
 
-Quello che resta vietato non è sapere la provenienza: è **ramificare** su di essa. La
+Resta invece da evitare il **ramificare** su di essa. La
 provenienza è un campo del dato, non un `if` nel consumatore. Detto altrimenti: chi consuma
 deve poter **citare** la fonte, non deve poter **comportarsi diversamente** a seconda della
 fonte. Nel momento in cui un servizio a valle contiene "se viene dal catalogo regionale
 allora", la normalizzazione ha fallito e nessuno se ne accorgerà per mesi.
 
-## Tre cose che spaventano, e non sono quelle che sembrano
+## Tre problemi ricorrenti, diversi da come vengono percepiti
 
 **Le sorgenti spariscono, e non è un incidente.** Un endpoint che smette di rispondere, un
-URL che cambia, un formato che passa da CSV a JSON senza avviso: nei dati aperti è la
-normalità, non l'eccezione. Un sistema che tratta ogni fonte assente come un guasto genera
-un rumore di allarmi che in tre settimane nessuno guarda più. La domanda giusta non è "questa
-fonte risponde?" ma "**da quanto** non risponde, e qualcuno se ne è accorto?". L'assenza va
+URL che cambia, un formato che passa da CSV a JSON senza avviso: nei dati aperti rientra nel funzionamento normale. Un sistema che tratta ogni fonte assente come un guasto genera
+un rumore di allarmi che in tre settimane nessuno guarda più. La domanda utile riguarda **da quanto tempo** una fonte non risponde, e se qualcuno se ne
+è accorto. L'assenza va
 misurata, non segnalata.
 
 **La freschezza è per sorgente, non per sistema.** Un catalogo aggiornato ogni notte e uno
@@ -108,10 +107,10 @@ quanto il suo pezzo più vecchio. Se questa informazione non arriva fino a chi c
 sistema produce con sicurezza una risposta che ha dentro un numero del 2019.
 
 **Il ritmo lo impongono loro.** Vale con due fornitori commerciali e vale con cento enti: la
-cadenza di interrogazione non è una scelta di progetto, è un vincolo esterno che cambia
+cadenza di interrogazione costituisce un vincolo esterno, soggetto a variazioni
 senza preavviso. Per questo vive in configurazione, per sorgente, e non nel codice.
 
-## La parte che non ho risolto, e ve la dico
+## La parte che questo caso non copre
 
 Nel caso a due fonti l'identità era data. Ogni unità aveva una matricola, entrambi i
 fornitori parlavano di quella, e mettere insieme i loro dati era un'operazione meccanica.
@@ -122,10 +121,10 @@ Lo stesso comune scritto in quattro modi. Un ente che usa il codice ISTAT e un a
 il proprio codice interno. La stessa struttura che compare in due cataloghi con due
 denominazioni e nessun identificatore in comune. Due indirizzi che sono lo stesso posto.
 
-Questo non è un problema di lettura né di normalizzazione: è **riconciliazione di identità**,
+Questo rientra nella **riconciliazione di identità**,
 ed è il motivo per cui i progetti di aggregazione di dati aperti falliscono quando
 falliscono. Si risolve con chiavi autorevoli dove esistono, con regole di corrispondenza dove
-no, e con un posto dove un umano decide i casi che le regole non chiudono — che è la parte
+no, e con un posto dove un umano decide i casi che le regole non chiudono, che è la parte
 che nessuno mette a preventivo e che poi costa più di tutto il resto.
 
 Non è la parte che ho risolto nel caso che ho raccontato. Dirlo prima è più utile che
@@ -145,8 +144,8 @@ tecnico. Se no, è un problema di processo e serve qualcuno che decida.
 **Cosa serve davvero a chi consuma?** È la domanda che definisce il modello povero, e
 l'unica che dice quanto si può buttare via.
 
-**Chi risponde quando una fonte cambia senza avvisare?** Non è manutenzione ordinaria:
-è un ruolo, e se non ha un nome il sistema si degrada in silenzio.
+**Chi risponde quando una fonte cambia senza avvisare?** È un ruolo, non manutenzione ordinaria, e se non ha un titolare il sistema si degrada
+senza segnalazioni.
 
 ---
 
