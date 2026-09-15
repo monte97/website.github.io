@@ -73,9 +73,9 @@ fonte si determina al momento della seconda, e in seguito non è più negoziabil
 le giacenze, il report mensile: nessuno dei tre deve contenere un ramo che dice "se viene dal
 fornitore A". Nel momento in cui quel ramo esiste, si moltiplica.
 
-Sono due frasi banali. Tutto l'interesse sta in cosa si è dovuto rinunciare per tenerle vere.
+Sono due frasi banali. Quello che conta è a cosa si è rinunciato per tenerle vere.
 
-## L'alternativa praticabile, e perché non regge
+## Il modello che contiene tutte le fonti
 
 Il modo ovvio di riconciliare sorgenti eterogenee è un modello interno che le contiene
 tutte. Si prendono i campi di ciascuna e si sommano; quelli che una sorgente non trasmette
@@ -91,9 +91,8 @@ cassoni, e scrive un `if`. Poi un altro servizio scopre la stessa cosa e scrive 
 per cui chi consuma non deve sapere da dove arriva il dato, è persa senza che nessuno se ne
 sia accorto, perché **glielo dice quale campo è pieno**.
 
-È l'alternativa scartata, e vale la pena spiegare perché risulti attraente: non richiede di
-scartare nulla. Ogni informazione che una fonte ti dà finisce da qualche parte. Sembra
-prudenza.
+È l'alternativa scartata, ed è attraente per una ragione precisa: non richiede di scartare
+nulla. Ogni informazione che una fonte trasmette finisce da qualche parte. Sembra prudenza.
 
 ## Standardizzare è sottrarre
 
@@ -131,10 +130,9 @@ posto, e da lì in poi il sistema non distingue più la sorgente di provenienza.
 
 ## Cosa il sistema non contiene
 
-Tre cose, e le dico perché la loro assenza è metà del progetto, anche se nessuna delle
+Sono tre, e le dico perché la loro assenza è metà del progetto, anche se nessuna delle
 tre è stata discussa in riunione. Non è che le abbiamo valutate e scartate: è che a due
-fonti non servivano, e il costo di costruirle non si sarebbe ripagato. La differenza fra
-queste due frasi conta, e più avanti si vede perché.
+fonti non servivano, e il costo di costruirle non si sarebbe ripagato.
 
 **Non c'è un adapter generico guidato da configurazione.** Un pezzo unico che legge un file
 di mappature e si adatta a qualunque fonte è la soluzione che sembra più matura. A due
@@ -153,8 +151,8 @@ qualcuno a valle sta leggendo dentro quel campo.
 
 ## Il prezzo
 
-Tre, e vanno dichiarati: una progettazione di cui non si espone il costo non è
-valutabile.
+Il prezzo è di tre voci, e vanno dichiarate: una progettazione di cui non si espone il
+costo non è valutabile.
 
 **Si mantiene un lettore per sorgente invece di un'integrazione unica.** Ogni fonte nuova è
 codice nuovo da scrivere, testare e tenere in vita quando il fornitore cambia qualcosa.
@@ -168,10 +166,9 @@ e si paga tutto insieme. Il modo di renderlo sostenibile è tenerlo abbastanza p
 doverlo cambiare spesso, che è esattamente la stessa decisione di prima, vista dal lato del
 costo.
 
-## La linea: a quante fonti questa risposta si rovescia
+## A quante fonti la risposta cambia
 
-Qui il pezzo esce dal proprio caso, perché chi legge sta quasi sempre pensando a un numero
-più grande di due.
+Chi legge sta quasi sempre pensando a un numero più grande di due.
 
 Questo caso ha due sorgenti, ed è giusto dirlo: un lettore per sorgente è la scelta
 corretta a quell'ordine di grandezza. **Non lo è a cento.**
@@ -190,9 +187,6 @@ delle fonti.
 E la cosa che **non** cambia con la scala, anzi si irrigidisce: il modello interno più povero
 dell'unione delle fonti. Con poche sorgenti si può tollerare qualche campo superfluo, e il costo emerge dopo mesi. A cento sorgenti il modello esteso non supera la fase di progettazione: l'unione di cento
 schemi non è governabile.
-
-Chi ha letto un articolo dice "un lettore per fonte". Chi l'ha costruito sa dove cade la
-linea, e la dichiara.
 
 ## Cosa è rimasto in mano al committente
 
