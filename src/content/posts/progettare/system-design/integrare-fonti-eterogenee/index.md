@@ -1,6 +1,6 @@
 ---
-title: "Integrare fonti che non si sono messe d'accordo"
-seoTitle: "Integrare fonti eterogenee: un modello solo"
+title: "Integrare molte sorgenti: cambia il confine, non il modello"
+seoTitle: "Integrazione multi-sorgente: il confine e il modello"
 date: 2026-09-14T09:00:00.000Z
 description: "Quando le sorgenti da integrare diventano molte, cambiano due cose: dove passa il confine fra codice e configurazione, e quale parte del problema diventa quella che fa fallire il progetto."
 pillar: progettare
@@ -17,11 +17,12 @@ caseStudy:
   hook: "Il caso da cui parte questo ragionamento."
 ---
 
-# Integrare fonti che non si sono messe d'accordo
+# Integrare molte sorgenti: cambia il confine, non il modello
 
-> Chi integra molte sorgenti scopre presto che il lavoro non è leggerle. È decidere cosa
-> significano quando due sistemi chiamano la stessa cosa in due modi, e nessuno dei due
-> ha ragione di cambiare.
+> Il lavoro di integrare molte sorgenti sta nel decidere cosa significano i dati quando due
+> sistemi chiamano la stessa cosa in due modi, non nel leggerli. Con la scala cambia dove
+> passa il confine fra codice e configurazione; il criterio sul modello interno resta lo
+> stesso.
 
 Ho progettato uno strato di raccolta su un numero ridotto di sorgenti, e ne ho scritto
 altrove. Questo testo parte da lì e va dove quel caso non arriva: **cosa cambia davvero
