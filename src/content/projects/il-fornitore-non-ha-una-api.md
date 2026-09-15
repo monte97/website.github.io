@@ -44,7 +44,6 @@ actions:
 result:
   - "Ore, cicli e allarmi nel gestionale senza più trascrizioni manuali: le contestazioni sulle fatture si chiudono guardando una schermata, la manutenzione si programma sui numeri veri"
   - "Un documento di protocollo che descrive ogni scelta, il suo perché, cosa succede quando il costruttore cambierà il portale, e cosa non è stato costruito e per quale ragione"
-  - "Il documento di protocollo dichiara cosa non è stato costruito e perché, così chi riprende sa dove sono i confini"
 sections:
   - n: "01"
     title: "Il vincolo"

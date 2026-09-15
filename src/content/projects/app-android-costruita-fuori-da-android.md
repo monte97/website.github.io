@@ -1,6 +1,6 @@
 ---
 title: "L'app che ho costruito stando fuori da Android"
-description: "Venti progetti indipendenti, e la piattaforma che compare in uno solo. Come si rifà lo strumento di un tecnico che lavora su un traliccio, quando il sensore che misura non ce l'hai sulla scrivania."
+description: "Venti progetti indipendenti, e la piattaforma confinata in due. Come si rifà lo strumento di un tecnico che lavora su un traliccio, quando il sensore che misura non ce l'hai sulla scrivania."
 type: case-study
 pillar: progettare
 pillarApplied: progettare
@@ -17,13 +17,13 @@ oggetto: >
 
 metodo: >
   Venti progetti indipendenti sulla macchina virtuale Java, ognuno con il proprio ciclo
-  di prova, e la piattaforma mobile lasciata fuori dietro interfacce. Un solo modulo la
-  dichiara, e la porta nel nome.
+  di prova, e la piattaforma mobile lasciata fuori dietro interfacce. La dichiarano in due,
+  ed è dove serve un dispositivo per forza: la fotocamera e la mappa.
 
 esito: >
   La parte che decide, cioè validazione della qualità del segnale, calibrazione,
   filtri, generazione del rapporto, si verifica senza telefono e senza sensore. Il
-  codice legato alla piattaforma sta in due file su tutto il progetto. Restano scoperte
+  codice legato alla piattaforma sta in nove file, dentro due moduli su venti. Restano scoperte
   l'integrazione dei venti pezzi e la prova contro il sensore vero.
 
 anonimizzazione: >
@@ -69,11 +69,11 @@ specs:
     value: "20"
     note: "Ognuno con il proprio file di build, senza un progetto padre che li aggreghi"
   - label: "Moduli che dichiarano la piattaforma"
-    value: "0"
-    note: "Nessun file di build contiene dipendenze mobili"
+    value: "2 su 20"
+    note: "Fotocamera e mappa: gli altri diciotto file di build non contengono dipendenze mobili"
   - label: "File che importano la piattaforma"
-    value: "2"
-    note: "Entrambi nell'unico modulo che la porta nel nome"
+    value: "9"
+    note: "Tutti dentro quei due moduli. Il guscio applicativo è contato a parte"
   - label: "File di test nei moduli"
     value: "98"
   - label: "Dialogo col sensore"
@@ -82,7 +82,7 @@ specs:
 
 inventory:
   at: venti-progetti
-  label: "I venti moduli, e l'unico che dichiara la piattaforma"
+  label: "I venti moduli, e i due che dichiarano la piattaforma"
   items:
     - name: "guida acustica"
     - name: "calibrazione"
@@ -94,6 +94,7 @@ inventory:
     - name: "filtri sul segnale"
     - name: "posizione"
     - name: "riferimento esterno"
+      mark: true
     - name: "misure"
     - name: "foto"
     - name: "profili"
@@ -107,8 +108,8 @@ inventory:
       mark: true
   legend:
     plain: "progetti autonomi, ognuno col proprio ciclo di prova"
-    mark: "dipende dalla piattaforma, e lo dice nel nome"
-  caption: "l'eccezione è una, ed è nominata"
+    mark: "dipende dalla piattaforma: serve un dispositivo per forza"
+  caption: "le eccezioni sono due, e sono dichiarate"
   note: >
     Il modulo marcato esiste in due versioni: una che decide cosa fare di un codice letto,
     verificabile ovunque, e una che accende la fotocamera. Sono separate apposta, così la
@@ -295,9 +296,16 @@ messaggi, esportazione e importazione dei lavori, filtri sul segnale, posizione,
 foto, profili di configurazione, rapporto, impostazioni, validazione, collegamento al
 sensore.
 
-Nessuno dei venti dichiara la piattaforma mobile nel proprio file di build. In tutto il
-progetto, i file che importano qualcosa di specifico della piattaforma sono **due**, ed
-entrambi stanno nell'unico modulo che quella dipendenza la porta nel nome.
+Diciotto dei venti non nominano la piattaforma mobile nel proprio file di build. I due che
+la nominano sono quelli dove senza un dispositivo non c'è niente da fare: chi accende la
+fotocamera e chi disegna la mappa. Dentro quei due stanno **nove file**, e sono tutto il
+codice di piattaforma dei venti moduli.
+
+Fuori dai venti resta il guscio che li assembla in un'applicazione vera: schermate, stato
+della sessione, archivio locale. Quello la piattaforma la dichiara per definizione, ed è
+giusto contarlo a parte. Il punto non è che sia sottile: è che le sue decisioni si
+provano lo stesso senza telefono, perché i dati e le regole gli arrivano già lavorati da
+sotto.
 
 Il meccanismo che rende possibile la cosa è vecchio e non ha niente di ingegnoso: quello
 che la piattaforma fornisce entra da un'interfaccia. C'è chi emette il suono, e c'è chi
@@ -364,6 +372,7 @@ costo: si presenta come un'attesa.
 
 E c'è un secondo effetto, che si vede più tardi. Il giorno in cui quella logica dovrà
 girare da qualche altra parte, su un'altra piattaforma o dentro un servizio che elabora i
-rapporti prima che arrivino all'operatore, la parte da riscrivere sono due file. Non era
+rapporti prima che arrivino all'operatore, la parte da riscrivere sono i due moduli che il
+dispositivo lo nominano, più le schermate. La logica no. Non era
 l'obiettivo, e prometterlo sarebbe stato disonesto. È quello che succede quando smetti di
 scrivere aritmetica dentro un telefono.
