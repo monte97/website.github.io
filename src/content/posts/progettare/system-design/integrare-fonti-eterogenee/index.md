@@ -24,12 +24,13 @@ caseStudy:
 > passa il confine fra codice e configurazione; il criterio sul modello interno resta lo
 > stesso.
 
-Ho progettato uno strato di raccolta su un numero ridotto di sorgenti, e ne ho scritto
-altrove. Questo testo parte da lì e va dove quel caso non arriva: **cosa cambia davvero
-quando le sorgenti diventano molte**, e quale parte del problema resta fuori.
+Un lettore per sorgente funziona finché le sorgenti si contano sulle dita. A duecento il
+lavoro si è spostato altrove, e non perché duecento lettori siano troppi da scrivere.
 
-Anticipo la conclusione, perché è la cosa che conta: la quantità non è il problema
-interessante. Le cose che cambiano sono due, e solo una è architettura.
+Cambiano due cose. Dove passa il confine fra il codice e la configurazione, e la regola
+sulla provenienza, che si rovescia a metà. Poi ne resta fuori una terza, che è quella su cui
+i progetti di aggregazione falliscono davvero: stabilire quando due righe che arrivano da
+due sistemi diversi parlano dello stesso oggetto.
 
 ## Quello che non cambia, e diventa obbligatorio
 
@@ -114,7 +115,7 @@ sistema produce con sicurezza una risposta che contiene un valore di tre anni fa
 di terzi: la cadenza di interrogazione costituisce un vincolo esterno, soggetto a variazioni
 senza preavviso. Per questo vive in configurazione, per sorgente, e non nel codice.
 
-## La parte che questo ragionamento non copre
+## La parte che resta fuori
 
 Nel caso a poche sorgenti l'identità era data. Ogni unità aveva un identificativo, tutte le
 sorgenti vi facevano riferimento, e mettere insieme i loro dati era un'operazione meccanica.
@@ -131,8 +132,8 @@ con regole di corrispondenza dove non esistono, e con un posto in cui una person
 casi che le regole non chiudono: la parte che nessuno mette a preventivo e che poi costa più
 di tutto il resto.
 
-Non è la parte risolta nel caso che ho raccontato. Dirlo prima è più utile che scoprirlo
-insieme dopo la firma.
+Nel caso a poche sorgenti questo problema non si presentava. Dirlo prima è più utile che
+scoprirlo insieme dopo la firma.
 
 ## Cosa chiederei prima di dare un numero
 
@@ -153,6 +154,6 @@ ordinaria, e se non ha un titolare il sistema si degrada senza segnalazioni.
 
 ---
 
-*Questo testo estende un caso reale, di dimensioni ridotte, raccontato altrove in forma
-anonimizzata. Le considerazioni sulla scala sono ragionamento di progetto, non misure: dove
-parlo di molte sorgenti sto descrivendo una direzione, non un sistema che ho costruito.*
+*Il caso da cui parte, a poche sorgenti, è nel case study collegato a questo articolo. Le
+considerazioni sulla scala sono ragionamento di progetto, non misure: dove parlo di molte
+sorgenti sto descrivendo una direzione, non un sistema che ho costruito.*
