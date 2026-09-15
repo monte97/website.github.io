@@ -9,7 +9,7 @@ weight: 4
 eyebrow: "Analisi tecnica · raccolta dati da fornitori esterni"
 tags: [Integrazione, Normalizzazione, Sistemi a eventi]
 links:
-  blog: "/blog/progettare/system-design/cento-sorgenti-opendata/"
+  blog: "/blog/progettare/system-design/integrare-fonti-eterogenee/"
 thesis: >
   Standardizzare non è mettere insieme ciò che le fonti mandano: è decidere cosa non
   portare. Un modello più povero delle sorgenti rende il numero di sorgenti irrilevante.

@@ -26,6 +26,10 @@ export default defineConfig({
     '/en/blog/progettare/kubernetes/04-capi-part4-day1/': '/en/blog/automatizzare/kubernetes/04-capi-part4-day1/',
     '/blog/progettare/kubernetes/05-capi-part5-ubuntu/': '/blog/automatizzare/kubernetes/05-capi-part5-ubuntu/',
     '/en/blog/progettare/kubernetes/05-capi-part5-ubuntu/': '/en/blog/automatizzare/kubernetes/05-capi-part5-ubuntu/',
+    // generalizzato il 2026-09-15: il taglio "cento sorgenti opendata" era
+    // troppo aderente al contesto di un singolo interlocutore, e lo slug lo
+    // rendeva leggibile dall'URL
+    '/blog/progettare/system-design/cento-sorgenti-opendata/': '/blog/progettare/system-design/integrare-fonti-eterogenee/',
     // /blog/series/<serie>/ come scorciatoia stabile verso ogni landing
     '/blog/series/homelab-capi/': '/blog/automatizzare/homelab-capi/',
     '/en/blog/series/homelab-capi/': '/en/blog/automatizzare/homelab-capi/',
