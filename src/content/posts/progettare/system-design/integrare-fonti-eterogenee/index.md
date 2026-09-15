@@ -78,7 +78,7 @@ diverse**, non le sorgenti. Il codice sta nel tipo, la differenza sta nel dato. 
 nuova che parla un protocollo noto è una riga di configurazione; una che parla un protocollo
 nuovo è un tipo nuovo, e capita raramente.
 
-## La seconda cosa che cambia, ed è il rovescio di una regola
+## Quando la provenienza diventa un requisito
 
 Nel caso a poche sorgenti una delle proprietà volute era che **chi consuma non sappia da
 dove arriva il dato**. Serviva a impedire che il consumatore si accorgesse della differenza
