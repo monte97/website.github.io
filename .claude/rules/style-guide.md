@@ -217,6 +217,32 @@ Da [Google Technical Writing](https://developers.google.com/tech-writing/one/sho
   recensione ("esperienza molto piacevole"), la battuta finale che ammicca al lettore
   ("Anche di venerdì"), il punto esclamativo.
 
+- **Il testo non parla di se stesso.** Difetto segnalato dall'autore il 2026-09-15
+  sui due pezzi per un prospect, e non intercettato dalla revisione di registro del
+  giorno prima: non e' metafora, non e' idioma, non e' iperbole, quindi e' passato
+  indenne attraverso 65 articoli riletti. E' prosa che commenta la propria struttura
+  invece di dire la cosa, e al lettore tecnico chiede fiducia al posto di
+  un'informazione.
+
+  | Trovato | Riscritto |
+  |---|---|
+  | "Ho progettato X, e ne ho scritto altrove. Questo testo parte da li' e va dove quel caso non arriva" | si entra nel problema, e il pezzo collegato sta gia' nel link in pagina |
+  | "Anticipo la conclusione, perche' e' la cosa che conta" | la conclusione, senza annunciarla |
+  | "Qui il pezzo esce dal proprio caso" | la frase che segue, da sola |
+  | "vale la pena spiegare perche' risulti attraente" | "e' attraente per una ragione precisa:" |
+  | "La differenza fra queste due frasi conta, e piu' avanti si vede perche'" | taglio della coda: la promessa non sostituisce il dato |
+  | "Le cose che cambiano sono due, e solo una e' architettura" | le due cose, nominate subito |
+
+  Vale anche per i titoli di sezione che annunciano un ribaltamento invece di nominare
+  l'argomento: "La seconda cosa che cambia, ed e' il rovescio di una regola" diventa
+  "Quando la provenienza diventa un requisito". Chi legge l'indice deve capire di cosa
+  si parla, non che sta per essere sorpreso.
+
+  Il test: **la frase promette un'informazione o la da'?** Restano legittimi i rimandi
+  che servono al lettore (un link, il nome di una sezione a cui tornare) e la chiusura
+  che dichiara il perimetro di cio' che si e' raccontato: quella e' onesta', non
+  autocommento.
+
 - **Il trattino lungo (—) non si usa.** Al suo posto: due punti per una spiegazione o
   una conseguenza, virgole o parentesi per un inciso, punto fermo dove la frase sta
   meglio spezzata. Resta legittimo dentro blocchi di codice, output, comandi e tabelle.

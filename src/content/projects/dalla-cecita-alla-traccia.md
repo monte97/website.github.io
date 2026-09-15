@@ -228,7 +228,7 @@ Il riscontro è arrivato da chi il software lo usa tutti i giorni, non da un cru
 
 **I tempi per ricevere una correzione si sono ridotti in modo evidente, e le correzioni stesse sono migliorate.** Non è un effetto misterioso: quando una segnalazione arriva, la domanda «dove si è fermato» ha una risposta in minuti invece che in mezze giornate, e la correzione parte dal punto giusto invece che dal punto più probabile.
 
-Vale la pena dire da dove nasce tutto questo, perché non è la storia che ci si aspetta: **nessuno l'aveva chiesto.** Non c'è stato un incidente, un audit, un cliente arrabbiato. C'era solo il fastidio crescente di non poter rispondere con precisione a domande semplici, e di non sapere davvero cosa stesse succedendo dentro un sistema che pure funzionava.
+Da dove nasce tutto questo non è la storia che ci si aspetta: **nessuno l'aveva chiesto.** Non c'è stato un incidente, un audit, un cliente arrabbiato. C'era solo il fastidio crescente di non poter rispondere con precisione a domande semplici, e di non sapere davvero cosa stesse succedendo dentro un sistema che pure funzionava.
 
 ## Esito dell'analisi
 

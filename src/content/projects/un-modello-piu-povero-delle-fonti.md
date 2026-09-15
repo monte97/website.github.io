@@ -34,7 +34,7 @@ anonimizzazione: >
 
 # Un modello più povero delle fonti
 
-> I tuoi dati arrivano da fonti che non si sono messe d'accordo, e non lo faranno. Il modello che le riconcilia regge se è più povero di loro. Quante siano le fonti cambia una cosa sola, e non è quella.
+> I tuoi dati arrivano da fornitori con modelli di accesso incompatibili, e resteranno tali. Il modello che li riconcilia regge se è più povero di loro. Quante siano le fonti cambia una cosa sola, e non è quella.
 
 Il parco è distribuito su impianti di conferimento, mezzi in transito e piazzali di
 sosta. Ogni cassone monta un dispositivo di localizzazione che ne trasmette la posizione, e
@@ -130,8 +130,8 @@ posto, e da lì in poi il sistema non distingue più la sorgente di provenienza.
 
 ## Cosa il sistema non contiene
 
-Sono tre, e le dico perché la loro assenza è metà del progetto, anche se nessuna delle
-tre è stata discussa in riunione. Non è che le abbiamo valutate e scartate: è che a due
+Sono tre, e la loro assenza è metà del progetto, anche se nessuna delle tre è stata
+discussa in riunione. Non è che le abbiamo valutate e scartate: è che a due
 fonti non servivano, e il costo di costruirle non si sarebbe ripagato.
 
 **Non c'è un adapter generico guidato da configurazione.** Un pezzo unico che legge un file

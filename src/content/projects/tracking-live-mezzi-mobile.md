@@ -80,7 +80,7 @@ decisions:
     chosen: "Applicazione mobile nativa"
     chosenWhy: "La mappa a schermo intero, il tocco su un mezzo e l'aggiornamento continuo si vedono per quello che sono solo su un telefono vero."
     rejected: "Una web application ordinaria, aperta dal browser del telefono"
-    appeal: "Avrebbe risposto alla richiesta con meno lavoro, riusando quello che già c'era. Ed è la parte che vale la pena dire: la scelta nativa non era l'unica strada tecnica possibile."
+    appeal: "Avrebbe risposto alla richiesta con meno lavoro, riusando quello che già c'era: la scelta nativa non era l'unica strada tecnica possibile."
 decisionsNote: >
   Il filo che tiene insieme i sei bivi è sempre lo stesso: cosa dimostra davvero questa
   scelta. Non cosa fa più effetto, non cosa è più moderno in astratto. È lo stesso criterio

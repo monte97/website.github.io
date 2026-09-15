@@ -53,7 +53,7 @@ Il caso del disco che si riempie è l'esempio da manuale, ma rischia di dare l'i
 (probe_ssl_earliest_cert_expiry - time()) / 86400 < 7
 ```
 
-Questo è il caso predittivo per eccellenza, ma vale la pena notare una cosa: **non c'è `predict_linear`**. Il motivo è che la metrica `probe_ssl_earliest_cert_expiry`, esposta dal `blackbox_exporter`, è già definita come "timestamp Unix della scadenza più vicina". Sottraendo `time()` (l'istante corrente) e dividendo per 86400 (i secondi in un giorno) si ottengono i giorni rimanenti prima della scadenza. La forma più pulita di alert predittivo non richiede estrapolazione: è semplice aritmetica tra due timestamp. Il "predittivo" in questo caso vive nella metrica stessa, non nella query, ed è tipicamente il pattern da preferire quando la metrica lo consente: meno assunzioni, meno modelli, meno modi di sbagliare.
+Questo è il caso predittivo per eccellenza, e **non c'è `predict_linear`**. Il motivo è che la metrica `probe_ssl_earliest_cert_expiry`, esposta dal `blackbox_exporter`, è già definita come "timestamp Unix della scadenza più vicina". Sottraendo `time()` (l'istante corrente) e dividendo per 86400 (i secondi in un giorno) si ottengono i giorni rimanenti prima della scadenza. La forma più pulita di alert predittivo non richiede estrapolazione: è semplice aritmetica tra due timestamp. Il "predittivo" in questo caso vive nella metrica stessa, non nella query, ed è tipicamente il pattern da preferire quando la metrica lo consente: meno assunzioni, meno modelli, meno modi di sbagliare.
 
 ### Memory leak progressivo nella JVM
 
