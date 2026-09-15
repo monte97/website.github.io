@@ -19,7 +19,7 @@ oggetto: >
   impongono di interrogare una unità per volta.
 metodo: >
   Due proprietà dichiarate prima di scrivere una riga, aggiungere una fonte costa un
-  pezzo nuovo e nessuna modifica altrove, chi consuma non sa da dove arriva il dato, e
+  lettore nuovo e nessun consumatore toccato, chi consuma non sa da dove arriva il dato, e
   usate come unico criterio per ogni decisione successiva.
 esito: >
   Un modello interno deliberatamente più povero dell'unione delle fonti, un lettore per
@@ -66,7 +66,7 @@ sanare.
 Prima di scrivere una riga ne abbiamo dichiarate due, e sono servite come unico criterio
 per giudicare tutto il resto.
 
-**Aggiungere una fonte deve costare un pezzo nuovo e nessuna modifica altrove.** Non per un terzo fornitore già previsto, che non esisteva, ma perché il costo della terza
+**Aggiungere una fonte deve costare un lettore nuovo, e nessuna modifica a chi quel dato lo consuma.** Non per un terzo fornitore già previsto, che non esisteva, ma perché il costo della terza
 fonte si determina al momento della seconda, e in seguito non è più negoziabile.
 
 **Chi consuma non deve sapere da dove arriva il dato.** Il cruscotto, il servizio che calcola
@@ -199,7 +199,8 @@ linea, e la dichiara.
 Non un miglioramento, non c'era un prima da migliorare. Un sistema con due proprietà che si
 possono verificare senza fidarsi di me.
 
-Aggiungere una fonte è un modulo nuovo e nessuna modifica al resto. La cadenza di ogni
+Aggiungere una fonte è un lettore nuovo più il suo collegamento nel punto di avvio: nessun
+altro lettore viene toccato, e nessun consumatore a valle si accorge di niente. La cadenza di ogni
 fornitore è configurazione, non codice. Il formato interno è uno solo, e chi consuma non ha
 modo di sapere da dove arrivano i dati, nemmeno volendo.
 
