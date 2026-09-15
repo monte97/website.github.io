@@ -168,13 +168,9 @@ Su un sistema in esercizio, ogni modifica al codice dei servizi è un rischio ch
 
 Il criterio si mette alla prova su un punto solo: i confini tra i servizi. Un sistema a eventi si osserva bene o male a seconda che una traccia sopravviva al passaggio attraverso un topic, e questa era la parte per cui era previsto scrivere codice.
 
-La strada prevista era propagare il contesto a mano su ogni confine Kafka, da subito: iniezione ed estrazione degli header nei sei punti produttore/consumatore, pianificata prima di provare.
+I sei punti erano già elencati nel documento di progetto, uno per ogni confine produttore/consumatore, col codice di iniezione ed estrazione scritto per esteso e pronto da incollare. Davanti aveva una condizione sola: farlo se le tracce non fossero già risultate collegate.
 
 Le tracce sono risultate collegate attraverso i topic senza alcun intervento sul codice: gli header di contesto viaggiano fuori dal payload, quindi gli schemi dei messaggi non sono stati toccati e i consumatori non strumentati li ignorano. Sei modifiche pianificate non sono state fatte, e non perché siano state rinviate, ma perché la verifica ha mostrato che non servivano. Il costo di quella verifica è stato una traccia guardata in faccia; il costo di non farla sarebbe stato codice di trasporto sparso in sei file, da mantenere per sempre.
-
-La verifica prima del codice non è prudenza generica: **vale quando l'alternativa è codice permanente in punti di passaggio**. Un paio d'ore di controllo contro sei file da mantenere.
-
-La verifica è costata **un paio d'ore**. Il codice che avrebbe evitato, invece, sarebbe rimasto per sempre in sei punti di passaggio, da leggere e mantenere a ogni modifica futura.
 
 È il calcolo che vale la pena esplicitare, perché non è ovvio quando si è di fretta: **il codice è una passività, non un patrimonio.** Ogni riga che non scrivi è una riga che non devi capire fra due anni. Due ore di controllo contro sei file da mantenere per sempre: il conto si fa da solo.
 
