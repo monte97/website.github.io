@@ -11,26 +11,36 @@ interface Props {
 
 const { lang = 'it', altHref } = Astro.props;
 
+/**
+ * Quattro voci, non sette. Il sito deve portare clienti: la barra dice cosa
+ * vendi (Servizi), la prova che sai farlo (Lavori, Blog) e chi sei (About).
+ *
+ * Talks e Workshop restano vivi ai loro URL e si raggiungono da dove hanno
+ * senso: /workshop/ e' linkato dalla pagina Servizi (e' un servizio anche
+ * lui), /talks/ dalla pagina About e dal footer. Erano due voci di menu che
+ * duplicavano link gia' presenti nelle pagine.
+ *
+ * "Lavori" al posto di "Case Study": e' il nome che il vault usa gia' per
+ * queste schede, e dice a un cliente cosa trovera' senza chiedergli di
+ * conoscere il gergo. La rotta resta /case-study/, cambia solo l'etichetta.
+ */
 const nav = {
   it: [
-    { label: 'Home', href: '/' },
     { label: 'Servizi', href: '/servizi/' },
+    { label: 'Lavori', href: '/case-study/' },
     { label: 'Blog', href: '/blog/' },
-    { label: 'Talks', href: '/talks/' },
-    { label: 'Case Study', href: '/case-study/' },
-    { label: 'Workshop', href: '/workshop/' },
     { label: 'About', href: '/about/' },
   ],
   en: [
-    { label: 'Home', href: '/en/' },
     { label: 'Services', href: '/en/services/' },
+    { label: 'Work', href: '/en/case-study/' },
     { label: 'Blog', href: '/en/blog/' },
-    { label: 'Talks', href: '/en/talks/' },
-    { label: 'Case Studies', href: '/en/case-study/' },
-    { label: 'Workshops', href: '/en/workshop/' },
     { label: 'About', href: '/en/about/' },
   ],
 };
+
+const calLink = 'https://cal.com/francesco-montelli-4hfojq/30min';
+const ctaLabel = lang === 'en' ? 'Book a call' : 'Prenota una call';
 
 const currentPath = Astro.url.pathname;
 
@@ -97,6 +107,16 @@ function isActive(href: string): boolean {
 
     <!-- Right side actions -->
     <div class="flex items-center gap-2">
+      <a
+        href={calLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hidden md:inline-flex items-center justify-center font-medium rounded-md px-3 py-1.5 text-sm bg-accent text-white hover:bg-accent/90 shadow-sm transition-all"
+        data-umami-event="cta-header"
+      >
+        {ctaLabel}
+      </a>
+
       <SearchModal client:only="vue" />
 
       {langSwitchHref && (
@@ -126,6 +146,15 @@ function isActive(href: string): boolean {
   <!-- Mobile menu -->
   <div id="mobile-menu" class="hidden md:hidden border-t border-border/60 dark:border-border-dark/60 bg-base-light dark:bg-base-dark px-5 py-3">
     <div class="flex flex-col gap-1">
+      <a
+        href={calLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mb-2 inline-flex items-center justify-center font-medium rounded-md px-3 py-2.5 text-sm bg-accent text-white hover:bg-accent/90 shadow-sm transition-all"
+        data-umami-event="cta-header-mobile"
+      >
+        {ctaLabel}
+      </a>
       {nav[lang].map(item => (
         <a
           href={item.href}

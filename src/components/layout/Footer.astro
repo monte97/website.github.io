@@ -5,6 +5,16 @@ interface Props {
 
 const { lang = 'it' } = Astro.props;
 const year = new Date().getFullYear();
+const prefix = lang === 'en' ? '/en' : '';
+
+/**
+ * Talks e Workshop sono usciti dalla barra in alto, che ora e' dedicata a
+ * portare clienti. Qui restano raggiungibili da ogni pagina del sito, oltre
+ * che dalle pagine dove hanno senso (About linka i talk, Servizi i workshop).
+ */
+const secondarie = lang === 'en'
+  ? [{ label: 'Talks', href: '/en/talks/' }, { label: 'Workshops', href: '/en/workshop/' }]
+  : [{ label: 'Talks', href: '/talks/' }, { label: 'Workshop', href: '/workshop/' }];
 ---
 
 <footer class="border-t border-border/60 dark:border-border-dark/60 mt-16">
@@ -13,6 +23,12 @@ const year = new Date().getFullYear();
       <p>&copy; {year} Francesco Montelli</p>
       <p>P.IVA 02726990399 &middot; <a href="/privacy/" class="hover:text-accent transition-colors">Privacy Policy</a></p>
     </div>
+    <div class="flex items-center gap-5">
+      {secondarie.map(v => (
+        <a href={v.href} class="text-text-muted hover:text-accent transition-colors text-xs">{v.label}</a>
+      ))}
+    </div>
+
     <div class="flex items-center gap-5">
       <a href="mailto:francesco@montelli.dev" class="text-text-muted hover:text-accent transition-colors text-xs" data-umami-event="click-email">Email</a>
       <a href="https://linkedin.com/in/francesco-montelli" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-accent transition-colors text-xs" data-umami-event="click-social" data-umami-event-platform="linkedin">LinkedIn</a>
