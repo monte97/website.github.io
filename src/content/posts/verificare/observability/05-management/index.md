@@ -122,7 +122,6 @@ Per rendere sostenibile un sistema di observability servono due meccanismi compl
 1. **Tail Sampling** - Decide *quali* trace tenere dopo averle osservate per intero. Riduce il volume in ingresso (~90%) mantenendo il 100% di errori e anomalie.
 2. **Retention Policy** - Elimina automaticamente i dati più vecchi di una soglia. Lo storage raggiunge uno steady state invece di crescere linearmente.
 
-Nelle prossime sezioni vediamo come configurare entrambi.
 
 ---
 
@@ -466,7 +465,7 @@ Monitora il Collector come componente infrastrutturale: è raggiungibile? Sta es
 | `OtelSamplingRateTooLow` | info | Drop rate < 50% per 10m | Il sampling non sta scartando abbastanza. Config errata o traffico anomalo. |
 | `OtelSamplingRateTooHigh` | warning | Drop rate > 99% per 10m | Il sampling scarta quasi tutto. Rischio perdita dati importanti. |
 
-Gli alert sul sampling rate meritano un approfondimento. Il drop rate atteso è ~90% (sampling probabilistico al 10%). La PromQL calcola la percentuale di trace scartate rispetto al totale:
+Gli alert sul sampling rate hanno due soglie. Il drop rate atteso è ~90% (sampling probabilistico al 10%). La PromQL calcola la percentuale di trace scartate rispetto al totale:
 
 ```promql
 # Drop rate = trace_scartate / (trace_mantenute + trace_scartate)

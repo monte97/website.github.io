@@ -59,7 +59,7 @@ Il SRE Workbook, nella sezione "Multiwindow, Multi-Burn-Rate Alerts" del capitol
 | **Critical (medium burn)** | 6h | 30m | 6× | 5% del budget mensile | 30 min | Pagina l'oncall, problema sostenuto |
 | **Warning (slow burn)** | 3d | 6h | 1× | 10% del budget mensile | 6h | Ticket per investigation, non sveglia nessuno |
 
-Vale la pena smontare la tabella riga per riga, perché i numeri che compaiono nelle colonne centrali non sono arbitrari ma derivano da un calcolo preciso.
+I numeri che compaiono nelle colonne centrali non sono arbitrari: derivano da un calcolo preciso.
 
 La formula che lega burn rate, finestra e budget consumato al firing è:
 
@@ -135,7 +135,7 @@ Il `for: 15m` è volutamente generoso, perché la slow burn non è un incidente:
 
 ## Quattro errori che tornano sempre
 
-Durante l'adozione del burn-rate alerting tornano ricorrenti alcuni errori, che meritano di essere esplicitati perché compaiono anche in codebase con osservabilità altrimenti curata.
+Durante l'adozione del burn-rate alerting tornano ricorrenti alcuni errori, che compaiono anche in codebase con osservabilità altrimenti curata.
 
 Il primo errore è **copia-incollare solo la fast burn** e dimenticare medium e slow. È la trappola più comune: la fast burn è pedagogicamente la più facile da spiegare, scatta per prima durante le demo, e sembra coprire gli incidenti "importanti". Ma lascia scoperti tutti i regimi di errore sostenuti a bassa intensità (quelli che la medium burn cattura) e l'erosione silenziosa del margine (quella che la slow burn cattura). La raccomandazione del Workbook è installare **tutte e tre** le coppie insieme, con routing diverso per severity, non sceglierne una come "abbastanza buona".
 

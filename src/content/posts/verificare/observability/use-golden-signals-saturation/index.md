@@ -110,11 +110,11 @@ Per fissare la differenza, si consideri lo stesso sistema con due alert diversi 
 
 Il secondo alert è predittivo, sulla stessa metrica: usa `predict_linear` con una finestra di sei ore di storia e un orizzonte di due ore. Scatta alle 17:00, con l'heap ancora al 60%, ma il trend di crescita dice che entro due ore si toccherà il limite massimo. L'oncall in turno diurno apre un ticket, coordina un restart pianificato durante la maintenance window serale prevista, nessuno si sveglia di notte e nessun utente vede timeout.
 
-Entrambi gli alert hanno senso e rispondono a bisogni operativi diversi: il predittivo non sostituisce il reattivo, sono complementari. Il reattivo è la rete di sicurezza quando la predizione fallisce, ad esempio quando l'heap cresce improvvisamente in modo non lineare per un cambio di carico. Capire quale alert risponde a quale domanda è il punto di tutto l'articolo, e senza questa chiarezza si finisce inevitabilmente per scrivere regole che scattano troppo spesso, troppo tardi, o entrambe le cose insieme.
+Entrambi gli alert hanno senso e rispondono a bisogni operativi diversi: il predittivo non sostituisce il reattivo, sono complementari. Il reattivo è la rete di sicurezza quando la predizione fallisce, ad esempio quando l'heap cresce improvvisamente in modo non lineare per un cambio di carico. Capire quale alert risponde a quale domanda è il punto, e senza questa chiarezza si finisce inevitabilmente per scrivere regole che scattano troppo spesso, troppo tardi, o entrambe le cose insieme.
 
 ## predict_linear è una retta estrapolata in avanti
 
-Prima di passare agli esempi, vale la pena esaminare la funzione al centro di tutto. La firma in PromQL è questa:
+La firma in PromQL della funzione al centro di tutto è questa:
 
 ```promql
 predict_linear(v range-vector, t scalar)
@@ -129,7 +129,7 @@ predict_linear(some_metric[1h], 4 * 3600)
 
 Cosa `predict_linear` **assume**: che la crescita nella finestra osservata sia sostanzialmente lineare. Cosa invece **non fa**: non modella stagionalità, non riconosce cambi di regime, non si accorge di curve esponenziali o di salti a scalini. È un modello volutamente semplice, e questa semplicità è sia il suo punto di forza (prevedibile, veloce, facile da ragionare) sia il suo limite.
 
-Vale la pena confrontarla con due funzioni vicine che a volte fanno lo stesso lavoro meglio:
+Due funzioni vicine a volte fanno lo stesso lavoro meglio:
 
 - `rate(counter[1m])`: variazione media al secondo di un counter monotono crescente, usato per calcolare throughput ed error rate
 - `deriv(gauge[5m])`: pendenza della retta di regressione lineare calcolata su una gauge, espressa come variazione per secondo
@@ -139,7 +139,7 @@ Il punto chiave da ricordare è che `predict_linear(v, t)` equivale concettualme
 
 ## Gli stessi due alert sulla stessa metrica, in tempo reale
 
-La teoria fin qui è stata necessaria, ma vedere il comportamento dei due alert sulla stessa metrica in tempo reale chiarisce la differenza molto più velocemente. Il repository collegato contiene un demo Docker Compose minimale che simula esattamente lo scenario della JVM visto sopra: una JVM con un memory leak lineare, e gli stessi due alert (uno reattivo, uno predittivo) che competono sulla stessa metrica. L'obiettivo è rendere concreto il gap di lead time discusso finora solo in formule.
+Vedere il comportamento dei due alert sulla stessa metrica in tempo reale chiarisce la differenza molto più velocemente della teoria. Il repository collegato contiene un demo Docker Compose minimale che simula esattamente lo scenario della JVM visto sopra: una JVM con un memory leak lineare, e gli stessi due alert (uno reattivo, uno predittivo) che competono sulla stessa metrica. L'obiettivo è rendere concreto il gap di lead time discusso finora solo in formule.
 
 > 👉 [github.com/monte97/saturation-predittiva-demo](https://github.com/monte97/saturation-predittiva-demo)
 

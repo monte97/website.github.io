@@ -522,7 +522,7 @@ kubectl get deployments
 
 ## Approfondimenti
 
-Tre concetti architetturali meritano un approfondimento aggiuntivo.
+Tre concetti architetturali, per chiudere.
 
 ### Level-Triggered vs Edge-Triggered
 

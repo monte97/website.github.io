@@ -39,7 +39,7 @@ openNote: "Dove la composizione runtime sposta il problema invece di risolverlo.
 
 Il progetto frontend nasce come una SPA. Cresce. Arrivano più team. Il primo segnale di allarme non è la lentezza del build: è la riunione settimanale in cui tre team si bloccano a vicenda perché lavorano sullo stesso `router.ts`.
 
-Module Federation è una risposta concreta a questo problema: un meccanismo di composizione runtime che consente a più applicazioni di condividere codice e componenti senza essere compilate insieme. La configurazione, il contratto tra shell e moduli remoti e il deploy indipendente sono gli argomenti delle sezioni seguenti.
+Module Federation è una risposta concreta a questo problema: un meccanismo di composizione runtime che consente a più applicazioni di condividere codice e componenti senza essere compilate insieme.
 
 ## Il problema che stiamo risolvendo
 
@@ -67,7 +67,7 @@ I due ruoli:
 | **Host (shell)** | L'applicazione principale. Definisce il layout globale, il routing di primo livello, l'autenticazione. Carica i remoti on demand. |
 | **Remote (modulo)** | Un'applicazione autonoma che espone componenti o intere sezioni dell'UI. Si deploya e si versiona indipendentemente. |
 
-Un'applicazione può essere sia host che remote contemporaneamente. Le sezioni seguenti coprono la topologia più comune: una shell e N moduli.
+Un'applicazione può essere sia host che remote contemporaneamente. La topologia più comune è una shell e N moduli.
 
 ---
 

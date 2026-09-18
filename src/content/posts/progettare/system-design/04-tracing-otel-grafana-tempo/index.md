@@ -174,7 +174,7 @@ public static class LinqTracingExtensions
 }
 ```
 
-Il metodo è breve, ma vale la pena scomporlo. `Source.StartActivity(operationName)` crea un nuovo span con il nome fornito. Il `using` garantisce che lo span venga chiuso quando l'enumerazione termina. Il `yield return` trasforma il metodo in un iteratore: ogni elemento passa attraverso senza essere bufferizzato. Alla fine, il tag `linq.element_count` registra quanti elementi sono stati processati.
+`Source.StartActivity(operationName)` crea un nuovo span con il nome fornito. Il `using` garantisce che lo span venga chiuso quando l'enumerazione termina. Il `yield return` trasforma il metodo in un iteratore: ogni elemento passa attraverso senza essere bufferizzato. Alla fine, il tag `linq.element_count` registra quanti elementi sono stati processati.
 
 ### Utilizzo nella pipeline
 
@@ -197,7 +197,7 @@ Su Grafana Tempo, questa pipeline produce quattro span figli all'interno dello s
 
 ### Nota importante: `yield return` e il lifecycle dell'`Activity`
 
-C'è un dettaglio sottile che merita attenzione. Con `yield return`, il corpo del metodo non viene eseguito alla chiamata. L'esecuzione reale avviene solo quando qualcuno enumera il risultato -- la **deferred execution** che abbiamo esplorato nell'articolo 3.
+C'è un dettaglio sottile. Con `yield return`, il corpo del metodo non viene eseguito alla chiamata. L'esecuzione reale avviene solo quando qualcuno enumera il risultato -- la **deferred execution** che abbiamo esplorato nell'articolo 3.
 
 Questo significa che l'`Activity` non si apre quando scrivi `.Monitor("Filter-Pending")` nella pipeline. Si apre quando il `ToList()` finale (o un `foreach`, o un `Count()`) inizia a tirare elementi attraverso la catena. Il `Dispose` dell'activity avviene quando l'enumeratore viene disposto, cioè quando l'enumerazione termina o viene interrotta.
 

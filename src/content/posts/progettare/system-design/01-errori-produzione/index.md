@@ -48,7 +48,7 @@ Il profiler ha rivelato quattro pattern LINQ che, singolarmente, sembravano ragi
 
 ## Il Dominio: Dispatch per Flotta Commerciale
 
-Prima di entrare nel dettaglio degli errori, è utile avere una visione d'insieme delle entità coinvolte. Il servizio lavora su un modello di dominio relativamente semplice, ma le cardinalità rendono ogni scelta algoritmica significativa.
+Il servizio lavora su un modello di dominio relativamente semplice, ma le cardinalità rendono ogni scelta algoritmica significativa.
 
 | Entità | Descrizione | Cardinalità |
 |--------|-------------|-------------|

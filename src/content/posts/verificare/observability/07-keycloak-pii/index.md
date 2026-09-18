@@ -81,7 +81,7 @@ Il tracing nativo non cattura il body delle request HTTP, ma i dati sensibili fi
 
 Il tracing instrumenta le operazioni interne, ma non distingue cosa è sensibile da cosa non lo è. E non tracciare Keycloak non è un'opzione - perdi visibilità su un componente critico.
 
-La soluzione? Filtrare i dati sensibili nell'OTel Collector, prima che raggiungano il backend. Vediamo come farlo.
+La soluzione? Filtrare i dati sensibili nell'OTel Collector, prima che raggiungano il backend.
 
 ---
 
@@ -182,7 +182,6 @@ In Grafana (http://localhost/grafana) → Explore → Tempo, con la query:
 
 ![Trace waterfall con query DB su tabelle utente](imgs/keycloak-trace-db-queries.webp)
 
-Ecco il problema che dobbiamo risolvere.
 
 ![Span attributes con dati sensibili esposti](imgs/keycloak-span-attributes-unsafe.webp)
 
@@ -203,7 +202,7 @@ Ora che abbiamo visto il problema, costruiamo la soluzione. L'OTel Collector ci 
 
 File: `otel-config/keycloak-pii/otel-collector-config.yaml`
 
-Organizziamo la configurazione in processor separati, ciascuno con una responsabilità specifica. Vediamoli uno per uno.
+Organizziamo la configurazione in processor separati, ciascuno con una responsabilità specifica.
 
 **Receivers e memory protection:**
 
@@ -505,7 +504,7 @@ Il pattern si adatta alle specificità di ogni servizio.
 
 ## Il filtering non basta: considerazioni GDPR
 
-Il PII filtering risolve il problema principale, ma se operi in ambito GDPR ci sono altri aspetti da coprire. Vediamoli in sintesi.
+Il PII filtering risolve il problema principale, ma se operi in ambito GDPR ci sono altri aspetti da coprire.
 
 ### Retention e cancellazione
 

@@ -45,7 +45,7 @@ Ma resta una domanda: *perché* LINQ costa esattamente quello che costa? Quando 
 
 ## I Tre Pilastri: Perché LINQ Funziona Così
 
-Prima di entrare nella state machine, vale la pena capire i tre meccanismi del linguaggio che rendono possibile la sintassi LINQ. Non sono un tutorial su ciascuno, ma il contesto necessario per comprendere cosa succede dietro le quinte.
+Tre meccanismi del linguaggio rendono possibile la sintassi LINQ, e servono per capire cosa succede dietro le quinte.
 
 ### Extension Methods
 

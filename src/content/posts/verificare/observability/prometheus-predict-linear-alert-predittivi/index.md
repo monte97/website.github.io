@@ -45,7 +45,7 @@ Non è così. Ci sono risorse per cui la predizione è perfetta, risorse per cui
 
 ## Cinque casi reali, dal più reattivo al più predittivo
 
-Il caso del disco che si riempie è l'esempio da manuale, ma rischia di dare l'impressione che `predict_linear` sia un martello monouso. In realtà lo spettro di casi reali è molto più ampio, e include scenari in cui la funzione è perfetta, scenari in cui è la scelta sbagliata, e scenari in cui la predizione è già incapsulata nella metrica stessa. Seguono cinque esempi che coprono questo spettro, dal più reattivo al più predittivo.
+Lo spettro dei casi reali è molto più ampio del disco che si riempie, e include scenari in cui la funzione è perfetta, scenari in cui è la scelta sbagliata, e scenari in cui la predizione è già incapsulata nella metrica stessa. Cinque esempi lo coprono, dal più reattivo al più predittivo.
 
 ### Il certificato TLS non ha bisogno di predict_linear
 

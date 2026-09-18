@@ -61,7 +61,7 @@ Il SRE Book fissa la definizione in modo operativo:
 >
 > Fonte: sre.google/sre-book/embracing-risk/
 
-Il takeaway operativo di questa sezione è uno solo, ed è il cardine di tutto quello che segue: **lo SLO è un contratto con l'utente espresso in termini di budget consumabile**. Gli alert ragionevoli dovrebbero rispondere alla domanda "stiamo consumando il budget a un ritmo sostenibile per la finestra corrente?", non alla domanda "la metrica istantanea ha superato una soglia arbitraria in questo preciso momento?". Sono due domande diverse, e producono due tipi di alert diversi con profili di errore molto differenti.
+Il cardine di tutto quello che segue è questo: **lo SLO è un contratto con l'utente espresso in termini di budget consumabile**. Gli alert ragionevoli dovrebbero rispondere alla domanda "stiamo consumando il budget a un ritmo sostenibile per la finestra corrente?", non alla domanda "la metrica istantanea ha superato una soglia arbitraria in questo preciso momento?". Sono due domande diverse, e producono due tipi di alert diversi con profili di errore molto differenti.
 
 ## La soglia statica sbaglia da entrambi i lati
 

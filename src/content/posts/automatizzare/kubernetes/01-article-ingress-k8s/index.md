@@ -216,7 +216,7 @@ nodes:
 - role: worker
 - role: worker
 ```
-> **Spiegazione**: `extraPortMappings` istruisce Docker a inoltrare il traffico dalla porta `80` del nostro `localhost` alla porta `32000` del container che esegue il nodo del cluster. Vedremo tra poco perché usiamo proprio la porta `32000`.
+> **Spiegazione**: `extraPortMappings` istruisce Docker a inoltrare il traffico dalla porta `80` del nostro `localhost` alla porta `32000` del container che esegue il nodo del cluster.
 
 Crea il cluster:
 ```bash
@@ -444,7 +444,6 @@ Il vantaggio del modello dichiarativo di Kubernetes è che **non è necessario d
 
 Questo approccio è spesso preferibile perché isola completamente i servizi e permette di avere percorsi (`/api`, `/v2`, etc.) indipendenti per ciascuno di essi.
 
-Vediamo come modificare il nostro setup.
 
 ### 1. Aggiornare il DNS Locale (`/etc/hosts`)
 

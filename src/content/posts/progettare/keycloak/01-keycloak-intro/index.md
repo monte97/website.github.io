@@ -70,7 +70,7 @@ Da qui discendono le due conseguenze che contano:
 - L'utente fa login **una volta sola** e accede a tutto. È il Single Sign-On.
 - Un dipendente esce? **Lo disattivi in un posto** e perde accesso ovunque.
 
-Va detta anche l'altra faccia: quel punto solo è anche un punto singolo di guasto. Se l'IdP non risponde, non si autentica nessuno da nessuna parte. È un rischio che si progetta (repliche, cache dei token, tolleranza alla scadenza) non che si ignora.
+L'altra faccia è che quel punto solo è anche un punto singolo di guasto. Se l'IdP non risponde, non si autentica nessuno da nessuna parte. È un rischio che si progetta (repliche, cache dei token, tolleranza alla scadenza) non che si ignora.
 
 ## Cosa deleghi a Keycloak, e cosa resta tuo
 
@@ -85,7 +85,7 @@ Quello che smette di essere codice tuo:
 - **Social login**: Google, GitHub e gli altri si configurano dalla console, senza scrivere niente.
 - **Gestione utenti**: registrazione, reset password, sessioni, MFA.
 
-Quello che resta tuo, e va detto perché è la parte che sorprende: **decidere cosa un utente può fare.** Keycloak dice *chi è* e trasporta i ruoli; è la vostra applicazione a decidere cosa quei ruoli aprono. Dove finisce l'autenticazione e comincia l'autorizzazione è una linea che va tracciata a mano, ed è il tema di [OPA come motore di policy](/blog/progettare/keycloak/05-keycloak-opa/).
+Quello che resta tuo, ed è la parte che sorprende: **decidere cosa un utente può fare.** Keycloak dice *chi è* e trasporta i ruoli; è la vostra applicazione a decidere cosa quei ruoli aprono. Dove finisce l'autenticazione e comincia l'autorizzazione è una linea che va tracciata a mano, ed è il tema di [OPA come motore di policy](/blog/progettare/keycloak/05-keycloak-opa/).
 
 ## Realm, client, ruolo: i tre concetti che decidono la struttura
 

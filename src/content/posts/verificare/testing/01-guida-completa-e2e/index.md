@@ -117,11 +117,11 @@ Il canale aperto è ciò che rende possibile l'auto-waiting: il test non interro
 
 **È il motivo per cui la flakiness cala senza che nessuno cambi il modo di scrivere i test.** Non è disciplina: è che il canale attraverso cui il test guarda la pagina ha smesso di essere cieco fra un comando e l'altro.
 
-Va detta anche l'altra metà: **il vantaggio si sta riducendo.** Selenium 4 ha introdotto WebDriver BiDi, anch'esso basato su WebSocket, proprio per colmare questa distanza. Chi valuta oggi una migrazione dovrebbe pesare quanto di quel divario resterà fra due anni.
+L'altra metà è che **il vantaggio si sta riducendo.** Selenium 4 ha introdotto WebDriver BiDi, anch'esso basato su WebSocket, proprio per colmare questa distanza. Chi valuta oggi una migrazione dovrebbe pesare quanto di quel divario resterà fra due anni.
 
 ## Quattro worker, dieci minuti che diventano due e mezzo
 
-Il secondo costo, l'esecuzione, si affronta in modo più banale, ma con un vincolo che vale la pena capire.
+Il secondo costo, l'esecuzione, si affronta in modo più banale, ma con un vincolo che conta.
 
 Playwright esegue i test in parallelo su più worker, e ogni worker ottiene un **contesto browser isolato**: cookie, storage e sessione separati. È ciò che rende la parallelizzazione sicura, non una comodità: senza isolamento, due test concorrenti che scrivono nello stesso `localStorage` si rompono a vicenda in modo non riproducibile: cioè producono esattamente la flakiness che stavamo togliendo.
 

@@ -243,7 +243,7 @@ new Thread(() => {
 
 La differenza rispetto al pattern precedente: i `while(true)` ci sono ancora, ma girano su **thread dedicati** (`new Thread(...)`), non su thread del dispatcher Pekko. Il dispatcher resta libero per gli attori del sistema. Ogni consumer ha il suo thread, fa la sua `poll()`, e chiama lo stato condiviso.
 
-Va notato che i consumer threads così scritti non hanno un meccanismo di shutdown graceful. Allo spegnimento della JVM, i consumer non committano gli offset pendenti e le connessioni al broker restano aperte fino al session timeout. In produzione, il pattern corretto prevede un flag `volatile` per uscire dal loop, una chiamata a `consumer.wakeup()` per interrompere la `poll()`, e un blocco `try/finally` con `consumer.close()`. La migrazione a `Consumer.plainSource` di Pekko Connectors Kafka risolve questo problema nativamente.
+I consumer threads così scritti non hanno un meccanismo di shutdown graceful. Allo spegnimento della JVM, i consumer non committano gli offset pendenti e le connessioni al broker restano aperte fino al session timeout. In produzione, il pattern corretto prevede un flag `volatile` per uscire dal loop, una chiamata a `consumer.wakeup()` per interrompere la `poll()`, e un blocco `try/finally` con `consumer.close()`. La migrazione a `Consumer.plainSource` di Pekko Connectors Kafka risolve questo problema nativamente.
 
 Lo stato condiviso è un `EnrichmentState` basato su `ConcurrentHashMap`:
 

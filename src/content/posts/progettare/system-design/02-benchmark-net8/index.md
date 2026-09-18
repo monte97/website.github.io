@@ -224,7 +224,7 @@ Il pattern è chiarissimo. `RepeatedScan` scala in modo **quadratico**: raddoppi
 
 A 500 veicoli (che corrisponde a 5000 consegne e ~30 zone nel dataset di test), il rapporto è di circa **45x**. In un dispatcher reale con centinaia di zone, il divario sarebbe ancora più marcato.
 
-C'è però un trade-off: `GroupByDictionary` alloca di più. Il `ToDictionary` crea una struttura dati intermedia che `RepeatedScan` non necessita. In questo caso il trade-off è ovviamente favorevole -- pochi KB in più di allocazioni in cambio di un ordine di grandezza sul tempo. Ma è importante notarlo: l'ottimizzazione non è mai "gratis" su tutti gli assi.
+C'è però un trade-off: `GroupByDictionary` alloca di più. Il `ToDictionary` crea una struttura dati intermedia che `RepeatedScan` non necessita. In questo caso il trade-off è ovviamente favorevole -- pochi KB in più di allocazioni in cambio di un ordine di grandezza sul tempo. L'ottimizzazione non è mai "gratis" su tutti gli assi.
 
 Questo pattern è l'equivalente in memoria di ciò che un database fa con gli indici. Nessuno si sognerebbe di eseguire una query SQL senza indice su una tabella con migliaia di righe. Eppure nel codice applicativo si fa continuamente con i `.Where()` annidati. La regola è la stessa: se devi cercare più volte nella stessa collezione, **costruisci l'indice una volta sola**.
 

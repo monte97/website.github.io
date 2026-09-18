@@ -70,7 +70,7 @@ Uno scenario tipico:
 
 Tre sorgenti di identità completamente diverse, tre protocolli diversi, ma le applicazioni devono vedere un unico token JWT con la stessa struttura. Non vogliono sapere se l'utente arriva da LDAP, da Google o da Okta. Vogliono un token firmato da Keycloak, con i claim giusti.
 
-Keycloak raggiunge questo risultato con due strategie complementari, descritte nelle sezioni seguenti.
+Keycloak raggiunge questo risultato con due strategie complementari.
 
 ---
 

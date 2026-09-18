@@ -69,7 +69,7 @@ Quattro stringhe piatte. Il confronto con un approccio strutturato:
 | Persistenza | Ciclo di vita container | Ciclo di vita container | Loki (persistente) |
 | Multi-istanza | `docker logs` per ognuna | `docker logs` per ognuna | Query centralizzata |
 
-In sintesi: formato, persistenza e centralizzazione mancano tutti. Le sezioni successive affrontano ciascun limite in ordine.
+In sintesi: formato, persistenza e centralizzazione mancano tutti.
 
 ---
 

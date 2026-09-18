@@ -82,7 +82,7 @@ La soluzione non è semplicemente "usare una coda di messaggi". Il cambio di par
 
 ## Partizioni e Segmenti: Come Kafka Ottimizza Storage e Letture
 
-Definire Kafka come "log di commit distribuito" è tecnicamente corretto, ma non spiega le scelte ingegneristiche che ne determinano le performance. Le sezioni seguenti analizzano la struttura interna.
+Definire Kafka come "log di commit distribuito" è tecnicamente corretto, ma non spiega le scelte ingegneristiche che ne determinano le performance.
 
 ### La Partizione: Un Log Immutabile e Segmentato
 
@@ -214,9 +214,7 @@ async function main() {
 }
 ```
 
-### Due dettagli del producer che vale la pena conoscere
-
-Due aspetti di questo codice meritano attenzione:
+### Due dettagli del producer
 
 1.  **`await producer.send(...)` invia un messaggio alla volta.** L'attesa della conferma del broker rende il codice leggibile, ma serializza le scritture: su throughput alti serve `producer.sendBatch()`.
 
@@ -289,7 +287,7 @@ finally:
 
 ### Perché il consumer chiede invece di ricevere
 
-Il pattern del consumer merita un'analisi più attenta:
+Nel pattern del consumer contano tre cose:
 
 1.  **`consumer.poll(timeout=1.0)`**: Il consumer non riceve messaggi in push. È un ciclo di **polling** esplicito: ogni secondo chiede al broker se ci sono nuovi messaggi. Se non ce ne sono, `poll` restituisce `None` e il ciclo riprende. Questo modello dà al consumer pieno controllo sulla velocità di consumo (backpressure naturale).
 
