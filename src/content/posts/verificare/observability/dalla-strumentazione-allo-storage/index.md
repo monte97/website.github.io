@@ -50,7 +50,7 @@ Questo articolo è su quelle due scelte. Il seguito della serie ([gli scenari di
 
 ## Prima di OpenTelemetry ogni vendor aveva il suo dialetto
 
-Vale la pena ricordare perché esiste uno standard, perché spiega la forma di tutto il resto.
+Perché esista uno standard spiega la forma di tutto il resto.
 
 Prima di OpenTelemetry, strumentare un'applicazione significava scegliere un fornitore e sposarlo. Ogni piattaforma aveva la propria libreria, il proprio formato, il proprio protocollo. Cambiare backend voleva dire rimettere le mani su ogni servizio: non una migrazione di configurazione, una migrazione di codice.
 

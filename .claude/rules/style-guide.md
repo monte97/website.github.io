@@ -243,6 +243,22 @@ Da [Google Technical Writing](https://developers.google.com/tech-writing/one/sho
   che dichiara il perimetro di cio' che si e' raccontato: quella e' onesta', non
   autocommento.
 
+- **Il numero non sta da solo.** Una sezione che apre con "Tre, e vanno dichiarati" o
+  "Sono tre" chiede a chi legge di tenere a mente un conteggio prima di sapere di cosa.
+  Il numero si attacca al suo sostantivo: "Il prezzo e' di tre voci". Trovato il
+  2026-09-15 due volte nello stesso case study, a due sezioni di distanza, e corretto una
+  volta sola su due: senza la regola scritta non c'era niente che tenesse ferma la mano.
+
+- **La seconda persona parla a chi legge, non descrive il sistema.** Il tu e il voi
+  rivolti al lettore restano, e su questo la revisione del 2026-09-14 ha deciso
+  esplicitamente su 65 articoli: "Contate i port-forward che avete aperti adesso" e
+  un'epigrafe che dice "i tuoi dati" sono la voce del corpus, non un difetto. Quello che
+  cambia e' il tu come destinatario grammaticale dentro la descrizione di un
+  meccanismo: "una fonte ti da'" diventa "una fonte trasmette", "il telefono ti da' una
+  posizione" diventa "il telefono fornisce una posizione". Il sistema fa una cosa, non la
+  fa *a te*. Nelle procedure il tu resta anche in quella forma, perche' li' chi legge sta
+  davvero eseguendo: "prendi il PID che Docker ti da'" non si tocca.
+
 - **Il trattino lungo (—) non si usa.** Al suo posto: due punti per una spiegazione o
   una conseguenza, virgole o parentesi per un inciso, punto fermo dove la frase sta
   meglio spezzata. Resta legittimo dentro blocchi di codice, output, comandi e tabelle.
@@ -366,7 +382,10 @@ un prospect, piu' cinque sul resto del corpus). Le regole sono in ordine di
 applicazione: la prima che chiude il caso ferma le altre.
 
 **1. Prima si conta, poi si corregge.** Si cerca il difetto su tutto il corpus e si
-contano le occorrenze vere. Entrambe le passate hanno trovato un difetto
+contano le occorrenze vere. Il pattern di ricerca fa parte del conteggio: il primo giro
+del 2026-09-15 cercava "vale la pena" seguito da dire, spiegare, notare o chiarire, e ha
+mancato "vale la pena ricordare" e "vale la pena sottolineare" in due articoli. Un elenco
+di verbi troppo stretto non da' meno lavoro, da' un numero sbagliato. Entrambe le passate hanno trovato un difetto
 concentrato, non diffuso: 16 correzioni su 65 articoli la prima, 5 occorrenze su 69
 corrispondenze grezze in 43 file la seconda. Una correzione decisa su un solo pezzo,
 senza sapere quanto e' diffusa, tende a diventare una regola inventata.
@@ -384,19 +403,30 @@ correzione e' la cancellazione. Quasi meta' delle correzioni del 2026-09-15 sono
 cancellazioni pure: una chiusa che ripeteva la riga sopra, una promessa senza
 seguito, una clausola che commentava la struttura del pezzo.
 
-**4. La sostituzione non allunga.** Se la riscrittura e' piu' lunga dell'originale,
-quasi sempre ha scambiato un tic con una parafrasi. L'eccezione e' quando la frase
-vecchia nascondeva un'informazione mancante, e allora quello che si aggiunge e' il
-dato, non il giro di parole.
+Nelle **posizioni strutturali** la cancellazione non basta, perche' lasciano un buco che
+qualcosa deve riempire: l'apertura di un pezzo, la prima riga di una sezione, la nota di
+chiusura. Li' quello che si scrive al posto dell'impalcatura e' l'informazione che
+l'impalcatura prometteva. L'apertura corretta il 2026-09-15 prometteva "cosa cambia quando
+le sorgenti diventano molte" e non lo diceva: la riscrittura nomina le due cose che
+cambiano e la terza che resta fuori.
+
+**4. La sostituzione non allunga**, tranne quando aggiunge un dato. Se la riscrittura e'
+piu' lunga dell'originale e le parole in piu' non sono un'informazione che prima mancava,
+ha scambiato un tic con una parafrasi. L'apertura del 2026-09-15 e' passata da 71 a 84
+parole, e le tredici in piu' sono il terzo problema, che prima non era nominato: sta
+nell'eccezione, non nella regola. Il controllo e' meccanico: conta le parole, poi indica
+quale dato nuovo portano quelle aggiunte. Se non sai indicarlo, non c'e'.
 
 **5. Si tocca la cornice, mai l'affermazione.** Una correzione di registro cambia il
 modo in cui una cosa e' detta. Nel momento in cui cambia *cosa* il pezzo sostiene,
 non e' piu' registro: e' una revisione di contenuto, si ferma e si porta all'autore.
 Le due passate non hanno modificato una sola affermazione tecnica.
 
-**6. Quando le riscritture plausibili sono piu' di una, decide l'autore.** Non si
-sceglie per lui il titolo di una sezione o la prima riga di un pezzo: si preparano le
-alternative con il loro effetto, e si applica quella scelta. Le correzioni meccaniche
+**6. Quando le riscritture plausibili sono piu' di una, decide l'autore.** Valgono qui
+le stesse posizioni strutturali della regola 3, e l'**apertura** per prima: e' il punto in
+cui una riscrittura non richiesta viene rimandata indietro, ed e' successo due volte di
+seguito il 2026-09-15 sullo stesso attacco. Si preparano le alternative con il loro
+effetto, e si applica quella scelta. Le correzioni meccaniche
 (un errore di grammatica, una ripetizione verbatim) non hanno bisogno di questo
 passaggio.
 

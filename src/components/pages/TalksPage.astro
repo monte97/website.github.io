@@ -88,9 +88,9 @@ const t = lang === 'en'
                 <img src={img} alt={talk.title} class="w-full h-48 md:h-56 md:w-64 object-cover shrink-0" loading="lazy" />
               )}
               <div class="p-6 flex-1">
-                <p class="label-mono !text-accent">{talk.event} &middot; {fmtDate(talk.date)} &middot; {talk.location}</p>
+                <p class="label-mono !text-accent"><span class="whitespace-nowrap">{talk.event}</span>{' '}<span class="whitespace-nowrap">&middot; {fmtDate(talk.date)}</span>{' '}<span class="whitespace-nowrap">&middot; {talk.location}</span></p>
                 <h3 class="text-xl font-bold text-text-dark dark:text-text-light mt-1 group-hover:text-accent transition-colors">{talk.title}</h3>
-                <p class="text-text-muted mt-2 leading-relaxed">{talk.abstract[lang].split("\n\n")[0]}</p>
+                <p class="text-text-muted mt-2 leading-relaxed line-clamp-3 md:line-clamp-none">{talk.abstract[lang].split("\n\n")[0]}</p>
               </div>
             </a>
           );
@@ -111,9 +111,9 @@ const t = lang === 'en'
                 <img src={img} alt={talk.title} class="w-full h-48 md:h-56 md:w-64 object-cover shrink-0" loading="lazy" />
               )}
               <div class="p-6 flex-1">
-                <p class={mono}>{talk.event} &middot; {fmtDate(talk.date)} &middot; {talk.location}</p>
+                <p class={mono}><span class="whitespace-nowrap">{talk.event}</span>{' '}<span class="whitespace-nowrap">&middot; {fmtDate(talk.date)}</span>{' '}<span class="whitespace-nowrap">&middot; {talk.location}</span></p>
                 <h3 class="text-xl font-bold text-text-dark dark:text-text-light mt-1 group-hover:text-accent transition-colors">{talk.title}</h3>
-                <p class="text-text-muted mt-2 leading-relaxed">{talk.abstract[lang].split("\n\n")[0]}</p>
+                <p class="text-text-muted mt-2 leading-relaxed line-clamp-3 md:line-clamp-none">{talk.abstract[lang].split("\n\n")[0]}</p>
               </div>
             </a>
           );

@@ -276,7 +276,7 @@ La domanda che scioglie è un'altra, ed è quasi imbarazzante nella sua semplici
 
 La risposta, guardata con onestà, è quasi nessuna.
 
-Il telefono ti dà una posizione. Decidere se quella posizione sia abbastanza buona per
+Il telefono fornisce una posizione. Decidere se quella posizione sia abbastanza buona per
 finire in un documento che qualcuno firma è un calcolo su una manciata di numeri. La
 calibrazione di un sensore è un'addizione con memoria. Un filtro sul segnale è aritmetica.
 Il rapporto finale è un documento costruito a partire da dati che hai già. Le regole di

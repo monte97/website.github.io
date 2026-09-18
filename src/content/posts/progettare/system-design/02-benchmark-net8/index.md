@@ -162,7 +162,7 @@ Le allocazioni sono **identiche**. Entrambi i metodi producono lo stesso output,
 
 Il rapporto di velocità cresce con la dimensione del dataset: da ~7x a 50 veicoli, fino a ~63x a 500. La complessità asintotica non è un concetto astratto -- si vede nei numeri.
 
-Vale la pena sottolineare un aspetto che spesso sfugge nelle discussioni da code review: il passaggio da `List` a `HashSet` non richiede nessun cambiamento alla query LINQ. Il `.Where()` resta identico. Cambia solo la struttura dati a monte. Questo è un principio generale: **scegliere la struttura dati giusta è quasi sempre più impattante che riscrivere la query**.
+Un aspetto che spesso sfugge nelle discussioni da code review: il passaggio da `List` a `HashSet` non richiede nessun cambiamento alla query LINQ. Il `.Where()` resta identico. Cambia solo la struttura dati a monte. Questo è un principio generale: **scegliere la struttura dati giusta è quasi sempre più impattante che riscrivere la query**.
 
 ---
 

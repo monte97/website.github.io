@@ -134,7 +134,7 @@ Score finale: **92%**. Da 10 test a 22. I survived passano da 12 a 3 (quei 3 son
 
 ## La tesi
 
-La coverage vi dice se il codice viene *eseguito*. Il mutation score vi dice se i test *funzionano*.
+La coverage dice se il codice viene *eseguito*. Il mutation score dice se i test *funzionano*.
 
 Sono due domande diverse. Vale la pena farle entrambe.
 
