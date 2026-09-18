@@ -8,13 +8,13 @@ const year = new Date().getFullYear();
 const prefix = lang === 'en' ? '/en' : '';
 
 /**
- * Talks e Workshop sono usciti dalla barra in alto, che ora e' dedicata a
- * portare clienti. Qui restano raggiungibili da ogni pagina del sito, oltre
- * che dalle pagine dove hanno senso (About linka i talk, Servizi i workshop).
+ * Workshop e' uscito dalla barra in alto, che ora e' dedicata a portare
+ * clienti. Qui resta raggiungibile da ogni pagina, oltre che dalla pagina
+ * Servizi, dove ha senso perche' e' un servizio anche lui.
  */
 const secondarie = lang === 'en'
-  ? [{ label: 'Talks', href: '/en/talks/' }, { label: 'Workshops', href: '/en/workshop/' }]
-  : [{ label: 'Talks', href: '/talks/' }, { label: 'Workshop', href: '/workshop/' }];
+  ? [{ label: 'Workshops', href: '/en/workshop/' }]
+  : [{ label: 'Workshop', href: '/workshop/' }];
 ---
 
 <footer class="border-t border-border/60 dark:border-border-dark/60 mt-16">

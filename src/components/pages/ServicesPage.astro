@@ -31,10 +31,6 @@ const mailLink = 'mailto:francesco@montelli.dev';
 
 const services = (await getCollection('services')).sort((a, b) => a.data.weight - b.data.weight);
 const workshops = await getWorkshops();
-const caseStudyCount = (await getCollection('projects')).filter(
-  (p) => p.data.type === 'case-study' && !p.data.hold
-).length;
-
 const hair = 'border-border/70 dark:border-border-dark/70';
 
 const t = lang === 'en'
@@ -45,12 +41,10 @@ const t = lang === 'en'
       heroTitle: 'I design, build and automate the software behind your product.',
       heroBody: 'From analysis and architecture choices to the actual build, all the way to the automated processes that keep quality high. Whether it starts from scratch or from a system that has grown rigid over time, the team is left able to go on without me.',
       heroCta: 'Book a discovery call',
-      heroSecondary: (n: number) => `Read the ${n} analyses`,
       howTitle: 'How I work',
       commitments: [
         { title: 'The goal is to make myself unnecessary', body: 'Every engagement ends with a handover doc, runbooks and an internal owner I train. The system should not depend on me to keep working.' },
         { title: 'One active goal at a time', body: 'No parallel tracks stealing attention from each other. What is open gets closed, then the next one opens.' },
-        { title: 'The first focused piece is refundable', body: 'Fixed price, delivered in two weeks. If you are not satisfied it is refunded, no questions, and the work stays yours either way.' },
         { title: 'Decisions stay written down', body: 'The choices made, the alternatives rejected and why. The same format the public case studies are told in.' },
       ],
       whatTitle: 'What we can do together',
@@ -61,9 +55,8 @@ const t = lang === 'en'
       processTitle: 'How it goes',
       process: [
         ['01', 'Discovery call', '30 minutes, free. Tell me what the system looks like today and which decision you are stuck on. It is there to see whether there is a problem I can be useful on.'],
-        ['02', 'Focused piece', 'One area, a concrete result in hand, delivered within two weeks. Fixed price, and the work stays yours either way.'],
-        ['03', 'Ongoing engagement', 'If the problem is bigger than one piece. Month to month, one active goal at a time, with everything the system needs included.'],
-        ['04', 'Exit', 'Handover doc, runbooks and a trained internal owner. From there the team goes on by itself.'],
+        ['02', 'Ongoing engagement', 'If the problem calls for continuity. Month to month, one active goal at a time, with everything the system needs included.'],
+        ['03', 'Exit', 'Handover doc, runbooks and a trained internal owner. From there the team goes on by itself.'],
       ],
       fitTitle: 'When I am the right choice',
       fitYes: 'We work well together if…',
@@ -71,7 +64,6 @@ const t = lang === 'en'
       fitExtra: 'you want the team to be able to go on without me at the end',
       faqTitle: 'Frequently asked',
       faq: [
-        { q: 'How much does it cost?', a: 'The focused piece has a fixed price of €1,200: one area, delivered in two weeks, refunded if you are not satisfied. The ongoing engagement starts at €2,500 a month, month to month, with one active goal at a time.' },
         { q: 'How does the first call work?', a: 'Thirty minutes, free, no commitment and no slides. You tell me where the system is and what is blocking you, and we work out whether and how it makes sense to work together.' },
         { q: 'What is left at the end of an engagement?', a: 'A handover doc, the runbooks and an internal owner I have trained. Plus the code, the tests and the documented decisions: the system should not depend on me to keep working.' },
       ],
@@ -87,12 +79,10 @@ const t = lang === 'en'
       heroTitle: 'Progetto, sviluppo e automatizzo il software del tuo prodotto.',
       heroBody: "Dall'analisi e le scelte di architettura alla realizzazione, fino ai processi automatici che ne tengono alta la qualità. Che parta da zero o da un sistema irrigidito nel tempo, alla fine il team resta capace di andare avanti da solo.",
       heroCta: 'Prenota una discovery call',
-      heroSecondary: (n: number) => `Leggi le ${n} analisi`,
       howTitle: 'Come lavoro',
       commitments: [
         { title: "L'obiettivo è rendermi inutile", body: 'Ogni ingaggio finisce con un handover doc, i runbook e un owner interno che formo. Il sistema non deve dipendere da me per funzionare.' },
         { title: 'Un obiettivo attivo per volta', body: 'Niente lavori paralleli che si rubano attenzione. Si chiude quello che è aperto, poi si apre il successivo.' },
-        { title: 'Il primo affondo è rimborsabile', body: 'Prezzo fisso, consegna in due settimane. Se non sei soddisfatto viene rimborsato senza domande, e il lavoro fatto resta comunque tuo.' },
         { title: 'Le decisioni restano scritte', body: 'Le scelte prese, le alternative scartate e il motivo. È lo stesso formato con cui sono raccontati i case study pubblici.' },
       ],
       whatTitle: 'Cosa possiamo fare insieme',
@@ -103,9 +93,8 @@ const t = lang === 'en'
       processTitle: 'Come si procede',
       process: [
         ['01', 'Discovery call', "30 minuti, gratuiti. Raccontami com'è fatto il sistema adesso e qual è la decisione su cui siete fermi. Serve a capire se c'è un problema su cui posso essere utile."],
-        ['02', 'Affondo mirato', "Un'area sola, un risultato concreto in mano, consegnato entro due settimane. Prezzo fisso, e il lavoro resta tuo in ogni caso."],
-        ['03', 'Ingaggio continuativo', 'Se il problema è più grande di un affondo. Mese per mese, un obiettivo attivo per volta, con tutto quello che serve al sistema incluso.'],
-        ['04', 'Uscita', 'Handover doc, runbook e un owner interno formato. Da qui in avanti il team va avanti da solo.'],
+        ['02', 'Ingaggio continuativo', 'Se il problema chiede continuità. Mese per mese, un obiettivo attivo per volta, con tutto quello che serve al sistema incluso.'],
+        ['03', 'Uscita', 'Handover doc, runbook e un owner interno formato. Da qui in avanti il team va avanti da solo.'],
       ],
       fitTitle: 'Quando sono la scelta giusta',
       fitYes: 'Lavoriamo bene insieme se…',
@@ -113,7 +102,6 @@ const t = lang === 'en'
       fitExtra: 'vuoi che alla fine il team resti capace di andare avanti da solo',
       faqTitle: 'Domande frequenti',
       faq: [
-        { q: 'Quanto costa?', a: "L'affondo mirato ha un prezzo fisso di €1.200: un'area sola, consegna in due settimane, rimborsato se non sei soddisfatto. L'ingaggio continuativo parte da €2.500 al mese, mese per mese, con un obiettivo attivo per volta." },
         { q: 'Come funziona la prima call?', a: 'Trenta minuti, gratuiti, senza impegno e senza slide. Mi racconti dove sta il sistema e cosa vi blocca, e ne esce se e come ha senso lavorare insieme.' },
         { q: 'Cosa resta a fine ingaggio?', a: "Un handover doc, i runbook e un owner interno che ho formato. Più il codice, i test e le decisioni documentate: il sistema non deve dipendere da me per funzionare." },
       ],
@@ -159,10 +147,6 @@ const notForYou: string[] = [];
           <a href={calLink} target="_blank" rel="noopener noreferrer" data-umami-event="cta-servizi-hero"
             class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-accent text-white text-sm font-semibold hover:bg-accent-hover transition-colors">
             {t.heroCta} &rarr;
-          </a>
-          <a href={`${prefix}/case-study/`}
-            class={`inline-flex items-center gap-2 px-6 py-3 rounded-lg border ${hair} text-sm font-semibold text-text-dark dark:text-text-light hover:border-accent hover:text-accent transition-colors`}>
-            {t.heroSecondary(caseStudyCount)}
           </a>
         </div>
       </div>

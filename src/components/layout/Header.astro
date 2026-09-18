@@ -15,10 +15,10 @@ const { lang = 'it', altHref } = Astro.props;
  * Quattro voci, non sette. Il sito deve portare clienti: la barra dice cosa
  * vendi (Servizi), la prova che sai farlo (Lavori, Blog) e chi sei (About).
  *
- * Talks e Workshop restano vivi ai loro URL e si raggiungono da dove hanno
- * senso: /workshop/ e' linkato dalla pagina Servizi (e' un servizio anche
- * lui), /talks/ dalla pagina About e dal footer. Erano due voci di menu che
- * duplicavano link gia' presenti nelle pagine.
+ * Le conferenze restano in barra ("Conferenze", non "Talks"): parlare a
+ * conferenze e' validazione di terze parti, e vale come prova quanto i
+ * Lavori. Workshop invece esce: e' un servizio, ed e' gia' linkato dalla
+ * pagina Servizi, oltre che dal footer.
  *
  * "Lavori" al posto di "Case Study": e' il nome che il vault usa gia' per
  * queste schede, e dice a un cliente cosa trovera' senza chiedergli di
@@ -28,12 +28,14 @@ const nav = {
   it: [
     { label: 'Servizi', href: '/servizi/' },
     { label: 'Lavori', href: '/case-study/' },
+    { label: 'Conferenze', href: '/talks/' },
     { label: 'Blog', href: '/blog/' },
     { label: 'About', href: '/about/' },
   ],
   en: [
     { label: 'Services', href: '/en/services/' },
     { label: 'Work', href: '/en/case-study/' },
+    { label: 'Talks', href: '/en/talks/' },
     { label: 'Blog', href: '/en/blog/' },
     { label: 'About', href: '/en/about/' },
   ],
