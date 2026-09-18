@@ -196,7 +196,7 @@ Il direttore lavori non stava chiedendo una feature. Stava pronunciando una fras
 
 ## Tre ruoli, quindici anni prima
 
-Prima di cercare un colpevole, vale la pena guardare quei tre ruoli per quello che sono stati.
+Prima di cercare un colpevole, quei tre ruoli vanno guardati per quello che sono stati.
 
 Quindici anni prima erano la scelta giusta, e non con occhio benevolo: con i criteri di allora. Cinque utenti, tutti interni, tutti conosciuti per nome. Chi entrava nella piattaforma aveva un mestiere (chi amministrava, chi progettava, chi eseguiva) e il mestiere bastava a decidere quello che poteva toccare. **Il permesso era una proprietà della persona perché le persone si conoscevano.** Non c'era bisogno di una relazione fra un utente e un cantiere: la relazione c'era già fuori dal software, si chiamava ufficio tecnico, e funzionava.
 
@@ -210,7 +210,7 @@ La risposta naturale alla richiesta del direttore lavori era aggiungere il quart
 
 Funzionava. Si aggiungeva il ruolo, si metteva l'utente dentro, il subappaltatore vedeva quello che gli serviva. Poi è arrivata la richiesta per il collaudatore, e si è fatto lo stesso: nuovo ruolo, nuovo utente, tutto a posto. Anche quello funzionava.
 
-Ed è qui che la trappola va descritta per bene, perché non è la trappola ovvia. **La soluzione sbagliata non fallisce mai.** Ogni ruolo nuovo funziona la mattina stessa in cui lo aggiungi. Nessun errore, nessun incidente, nessuna mail di protesta: solo un'altra chiave globale che apre tutte le porte allo stesso modo. Il conto non arriva mai in una data precisa: arriva distribuito, in decenni di piccole concessioni, finché i ruoli non sono più una descrizione delle persone ma una lista di eccezioni con nome proprio.
+E la trappola non è quella ovvia. **La soluzione sbagliata non fallisce mai.** Ogni ruolo nuovo funziona la mattina stessa in cui lo aggiungi. Nessun errore, nessun incidente, nessuna mail di protesta: solo un'altra chiave globale che apre tutte le porte allo stesso modo. Il conto non arriva mai in una data precisa: arriva distribuito, in decenni di piccole concessioni, finché i ruoli non sono più una descrizione delle persone ma una lista di eccezioni con nome proprio.
 
 Il costo si misurava in **settimane**. Non di sviluppo: di analisi, di riunioni per mettere d'accordo le persone anche solo sul nome del ruolo, e di verifiche per capire se davvero funzionava. Alla fine di tutto questo, la fiducia in quello che era stato fatto restava bassa.
 
@@ -228,7 +228,7 @@ Il passaggio che cambia tutto è corto da dirsi.
 
 **In un modello ReBAC un permesso è una relazione fra una persona e una cosa specifica, non una proprietà di chi sei.** Non «subappaltatore» come chiave universale, ma «questa persona, su questo capitolato, può vedere». La differenza è concreta: una frase che il sistema sa pronunciare, contro una che non sa. In numeri: si passa da **tre ruoli globali** a **una ottantina di relazioni distribuite su sei tipi di oggetto**. È il vocabolario che serviva per rispondere a quella richiesta di dieci parole, non complessità aggiunta per gusto.
 
-Il modello OpenFGA (chi è collegato a cosa, e attraverso quali catene di tupla) l'ho imparato e raccontato nella [serie sui concetti di Zanzibar](/blog/verificare/openfga/01-zanzibar-concetti/), quindi qui non lo rispiego: la serie lo fa meglio, e questo pezzo parla d'altro. Parla di come si introduce quella forma in un sistema che ha gente dentro adesso.
+Il modello OpenFGA (chi è collegato a cosa, e attraverso quali catene di tupla) l'ho imparato e raccontato nella [serie sui concetti di Zanzibar](/blog/verificare/openfga/01-zanzibar-concetti/), quindi qui non lo rispiego. Qui si parla di come si introduce quella forma in un sistema che ha gente dentro adesso.
 
 ## L'ostacolo vero
 
@@ -244,11 +244,9 @@ Un flag decide chi risponde. Girare il flag è una scelta di traffico, non un de
 
 Il costo di quella scelta si misura: il motore nuovo sta in **circa ottocento righe**, la replica del comportamento vecchio in **meno di duecento**. Un quinto dello sforzo per non rompere niente mentre il resto cambia, ed è la voce che non entra mai in nessun preventivo, perché non produce niente di visibile.
 
-Questa è la parte che un lettore con lo stesso problema può rubare: **la replica del vecchio è una feature, non un ripiego**. Finché la prima implementazione risponde, il nuovo modello può sbagliare in tutta sicurezza, e sbaglierà, perché nessun modello è uguale al vecchio il primo giorno.
+**La replica del vecchio è una feature, non un ripiego.** Finché la prima implementazione risponde, il nuovo modello può sbagliare in tutta sicurezza, e sbaglierà, perché nessun modello è uguale al vecchio il primo giorno.
 
 ## Nessun record da migrare
-
-Questa sezione, in cronologia, viene molto dopo. Sta qui perché è qui che si capisce.
 
 Chi sente «sostituire l'autorizzazione» immagina subito il lavoro sporco: lo script di migrazione, il backfill, la notte bianca del cutover, il piano di rollback per il caso in cui lo script si fermi a metà. Io me lo immaginavo così, e avevo già cominciato a disegnarlo.
 
@@ -270,7 +268,7 @@ Il subappaltatore del cantiere 12, appunto, o il suo equivalente del mese succes
 
 È una scelta di forma, non un difetto che si aggiusta con un filtro, e va fatta sapendo quello che si lascia. Delle gerarchie che si complicano e delle query che smettono di risolversi guardando solo il vicinato ho scritto in [gerarchie profonde e query inverse](/blog/verificare/openfga/04-gerarchie-query/); è lo stesso confine, visto dal lato delle prestazioni. Qui il conto si paga in espressività: guadagni un vocabolario che finalmente sa pronunciare la frase del direttore lavori, e perdi la semplicità di un mondo dove tutto era unione.
 
-Lo scrivo perché è il prezzo vero, ed è meglio saperlo prima. Chi vende il modello a relazioni come «stesso servizio, funzioni in più» sta vendendo anche questo, senza dirlo.
+È il prezzo vero, ed è meglio saperlo prima. Chi vende il modello a relazioni come «stesso servizio, funzioni in più» sta vendendo anche questo, senza dirlo.
 
 ## Il flag che non c'è più
 
@@ -290,7 +288,7 @@ Prima, toccare i permessi voleva dire passare da chi di dovere **prima** di comi
 
 **La revisione ha cambiato oggetto: da un'ipotesi discussa su un foglio bianco a un lavoro che si guarda.** È una differenza che chiunque abbia condotto una riunione di allineamento riconosce.
 
-C'è anche una ragione tecnica sotto, e vale la pena dirla. Le relazioni permettono di scolpire una volta i vincoli più stringenti (quelli che non devono mai cadere) e da lì in poi è difficile sbagliare. Con un ruolo nuovo, invece, molti controlli andavano riscritti da capo: concatenazioni di condizioni booleane, ognuna un'occasione per dimenticarsene una.
+C'è anche una ragione tecnica sotto. Le relazioni permettono di scolpire una volta i vincoli più stringenti (quelli che non devono mai cadere) e da lì in poi è difficile sbagliare. Con un ruolo nuovo, invece, molti controlli andavano riscritti da capo: concatenazioni di condizioni booleane, ognuna un'occasione per dimenticarsene una.
 
 ## Cosa si può fare adesso che prima non si poteva
 

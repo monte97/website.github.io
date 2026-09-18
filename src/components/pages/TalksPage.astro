@@ -83,7 +83,7 @@ const t = lang === 'en'
         {upcoming.map((talk) => {
           const img = coverFor(talk.slug);
           return (
-            <a href={`${prefix}/talks/${talk.slug}/`} class="group surface-link overflow-hidden border-l-[3px] border-l-accent hover:border-l-accent md:flex">
+            <a href={`${prefix}/talks/${talk.slug}/`} class="group block surface-link overflow-hidden border-l-[3px] border-l-accent hover:border-l-accent md:flex">
               {img && (
                 <img src={img} alt={talk.title} class="w-full h-48 md:h-56 md:w-64 object-cover shrink-0" loading="lazy" />
               )}
@@ -106,7 +106,7 @@ const t = lang === 'en'
         {past.map((talk) => {
           const img = coverFor(talk.slug);
           return (
-            <a href={`${prefix}/talks/${talk.slug}/`} class="group surface-link overflow-hidden md:flex">
+            <a href={`${prefix}/talks/${talk.slug}/`} class="group block surface-link overflow-hidden md:flex">
               {img && (
                 <img src={img} alt={talk.title} class="w-full h-48 md:h-56 md:w-64 object-cover shrink-0" loading="lazy" />
               )}

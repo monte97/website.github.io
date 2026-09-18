@@ -235,7 +235,7 @@ Nessun errore, nessuna eccezione, nessun valore nullo, nessuna riga di log. Un s
 
 ## Perché nessun test lo avrebbe preso
 
-È la parte che vale la pena portarsi a casa, perché non riguarda questo progetto.
+È la parte che non riguarda solo questo progetto.
 
 Se avessi scritto dei test su quell'integrazione (e ne avevo) sarebbero stati verdi. Un test su un sistema simulato verifica che il tuo codice legga correttamente una risposta **che hai scritto tu**. E tu la scrivi nell'ordine che hai in testa. Il sistema simulato conferma il tuo modello mentale, che è esattamente la cosa che non serve verificare.
 
@@ -245,13 +245,13 @@ Solo il sistema vero riordina. Solo il sistema vero si comporta in un modo che n
 
 ## Dove finisce il lavoro
 
-C'è una domanda che vale la pena farsi prima di essere contenti del risultato: **su cosa poggia tutto questo?**
+Una domanda prima di essere contenti del risultato: **su cosa poggia tutto questo?**
 
 Poggia su un'osservazione. Non su un contratto, non su una documentazione, non su un impegno di nessuno a non cambiare le cose. Il costruttore non sa che quel processo esiste, e non ha nessun obbligo verso di lui: il giorno in cui aggiorna il portale, qualcosa smette di funzionare, e nessuno avvisa.
 
 Questo non rende il lavoro sbagliato. Lo rende **una cosa che va dichiarata per quello che è**, e la scelta successiva discende da lì: non ho costruito sorveglianza, non ho promesso continuità, non ho lasciato credere che fosse un'integrazione come le altre. Ho scritto quanto durerà, per quanto ne so, e cosa succede quando finirà.
 
-Il modo elegante di chiudere questa storia, del resto, è **chiedere al costruttore se un'interfaccia ufficiale esiste**. Costa una mail, e toglierebbe di mezzo sia l'osservazione sia il browser. È rimasto fra le cose da fare, ed è la prima.
+Il modo elegante di chiudere, del resto, è **chiedere al costruttore se un'interfaccia ufficiale esiste**. Costa una mail, e toglierebbe di mezzo sia l'osservazione sia il browser. È rimasto fra le cose da fare, ed è la prima.
 
 ## Il deliverable non era il codice
 

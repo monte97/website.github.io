@@ -223,9 +223,9 @@ Davanti a una richiesta così, la strada normale è stimare e discutere. Ma stim
 
 Un dimostratore che funziona sposta la conversazione: non si parla più di quanto potrebbe costare, si guarda cosa succede toccando un mezzo sulla mappa e si decide se serve.
 
-C'è però una seconda ragione, e tacerla renderebbe questo pezzo meno utile: **un dimostratore serve anche a convincere.** La stessa richiesta si poteva soddisfare con una web application ordinaria, aperta dal browser del telefono, riusando gran parte di quello che c'era già. L'app nativa non era l'unica strada tecnica: era quella che si vede.
+C'è però una seconda ragione, ed è quella che di solito non si scrive: **un dimostratore serve anche a convincere.** La stessa richiesta si poteva soddisfare con una web application ordinaria, aperta dal browser del telefono, riusando gran parte di quello che c'era già. L'app nativa non era l'unica strada tecnica: era quella che si vede.
 
-Vale la pena saperlo distinguere, quando si prende una decisione del genere. Non perché sia sbagliato scegliere anche per l'effetto (a volte far vedere è il lavoro) ma perché è una ragione diversa dalle altre, e va messa sul tavolo insieme alle altre invece che nascosta dietro di esse.
+Distinguere le due cose conta, quando si prende una decisione del genere. Non perché sia sbagliato scegliere anche per l'effetto (a volte far vedere è il lavoro) ma perché è una ragione diversa dalle altre, e va messa sul tavolo insieme alle altre invece che nascosta dietro di esse.
 
 ## Le decisioni prima del codice
 

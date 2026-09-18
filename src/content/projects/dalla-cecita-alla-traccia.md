@@ -164,7 +164,7 @@ Su un sistema in esercizio, ogni modifica al codice dei servizi è un rischio ch
 - **Prima fase**: il percorso del dato di telemetria, dalla sorgente esterna alle API. È la parte dove un guasto silenzioso costa di più.
 - **Poi il resto**: anagrafiche, rapportini, perimetro. Pianificati, non ancora in esercizio. Dichiararlo è parte del risultato.
 
-### La decisione che vale la pena raccontare per intero
+### La decisione sui confini fra i servizi
 
 Il criterio si mette alla prova su un punto solo: i confini tra i servizi. Un sistema a eventi si osserva bene o male a seconda che una traccia sopravviva al passaggio attraverso un topic, e questa era la parte per cui era previsto scrivere codice.
 
@@ -172,7 +172,7 @@ I sei punti erano già elencati nel documento di progetto, uno per ogni confine 
 
 Le tracce sono risultate collegate attraverso i topic senza alcun intervento sul codice: gli header di contesto viaggiano fuori dal payload, quindi gli schemi dei messaggi non sono stati toccati e i consumatori non strumentati li ignorano. Sei modifiche pianificate non sono state fatte, e non perché siano state rinviate, ma perché la verifica ha mostrato che non servivano. Il costo di quella verifica è stato una traccia guardata in faccia; il costo di non farla sarebbe stato codice di trasporto sparso in sei file, da mantenere per sempre.
 
-È il calcolo che vale la pena esplicitare, perché non è ovvio quando si è di fretta: **il codice è una passività, non un patrimonio.** Ogni riga che non scrivi è una riga che non devi capire fra due anni. Due ore di controllo contro sei file da mantenere per sempre: il conto si fa da solo.
+È un calcolo che non è ovvio quando si è di fretta: **il codice è una passività, non un patrimonio.** Ogni riga che non scrivi è una riga che non devi capire fra due anni. Due ore di controllo contro sei file da mantenere per sempre: il conto si fa da solo.
 
 ## Configurazione
 
@@ -214,7 +214,7 @@ Una strumentazione si giudica da cosa permette di chiedere. Per ciascun segnale 
 
 ## Evidenze
 
-È la cattura che regge tutto il documento. Un unico albero di span parte dal prelievo presso il fornitore esterno e arriva alla scrittura nell'API di consultazione, attraversando due topic: se la propagazione del contesto non funzionasse, qui si vedrebbero quattro tracce separate invece di una.
+Un unico albero di span parte dal prelievo presso il fornitore esterno e arriva alla scrittura nell'API di consultazione, attraversando due topic: se la propagazione del contesto non funzionasse, qui si vedrebbero quattro tracce separate invece di una.
 
 1. **Prelievo esterno**: la prima riga, `poll provider-telematico-1`, dura 201,66 ms. Quasi tutto il tempo della traccia sta nell'attesa del fornitore, non nella nostra elaborazione. È la risposta immediata alla domanda «è lento il sistema o è lento il fornitore».
 2. **Attraversamento del primo topic**: `standardized publish` e `standardized process` sono padre e figlio. La pubblicazione del servizio di normalizzazione e il consumo del servizio di arricchimento stanno nello stesso albero. Nessuna riga di codice è stata scritta per ottenerlo.
