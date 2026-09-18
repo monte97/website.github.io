@@ -243,6 +243,21 @@ Da [Google Technical Writing](https://developers.google.com/tech-writing/one/sho
   che dichiara il perimetro di cio' che si e' raccontato: quella e' onesta', non
   autocommento.
 
+  Il giro di lettura sui 65 articoli del 2026-09-18 ha trovato due forme che nessun
+  grep poteva vedere, perche' non contengono nessuna delle parole che si cercano.
+
+  **L'annuncio strutturale che non annuncia niente**: "le sezioni seguenti analizzano
+  la struttura interna", "vediamoli uno per uno", "vediamo come farlo", "ecco il
+  problema che dobbiamo risolvere". Il discrimine e' se l'annuncio **nomina il
+  contenuto** o dice solo che il contenuto arriva. "Questo articolo copre il passaggio
+  da console.log a un sistema di logging centralizzato in tre step" informa e resta;
+  "vediamoli uno per uno" no, e le sezioni arrivano lo stesso.
+
+  **Il testo che si attribuisce un punto**: "e' il punto di tutto l'articolo", "il
+  takeaway operativo di questa sezione", "la parte che vale la pena portarsi a casa".
+  Se la cosa e' importante lo dimostra da se'; dichiararlo chiede al lettore di
+  crederci prima di averla letta.
+
 - **Il numero non sta da solo.** Una sezione che apre con "Tre, e vanno dichiarati" o
   "Sono tre" chiede a chi legge di tenere a mente un conteggio prima di sapere di cosa.
   Il numero si attacca al suo sostantivo: "Il prezzo e' di tre voci". Trovato il
