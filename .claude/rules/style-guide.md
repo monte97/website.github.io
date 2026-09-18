@@ -357,6 +357,54 @@ finito deve essere 0, perche' la struttura e' la stessa.
 **Nota:** `_strategy/writing-rules/personal.md` ha regole EN che valgono per i post
 LinkedIn, non per il blog. Il principio dell'adattamento e' lo stesso, il resto no.
 
+## 14. Come si decide una correzione di registro
+
+Le regole qui sopra dicono cosa non va. Questa sezione dice come si arriva alla
+riscrittura, ed e' ricavata da due passate reali sul corpus: quella del 2026-09-14
+(65 articoli, 16 correzioni) e quella del 2026-09-15 (12 correzioni su due pezzi per
+un prospect, piu' cinque sul resto del corpus). Le regole sono in ordine di
+applicazione: la prima che chiude il caso ferma le altre.
+
+**1. Prima si conta, poi si corregge.** Si cerca il difetto su tutto il corpus e si
+contano le occorrenze vere. Entrambe le passate hanno trovato un difetto
+concentrato, non diffuso: 16 correzioni su 65 articoli la prima, 5 occorrenze su 69
+corrispondenze grezze in 43 file la seconda. Una correzione decisa su un solo pezzo,
+senza sapere quanto e' diffusa, tende a diventare una regola inventata.
+
+**2. Si controlla se e' gia' stato deciso.** Le passate precedenti hanno lasciato
+liste esplicite di cosa non si tocca e di candidati scartati. Il 2026-09-15 avevo
+segnalato il "tuoi" di un'epigrafe: la passata del giorno prima aveva gia' deciso su
+65 articoli che la seconda persona resta. Obiezione ritirata. Vale la pena leggere i
+messaggi di commit delle passate, non solo le regole che ne sono uscite: le regole
+dicono cosa correggere, i commit dicono cosa era stato deliberatamente lasciato.
+
+**3. La prova della cancellazione, prima di qualunque riscrittura.** Si toglie la
+frase e si rilegge il paragrafo. Se non manca niente, la frase era impalcatura e la
+correzione e' la cancellazione. Quasi meta' delle correzioni del 2026-09-15 sono
+cancellazioni pure: una chiusa che ripeteva la riga sopra, una promessa senza
+seguito, una clausola che commentava la struttura del pezzo.
+
+**4. La sostituzione non allunga.** Se la riscrittura e' piu' lunga dell'originale,
+quasi sempre ha scambiato un tic con una parafrasi. L'eccezione e' quando la frase
+vecchia nascondeva un'informazione mancante, e allora quello che si aggiunge e' il
+dato, non il giro di parole.
+
+**5. Si tocca la cornice, mai l'affermazione.** Una correzione di registro cambia il
+modo in cui una cosa e' detta. Nel momento in cui cambia *cosa* il pezzo sostiene,
+non e' piu' registro: e' una revisione di contenuto, si ferma e si porta all'autore.
+Le due passate non hanno modificato una sola affermazione tecnica.
+
+**6. Quando le riscritture plausibili sono piu' di una, decide l'autore.** Non si
+sceglie per lui il titolo di una sezione o la prima riga di un pezzo: si preparano le
+alternative con il loro effetto, e si applica quella scelta. Le correzioni meccaniche
+(un errore di grammatica, una ripetizione verbatim) non hanno bisogno di questo
+passaggio.
+
+**7. Il difetto che nessuna regola copriva si scrive.** Entrambe le regole di §8
+nate da queste passate esistono perche' qualcosa era sfuggito: la metafora a effetto
+a tre revisori indipendenti, il testo che parla di se stesso a 65 articoli riletti.
+Una correzione applicata e non scritta viene ri-litigata alla passata successiva.
+
 ## Controllo prima di pubblicare
 
 ```bash
