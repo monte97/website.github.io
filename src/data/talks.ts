@@ -32,7 +32,8 @@ export const talks: Talk[] = [
       en: "An alert fires. You open the dashboard and find two clues that contradict each other: one signal points one way, another, at the same moment, points somewhere else. Which one do you follow? No runbook written in advance covers the case where two independent signals point elsewhere, and that is more or less always how it goes when the incident is the real one, not the one from the manual.\n\nIn the talk I present an agent that does exactly this job: it looks at logs, traces and metrics from a real incident and chooses between several plausible causes when the evidence does not converge: an interface that spares you from remembering where to look and which syntax each backend wants. I demo it live with LangGraph, orchestrating queries against an observability stack (OpenTelemetry, Loki, Tempo, Mimir).\n\nI tell the story of an approach I am putting to the test, not a finished solution: how you give the model the freedom to choose which source to dig into for each hypothesis, when to stop, and how it argues for a conclusion with a confidence level even when causes remain open, instead of handing back a single definitive verdict.",
     },
     links: {
-      conference: 'https://devfestmilano.it',
+      conference: 'https://2026.devfestmilano.it',
+      speaker: 'https://2026.devfestmilano.it/it/speakers/3ca13269-73ac-4dad-b02c-b6a6c82fe80c/',
     },
   },
   {
@@ -50,6 +51,21 @@ export const talks: Talk[] = [
       conference: 'https://www.devsecopsday.it',
       speaker: 'https://www.devsecopsday.it/speaker/francesco-montelli/',
       linkedin: 'https://www.linkedin.com/posts/grusp_devsecopsday-devsecopsday-activity-7482697988751093762-4zuX?utm_source=share&utm_medium=member_desktop&rcm=ACoAAB73J5QBiTWCzxRrpP2WaZgBtH4empc8hrQ',
+    },
+  },
+  {
+    slug: 'waf-open-source-coraza-caddy',
+    title: 'WAF open source: Coraza e Caddy per proteggere i tuoi servizi',
+    event: 'Linux Day Prato 2026',
+    date: '2026-10-24',
+    location: 'Prato, IT',
+    status: 'upcoming',
+    abstract: {
+      it: "Se esponi un servizio da casa, che sia Nextcloud o un blog, è un bersaglio dal primo giorno. Un Web Application Firewall filtra il traffico ostile prima che arrivi all'applicazione, ma quelli commerciali costano e ti legano a un fornitore.\n\nCoraza parla le regole OWASP CRS, Caddy fa da reverse proxy con HTTPS automatico: insieme diventano uno stack WAF interamente sotto licenza Apache 2.0, da server nudo a filtro attivo in pochi minuti. Nessun vendor, nessun costo, nessun dato lasciato a terzi.\n\nArchitettura, installazione e configurazione pratica, con la parte che di solito fa male: come si passa da DetectionOnly al blocco vero senza tagliare fuori il traffico legittimo.",
+      en: "If you expose a service from home, whether it is Nextcloud or a blog, it is a target from day one. A Web Application Firewall filters hostile traffic before it reaches your application, but the commercial ones cost money and tie you to a vendor.\n\nCoraza speaks the OWASP CRS ruleset and Caddy acts as a reverse proxy with automatic HTTPS: together they form a WAF stack entirely under the Apache 2.0 licence, from bare server to active filter in minutes. No vendor, no cost, no data handed to third parties.\n\nArchitecture, installation and practical configuration, including the part that usually hurts: moving from DetectionOnly to actual blocking without cutting off legitimate traffic.",
+    },
+    links: {
+      conference: 'https://day.linux.prato.it',
     },
   },
   {
