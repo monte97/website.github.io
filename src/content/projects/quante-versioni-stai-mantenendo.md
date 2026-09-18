@@ -273,7 +273,7 @@ A questo punto la matrice ha smesso di essere un documento tecnico.
 
 Ogni riga è una configurazione che qualcuno deve tenere viva: quando esce una versione va provata su quella riga, quando cambia una dipendenza va ricontrollata su quella riga, e quando il cliente rinnova qualcosa dalla sua parte è su quella riga che si rompe. Ha un costo mensile, e quel costo esisteva già da anni. Semplicemente non era scritto da nessuna parte, e quello che non è scritto non entra in nessun preventivo.
 
-Il costo di tenerla in piedi è misurabile e non è spaventoso: **circa un migliaio di righe** fra il file dichiarativo, i due esecutori e i loro test. È una cifra che vale la pena dire a chi teme che mettere ordine costi più del disordine.
+Il costo di tenerla in piedi è misurabile e non è spaventoso: **circa un migliaio di righe** fra il file dichiarativo, i due esecutori e i loro test. È la cifra da dare a chi teme che mettere ordine costi più del disordine.
 
 **La matrice è il listino vero.** Non quello dei moduli: quello delle combinazioni.
 
