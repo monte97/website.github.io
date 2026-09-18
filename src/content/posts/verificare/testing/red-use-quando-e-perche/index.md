@@ -98,7 +98,7 @@ I due metodi non sono alternativi e non si sovrappongono. Rispondono a due doman
 | Serve per | alert e SLO | diagnosi |
 | Lo vede | l'utente | l'infrastruttura |
 
-L'ordine non è arbitrario, ed è la parte che vale la pena portarsi via:
+L'ordine non è arbitrario:
 
 **Si allerta su RED, si indaga con USE.** Un alert su una risorsa produce rumore, perché una risorsa carica non è un problema finché qualcuno non ne soffre. Un alert su RED corrisponde per costruzione a un utente che sta aspettando. Quando quell'alert scatta, USE dice dove guardare: quale risorsa è satura, quale sta accumulando errori.
 

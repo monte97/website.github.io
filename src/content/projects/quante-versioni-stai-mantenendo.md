@@ -165,8 +165,8 @@ readingPaths:
   - label: "Per valutare"
     desc: "Come è fatta la verifica: una fonte dichiarativa, due esecutori, tre livelli di controllo e cosa hanno trovato."
 readingNote: >
-  Il perimetro è l'installazione, non il prodotto. Va detto prima di qualunque
-  affermazione sui risultati, perché è ciò che rende confrontabili i numeri.
+  Il perimetro è l'installazione, non il prodotto: è ciò che rende confrontabili i
+  numeri, e viene prima di qualunque affermazione sui risultati.
 openItems:
   - "La verifica non gira da sola a ogni modifica: si lancia quando qualcuno decide di lanciarla, ed è il limite più grosso che resta"
   - "Le righe scoperte restano scoperte: la mappa dice dove sono i buchi, non li chiude"

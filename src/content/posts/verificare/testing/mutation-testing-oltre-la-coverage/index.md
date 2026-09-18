@@ -138,7 +138,7 @@ La coverage dice se il codice viene *eseguito*. Il mutation score dice se i test
 
 Sono due domande diverse. Vale la pena farle entrambe.
 
-E questa seconda domanda vale a prescindere da chi ha scritto i test. Nel mio progetto buona parte li hanno generati gli agenti AI, ed è stato fondamentale: senza non avrei consegnato con quella qualità in quei tempi. Ma "chi" o "come" li ha scritti non vi dice se quei test valgono qualcosa.
+E questa seconda domanda vale a prescindere da chi ha scritto i test. Nel mio progetto buona parte li hanno generati gli agenti AI, ed è stato fondamentale: senza non avrei consegnato con quella qualità in quei tempi. Ma "chi" o "come" li ha scritti non dice se quei test valgono qualcosa.
 
 ## Cosa fare domani
 

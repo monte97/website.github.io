@@ -502,7 +502,7 @@ Il prezzo di questa separazione va detto: sono quattro strumenti da conoscere, a
 
 ## Da dove partire
 
-Non da Jenkins. Dal livello più basso: portate in OpenTofu la creazione di **una** VM che oggi fate a mano dalla UI. È il passo che si ripaga da solo, e vi dice se il resto dell'architettura vi serve davvero.
+Non da Jenkins. Dal livello più basso: portate in OpenTofu la creazione di **una** VM che oggi fate a mano dalla UI. È il passo che si ripaga da solo, e dice se il resto dell'architettura serve davvero.
 
 -----
 

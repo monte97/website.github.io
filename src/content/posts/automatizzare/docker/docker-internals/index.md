@@ -80,7 +80,7 @@ I namespace PID sono organizzati **gerarchicamente**: ogni namespace ha un padre
 
 ## Namespaces: cosa quel processo riesce a vedere
 
-Un namespace limita la porzione di sistema che un processo percepisce. Linux ne ha otto tipi (mount, PID, network, IPC, UTS, user, cgroup, time) e Docker li usa quasi tutti insieme, ma due meritano attenzione perché è lì che le aspettative sbagliano più spesso.
+Un namespace limita la porzione di sistema che un processo percepisce. Linux ne ha otto tipi (mount, PID, network, IPC, UTS, user, cgroup, time) e Docker li usa quasi tutti insieme, ma due contano più degli altri, perché è lì che le aspettative sbagliano più spesso.
 
 **PID**, appena visto: ogni container ha il suo processo con PID 1, che non interferisce con gli altri container né con l'host. Con l'asimmetria che ne consegue.
 
@@ -183,7 +183,7 @@ cat /sys/fs/cgroup/cpu/docker/$CONTAINER_ID/cpu.stat
 
 ## Dove finisce l'isolamento
 
-Qui sta la conseguenza che vale la pena portarsi via, ed è il rovescio della tesi iniziale.
+Qui sta la conseguenza, ed è il rovescio della tesi iniziale.
 
 Una macchina virtuale ha un kernel proprio: l'hypervisor separa due sistemi operativi completi. Un container **condivide il kernel dell'host**. Namespaces e cgroups sono funzionalità di quel kernel condiviso: sono un limite imposto dall'interno, non un muro fra due sistemi.
 

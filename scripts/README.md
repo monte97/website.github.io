@@ -5,6 +5,8 @@ quando servono, e i loro output (dove ci sono) sono asset committati.
 
 | Script | Cosa fa |
 |---|---|
+| `check-riempitivo.py` | Cerca il testo che parla di se stesso (style-guide §8) sul testo reso in `dist/`. Due liste: bloccanti, che non sono mai legittime e danno exit 1, e candidati, che vanno guardati. |
+| `check-stile.py` | Il pattern «non è X, è Y» e gli accenti con apostrofo nei case study resi. Exit 1 sopra il tetto. |
 | `post-facts.py` | Scheda meccanica di un articolo: modo, lunghezza di titolo e description, numeri del frontmatter non ancorati al corpo, marcatori di lavorazione, doppioni strutturali, drift con la versione EN. Conta, non giudica. |
 | `og/generate-og.py` | Card Open Graph delle sezioni del sito, in `public/og/*.png`. |
 | `og/generate-post-og.py` | Card Open Graph di ogni articolo, IT ed EN, in `public/og/posts/**`. Da rilanciare quando cambiano i titoli. |
@@ -19,6 +21,9 @@ python3 scripts/post-facts.py 01-keycloak-intro    # scheda di un articolo
 python3 scripts/og/generate-og.py                  # tutte le card di sezione
 python3 scripts/og/generate-post-og.py             # tutte le card articolo
 python3 scripts/og/generate-post-og.py kafka       # solo i path che contengono "kafka"
+
+python3 scripts/check-riempitivo.py                # dopo la build: blog + case study
+python3 scripts/check-riempitivo.py dist/case-study # solo i case study
 
 bash scripts/smoke.sh                              # contro https://montelli.dev
 bash scripts/smoke.sh http://localhost:4321        # contro una build locale

@@ -98,7 +98,7 @@ Nessuna predizione, nessuna funzione `predict_linear`, nessun trend: solo una so
 
 ## Quattro modi in cui la retta sbaglia
 
-`predict_linear` è uno strumento potente, ma ha quattro modalità di fallimento tipiche in produzione. Vale la pena conoscerle prima di mettere una regola predittiva in pager, perché ciascuna di queste trappole si manifesta come rumore operativo difficile da diagnosticare a posteriori.
+`predict_linear` è uno strumento potente, ma ha quattro modalità di fallimento tipiche in produzione. Ciascuna di queste trappole si manifesta come rumore operativo difficile da diagnosticare a posteriori, ed è meglio conoscerle prima di mettere una regola predittiva in pager.
 
 ### Crescita non lineare
 

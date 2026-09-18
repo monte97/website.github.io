@@ -340,9 +340,7 @@ posto peggiore in cui metterla.
 
 ## Il prezzo di venti build
 
-Questa divisione costa, e il conto va detto prima che sembri gratis.
-
-Venti progetti sono venti file di build da tenere allineati, venti insiemi di dipendenze
+Questa divisione costa, e il conto va detto prima che sembri gratis: venti progetti sono venti file di build da tenere allineati, venti insiemi di dipendenze
 che possono divergere, venti versioni che qualcuno deve far combaciare. Ogni volta che una
 libreria comune si aggiorna, il lavoro si moltiplica per venti invece che per uno.
 

@@ -262,7 +262,7 @@ Il motivo è strutturale: la logica di business vive nelle funzioni chiamate dal
 
 I test alle funzioni pure (`compute_delta`, `timestamp_to_date`, `should_compute_delta`) funzionano bene e uccidono mutanti. Ma la maggior parte del codice non è in funzioni pure: è in procedure imperative che leggono da Kafka, scrivono su MongoDB, e aggiornano stato globale. Quel codice è strutturalmente non raggiungibile dai test senza refactoring del modulo.
 
-**Il mutation testing conferma la tesi**: il problema sta nel design, non nel mocking. Puoi avere 88 test verdi e un mutation score tra il 19% e il 46%. I test ti dicono che gli endpoint rispondono. I mutanti ti dicono che metà della logica di business è scoperta, e per il servizio più semplice (current), quattro quinti.
+**Il mutation testing conferma la tesi**: il problema sta nel design, non nel mocking. Puoi avere 88 test verdi e un mutation score tra il 19% e il 46%. I test dicono che gli endpoint rispondono. I mutanti dicono che metà della logica di business è scoperta, e per il servizio più semplice (current), quattro quinti.
 
 ---
 

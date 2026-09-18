@@ -135,7 +135,7 @@ I sistemi di log tradizionali indicizzano ogni parola. È il motivo per cui la r
 
 E qui il modello mostra la sua condizione di validità: **conviene finché sapete da dove partire.** Se arrivate con un'etichetta o con un TraceID, il costo è basso. Se dovete cercare a tappeto su tutto lo storico senza un punto d'ingresso, questo modello non vi aiuta più.
 
-Il che spiega perché la correlazione non sia una comodità ma il presupposto architetturale: è l'alert sulle metriche che vi dà il servizio, è il log che vi dà il `trace_id`, ed è quel `trace_id` che rende economica l'interrogazione di Tempo. Senza il filo che collega i tre segnali, uno storage costruito così diventa scomodo esattamente quanto è economico.
+Il che spiega perché la correlazione non sia una comodità ma il presupposto architetturale: è l'alert sulle metriche a dare il servizio, è il log a dare il `trace_id`, ed è quel `trace_id` che rende economica l'interrogazione di Tempo. Senza il filo che collega i tre segnali, uno storage costruito così diventa scomodo esattamente quanto è economico.
 
 ## La topologia in Kubernetes
 
