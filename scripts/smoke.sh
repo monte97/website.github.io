@@ -23,14 +23,10 @@ SLEEP_SECS="${SMOKE_SLEEP:-30}"
 # --- Sentinelle che DEVONO essere presenti: "percorso|stringa attesa" ---
 PRESENT=(
   "/servizi/|discovery call"
-  "/servizi/|Affondo mirato"
   "/servizi/|Ingaggio continuativo"
-  "/servizi/|€1.200"
   "/servizi/|cal.com/francesco-montelli"
   "/en/services/|discovery call"
-  "/en/services/|Focused piece"
   "/en/services/|Ongoing engagement"
-  "/en/services/|€1,200"
   "/en/services/|cal.com/francesco-montelli"
 )
 
