@@ -60,7 +60,7 @@ Non tutti gli hook sono uguali. La tabella sotto è il criterio che uso: *veloce
 | Secret scanning | ✅ Sì | `gitleaks`, `trufflehog`, `detect-secrets` | Costo zero, danno enorme se passa |
 | Test unitari <30s | ⚠️ Solo se veloci | `pytest -x --tb=short`, `cargo test --lib` | Deve stare sotto soglia percepita (~10-15s) |
 | Type checking | ❌ No | `mypy`, `tsc --noEmit`, `go vet` | Lento, meglio in CI (o editor/LSP) |
-| Build completo | ❌ No | `docker build`, `cargo build --release` | Fuori scope — è CI |
+| Build completo | ❌ No | `docker build`, `cargo build --release` | Fuori scope: è CI |
 | Dependency audit | ⚠️ Periodico | `pip-audit`, `npm audit`, `govulncheck` | Meglio scheduled (weekly) o PR gate |
 
 La regola pratica: **se il fix richiede leggere output, non sta in pre-commit**. Formattazione e secret scan sono binari (passa/non passa). Un test che fallisce o un lint che segnala stile richiedono giudizio: quelli restano in CI.
@@ -163,7 +163,7 @@ repos:
 
 Nota come `golangci-lint` usa `--fast` e un timeout: se il lint supera trenta secondi, fallisce il commit invece di bloccare lo sviluppatore. È il compromesso pratico tra copertura e velocità.
 
-## Il pattern "veloce in locale, completo in CI"
+## Due pipeline: veloce in locale, completa in CI
 
 Due pipeline complementari, non duplicate:
 
@@ -174,7 +174,7 @@ Non duplicare i controlli. Il pre-commit impedisce il giro CI per le banalità; 
 
 ### Trade-off: cosa succede se sposti type-checking in pre-commit
 
-Immagina un progetto TypeScript medio: `tsc --noEmet` impiega quindici secondi a freddo, otto con cache. Ogni commit paga quel costo. Cinque sviluppatori, tre commit al giorno: duecentoquaranta secondi al giorno, quasi mezz'ora di attesa cumulativa. In CI lo stesso controllo gira una volta per PR, su runner paralleli, con artifact caching. Il guadagno netto di spostarlo in pre-commit è zero o negativo: intercetti qualche errore di tipo prima del push, ma rallenti ogni commit.
+Immagina un progetto TypeScript medio: `tsc --noEmit` impiega quindici secondi a freddo, otto con cache. Ogni commit paga quel costo. Cinque sviluppatori, tre commit al giorno: duecentoquaranta secondi al giorno, quasi mezz'ora di attesa cumulativa. In CI lo stesso controllo gira una volta per PR, su runner paralleli, con artifact caching. Il guadagno netto di spostarlo in pre-commit è zero o negativo: intercetti qualche errore di tipo prima del push, ma rallenti ogni commit.
 
 La regola: se lo strumento non è sub-secondo alla seconda esecuzione, non sta in pre-commit. `ruff`, `prettier`, `gofmt` lo sono. `mypy`, `tsc`, `golangci-lint` (senza `--fast`) non lo sono.
 

@@ -49,7 +49,7 @@ You don't need a calculator. If your CI takes 8 minutes and three out of ten run
 
 Let's do the math on a team of five developers pushing three times a day each. Ten minutes of CI per run, thirty percent trivial failures. That's ninety minutes of waiting per day for things a local hook solves in thirty seconds. In a working month: nearly nineteen hours of wasted machine time, plus the human cost of context switching. That number never appears in any financial report, but it's time the team doesn't spend shipping features.
 
-## What moves the needle — The opinionated rundown
+## What moves the needle: the opinionated rundown
 
 Not all hooks are created equal. The table below is the criterion I use: *fast, deterministic, zero false positives* = pre-commit. *Slow, needs interpretation, better with full context* = CI.
 
@@ -60,7 +60,7 @@ Not all hooks are created equal. The table below is the criterion I use: *fast, 
 | Secret scanning | ✅ Yes | `gitleaks`, `trufflehog`, `detect-secrets` | Zero cost, massive damage if it slips |
 | Unit tests <30s | ⚠️ Only if fast | `pytest -x --tb=short`, `cargo test --lib` | Must stay under perceived threshold (~10-15s) |
 | Type checking | ❌ No | `mypy`, `tsc --noEmit`, `go vet` | Slow; better in CI (or editor/LSP) |
-| Full build | ❌ No | `docker build`, `cargo build --release` | Out of scope — that's CI |
+| Full build | ❌ No | `docker build`, `cargo build --release` | Out of scope: that's CI |
 | Dependency audit | ⚠️ Periodic | `pip-audit`, `npm audit`, `govulncheck` | Better scheduled (weekly) or PR gate |
 
 The practical rule: **if the fix requires reading output, it doesn't belong in pre-commit**. Formatting and secret scanning are binary (pass/fail). A failing test or a style lint needs judgment: those stay in CI.
@@ -163,7 +163,7 @@ repos:
 
 Note how `golangci-lint` uses `--fast` and a timeout: if lint exceeds thirty seconds, the commit fails instead of blocking the developer. It's the practical trade-off between coverage and speed.
 
-## The "fast local, thorough CI" pattern
+## Two pipelines: fast local, thorough CI
 
 Two complementary pipelines, not duplicated:
 
