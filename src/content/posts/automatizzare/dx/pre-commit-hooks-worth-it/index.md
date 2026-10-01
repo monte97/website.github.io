@@ -1,7 +1,7 @@
 ---
 title: "Un hook locale avrebbe preso un problema su cinque"
 seoTitle: "Pre-commit hook: cosa metterci e cosa no"
-date: 2026-10-01
+date: 2026-09-10T09:00:00.000Z
 description: "Cinque problemi emersi in CI dopo 38 commit locali: uno solo era visibile a un hook. Cosa mettere in pre-commit, in pre-push e in CI."
 pillar: automatizzare
 category: dx
@@ -138,3 +138,11 @@ Un controllo va nel punto più vicino alla causa in cui riesce a girare.
 Un problema trovato da chi ha appena scritto il codice si risolve con una correzione sul commit corrente. Uno trovato il giorno della release richiede una bisection su tutti i commit intermedi.
 
 Quale fallimento CI dell'ultimo mese era visibile in un file solo?
+
+## Riferimenti
+
+- [pre-commit: configurazione, `stages`, `default_install_hook_types`, `SKIP`](https://pre-commit.com/)
+- [Git: hook `pre-commit` e `pre-push`, `--no-verify`](https://git-scm.com/docs/githooks)
+- [Gitleaks: uso come hook pre-commit](https://github.com/gitleaks/gitleaks)
+- [SpotBugs Maven Plugin: goal `spotbugs:check`](https://spotbugs.github.io/spotbugs-maven-plugin/check-mojo.html)
+- [SpotBugs: descrizione di `DMI_RANDOM_USED_ONLY_ONCE`](https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html)

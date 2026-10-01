@@ -1,7 +1,7 @@
 ---
 title: "A local hook would have caught one problem in five"
 seoTitle: "Pre-commit hooks: what to put in, what to leave out"
-date: 2026-10-01
+date: 2026-09-10T09:00:00.000Z
 description: "Five problems surfaced in CI after 38 local commits: only one was visible to a hook. What belongs in pre-commit, pre-push and CI."
 pillar: automatizzare
 category: dx
@@ -138,3 +138,11 @@ A check belongs at the point closest to the cause where it can run.
 A problem found by the person who just wrote the code is fixed with a change to the current commit. One found on release day takes a bisection across every intermediate commit.
 
 Which CI failure last month was visible in a single file?
+
+## References
+
+- [pre-commit: configuration, `stages`, `default_install_hook_types`, `SKIP`](https://pre-commit.com/)
+- [Git: `pre-commit` and `pre-push` hooks, `--no-verify`](https://git-scm.com/docs/githooks)
+- [Gitleaks: usage as a pre-commit hook](https://github.com/gitleaks/gitleaks)
+- [SpotBugs Maven Plugin: `spotbugs:check` goal](https://spotbugs.github.io/spotbugs-maven-plugin/check-mojo.html)
+- [SpotBugs: description of `DMI_RANDOM_USED_ONLY_ONCE`](https://spotbugs.readthedocs.io/en/latest/bugDescriptions.html)
