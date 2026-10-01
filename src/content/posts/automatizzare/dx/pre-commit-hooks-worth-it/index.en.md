@@ -1,8 +1,8 @@
 ---
-title: "The hidden cost of 'let CI catch it': pre-commit hooks worth keeping"
-seoTitle: "Pre-commit hooks: what to keep, what to skip"
+title: "A local hook would have caught one problem in five"
+seoTitle: "Pre-commit hooks: what to put in, what to leave out"
 date: 2026-10-01
-description: "Every CI failure for trivial lint/secrets/tests costs time and money. An opinionated rundown of what belongs in pre-commit (fast, deterministic, local) and what stays in CI."
+description: "Five problems surfaced in CI after 38 local commits: only one was visible to a hook. What belongs in pre-commit, pre-push and CI."
 pillar: automatizzare
 category: dx
 tags:
@@ -10,7 +10,7 @@ tags:
   - Developer Experience
   - CI/CD
   - Git
-  - Linting
+  - SpotBugs
   - Secrets
 lang: en
 reviewed: false
@@ -18,268 +18,123 @@ draft: false
 mode: explanation
 summary:
   - label: "Problem"
-    value: "CI failing for trivial issues catchable locally"
-    note: "Context switch, wait time, runner cost"
+    value: "Problems that CI finds all at once, on release day"
+    note: "Four e2e tests and one static analysis error, after commits that were never pushed"
   - label: "Thesis"
-    value: "Pre-commit = free guardrails; CI = source of truth"
+    value: "Every check belongs at the point closest to the cause where it can run"
   - label: "Result"
-    value: "Fewer CI runs, devs stay in flow"
+    value: "Pre-commit for single-file checks, pre-push for what needs a build or the stack, CI as the guarantee"
 openItems:
-  - "Unit test time threshold: where to draw the line (10s? 30s?) depends on the project"
-  - "Monorepo: hooks for changed packages vs entire repo"
-  - "Mixed languages: how to keep config from exploding"
-openNote: "The concrete config depends on your stack; the article gives criteria, not a ready-made file."
+  - "Time budget for pre-push hooks: depends on how long the project's build and tests take"
+  - "Monorepos: running hooks only on the packages the commit touches"
+  - "Mixed languages: how to keep the configuration from growing with every stack"
+openNote: "The concrete configuration depends on your stack. The case shows the criteria, not a ready-made file."
 ---
 
-You push. You wait. CI turns red. You open the logs: *trailing whitespace*, *a hardcoded secret in a test file*, *a unit test flaking on a mock*. None of this needed CI. You'd have fixed it in two seconds if you'd seen it before the push.
+On April 8 I released encryption at rest for secrets in `keycloak-webhook-provider`. At the first commit of the series `master` was green. Then 38 commits piled up locally, never pushed. At release push, CI reported four broken e2e tests and one SpotBugs error.
 
-The frustration isn't the error. It's the wasted round trip: context switch, runner wait, new push, wait again. Multiply by team, by weeks. It's a cost you don't see in the budget but pay in developer time and lost momentum.
+None of the five problems was a regression from the release commit. They had been born in the intermediate commits, which CI had never seen: a push event produces a single run, on the HEAD of the ref. All 38 commits were validated together, at the moment an error costs the most.
 
-## The bill you don't see
+The question a team should ask is how many of those five problems a local hook would have caught before the push.
 
-Every CI failure for lint, secrets, or trivial tests is a hidden tax:
+## A local hook would have caught one problem in five
 
-- **GitHub Actions**: $0.008/min (Linux)
-- **GitLab**: 400 min/mo free, then $0.01/min
-- **Context switch**: 15-23 minutes to get back in flow (Microsoft/Google studies)
+The SpotBugs error was `DMI_RANDOM_USED_ONLY_ONCE`: a `new SecureRandom()` created to generate a single value and then discarded. With SpotBugs running before the commit, it would have surfaced at the commit that introduced it.
 
-[ NUMERO DA FORNIRE: minuti CI risparmiati a settimana per dev ]
+The e2e tests failed for different reasons. The selector `getByRole('radio', { name: '10' })` in the `06-settings` test matched three elements instead of one. It was not flaky: it had been broken since the day a second radio group with the label "10" was added. The `WEBHOOK_ENCRYPTION_KEY` variable was required by the provider but not propagated by the `docker-compose` of the e2e tests. Code and fixtures live in different folders, and the commit that introduced the requirement did not touch the tests.
 
-You don't need a calculator. If your CI takes 8 minutes and three out of ten runs fail for things a local hook catches in 30 seconds, you're throwing away time you never get back.
+A hook that looks at staged files sees neither case. The selector breaks when the page changes. The variable goes missing when provider and compose drift apart. Seeing them takes a running page and a started stack.
 
-Let's do the math on a team of five developers pushing three times a day each. Ten minutes of CI per run, thirty percent trivial failures. That's ninety minutes of waiting per day for things a local hook solves in thirty seconds. In a working month: nearly nineteen hours of wasted machine time, plus the human cost of context switching. That number never appears in any financial report, but it's time the team doesn't spend shipping features.
+## Pre-commit holds what can be decided on a single file
 
-## What moves the needle: the opinionated rundown
+Formatting, fast lint rules and secret scanning have a binary outcome: they pass or they fail, with no interpretation. They need no context beyond the staged file, and they cost a few seconds.
 
-Not all hooks are created equal. The table below is the criterion I use: *fast, deterministic, zero false positives* = pre-commit. *Slow, needs interpretation, better with full context* = CI.
+| Check | Where | Typical tools | Reason |
+|---|---|---|---|
+| Formatting | pre-commit | `prettier`, `gofmt`, `ruff format`, `spotless` | Deterministic, zero false positives |
+| Fast lint rules | pre-commit | `eslint --cache`, `ruff check`, `golangci-lint --fast` | Rules that look at one file at a time |
+| Secret scanning | pre-commit | `gitleaks`, `detect-secrets` | A secret in the history is costly, the check is cheap |
+| Static analysis on bytecode | pre-push | `spotbugs` | Needs a compile |
+| Unit tests | pre-push | `pytest -x`, `mvn test` | Too slow for every commit |
+| e2e smoke | pre-push | `docker compose`, `playwright` | Need the stack running |
+| Type check, full build, dependency audit | CI | `mypy`, `tsc --noEmit`, `pip-audit` | Heavy, and best run with the full context |
 
-| Category | In pre-commit? | Typical tools | Rationale |
-|----------|----------------|---------------|-----------|
-| Formatting | ✅ Yes | `ruff format`, `prettier`, `gofmt` | Deterministic, instant, zero false positives |
-| Fast lint | ✅ Yes | `ruff check`, `eslint --cache`, `golangci-lint --fast` | Fast rules only; no type-checking |
-| Secret scanning | ✅ Yes | `gitleaks`, `trufflehog`, `detect-secrets` | Zero cost, massive damage if it slips |
-| Unit tests <30s | ⚠️ Only if fast | `pytest -x --tb=short`, `cargo test --lib` | Must stay under perceived threshold (~10-15s) |
-| Type checking | ❌ No | `mypy`, `tsc --noEmit`, `go vet` | Slow; better in CI (or editor/LSP) |
-| Full build | ❌ No | `docker build`, `cargo build --release` | Out of scope: that's CI |
-| Dependency audit | ⚠️ Periodic | `pip-audit`, `npm audit`, `govulncheck` | Better scheduled (weekly) or PR gate |
+The rule for telling them apart: if the fix requires reading the output and interpreting it, the check does not belong in pre-commit.
 
-The practical rule: **if the fix requires reading output, it doesn't belong in pre-commit**. Formatting and secret scanning are binary (pass/fail). A failing test or a style lint needs judgment: those stay in CI.
+## Pre-push holds what needs a compile or the running stack
 
-### Concrete example: Ruff config for Python
-
-```toml
-# file: ruff.toml
-[tool.ruff]
-target-version = "py311"
-line-length = 100
-select = [
-    "E",   # pycodestyle errors
-    "W",   # pycodestyle warnings
-    "F",   # pyflakes
-    "I",   # isort
-    "UP",  # pyupgrade
-    "B",   # flake8-bugbear
-    "C4",  # flake8-comprehensions
-    "SIM", # flake8-simplify
-]
-ignore = [
-    "E501",  # line too long (handled by formatter)
-    "B008",  # do not perform function calls in argument defaults
-]
-per-file-ignores = {
-    "tests/*": ["S101", "S106"],  # allow assert, hardcoded passwords in tests
-}
-
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
-skip-magic-trailing-comma = false
-```
-
-### Example: ESLint with cache for TypeScript/React
-
-```json
-// file: package.json (excerpt)
-{
-  "scripts": {
-    "lint": "eslint --cache --cache-location .eslintcache --ext .ts,.tsx src",
-    "lint:fix": "npm run lint -- --fix",
-    "format": "prettier --write \"src/**/*.{ts,tsx,json,md}\""
-  },
-  "devDependencies": {
-    "eslint": "^8.56.0",
-    "eslint-plugin-react": "^7.33.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "@typescript-eslint/eslint-plugin": "^6.19.0",
-    "@typescript-eslint/parser": "^6.19.0",
-    "prettier": "^3.2.0"
-  }
-}
-```
-
-### Example: complete `.pre-commit-config.yaml`
+SpotBugs analyzes bytecode, so it needs a compile. The e2e tests need `docker compose`. They are too slow for every commit and acceptable once per push.
 
 ```yaml
 # file: .pre-commit-config.yaml
+default_install_hook_types: [pre-commit, pre-push]
 repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.5.0
-    hooks:
-      - id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
-      - id: ruff-format
-
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.2.0
-    hooks:
-      - id: prettier
-        types_or: [json, yaml, markdown, html, css, scss]
-        exclude: ^dist/
-
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.18.0
+    rev: v8.24.2
     hooks:
       - id: gitleaks
-        args: [--verbose]
 
   - repo: local
     hooks:
-      - id: pytest-unit
-        name: pytest unit tests (fast subset)
-        entry: pytest -x --tb=short -q
-        language: system
-        types: [python]
+      - id: spotbugs
+        name: SpotBugs
+        entry: mvn -q compile spotbugs:check
+        language: unsupported
         pass_filenames: false
-        args: [tests/unit, --maxfail=3]
-        # runs only on staged python files touching unit tests
-        # CI runs the full suite
+        stages: [pre-push]
 
-  - repo: https://github.com/golangci/golangci-lint
-    rev: v1.57.0
-    hooks:
-      - id: golangci-lint
-        args: [--fast, --timeout=30s]
+      - id: e2e-smoke
+        name: e2e smoke
+        entry: make e2e-smoke  # Makefile target: starts compose, runs the minimal tests
+        language: unsupported
+        pass_filenames: false
+        stages: [pre-push]
 ```
 
-Note how `golangci-lint` uses `--fast` and a timeout: if lint exceeds thirty seconds, the commit fails instead of blocking the developer. It's the practical trade-off between coverage and speed.
+Pre-push does not change the distance between the cause and the failure. With 38 local commits, one push produces one run, and the five problems still surface together, in the terminal instead of in CI. The hook decides where the problem is found, the push frequency decides when.
 
-## Two pipelines: fast local, thorough CI
+Shortening the distance takes both: fast checks in pre-commit, and a push after every finished unit of work.
 
-Two complementary pipelines, not duplicated:
+## Local hooks can be skipped, CI cannot
 
-- **pre-commit** = *guardrails* (formatting, fast lint, secrets, unit test subset)
-- **CI** = *source of truth* (type-check, integration, build, coverage, audit)
-
-Don't duplicate checks. Pre-commit prevents the CI round trip for trivialities; CI guarantees the whole system holds. If you move type-checking to pre-commit, every commit becomes a 40-second wait. Keep it in CI and pre-commit stays instant while CI does the heavy lifting once per PR.
-
-### Trade-off: what happens if you move type-checking to pre-commit
-
-Imagine a medium TypeScript project: `tsc --noEmit` takes fifteen seconds cold, eight with cache. Every commit pays that cost. Five developers, three commits a day: two hundred forty seconds a day, nearly half an hour of cumulative waiting. In CI the same check runs once per PR, on parallel runners, with artifact caching. The net gain of moving it to pre-commit is zero or negative: you catch a few type errors before the push, but you slow down every commit.
-
-The rule: if the tool isn't sub-second on the second run, it doesn't belong in pre-commit. `ruff`, `prettier`, `gofmt` are. `mypy`, `tsc`, `golangci-lint` (without `--fast`) aren't.
-
-### Trade-off: unit tests in pre-commit
-
-Here the threshold is perceived, not absolute. Ten to fifteen seconds is the limit beyond which developers start doing `git commit --no-verify`. If your unit suite takes forty seconds, don't put it all in pre-commit. Two paths:
-
-1. **Fast subset**: tag critical tests (e.g., `@pytest.mark.fast`) and run only those. `pytest -m fast -x --tb=short`
-2. **Affected tests**: in a monorepo, run only tests for packages touched by the commit. Requires tooling (Nx, Turborepo, Bazel) but scales.
+`git commit --no-verify`, `git push --no-verify` and `SKIP=spotbugs git push` exist. A hook is a guardrail for whoever installed it, not a guarantee for the repo. The guarantee lives in CI, which runs the checks on every push. Formatters go through `pre-commit run`, static analysis and tests are ordinary pipeline steps:
 
 ```yaml
-# file: .pre-commit-config.yaml (monorepo excerpt with Nx)
-- repo: local
-  hooks:
-    - id: nx-affected-test
-      name: Nx affected unit tests
-      entry: npx nx affected --target=test --parallel=3
-      language: system
-      pass_filenames: false
-      # requires Nx installed globally or via npx
+# file: .github/workflows/ci.yml (excerpt)
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+      - run: pip install pre-commit
+      - run: pre-commit run --all-files --show-diff-on-failure
+      - run: mvn -q verify  # SpotBugs and tests, as ordinary steps
 ```
 
-## Four principles to keep the team from hating them
+`--show-diff-on-failure` prints the diff the formatter would have applied, so whoever skipped the installation sees right away what to fix.
 
-### 1. Automatic install, not manual
-
-`pre-commit install` runs once, ideally in the onboarding script or the project `Makefile`. Whoever clones the repo should find hooks already active.
+Installation has to be automated, otherwise hooks exist only on the machines of the people who remember them:
 
 ```makefile
 # file: Makefile
 .PHONY: install-hooks
 install-hooks:
 	pre-commit install
-	pre-commit install --hook-type commit-msg
-	pre-commit install --hook-type pre-push
 ```
 
-Add `make install-hooks` to the README as a mandatory step after `git clone`. Even better: a `scripts/bootstrap.sh` wrapper that installs deps, hooks, and verifies the environment.
-
-### 2. Aggressive caching: second run must be sub-second
-
-`ruff --cache`, `eslint --cache`, `golangci-lint --cache`. Without cache, every hook re-reads the entire codebase. With cache, the second run only touches changed files.
-
-```yaml
-# file: .pre-commit-config.yaml (with explicit cache for eslint)
-- repo: https://github.com/pre-commit/mirrors-eslint
-  rev: v8.56.0
-  hooks:
-    - id: eslint
-      args: [--cache, --cache-location, .eslintcache]
-      additional_dependencies:
-        - eslint@8.56.0
-        - @typescript-eslint/parser@6.19.0
-        - @typescript-eslint/eslint-plugin@6.19.0
-```
-
-The `.eslintcache` directory goes in `.gitignore`. Ruff's cache (`~/.cache/ruff`) is automatic and transparent.
-
-### 3. Opt-out skip, not default skip
-
-`SKIP=hook git commit` for emergencies, but default is *all on*. Don't comment out hooks in the config to "speed things up". If a hook is too slow, fix the tool (e.g., `golangci-lint --fast`) or move it to CI. Disabling by default creates the habit of skipping checks.
-
-```bash
-# Emergency: commit without hooks (use sparingly)
-SKIP=gitleaks git commit -m "WIP: fix secret in test fixture"
-
-# Or disable just one specific hook
-SKIP=golangci-lint git commit -m "WIP: refactor pkg"
-```
-
-### 4. CI verifies hooks run
-
-`pre-commit run --all-files` in the pipeline. Anyone skipping local install gets caught at first PR. This closes the loop: pre-commit is convenient for the developer, CI is the guarantee for the repo.
-
-```yaml
-# file: .github/workflows/ci.yml (excerpt)
-jobs:
-  pre-commit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - name: Install pre-commit
-        run: pip install pre-commit
-      - name: Run pre-commit on all files
-        run: pre-commit run --all-files --show-diff-on-failure
-      - name: Run full test suite
-        run: pytest --cov=src --cov-report=xml
-      - name: Type check
-        run: mypy src
-```
-
-Note `--show-diff-on-failure`: shows the exact diff the formatter would have applied, so anyone who skipped local install sees immediately what to fix.
+With `default_install_hook_types` in the configuration, a single `pre-commit install` activates both pre-commit and pre-push. The target belongs in the README, right after `git clone`.
 
 ## The rule
 
-| Goes in pre-commit | Goes in CI | Doesn't belong |
-|-------------------|------------|----------------|
-| Formatting | Type checking | Full build on every commit |
-| Fast lint rules | Integration tests | Dependency audit on every push |
-| Secret scanning | Build / release | Duplicated slow lint rules |
-| Unit tests <10-15s | Coverage report | |
+A check belongs at the point closest to the cause where it can run.
 
-**If the fix requires reading output, it doesn't belong in pre-commit.**
+| Where | What | Criterion |
+|---|---|---|
+| pre-commit | Formatting, fast lint, secret scanning | Binary outcome on one file |
+| pre-push | Static analysis, unit tests, e2e smoke | Needs a build or the stack |
+| CI | Formatters, static analysis and tests as pipeline steps, plus type check, coverage and audit | Guarantee for the repo |
 
-Which CI failure from last week could you have avoided in 3 seconds?
+A problem found by the person who just wrote the code is fixed with a change to the current commit. One found on release day takes a bisection across every intermediate commit.
+
+Which CI failure last month was visible in a single file?
