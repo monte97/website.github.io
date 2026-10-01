@@ -13,7 +13,7 @@ tags:
   - SpotBugs
   - Secrets
 lang: it
-reviewed: false
+reviewed: human
 draft: false
 mode: explanation
 summary:
