@@ -69,6 +69,21 @@ export const talks: Talk[] = [
     },
   },
   {
+    slug: 'dove-sono-finiti-i-tuoi-token',
+    title: 'Dove sono finiti i tuoi token? Tracciare un sistema multi-agente con OpenTelemetry',
+    event: 'DevFest Alps 2026',
+    date: '2026-11-28', // ponytail: giorno provvisorio, l'evento e' 27-28/11 e lo slot non e' ancora noto
+    location: 'Torino, IT',
+    status: 'upcoming',
+    abstract: {
+      it: "Un workflow multi-agente che chiama tool e altri agenti è, a tutti gli effetti, un sistema distribuito: latenza che si accumula, costi token che esplodono, fallimenti che si propagano a cascata. Eppure spesso manca visibilità end-to-end.\n\nIn questo talk mostro come strumentare un sistema agentico con OpenTelemetry e le GenAI semantic conventions: lo span tree ufficiale (invoke_agent, poi un chat span per ogni chiamata LLM, poi execute_tool per ogni tool), gli attributi gen_ai.* per token, modello e finish-reason, la latenza end-to-end. La domanda a cui rispondere dal vivo: perché questo workflow ha dato una risposta sbagliata dopo aver speso più tempo e più denaro del previsto?\n\nIl costo non è un attributo standard: si ricava dai token e dal pricing, e mostro come. Lo stesso span tree diventa log di audit: chi ha chiamato quale tool, con quali token, quando e perché è fallito.\n\nTre cose oneste: le GenAI semantic conventions sono ancora sperimentali, le presento come standard in fase di consolidamento. La demo la costruisco per questo talk, portando la disciplina dell'observability in un dominio nuovo per me. E se catturo prompt e risposte, quei testi finiscono negli span verso il backend: servono redazione o filtri prima di esportarli.",
+      en: "A multi-agent workflow that calls tools and other agents is, for all practical purposes, a distributed system: latency that piles up, token costs that explode, failures that cascade. And yet end-to-end visibility is often missing.\n\nIn this talk I show how to instrument an agentic system with OpenTelemetry and the GenAI semantic conventions: the official span tree (invoke_agent, then a chat span for each LLM call, then execute_tool for each tool), the gen_ai.* attributes for tokens, model and finish reason, and end-to-end latency. The question to answer live: why did this workflow give a wrong answer after spending more time and more money than expected?\n\nCost is not a standard attribute: you derive it from tokens and pricing, and I show how. The same span tree becomes an audit log: who called which tool, with which tokens, when and why it failed.\n\nThree honest notes: the GenAI semantic conventions are still experimental, and I present them as a standard that is still settling. I am building the demo for this talk, bringing observability discipline into a domain that is new to me. And if you capture prompts and responses, that text ends up in the spans sent to your backend: you need redaction or filtering before exporting it.",
+    },
+    links: {
+      conference: 'https://sessionize.com/devfest-alps-2026/',
+    },
+  },
+  {
     slug: 'il-tuo-collega-piu-produttivo',
     title: 'Il tuo collega più produttivo scrive test inutili',
     event: 'DevRomagna',

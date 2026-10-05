@@ -31,4 +31,11 @@ export const qrEvents: QrEvent[] = [
       { label: 'Il talk su montelli.dev', href: 'https://montelli.dev/talks/incidente-non-parla-promql/' },
     ],
   },
+  {
+    slug: 'devfest-alps-2026',
+    title: 'DevFest Alps 2026',
+    links: [
+      { label: 'Il talk su montelli.dev', href: 'https://montelli.dev/talks/dove-sono-finiti-i-tuoi-token/' },
+    ],
+  },
 ];

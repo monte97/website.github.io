@@ -1,0 +1,94 @@
+---
+// Elenco privato dei QR disponibili: per ognuno, il codice, dove porta e cosa c'e' sulla pagina.
+// Non linkata da nessuna parte; /qr/ e' fuori da sitemap e robots.txt.
+import QRCode from 'qrcode';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Header from '@/components/layout/Header.astro';
+import { qrEvents } from '@/data/qr-events';
+import { talks } from '@/data/talks';
+
+const SITE = 'https://montelli.dev';
+const CONTACT_LINKS = ['Email', 'LinkedIn', 'GitHub'];
+
+// Un link che punta a /talks/<slug>/ viene arricchito con titolo e data del talk.
+function talkFor(href: string) {
+  const m = href.match(/\/talks\/([^/]+)\/?$/);
+  return m ? talks.find((t) => t.slug === m[1]) : undefined;
+}
+
+const entries = [
+  {
+    title: 'Biglietto da visita',
+    url: `${SITE}/qr/`,
+    contact: [...CONTACT_LINKS, 'Salva contatto (vCard)'],
+    links: [] as { label: string; href: string }[],
+  },
+  ...qrEvents.map((e) => ({
+    title: e.title,
+    url: `${SITE}/qr/${e.slug}/`,
+    contact: CONTACT_LINKS,
+    links: e.links,
+  })),
+];
+
+const cards = await Promise.all(
+  entries.map(async (e) => {
+    const svg = await QRCode.toString(e.url, { type: 'svg', margin: 1 });
+    return { ...e, svg, download: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}` };
+  }),
+);
+---
+
+<BaseLayout title="Elenco QR">
+  <Header lang="it" />
+  <main class="max-w-4xl mx-auto px-4 py-12">
+    <h1 class="text-2xl font-bold text-text-dark dark:text-text-light mb-2">QR disponibili</h1>
+    <p class="text-text-muted text-sm mb-10">
+      {cards.length} QR, generati da <code>src/data/qr-events.ts</code>. Per aggiungerne uno: skill <code>add-qr-event</code>.
+    </p>
+
+    <ul class="flex flex-col gap-6">
+      {cards.map((c) => (
+        <li class="flex flex-col sm:flex-row gap-6 rounded-2xl border border-border dark:border-border-dark p-6">
+          <div class="shrink-0 w-40 self-center sm:self-start">
+            <div class="bg-white rounded-lg p-2" set:html={c.svg} />
+            <a
+              href={c.download}
+              download={`qr-${c.url.replace(`${SITE}/`, '').replace(/\/$/, '').replace(/\//g, '-')}.svg`}
+              class="block text-center text-xs text-accent mt-2 hover:underline"
+            >
+              Scarica SVG
+            </a>
+          </div>
+
+          <div class="min-w-0 flex-1">
+            <h2 class="text-lg font-semibold text-text-dark dark:text-text-light">{c.title}</h2>
+            <a href={c.url} class="text-sm text-accent break-all hover:underline">{c.url}</a>
+
+            <p class="text-xs uppercase tracking-wide text-text-muted mt-4 mb-1">Sulla pagina</p>
+            <p class="text-sm text-text-muted">Contatti: {c.contact.join(', ')}</p>
+
+            {c.links.length > 0 && (
+              <ul class="mt-2 flex flex-col gap-2">
+                {c.links.map((l) => {
+                  const talk = talkFor(l.href);
+                  return (
+                    <li class="text-sm">
+                      <span class="font-medium text-text-dark dark:text-text-light">{l.label}</span>
+                      <a href={l.href} class="block text-accent break-all hover:underline">{l.href}</a>
+                      {talk && (
+                        <span class="block text-text-muted">
+                          Talk: «{talk.title}», {talk.event}, {talk.date} ({talk.status})
+                        </span>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        </li>
+      ))}
+    </ul>
+  </main>
+</BaseLayout>

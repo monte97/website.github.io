@@ -16,6 +16,7 @@
     "@tailwindcss/vite": "^4.2.1",
     "astro": "^5.18.0",
     "katex": "^0.16.33",
+    "qrcode": "^1.5.4",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
     "tailwindcss": "^4.2.1",
@@ -24,6 +25,7 @@
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^25.3.2",
+    "@types/qrcode": "^1.5.6",
     "js-yaml": "^4.1.1",
     "pagefind": "^1.4.0",
     "tsx": "^4.21.0"
