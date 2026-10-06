@@ -36,7 +36,7 @@ const hair = 'border-border/70 dark:border-border-dark/70';
 const t = lang === 'en'
   ? {
       pageTitle: 'Services',
-      pageDesc: 'I design, build and automate the software behind your product: architecture, verification, automation. From scratch or on a system grown rigid over time. Free 30-minute discovery call.',
+      pageDesc: 'I design, build and automate the software behind your product. A 5-day technical assessment or an ongoing engagement. Free 30-minute discovery call.',
       eyebrow: 'The services',
       heroTitle: 'I design, build and automate the software behind your product.',
       heroBody: 'From analysis and architecture choices to the actual build, all the way to the automated processes that keep quality high. Whether it starts from scratch or from a system that has grown rigid over time, the team is left able to go on without me.',
@@ -52,11 +52,23 @@ const t = lang === 'en'
       trainingTitle: 'Training for the team',
       trainingBody: 'When the problem is not building but knowing how: a path run with the team, on your stack.',
       trainingMore: 'Modules chosen during the discovery call',
+      assessmentTitle: 'Technical assessment in 5 days',
+      assessmentSubtitle: 'A week inside your system, to see where it gets stuck and where it pays to start.',
+      assessmentBody: 'I look at architecture, release pipeline, tests and monitoring, talk with the people who work on it every day and read the code where it matters. At the end you get:',
+      assessmentItems: [
+        'a report with the problems ranked by impact and cost of intervention',
+        'a 90-day action plan, with the first three moves',
+        'a walkthrough session with the team',
+      ],
+      assessmentClose: 'The report is yours: you can carry it out with me, with your internal team or with whoever you prefer.',
+      assessmentCta: "Let's talk",
+      optional: 'optional',
       processTitle: 'How it goes',
       process: [
         ['01', 'Discovery call', '30 minutes, free. Tell me what the system looks like today and which decision you are stuck on. It is there to see whether there is a problem I can be useful on.'],
-        ['02', 'Ongoing engagement', 'If the problem calls for continuity. Month to month, one active goal at a time, with everything the system needs included.'],
-        ['03', 'Exit', 'Handover doc, runbooks and a trained internal owner. From there the team goes on by itself.'],
+        ['02', 'Assessment', 'Five days at a fixed price, for those who want a clear picture before committing. It ends with a report and a 90-day action plan.', true],
+        ['03', 'Ongoing engagement', 'If the problem calls for continuity. Month to month, one active goal at a time, with everything the system needs included.'],
+        ['04', 'Exit', 'Handover doc, runbooks and a trained internal owner. From there the team goes on by itself.'],
       ],
       fitTitle: 'When I am the right choice',
       fitYes: 'We work well together if…',
@@ -65,6 +77,7 @@ const t = lang === 'en'
       faqTitle: 'Frequently asked',
       faq: [
         { q: 'How does the first call work?', a: 'Thirty minutes, free, no commitment and no slides. You tell me where the system is and what is blocking you, and we work out whether and how it makes sense to work together.' },
+        { q: 'Do I have to start with the assessment?', a: 'No. It is meant for those who want to see where to act before committing to an ongoing engagement. If the problem is already clear, we start straight from there.' },
         { q: 'What is left at the end of an engagement?', a: 'A handover doc, the runbooks and an internal owner I have trained. Plus the code, the tests and the documented decisions: the system should not depend on me to keep working.' },
       ],
       ctaTitle: 'Got a technical decision that deserves clarity?',
@@ -74,7 +87,7 @@ const t = lang === 'en'
     }
   : {
       pageTitle: 'Servizi',
-      pageDesc: "Progetto, sviluppo e automatizzo il software del tuo prodotto: architettura, verifica, automazione. Da zero o su un sistema irrigidito nel tempo. Discovery call gratuita di 30 minuti.",
+      pageDesc: 'Progetto, sviluppo e automatizzo il software del tuo prodotto. Assessment tecnico in 5 giorni o ingaggio continuativo. Discovery call gratuita di 30 minuti.',
       eyebrow: 'I servizi',
       heroTitle: 'Progetto, sviluppo e automatizzo il software del tuo prodotto.',
       heroBody: "Dall'analisi e le scelte di architettura alla realizzazione, fino ai processi automatici che ne tengono alta la qualità. Che parta da zero o da un sistema irrigidito nel tempo, alla fine il team resta capace di andare avanti da solo.",
@@ -90,11 +103,23 @@ const t = lang === 'en'
       trainingTitle: 'Formazione per il team',
       trainingBody: 'Quando il problema non è costruire ma saper fare: un percorso con il team, sul vostro stack.',
       trainingMore: 'Moduli da scegliere in discovery call',
+      assessmentTitle: 'Assessment tecnico in 5 giorni',
+      assessmentSubtitle: 'Una settimana dentro il vostro sistema, per capire dove si inceppa e da dove conviene partire.',
+      assessmentBody: 'Analizzo architettura, pipeline di rilascio, test e monitoring, parlo con chi ci lavora ogni giorno e guardo il codice dove serve. Alla fine ricevete:',
+      assessmentItems: [
+        "un report con i problemi ordinati per impatto e costo di intervento",
+        "un piano d'azione a 90 giorni, con le prime tre mosse",
+        'una sessione di restituzione con il team',
+      ],
+      assessmentClose: 'Il report resta vostro: potete realizzarlo con me, con il team interno o con chi preferite.',
+      assessmentCta: 'Parliamone',
+      optional: 'facoltativo',
       processTitle: 'Come si procede',
       process: [
         ['01', 'Discovery call', "30 minuti, gratuiti. Raccontami com'è fatto il sistema adesso e qual è la decisione su cui siete fermi. Serve a capire se c'è un problema su cui posso essere utile."],
-        ['02', 'Ingaggio continuativo', 'Se il problema chiede continuità. Mese per mese, un obiettivo attivo per volta, con tutto quello che serve al sistema incluso.'],
-        ['03', 'Uscita', 'Handover doc, runbook e un owner interno formato. Da qui in avanti il team va avanti da solo.'],
+        ['02', 'Assessment', "Cinque giorni a prezzo fisso, per chi vuole un quadro chiaro prima di impegnarsi. Si chiude con un report e un piano d'azione a 90 giorni.", true],
+        ['03', 'Ingaggio continuativo', 'Se il problema chiede continuità. Mese per mese, un obiettivo attivo per volta, con tutto quello che serve al sistema incluso.'],
+        ['04', 'Uscita', 'Handover doc, runbook e un owner interno formato. Da qui in avanti il team va avanti da solo.'],
       ],
       fitTitle: 'Quando sono la scelta giusta',
       fitYes: 'Lavoriamo bene insieme se…',
@@ -103,6 +128,7 @@ const t = lang === 'en'
       faqTitle: 'Domande frequenti',
       faq: [
         { q: 'Come funziona la prima call?', a: 'Trenta minuti, gratuiti, senza impegno e senza slide. Mi racconti dove sta il sistema e cosa vi blocca, e ne esce se e come ha senso lavorare insieme.' },
+        { q: "Devo per forza partire dall'assessment?", a: "No. È pensato per chi vuole capire dove intervenire prima di impegnarsi su un ingaggio continuativo. Se il problema è già chiaro, si parte direttamente da lì." },
         { q: 'Cosa resta a fine ingaggio?', a: "Un handover doc, i runbook e un owner interno che ho formato. Più il codice, i test e le decisioni documentate: il sistema non deve dipendere da me per funzionare." },
       ],
       ctaTitle: 'Hai una decisione tecnica che merita chiarezza?',
@@ -213,12 +239,34 @@ const notForYou: string[] = [];
       </div>
     </section>
 
+    <section class="max-w-5xl mx-auto px-5 pt-16">
+      <div class="rounded-xl border-2 border-accent bg-accent-subtle p-6 sm:p-10">
+        <SectionHeading title={t.assessmentTitle} subtitle={t.assessmentSubtitle} class="mb-6" />
+        <p class="text-text-muted leading-relaxed">{t.assessmentBody}</p>
+        <ul class="mt-4 space-y-2">
+          {t.assessmentItems.map((it) => (
+            <li class="flex gap-2 text-text-muted leading-relaxed">
+              <span class="text-accent shrink-0">&rsaquo;</span>
+              <span>{it}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="mt-4 text-text-muted leading-relaxed">{t.assessmentClose}</p>
+        <div class="mt-8">
+          <a href={calLink} target="_blank" rel="noopener noreferrer" data-umami-event="cta-servizi-assessment"
+            class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-accent text-white text-sm font-semibold hover:bg-accent-hover transition-colors">
+            {t.assessmentCta} &rarr;
+          </a>
+        </div>
+      </div>
+    </section>
+
     <section class="max-w-5xl mx-auto px-5 py-16">
       <SectionHeading title={t.processTitle} />
       <div class="grid md:grid-cols-4 gap-8">
-        {t.process.map(([n, titolo, desc]) => (
+        {t.process.map(([n, titolo, desc, facoltativo]) => (
           <div>
-            <p class="label-mono !text-accent">{n}</p>
+            <p class="label-mono !text-accent">{n}{facoltativo && <span class="text-text-muted"> · {t.optional}</span>}</p>
             <h3 class="mt-2 font-semibold text-text-dark dark:text-text-light">{titolo}</h3>
             <p class="mt-2 text-sm text-text-muted leading-relaxed">{desc}</p>
           </div>
