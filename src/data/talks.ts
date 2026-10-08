@@ -1,5 +1,6 @@
 export type TalkLink = {
   repo?: string;
+  code?: string;   // codice della demo, quando il repo non e' il materiale del talk
   slides?: string;
   linkedin?: string;
   conference?: string;
@@ -32,6 +33,8 @@ export const talks: Talk[] = [
       en: "An alert fires. You open the dashboard and find two clues that contradict each other: one signal points one way, another, at the same moment, points somewhere else. Which one do you follow? No runbook written in advance covers the case where two independent signals point elsewhere, and that is more or less always how it goes when the incident is the real one, not the one from the manual.\n\nIn the talk I present an agent that does exactly this job: it looks at logs, traces and metrics from a real incident and chooses between several plausible causes when the evidence does not converge: an interface that spares you from remembering where to look and which syntax each backend wants. I demo it live with LangGraph, orchestrating queries against an observability stack (OpenTelemetry, Loki, Tempo, Mimir).\n\nI tell the story of an approach I am putting to the test, not a finished solution: how you give the model the freedom to choose which source to dig into for each hypothesis, when to stop, and how it argues for a conclusion with a confidence level even when causes remain open, instead of handing back a single definitive verdict.",
     },
     links: {
+      slides: '/files/talk-promql-devfest-milano-2026.pdf',
+      code: 'https://github.com/monte97/observability-agent-lab',
       conference: 'https://2026.devfestmilano.it',
       speaker: 'https://2026.devfestmilano.it/it/speakers/3ca13269-73ac-4dad-b02c-b6a6c82fe80c/',
     },

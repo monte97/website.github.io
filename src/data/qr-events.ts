@@ -29,6 +29,8 @@ export const qrEvents: QrEvent[] = [
     title: 'DevFest Milano 2026',
     links: [
       { label: 'Il talk su montelli.dev', href: 'https://montelli.dev/talks/incidente-non-parla-promql/' },
+      { label: 'Slide (PDF)', href: 'https://montelli.dev/files/talk-promql-devfest-milano-2026.pdf' },
+      { label: 'Il codice della demo', href: 'https://github.com/monte97/observability-agent-lab' },
     ],
   },
   {
