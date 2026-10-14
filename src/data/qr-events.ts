@@ -22,6 +22,7 @@ export const qrEvents: QrEvent[] = [
     title: 'DevSecOps Day 2026',
     links: [
       { label: 'Il talk su montelli.dev', href: 'https://montelli.dev/talks/oltre-i-ruoli-openfga/' },
+      { label: 'Slide (PDF)', href: 'https://montelli.dev/files/talk-openfga-devsecopsday-2026.pdf' },
     ],
   },
   {

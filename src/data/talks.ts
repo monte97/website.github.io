@@ -51,6 +51,7 @@ export const talks: Talk[] = [
       en: 'Roles in a JWT stop being enough the moment access depends on relationships: who owns the document, who is on the team, who shared what. OpenFGA moves relational authorization out of your application code. How to model it, and when you actually need it.',
     },
     links: {
+      slides: '/files/talk-openfga-devsecopsday-2026.pdf',
       conference: 'https://www.devsecopsday.it',
       speaker: 'https://www.devsecopsday.it/speaker/francesco-montelli/',
       linkedin: 'https://www.linkedin.com/posts/grusp_devsecopsday-devsecopsday-activity-7482697988751093762-4zuX?utm_source=share&utm_medium=member_desktop&rcm=ACoAAB73J5QBiTWCzxRrpP2WaZgBtH4empc8hrQ',
