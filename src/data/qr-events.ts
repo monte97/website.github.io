@@ -35,6 +35,13 @@ export const qrEvents: QrEvent[] = [
     ],
   },
   {
+    slug: 'linux-day-prato-2026',
+    title: 'Linux Day Prato 2026',
+    links: [
+      { label: 'Il talk su montelli.dev', href: 'https://montelli.dev/talks/waf-open-source-coraza-caddy/' },
+    ],
+  },
+  {
     slug: 'devfest-alps-2026',
     title: 'DevFest Alps 2026',
     links: [
