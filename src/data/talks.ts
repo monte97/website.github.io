@@ -27,7 +27,7 @@ export const talks: Talk[] = [
     event: 'DevFest Milano 2026',
     date: '2026-10-10',
     location: 'Milano, IT',
-    status: 'upcoming',
+    status: 'delivered',
     abstract: {
       it: "Un alert scatta. Apri la dashboard e trovi due indizi che si contraddicono: un segnale punta in una direzione, un altro, nello stesso momento, punta in un'altra. Quale dei due segui? Nessun runbook scritto a priori copre il caso in cui due segnali indipendenti puntano altrove, ed è più o meno sempre così quando l'incidente è quello vero, non quello da manuale.\n\nDurante il talk presenterò un agente che fa esattamente questo mestiere: guarda log, trace e metriche di un incidente reale e sceglie tra più cause plausibili quando le prove non convergono: un'interfaccia che ti risparmia di ricordarti dove cercare e con quale sintassi interrogare ogni backend. Lo dimostro dal vivo con LangGraph, orchestrando query verso uno stack di osservabilità (OpenTelemetry, Loki, Tempo, Mimir).\n\nRacconto la costruzione di un approccio che sto mettendo alla prova, non ancora una soluzione pronta: come si dà al modello la libertà di scegliere quale fonte interrogare più a fondo per ogni ipotesi, quando fermarsi, e come argomenta una conclusione con un livello di confidenza anche quando restano cause aperte, invece di restituire un verdetto univoco e definitivo.",
       en: "An alert fires. You open the dashboard and find two clues that contradict each other: one signal points one way, another, at the same moment, points somewhere else. Which one do you follow? No runbook written in advance covers the case where two independent signals point elsewhere, and that is more or less always how it goes when the incident is the real one, not the one from the manual.\n\nIn the talk I present an agent that does exactly this job: it looks at logs, traces and metrics from a real incident and chooses between several plausible causes when the evidence does not converge: an interface that spares you from remembering where to look and which syntax each backend wants. I demo it live with LangGraph, orchestrating queries against an observability stack (OpenTelemetry, Loki, Tempo, Mimir).\n\nI tell the story of an approach I am putting to the test, not a finished solution: how you give the model the freedom to choose which source to dig into for each hypothesis, when to stop, and how it argues for a conclusion with a confidence level even when causes remain open, instead of handing back a single definitive verdict.",
@@ -45,7 +45,7 @@ export const talks: Talk[] = [
     event: 'DevSecOpsDay',
     date: '2026-10-14',
     location: 'Bologna, IT',
-    status: 'upcoming',
+    status: 'delivered',
     abstract: {
       it: "I ruoli nel JWT smettono di bastare appena l'accesso dipende dalle relazioni: chi possiede il documento, chi è nel team, chi ha condiviso cosa. OpenFGA porta l'autorizzazione relazionale fuori dal codice applicativo. Come modellarla, e quando serve davvero.",
       en: 'Roles in a JWT stop being enough the moment access depends on relationships: who owns the document, who is on the team, who shared what. OpenFGA moves relational authorization out of your application code. How to model it, and when you actually need it.',
