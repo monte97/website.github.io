@@ -39,6 +39,8 @@ export const qrEvents: QrEvent[] = [
     title: 'Linux Day Prato 2026',
     links: [
       { label: 'Il talk su montelli.dev', href: 'https://montelli.dev/talks/waf-open-source-coraza-caddy/' },
+      { label: 'Slide (PDF)', href: 'https://montelli.dev/files/talk-waf-linux-day-prato-2026.pdf' },
+      { label: 'La demo, le misure e le fonti', href: 'https://github.com/monte97/waf-open-source-coraza-caddy' },
     ],
   },
   {

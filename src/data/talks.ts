@@ -69,6 +69,8 @@ export const talks: Talk[] = [
       en: "If you expose a service from home, whether it is Nextcloud or a blog, it is a target from day one. A Web Application Firewall filters hostile traffic before it reaches your application, but the commercial ones cost money and tie you to a vendor.\n\nCoraza speaks the OWASP CRS ruleset and Caddy acts as a reverse proxy with automatic HTTPS: together they form a WAF stack entirely under the Apache 2.0 licence, from bare server to active filter in minutes. No vendor, no cost, no data handed to third parties.\n\nArchitecture, installation and practical configuration, including the part that usually hurts: moving from DetectionOnly to actual blocking without cutting off legitimate traffic.",
     },
     links: {
+      slides: '/files/talk-waf-linux-day-prato-2026.pdf',
+      repo: 'https://github.com/monte97/waf-open-source-coraza-caddy',
       conference: 'https://day.linux.prato.it',
     },
   },
