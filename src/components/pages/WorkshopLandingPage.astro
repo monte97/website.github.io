@@ -172,7 +172,7 @@ let n = 0;
                 {w.talks.map((talk) => (
                   <li>
                     <a href={`/talks/${talk.slug}/`} class="surface-link block p-3">
-                      <span class="block text-sm text-text-dark dark:text-text-light">{talk.title}</span>
+                      <span class="block text-sm text-text-dark dark:text-text-light">{talk.title.it}</span>
                       <span class={`block ${mono} mt-1`}>{talk.event} · {talk.location}</span>
                     </a>
                   </li>

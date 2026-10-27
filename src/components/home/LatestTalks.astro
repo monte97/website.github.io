@@ -52,16 +52,16 @@ const t = lang === 'en'
               class="group surface-link overflow-hidden flex flex-col h-full"
             >
               {img ? (
-                <img src={img} alt={talk.title} class="w-full h-32 object-cover" loading="lazy" />
+                <img src={img} alt={talk.title[lang]} class="w-full h-32 object-cover" loading="lazy" />
               ) : (
                 <div class="w-full h-32 bg-accent/10 flex items-center justify-center">
                   <span class="label-mono !text-accent">{t.upcoming}</span>
                 </div>
               )}
               <div class="p-5 flex-1">
-                <p class="text-xs text-text-muted">{talk.event} &middot; {fmtDate(talk.date)}</p>
+                <p class="text-xs text-text-muted">{talk.event} &middot; {fmtDate(talk.date)} &middot; <span class="font-mono font-semibold uppercase text-accent">{talk.language}</span></p>
                 <h3 class="text-base font-semibold text-text-dark dark:text-text-light mt-1 leading-snug line-clamp-3 group-hover:text-accent transition-colors">
-                  {talk.title}
+                  {talk.title[lang]}
                 </h3>
               </div>
             </a>

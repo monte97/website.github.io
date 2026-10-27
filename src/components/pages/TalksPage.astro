@@ -4,6 +4,7 @@ import { talks } from '@/data/talks';
 import { talkImagesFrom } from '@/utils/talks';
 import FinalCta from '@/components/ui/FinalCta.astro';
 import PageHero from '@/components/ui/PageHero.astro';
+import TalkLanguage from '@/components/ui/TalkLanguage.astro';
 
 interface Props {
   lang?: 'it' | 'en';
@@ -85,11 +86,12 @@ const t = lang === 'en'
           return (
             <a href={`${prefix}/talks/${talk.slug}/`} class="group block surface-link overflow-hidden border-l-[3px] border-l-accent hover:border-l-accent md:flex">
               {img && (
-                <img src={img} alt={talk.title} class="w-full h-48 md:h-56 md:w-64 object-cover shrink-0" loading="lazy" />
+                <img src={img} alt={talk.title[lang]} class="w-full h-48 md:h-56 md:w-64 object-cover shrink-0" loading="lazy" />
               )}
               <div class="p-6 flex-1">
+                <TalkLanguage language={talk.language} lang={lang} class="mb-3" />
                 <p class="label-mono !text-accent"><span class="whitespace-nowrap">{talk.event}</span>{' '}<span class="whitespace-nowrap">&middot; {fmtDate(talk.date)}</span>{' '}<span class="whitespace-nowrap">&middot; {talk.location}</span></p>
-                <h3 class="text-xl font-bold text-text-dark dark:text-text-light mt-1 group-hover:text-accent transition-colors">{talk.title}</h3>
+                <h3 class="text-xl font-bold text-text-dark dark:text-text-light mt-1 group-hover:text-accent transition-colors">{talk.title[lang]}</h3>
                 <p class="text-text-muted mt-2 leading-relaxed line-clamp-3 md:line-clamp-none">{talk.abstract[lang].split("\n\n")[0]}</p>
               </div>
             </a>
@@ -102,18 +104,22 @@ const t = lang === 'en'
   {past.length > 0 && (
     <section class="mb-16 fade-in-section">
       <h2 class={`${mono} mb-4`}>{t.pastTitle}</h2>
-      <div class="space-y-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {past.map((talk) => {
           const img = coverFor(talk.slug);
           return (
-            <a href={`${prefix}/talks/${talk.slug}/`} class="group block surface-link overflow-hidden md:flex">
-              {img && (
-                <img src={img} alt={talk.title} class="w-full h-48 md:h-56 md:w-64 object-cover shrink-0" loading="lazy" />
+            <a href={`${prefix}/talks/${talk.slug}/`} class="group surface-link overflow-hidden flex flex-col h-full">
+              {img ? (
+                <img src={img} alt={talk.title[lang]} class="w-full h-44 object-cover" loading="lazy" />
+              ) : (
+                <div class="w-full h-44 bg-accent/10" aria-hidden="true"></div>
               )}
-              <div class="p-6 flex-1">
-                <p class={mono}><span class="whitespace-nowrap">{talk.event}</span>{' '}<span class="whitespace-nowrap">&middot; {fmtDate(talk.date)}</span>{' '}<span class="whitespace-nowrap">&middot; {talk.location}</span></p>
-                <h3 class="text-xl font-bold text-text-dark dark:text-text-light mt-1 group-hover:text-accent transition-colors">{talk.title}</h3>
-                <p class="text-text-muted mt-2 leading-relaxed line-clamp-3 md:line-clamp-none">{talk.abstract[lang].split("\n\n")[0]}</p>
+              <div class="p-5 flex-1 flex flex-col">
+                <TalkLanguage language={talk.language} lang={lang} class="self-start mb-3" />
+                <p class={mono}><span class="whitespace-nowrap">{talk.event}</span>{' '}<span class="whitespace-nowrap">&middot; {fmtDate(talk.date)}</span></p>
+                <h3 class="text-lg font-bold text-text-dark dark:text-text-light mt-1 leading-snug group-hover:text-accent transition-colors">{talk.title[lang]}</h3>
+                <p class="text-sm text-text-muted mt-2 leading-relaxed line-clamp-3">{talk.abstract[lang].split("\n\n")[0]}</p>
+                <p class="text-xs text-text-muted mt-auto pt-4">{talk.location}</p>
               </div>
             </a>
           );

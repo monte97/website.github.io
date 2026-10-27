@@ -3,6 +3,7 @@ import PageLayout from '@/layouts/PageLayout.astro';
 import TalkGallery from '@/components/interactive/TalkGallery.vue';
 import { talks } from '@/data/talks';
 import { talkImagesFrom } from '@/utils/talks';
+import TalkLanguage from '@/components/ui/TalkLanguage.astro';
 
 interface Props {
   slug: string;
@@ -65,16 +66,17 @@ const linkLabel: Record<LinkKey, string> = {
 };
 ---
 
-<PageLayout title={talk.title} description={talk.abstract[lang].split("\n\n")[0]} ogImage="/og/talks.png" lang={lang}>
+<PageLayout title={talk.title[lang]} description={talk.abstract[lang].split("\n\n")[0]} ogImage="/og/talks.png" lang={lang}>
   <a href={`${prefix}/talks/`} class="inline-block text-sm text-accent hover:underline mb-8">&larr; {t.back}</a>
 
   <header class="mb-6">
+    <TalkLanguage language={talk.language} lang={lang} class="mb-3 !text-sm" />
     <p class="text-sm text-text-muted">
       {talk.event} &middot; {fmtDate(talk.date)} &middot; {talk.location}
       {talk.status === 'upcoming' && <span class="text-accent font-semibold"> &middot; {t.upcoming}</span>}
     </p>
     <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-text-dark dark:text-text-light mt-2">
-      {talk.title}
+      {talk.title[lang]}
     </h1>
   </header>
 
@@ -98,7 +100,7 @@ const linkLabel: Record<LinkKey, string> = {
   {images.length > 0 && (
     <section class="mb-8">
       <h2 class="text-xs font-semibold uppercase tracking-wide text-text-muted mb-4">{t.gallery}</h2>
-      <TalkGallery client:load images={images} title={talk.title} />
+      <TalkGallery client:load images={images} title={talk.title[lang]} />
     </section>
   )}
 </PageLayout>

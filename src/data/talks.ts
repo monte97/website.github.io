@@ -11,7 +11,8 @@ export type TalkLink = {
 
 export type Talk = {
   slug: string;
-  title: string;
+  title: { it: string; en: string };
+  language: 'it' | 'en'; // lingua in cui il talk e' tenuto, mostrata in evidenza
   event: string;
   date: string; // ISO, es. "2026-06-18"
   location: string;
@@ -23,7 +24,11 @@ export type Talk = {
 export const talks: Talk[] = [
   {
     slug: 'incidente-non-parla-promql',
-    title: "L'incidente non parla PromQL: un'interfaccia naturale sopra il tuo stack di osservabilità",
+    title: {
+      it: "L'incidente non parla PromQL: un'interfaccia naturale sopra il tuo stack di osservabilità",
+      en: "Incidents don't speak PromQL: a natural interface over your observability stack",
+    },
+    language: 'it',
     event: 'DevFest Milano 2026',
     date: '2026-10-10',
     location: 'Milano, IT',
@@ -41,7 +46,11 @@ export const talks: Talk[] = [
   },
   {
     slug: 'oltre-i-ruoli-openfga',
-    title: 'Oltre i ruoli: autorizzazione relazionale con OpenFGA',
+    title: {
+      it: "Oltre i ruoli: autorizzazione relazionale con OpenFGA",
+      en: "Beyond roles: relationship-based authorization with OpenFGA",
+    },
+    language: 'it',
     event: 'DevSecOpsDay',
     date: '2026-10-14',
     location: 'Bologna, IT',
@@ -59,11 +68,15 @@ export const talks: Talk[] = [
   },
   {
     slug: 'waf-open-source-coraza-caddy',
-    title: 'WAF open source: Coraza e Caddy per proteggere i tuoi servizi',
+    title: {
+      it: "WAF open source: Coraza e Caddy per proteggere i tuoi servizi",
+      en: "Open source WAF: Coraza and Caddy to protect your services",
+    },
+    language: 'it',
     event: 'Linux Day Prato 2026',
     date: '2026-10-24',
     location: 'Prato, IT',
-    status: 'upcoming',
+    status: 'delivered',
     abstract: {
       it: "Se esponi un servizio da casa, che sia Nextcloud o un blog, è un bersaglio dal primo giorno. Un Web Application Firewall filtra il traffico ostile prima che arrivi all'applicazione, ma quelli commerciali costano e ti legano a un fornitore.\n\nCoraza parla le regole OWASP CRS, Caddy fa da reverse proxy con HTTPS automatico: insieme diventano uno stack WAF interamente sotto licenza Apache 2.0, da server nudo a filtro attivo in pochi minuti. Nessun vendor, nessun costo, nessun dato lasciato a terzi.\n\nArchitettura, installazione e configurazione pratica, con la parte che di solito fa male: come si passa da DetectionOnly al blocco vero senza tagliare fuori il traffico legittimo.",
       en: "If you expose a service from home, whether it is Nextcloud or a blog, it is a target from day one. A Web Application Firewall filters hostile traffic before it reaches your application, but the commercial ones cost money and tie you to a vendor.\n\nCoraza speaks the OWASP CRS ruleset and Caddy acts as a reverse proxy with automatic HTTPS: together they form a WAF stack entirely under the Apache 2.0 licence, from bare server to active filter in minutes. No vendor, no cost, no data handed to third parties.\n\nArchitecture, installation and practical configuration, including the part that usually hurts: moving from DetectionOnly to actual blocking without cutting off legitimate traffic.",
@@ -76,9 +89,13 @@ export const talks: Talk[] = [
   },
   {
     slug: 'dove-sono-finiti-i-tuoi-token',
-    title: 'Dove sono finiti i tuoi token? Tracciare un sistema multi-agente con OpenTelemetry',
+    title: {
+      it: "Dove sono finiti i tuoi token? Tracciare un sistema multi-agente con OpenTelemetry",
+      en: "Where did your tokens go? Tracing a multi-agent system with OpenTelemetry",
+    },
+    language: 'it',
     event: 'DevFest Alps 2026',
-    date: '2026-11-28', // ponytail: giorno provvisorio, l'evento e' 27-28/11 e lo slot non e' ancora noto
+    date: '2026-11-28', // sabato 28/11, giornata dei talk (mail organizzatori 24/10)
     location: 'Torino, IT',
     status: 'upcoming',
     abstract: {
@@ -91,7 +108,11 @@ export const talks: Talk[] = [
   },
   {
     slug: 'il-tuo-collega-piu-produttivo',
-    title: 'Il tuo collega più produttivo scrive test inutili',
+    title: {
+      it: "Il tuo collega più produttivo scrive test inutili",
+      en: "Your most productive colleague writes useless tests",
+    },
+    language: 'it',
     event: 'DevRomagna',
     date: '2026-05-13',
     location: 'Faenza, IT',
@@ -109,7 +130,11 @@ export const talks: Talk[] = [
   },
   {
     slug: 'mutation-testing-working-software-2026',
-    title: 'Come il mutation testing mi ha fatto capire che la mia suite di test stava mentendo',
+    title: {
+      it: "Come il mutation testing mi ha fatto capire che la mia suite di test stava mentendo",
+      en: "How mutation testing showed me my test suite was lying",
+    },
+    language: 'it',
     event: 'Working Software 2026',
     date: '2026-06-18',
     location: 'Reggio Emilia, IT',
