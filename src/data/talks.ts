@@ -88,6 +88,27 @@ export const talks: Talk[] = [
     },
   },
   {
+    slug: 'il-modello-non-ci-sta',
+    title: {
+      it: "Il modello non ci sta: le leve per usarlo lo stesso",
+      en: "The model doesn't fit: the levers to run it anyway",
+    },
+    language: 'it',
+    event: 'mlopsday 2026',
+    date: '2026-10-29',
+    location: 'Bologna, IT',
+    status: 'delivered',
+    abstract: {
+      it: "Community talk di cinque minuti. Un Mixture of Experts da 400 miliardi di parametri pesa circa 200 GB anche a 4 bit: non sta né su un MacBook da 128 GB né su una H100. Eppure negli ultimi mesi c'è chi ha fatto girare modelli da 744 miliardi su un portatile con 25 GB di RAM.\n\nI progetti cambiano ogni settimana, le leve sono sempre le stesse, e ognuna ha un prezzo: la quantizzazione riduce i byte ma sotto i 4 bit rompe JSON e tool calling; gli esperti restano su SSD e salgono in RAM solo quando il router li sceglie, pagando in latenza; caricarli in anticipo nasconde l'attesa, ma si paga quando la previsione sbaglia.",
+      en: "A five-minute community talk. A 400-billion-parameter Mixture of Experts weighs about 200 GB even at 4 bits: it fits neither on a 128 GB MacBook nor on an H100. And yet in recent months people have run 744-billion-parameter models on a laptop with 25 GB of RAM.\n\nThe projects change every week, the levers stay the same, and each one has a price: quantization cuts bytes but below 4 bits breaks JSON and tool calling; experts stay on SSD and move into RAM only when the router picks them, at the cost of latency; loading them ahead hides the wait, but you pay when the prediction is wrong.",
+    },
+    links: {
+      slides: '/files/talk-moe-streaming-mlopsday-2026.pdf',
+      repo: 'https://github.com/monte97/mlopsday-2026-moe-streaming',
+      conference: 'https://www.mlopsday.it',
+    },
+  },
+  {
     slug: 'dove-sono-finiti-i-tuoi-token',
     title: {
       it: "Dove sono finiti i tuoi token? Tracciare un sistema multi-agente con OpenTelemetry",
