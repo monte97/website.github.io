@@ -44,6 +44,14 @@ export const qrEvents: QrEvent[] = [
     ],
   },
   {
+    slug: 'mlopsday-2026',
+    title: 'mlopsday 2026',
+    links: [
+      { label: 'Slide (PDF)', href: 'https://montelli.dev/files/talk-moe-streaming-mlopsday-2026.pdf' },
+      { label: 'Slide, fonti e numeri', href: 'https://github.com/monte97/mlopsday-2026-moe-streaming' },
+    ],
+  },
+  {
     slug: 'devfest-alps-2026',
     title: 'DevFest Alps 2026',
     links: [
