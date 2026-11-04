@@ -127,7 +127,8 @@ export const talks: Talk[] = [
       en: "A multi-agent workflow that calls tools and other agents is, for all practical purposes, a distributed system: latency that piles up, token costs that explode, failures that cascade. And yet end-to-end visibility is often missing.\n\nIn this talk I show how to instrument an agentic system with OpenTelemetry and the GenAI semantic conventions: the official span tree (invoke_agent, then a chat span for each LLM call, then execute_tool for each tool), the gen_ai.* attributes for tokens, model and finish reason, and end-to-end latency. The question to answer live: why did this workflow give a wrong answer after spending more time and more money than expected?\n\nCost is not a standard attribute: you derive it from tokens and pricing, and I show how. The same span tree becomes an audit log: who called which tool, with which tokens, when and why it failed.\n\nThree honest notes: the GenAI semantic conventions are still experimental, and I present them as a standard that is still settling. I am building the demo for this talk, bringing observability discipline into a domain that is new to me. And if you capture prompts and responses, that text ends up in the spans sent to your backend: you need redaction or filtering before exporting it.",
     },
     links: {
-      conference: 'https://sessionize.com/devfest-alps-2026/',
+      conference: 'https://devfest.gdgtorino.it/',
+      speaker: 'https://devfest.gdgtorino.it/en/talks/dove-sono-finiti-i-tuoi-token-tracciare-un-sistema-multi-agente-/',
     },
   },
   {
