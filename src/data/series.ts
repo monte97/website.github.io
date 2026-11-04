@@ -159,6 +159,58 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
       },
     },
   },
+  'agente-osservabilita': {
+    title: 'Un agente sopra lo stack di osservabilità',
+    subtitle: 'Il modello sceglie, il codice decide: un agente LangGraph su Loki, Tempo e Mimir',
+    description:
+      'Due articoli, nati da un talk al DevFest Milano 2026, su un agente che indaga un guasto interrogando log, trace e metriche. ' +
+      'Il primo racconta il sistema e le misure: da 10 a 13 risposte giuste su 20, e il guasto in cui il primo indizio è il sintomo. ' +
+      'Il secondo mostra come è costruito in LangGraph, con il codice pubblico di observability-agent-lab.',
+    level: 'Avanzato',
+    pillar: 'verificare',
+    category: 'observability',
+    breadcrumb: 'Agente di osservabilità',
+    tags: ['LangGraph', 'AI Agents', 'Observability', 'OpenTelemetry', 'Loki', 'Mimir'],
+    serviceHref: '/servizi/#observability-security',
+    serviceCTA: 'Vuoi capire se un agente può aiutarti a leggere la tua telemetria?',
+    serviceDescription:
+      'Posso affiancarti a valutare e costruire un agente sopra il tuo stack di osservabilità, ' +
+      'partendo da un banco di domande con la risposta nota e misurando ogni passo.',
+    learningGoals: [
+      'Misurare un agente con un banco di domande dalla risposta già nota',
+      'Togliere al modello la sintassi delle query con tool calling ed enum letti dai backend',
+      'Far decidere al codice quando fermare un\'indagine, e perché la confidence del modello non basta',
+      'Costruire il grafo in LangGraph: stato, archi condizionali, Send, reducer, Command e sottografi',
+    ],
+    cappello: {
+      h2: 'Chi è di turno non dovrebbe tradurre il guasto in tre linguaggi di query',
+      paragrafi: [
+        'Log, trace e metriche stanno in tre backend, e ognuno vuole la sua lingua: LogQL, TraceQL, PromQL. Le dashboard rispondono alle domande che qualcuno aveva previsto. Durante un guasto la domanda è un\'altra: cosa è successo?',
+        'Un agente che interroga i backend al posto nostro funziona quando il modello sceglie fra opzioni lette dal sistema e il codice compone le query e decide quando fermarsi. La serie racconta le misure che lo dimostrano e il codice che lo realizza.',
+      ],
+    },
+    en: {
+      title: 'An agent on top of the observability stack',
+      subtitle: 'The model picks, the code decides: a LangGraph agent on Loki, Tempo and Mimir',
+      description: 'Two articles, born out of a talk at DevFest Milano 2026, on an agent that investigates an incident by querying logs, traces and metrics. The first tells the system and the measurements: from 10 to 13 right answers out of 20, and the failure where the first clue is the symptom. The second shows how it is built in LangGraph, with the public code of observability-agent-lab.',
+      breadcrumb: 'Observability agent',
+      serviceCTA: 'Want to find out whether an agent can help you read your telemetry?',
+      serviceDescription: 'I can work with you to evaluate and build an agent on top of your observability stack, starting from a bench of questions with known answers and measuring every step.',
+      learningGoals: [
+        'Measure an agent with a bench of questions whose answers are known',
+        'Take query syntax away from the model with tool calling and enums read from the backends',
+        'Let the code decide when an investigation stops, and why the model confidence is not enough',
+        'Build the graph in LangGraph: state, conditional edges, Send, reducers, Command and subgraphs',
+      ],
+      cappello: {
+        h2: 'Whoever is on call should not translate the incident into three query languages',
+        paragrafi: [
+          'Logs, traces and metrics live in three backends, and each wants its own language: LogQL, TraceQL, PromQL. Dashboards answer the questions someone foresaw. During an incident the question is another one: what happened?',
+          'An agent that queries the backends for us works when the model picks among options read from the system and the code composes the queries and decides when to stop. The series tells the measurements that show it and the code that does it.',
+        ],
+      },
+    },
+  },
   playwright: {
     title: 'Test end-to-end con Playwright',
     subtitle: 'Dalla flakiness al Page Object Model, nove articoli su una suite di cui fidarsi',
@@ -280,12 +332,14 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
   },
   openfga: {
     title: 'Autorizzazione con OpenFGA',
-    subtitle: 'Da Zanzibar alla multi-tenancy, cinque articoli su permessi che scalano',
+    subtitle: 'Da Zanzibar alla multi-tenancy fino all\'audit, sette articoli su permessi che scalano',
     description:
       'Quando i permessi smettono di stare in una colonna `role` sulla tabella utenti, il modello ' +
       'a ruoli non regge più. La serie parte dai concetti di Google Zanzibar, li collega a Keycloak, ' +
       'e arriva ai problemi che si incontrano davvero: isolare più organizzazioni, risolvere ' +
-      'gerarchie profonde, e il costo di ListObjects quando le risorse diventano molte.',
+      'gerarchie profonde, il costo di ListObjects quando le risorse diventano molte, e infine come ' +
+      'ritrovare un accesso di troppo e migrare da un sistema a ruoli un endpoint alla volta. ' +
+      'L\'ultimo articolo rifà la stessa storia sulla propria macchina, con un backend .NET e un repo pubblico.',
     level: 'Avanzato',
     pillar: 'verificare',
     category: 'openfga',
@@ -302,6 +356,8 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
       'Isolare più organizzazioni nello stesso sistema senza duplicare il modello',
       'Risolvere gerarchie profonde senza scrivere codice applicativo',
       'Riconoscere quando ListObjects diventa il collo di bottiglia, e come aggirarlo',
+      'Ricostruire chi ha accesso, da dove e da quando, e migrare da un sistema a ruoli senza big bang',
+      'Rifare l\'audit sulla propria macchina e far decidere a un backend .NET, in shadow e poi in cutover',
     ],
     cappello: {
       h2: 'Il momento in cui i ruoli smettono di bastare',
@@ -309,13 +365,13 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
         'Finché i permessi stanno in una colonna <code>role</code> sulla tabella utenti, il modello a ruoli funziona e non c\'è motivo di cambiarlo. Smette di funzionare quando arriva la prima richiesta che non ci sta dentro: <em>questo documento è condiviso con quell\'utente, ma solo in lettura, e solo finché resta nel progetto di cui è membro</em>.',
         'A quel punto si aggiunge una tabella di eccezioni, poi un flag, poi un <code>if</code> nel controller. Il permesso smette di essere un dato e diventa codice sparso, e nessuno sa più rispondere alla domanda che conta: <strong>chi può vedere questa risorsa, e perché?</strong>',
         'Google ha affrontato lo stesso problema su scala e ne ha pubblicato il modello, Zanzibar: i permessi diventano tuple di relazione, non ruoli. OpenFGA è l\'implementazione open source di quel modello.',
-        'La serie parte dai concetti, li collega a Keycloak per separare autenticazione e autorizzazione, e arriva ai problemi che si incontrano davvero: isolare più organizzazioni nello stesso sistema, risolvere gerarchie profonde, e il costo delle query inverse quando le risorse diventano molte.',
+        'La serie parte dai concetti, li collega a Keycloak per separare autenticazione e autorizzazione, e arriva ai problemi che si incontrano davvero: isolare più organizzazioni nello stesso sistema, risolvere gerarchie profonde, il costo delle query inverse quando le risorse diventano molte. Il sesto articolo torna all\'inizio: un accesso di troppo da ritrovare, e una migrazione da fare senza fermare il sistema. Il settimo lo rifà con le mani: un repo da clonare, i comandi da lanciare e un backend .NET che passa dai ruoli alle relazioni.',
       ],
     },
     en: {
       title: 'Authorization with OpenFGA',
-      subtitle: 'From Zanzibar to multi-tenancy, five articles on permissions that scale',
-      description: 'When permissions stop fitting in a `role` column on the users table, the role model no longer holds. The series starts from the concepts behind Google Zanzibar, connects them to Keycloak, and gets to the problems you actually run into: isolating several organizations, resolving deep hierarchies, and the cost of ListObjects once the resources become many.',
+      subtitle: 'From Zanzibar to multi-tenancy to audit, seven articles on permissions that scale',
+      description: 'When permissions stop fitting in a `role` column on the users table, the role model no longer holds. The series starts from the concepts behind Google Zanzibar, connects them to Keycloak, and gets to the problems you actually run into: isolating several organizations, resolving deep hierarchies, the cost of ListObjects once the resources become many, and finally how to track down one access too many and migrate from a role-based system one endpoint at a time. The last article replays the same story on your own machine, with a .NET backend and a public repo.',
       breadcrumb: 'OpenFGA',
       serviceCTA: 'Are your product permissions becoming unmanageable?',
       serviceDescription: 'I can work with you to model authorization before it turns into debt: choosing between RBAC and ReBAC, the relationship model, multi-tenancy, and the performance of reverse queries.',
@@ -325,6 +381,8 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
         'Isolate several organizations in the same system without duplicating the model',
         'Resolve deep hierarchies without writing application code',
         'Recognize when ListObjects becomes the bottleneck, and how to work around it',
+        'Reconstruct who has access, from where and since when, and migrate from roles without a big bang',
+        'Replay the audit on your own machine and let a .NET backend decide, first in shadow and then at cutover',
       ],
       cappello: {
         h2: 'The moment roles stop being enough',
@@ -332,7 +390,7 @@ export const seriesMetadata: Record<string, SeriesMeta> = {
           'As long as permissions fit in a <code>role</code> column on the users table, the role model works and there is no reason to change it. It stops working with the first request that does not fit inside it: <em>this document is shared with that user, but read-only, and only as long as it stays in the project they are a member of</em>.',
           'At that point you add an exceptions table, then a flag, then an <code>if</code> in the controller. The permission stops being data and becomes code scattered around, and nobody can answer the question that matters any more: <strong>who can see this resource, and why?</strong>',
           'Google faced the same problem at scale and published the model behind it, Zanzibar: permissions become relationship tuples, not roles. OpenFGA is the open source implementation of that model.',
-          'The series starts from the concepts, connects them to Keycloak to separate authentication from authorization, and gets to the problems you actually run into: isolating several organizations in the same system, resolving deep hierarchies, and the cost of reverse queries once the resources become many.',
+          'The series starts from the concepts, connects them to Keycloak to separate authentication from authorization, and gets to the problems you actually run into: isolating several organizations in the same system, resolving deep hierarchies, and the cost of reverse queries once the resources become many. The sixth article comes back to the start: one access too many to track down, and a migration to carry out without stopping the system. The seventh replays it hands-on: a repo to clone, commands to run and a .NET backend that moves from roles to relationships.',
         ],
       },
     },

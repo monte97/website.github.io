@@ -16,6 +16,7 @@ export const categoryLabels: Record<string, string> = {
   'web-development': 'Web Dev',
   devcontainer: 'Dev Container',
   openfga: 'OpenFGA',
+  security: 'Security',
   vue: 'Vue 3',
   'developer-tools': 'Developer Tools',
 };

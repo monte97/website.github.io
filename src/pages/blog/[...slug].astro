@@ -10,7 +10,9 @@ import ArticleBody from '@/components/blog/ArticleBody.astro';
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection('posts');
-  const itPosts = posts.filter(p => p.data.lang === 'it' && !p.data.draft);
+  // SHOW_DRAFTS=1 npm run dev: rileggere le bozze in locale. Mai attivo in build.
+  const showDrafts = import.meta.env.DEV && process.env.SHOW_DRAFTS === '1';
+  const itPosts = posts.filter(p => p.data.lang === 'it' && (!p.data.draft || showDrafts));
   const enSlugs = new Set(
     posts
       .filter(p => p.data.lang === 'en' && !p.data.draft)
