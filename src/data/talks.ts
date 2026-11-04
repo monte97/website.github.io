@@ -39,6 +39,7 @@ export const talks: Talk[] = [
     },
     links: {
       slides: '/files/talk-promql-devfest-milano-2026.pdf',
+      article: '/blog/verificare/observability/incidente-non-parla-promql/',
       code: 'https://github.com/monte97/observability-agent-lab',
       conference: 'https://2026.devfestmilano.it',
       speaker: 'https://2026.devfestmilano.it/it/speakers/3ca13269-73ac-4dad-b02c-b6a6c82fe80c/',
@@ -61,6 +62,7 @@ export const talks: Talk[] = [
     },
     links: {
       slides: '/files/talk-openfga-devsecopsday-2026.pdf',
+      article: '/blog/verificare/openfga/06-oltre-i-ruoli/',
       conference: 'https://www.devsecopsday.it',
       speaker: 'https://www.devsecopsday.it/speaker/francesco-montelli/',
       linkedin: 'https://www.linkedin.com/posts/grusp_devsecopsday-devsecopsday-activity-7482697988751093762-4zuX?utm_source=share&utm_medium=member_desktop&rcm=ACoAAB73J5QBiTWCzxRrpP2WaZgBtH4empc8hrQ',
@@ -83,6 +85,7 @@ export const talks: Talk[] = [
     },
     links: {
       slides: '/files/talk-waf-linux-day-prato-2026.pdf',
+      article: '/blog/verificare/security/waf-open-source-coraza-caddy/',
       repo: 'https://github.com/monte97/waf-open-source-coraza-caddy',
       conference: 'https://day.linux.prato.it',
     },
