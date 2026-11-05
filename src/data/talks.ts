@@ -132,6 +132,25 @@ export const talks: Talk[] = [
     },
   },
   {
+    slug: 'mutation-testing-devfest-bari-2026',
+    title: {
+      it: "Come il mutation testing mi ha fatto capire che la suite stava mentendo",
+      en: "How mutation testing showed me my test suite was lying",
+    },
+    language: 'it',
+    event: 'DevFest Bari 2026',
+    date: '2026-12-12',
+    location: 'Bari, IT',
+    status: 'upcoming',
+    abstract: {
+      it: "Un progetto senza test, ripreso dopo anni. La scelta ovvia: aggiungere una suite e usare gli strumenti a disposizione, agenti AI compresi, per fare prima. Qualche settimana dopo: centinaia di test verdi, coverage alta, CI configurata. La sensazione di aver saldato un debito.\n\nPoi un bug in produzione. Coperto dai test, promosso da ogni controllo, rimasto lì tranquillo per tre settimane. Il codice c'entrava poco. I test erano formalmente corretti, scritti bene, impeccabili nello stile: semplicemente non erano in grado di trovare quel bug.\n\nÈ lì che ho lanciato per la prima volta il mutation testing. Mi ha detto quello che la coverage non poteva dirmi. La coverage chiede se questo codice è stato eseguito; il mutation testing chiede se i test se ne accorgerebbero, nel caso in cui questo codice fosse sbagliato.\n\nQuesto talk racconta quella storia. Vediamo da dove nasce la distanza tra coverage e mutation score, come si legge un report di mutation testing per ricavarne test migliori senza moltiplicarli, e come portarlo in CI senza che diventi rumore.",
+      en: "A project with no tests, picked up again after years. The obvious choice: add a suite and use every tool at hand, AI agents included, to get there faster. A few weeks later: hundreds of green tests, high coverage, CI in place. The feeling of having paid off a debt.\n\nThen a bug in production. Covered by the tests, passed by every check, sitting there quietly for three weeks. The code had little to do with it. The tests were formally correct, well written, flawless in style: they simply could not find that bug.\n\nThat is when I ran mutation testing for the first time. It told me what coverage could not. Coverage asks whether this code was executed; mutation testing asks whether the tests would notice if this code were wrong.\n\nThis talk tells that story. We look at where the gap between coverage and mutation score comes from, how to read a mutation testing report to get better tests out of it without multiplying them, and how to bring it into CI without it turning into noise.",
+    },
+    links: {
+      conference: 'https://bari.devfest.it',
+    },
+  },
+  {
     slug: 'il-tuo-collega-piu-produttivo',
     title: {
       it: "Il tuo collega più produttivo scrive test inutili",
