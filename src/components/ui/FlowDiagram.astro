@@ -10,12 +10,12 @@ const { figureId, label, caption, nodes } = Astro.props;
 
 <figure class="my-10">
   {figureId && label && (
-    <figcaption class="not-prose text-[10px] font-mono uppercase tracking-[0.18em] text-accent mb-3">
+    <figcaption class="not-prose label-mono mb-3">
       {figureId} &middot; {label}
     </figcaption>
   )}
 
-  <div class="rounded-2xl border border-dashed border-border dark:border-border-dark bg-accent-subtle/30 p-5 md:p-7">
+  <div class="rounded-2xl border border border-border bg-white p-5 md:p-7">
     {!figureId && label && (
       <span class="block text-[10px] font-mono uppercase tracking-[0.2em] text-text-muted mb-5">{label}</span>
     )}
@@ -23,15 +23,15 @@ const { figureId, label, caption, nodes } = Astro.props;
     <div class="flex flex-col gap-0">
       {nodes.map((n, i) => (
         <>
-          <div class={`rounded-lg border bg-white dark:bg-surface-dark px-4 py-3 ${n.key ? 'border-accent' : 'border-border dark:border-border-dark'}`}>
+          <div class={`rounded-lg border bg-white px-4 py-3 ${n.key ? 'border-accent' : 'border-border'}`}>
             {n.kind && <span class="block text-[10px] font-mono uppercase tracking-[0.18em] text-text-muted">{n.kind}</span>}
-            <span class={`block font-bold text-sm mt-0.5 ${n.key ? 'text-accent' : 'text-text-dark dark:text-text-light'}`}>{n.name}</span>
+            <span class={`block font-bold text-sm mt-0.5 ${n.key ? 'text-accent' : 'text-text-dark'}`}>{n.name}</span>
             {n.desc && <span class="block text-xs text-text-muted mt-1 leading-relaxed">{n.desc}</span>}
           </div>
 
           {i < nodes.length - 1 && (
             <div class="flex flex-col items-center justify-center gap-1 py-2">
-              <span class="text-text-dark/60 dark:text-text-light/60 leading-none text-lg">&darr;</span>
+              <span class="text-text-dark/60 leading-none text-lg">&darr;</span>
               {n.edge && (
                 <span class="text-[10px] font-mono uppercase tracking-[0.15em] text-text-muted">{n.edge}</span>
               )}

@@ -2,18 +2,34 @@
 /**
  * Indice dei case study.
  *
- * Grammatica visiva allineata all'indice del blog: righe con bordo sottile e
- * nessuna ombra, pilastro come etichetta mono invece che pastiglia, e occhiello
- * promosso a prima riga, perche' e' il campo con cui il lettore riconosce la
- * propria situazione. L'introduzione sta nell'hero invece che sospesa in mezzo.
+ * Griglia di card con copertina scura generata (16:9): icona a linea ritagliata
+ * in alto a destra, pilastro in piccolo, primo tag in grande.
+ *
+ * Icona: scelta dal primo tag (o dal topic, se un domani lo schema lo avra')
+ * tramite `iconRules`, una piccola mappa di regex su SVG inline a linea
+ * (viewBox 24, stroke currentColor). Se nessuna regola combacia si usa l'icona
+ * del pilastro. Per aggiungere un'icona: una voce in `icons` e una in `iconRules`.
+ *
+ * Immagine: se esiste src/assets/case-study/<slug>/cover.(webp|jpg|jpeg|png)
+ * sostituisce la copertina generata. <slug> e' l'id del case study.
+ *
+ * Schermata nel frontmatter: se il case study ha `shots`, la prima schermata
+ * (file in public/) va nella copertina scura al posto dell'icona grande. Verticale
+ * (altezza > larghezza): cornice da telefono a destra, tagliata sotto. Orizzontale:
+ * "finestra" ancorata in basso a destra, tagliata. L'orientamento si legge dalle
+ * dimensioni nell'header del file (webp/png, vedi `imageSize`); senza dimensioni
+ * leggibili si assume orizzontale. La copertina in src/assets ha la precedenza.
  */
+import { Image } from 'astro:assets';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import FinalCta from '@/components/ui/FinalCta.astro';
 import PageHero from '@/components/ui/PageHero.astro';
-import { pillarLabels } from '@/data/pillars';
+import { pillarLabels, type Pillar } from '@/data/pillars';
 
 interface Props {
   lang?: 'it' | 'en';
@@ -26,9 +42,71 @@ const caseStudies = (await getCollection('projects'))
   .filter((p) => p.data.type === 'case-study' && !p.data.hold)
   .sort((a, b) => a.data.weight - b.data.weight);
 
+// Copertine fotografiche opzionali: glob eager (deve stare nel file consumante).
+const coverImages = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/case-study/*/cover.{webp,jpg,jpeg,png}',
+  { eager: true },
+);
+const coverFor = (slug: string): ImageMetadata | null => {
+  const key = Object.keys(coverImages).find((k) => k.startsWith(`/src/assets/case-study/${slug}/cover.`));
+  return key ? coverImages[key].default : null;
+};
+
+// Icone a linea (path del viewBox 24x24).
+const icons: Record<string, string> = {
+  architecture: 'M4 20h16M6 16l4-10 4 6 3-4 3 8',
+  observability: 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z',
+  integration: 'M9 7H6a4 4 0 000 8h3M15 7h3a4 4 0 010 8h-3M8 11h8',
+  authorization: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zM9 12l2 2 4-4',
+  mobile: 'M8 2h8a1 1 0 011 1v18a1 1 0 01-1 1H8a1 1 0 01-1-1V3a1 1 0 011-1zM11 18h2',
+  archive: 'M3 5h18v4H3zM5 9v10h14V9M10 13h4',
+  maintenance: 'M6 3v12M6 15a3 3 0 100 6 3 3 0 000-6zM18 9a3 3 0 100-6 3 3 0 000 6zM18 9c0 5-6 3-12 6',
+  delivery: 'M3 8l9-5 9 5v8l-9 5-9-5zM3 8l9 5 9-5M12 13v8',
+  // Ripiego per pilastro
+  progettare: 'M4 20h16M6 16l4-10 4 6 3-4 3 8',
+  verificare: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zM9 12l2 2 4-4',
+  automatizzare: 'M3 8l9-5 9 5v8l-9 5-9-5zM3 8l9 5 9-5M12 13v8',
+};
+const iconRules: [RegExp, keyof typeof icons][] = [
+  [/architettur|architecture|design|system/i, 'architecture'],
+  [/osservabil|observab|tracing|telemetr/i, 'observability'],
+  [/integrazion|integration|reverse|protocoll|api/i, 'integration'],
+  [/autorizz|authoriz|permess|rebac|auth/i, 'authorization'],
+  [/mobile|maui|android|ios/i, 'mobile'],
+  [/dipendenz|archivi|dati|dependenc|data|storage/i, 'archive'],
+  [/manutenzion|versioni|maintenan|version|config/i, 'maintenance'],
+  [/distribuzion|consegna|delivery|distribut|deploy|packag/i, 'delivery'],
+];
+const iconFor = (tags: string[], pillar: Pillar): string => {
+  for (const [re, name] of iconRules) if (tags[0] && re.test(tags[0])) return icons[name];
+  return icons[pillar];
+};
+
+// Dimensioni di un file webp/png leggendo solo l'header (niente dipendenze).
+const imageSize = (publicPath: string): { w: number; h: number } | null => {
+  try {
+    const b = readFileSync(join(process.cwd(), 'public', publicPath));
+    if (b.toString('ascii', 0, 4) === 'RIFF' && b.toString('ascii', 8, 12) === 'WEBP') {
+      const kind = b.toString('ascii', 12, 16);
+      if (kind === 'VP8 ') return { w: b.readUInt16LE(26) & 0x3fff, h: b.readUInt16LE(28) & 0x3fff };
+      if (kind === 'VP8L') {
+        const v = b.readUInt32LE(21);
+        return { w: (v & 0x3fff) + 1, h: ((v >> 14) & 0x3fff) + 1 };
+      }
+      if (kind === 'VP8X') return { w: b.readUIntLE(24, 3) + 1, h: b.readUIntLE(27, 3) + 1 };
+    }
+    if (b.toString('ascii', 1, 4) === 'PNG') return { w: b.readUInt32BE(16), h: b.readUInt32BE(20) };
+  } catch {}
+  return null;
+};
+const shotFor = (shots?: { src: string }[]) => {
+  const src = shots?.[0]?.src;
+  if (!src) return null;
+  const d = imageSize(src);
+  return { src, portrait: !!d && d.h > d.w };
+};
+
 const mailLink = 'mailto:francesco@montelli.dev';
-const mono = 'label-mono';
-const hair = 'border-border/70 dark:border-border-dark/70';
 
 const t = lang === 'en'
   ? {
@@ -37,13 +115,11 @@ const t = lang === 'en'
       eyebrow: 'Case studies',
       heroTitle: 'What was decided, and why',
       intro: (n: number) =>
-        `${n} analyses of real projects on systems that already had people working inside them. Each piece starts from the constraint that created the work, walks through the choices one by one including the rejected ones, and says what the client was left with.`,
+        `${n} real projects: the starting constraint, the choices made and rejected, what the client was left with.`,
       note: 'Client names are omitted, the decisions are not',
       emptyTitle: 'Nothing published yet',
       emptyDesc: 'The first analyses are being written.',
       readLabel: 'Read the analysis',
-      constraint: 'The constraint',
-      outcome: 'The outcome',
       ctaTitle: 'Holding a similar situation?',
       ctaDesc: 'Tell me how the system looks today and which decision you are stuck on. Half an hour to see whether there is a problem I can be useful on, no commitment.',
       ctaPrimary: 'Book a discovery call',
@@ -55,13 +131,11 @@ const t = lang === 'en'
       eyebrow: 'Case study',
       heroTitle: 'Cosa è stato deciso, e perché',
       intro: (n: number) =>
-        `${n} analisi di progetti reali su sistemi che avevano già gente dentro. Ogni pezzo parte dal vincolo che ha generato il lavoro, ripercorre le scelte una per una comprese quelle scartate, e dice cosa è rimasto in mano a chi ha pagato.`,
+        `${n} progetti reali: il vincolo di partenza, le scelte fatte e quelle scartate, cosa è rimasto al cliente.`,
       note: 'I nomi dei committenti sono omessi, le decisioni no',
       emptyTitle: 'Ancora niente di pubblicato',
       emptyDesc: 'Le prime analisi sono in scrittura.',
       readLabel: 'Leggi l’analisi',
-      constraint: 'Il vincolo',
-      outcome: 'L’esito',
       ctaTitle: 'Hai in mano una situazione simile?',
       ctaDesc: 'Raccontami com’è fatto il sistema adesso e qual è la decisione che siete fermi a prendere. Mezz’ora per capire se c’è un problema su cui posso essere utile, senza impegno.',
       ctaPrimary: 'Prenota una discovery call',
@@ -75,67 +149,57 @@ const t = lang === 'en'
 
     <PageHero
       variant="index"
-      eyebrow={t.eyebrow}
       title={t.heroTitle}
       subtitle={t.intro(caseStudies.length)}
-      note={t.note}
     />
 
-    <div class="max-w-5xl mx-auto px-5 py-12 md:py-16">
-      {caseStudies.length === 0 ? (
-        <div class={`max-w-xl mx-auto text-center rounded-xl border border-dashed ${hair} p-10`}>
-          <h2 class="text-lg font-bold text-text-dark dark:text-text-light mb-2">{t.emptyTitle}</h2>
-          <p class="text-text-muted text-sm">{t.emptyDesc}</p>
-        </div>
-      ) : (
-        <div class="space-y-4">
-          {caseStudies.map((cs) => (
-            <a
-              href={`${prefix}/case-study/${cs.id}/`}
-              class="group surface-link block p-6 md:p-7"
-            >
-              <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-3">
-                {cs.data.eyebrow && (
-                  <p class="label-mono !text-accent">{cs.data.eyebrow}</p>
-                )}
-                <p class={mono}>{pillarLabels[cs.data.pillar][lang]}</p>
-              </div>
-
-              <h2 class="text-xl md:text-2xl font-bold text-text-dark dark:text-text-light leading-snug text-balance group-hover:text-accent transition-colors">
-                {cs.data.title}
-              </h2>
-              <p class="mt-3 text-text-muted leading-relaxed max-w-2xl">{cs.data.description}</p>
-
-              {(cs.data.problem || cs.data.esito) && (
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 mt-5">
-                  {cs.data.problem && (
-                    <div class={`border-l-2 ${hair} pl-4`}>
-                      <p class={`${mono} mb-1.5`}>{t.constraint}</p>
-                      <p class="text-sm text-text-muted leading-relaxed">{cs.data.problem}</p>
+    <section class="py-12 md:py-16 bg-base-light">
+      <div class="max-w-6xl mx-auto px-5">
+        {caseStudies.length === 0 ? (
+          <div class="max-w-xl mx-auto text-center surface-card border-dashed p-10">
+            <h2 class="text-lg font-bold text-text-dark mb-2">{t.emptyTitle}</h2>
+            <p class="text-text-muted text-sm">{t.emptyDesc}</p>
+          </div>
+        ) : (
+          <ul class="grid gap-5 md:grid-cols-3">
+            {caseStudies.map((cs) => {
+              const cover = coverFor(cs.id);
+              const shot = shotFor(cs.data.shots);
+              return (
+                <li>
+                  <a
+                    href={`${prefix}/case-study/${cs.id}/`}
+                    class="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-white transition hover:border-accent hover:shadow-[0_12px_30px_rgba(45,45,58,0.08)]"
+                  >
+                    {cover ? (
+                      <Image src={cover} alt="" widths={[400, 640]} sizes="(min-width: 768px) 340px, 100vw" class="aspect-video w-full object-cover border-b border-border" />
+                    ) : (
+                      <div class="relative flex aspect-video flex-col justify-end overflow-hidden bg-[#1f1f29] p-4 text-white">
+                        {shot && shot.portrait ? (
+                          <img src={shot.src} alt="" loading="lazy" class="absolute right-5 top-5 w-[27%] rounded-xl border-[3px] border-[#3a3a48] object-cover object-top shadow-lg" style="height:115%" />
+                        ) : shot ? (
+                          <img src={shot.src} alt="" loading="lazy" class="absolute -right-2 top-5 h-auto w-[84%] rounded-tl-lg border border-white/20 shadow-lg" />
+                        ) : (
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="absolute -right-4 -top-4 h-36 w-36 text-accent opacity-90" aria-hidden="true">
+                            <path d={iconFor(cs.data.tags, cs.data.pillar)} />
+                          </svg>
+                        )}
+                        <span class="relative text-xs font-bold uppercase tracking-[0.12em] text-accent">{pillarLabels[cs.data.pillar][lang]}</span>
+                        <span class="relative mt-1 text-2xl font-extrabold tracking-tight leading-tight">{cs.data.tags[0] ?? pillarLabels[cs.data.pillar][lang]}</span>
+                      </div>
+                    )}
+                    <div class="px-5 pb-6 pt-4">
+                      <h2 class="text-lg font-extrabold leading-snug tracking-tight text-text-dark text-balance group-hover:text-accent transition-colors">{cs.data.title}</h2>
+                      <p class="mt-2 line-clamp-2 text-[15px] leading-snug text-text-muted">{cs.data.description}</p>
                     </div>
-                  )}
-                  {cs.data.esito && (
-                    <div class="border-l-2 border-accent pl-4">
-                      <p class="label-mono !text-accent mb-1.5">{t.outcome}</p>
-                      <p class="text-sm text-text-muted leading-relaxed">{cs.data.esito}</p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <div class={`mt-5 pt-4 border-t ${hair} flex flex-wrap items-center gap-x-4 gap-y-2`}>
-                <div class="flex flex-wrap gap-1.5">
-                  {cs.data.tags.slice(0, 5).map((tg) => (
-                    <span class="text-[11px] text-text-muted/80 bg-text-muted/8 px-1.5 py-0.5 rounded">{tg}</span>
-                  ))}
-                </div>
-                <span class="ml-auto text-sm font-semibold text-accent">{t.readLabel} &rarr;</span>
-              </div>
-            </a>
-          ))}
-        </div>
-      )}
-    </div>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
+    </section>
 
     <FinalCta
       title={t.ctaTitle}
