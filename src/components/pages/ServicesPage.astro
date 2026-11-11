@@ -71,6 +71,16 @@ const text = {
     ],
     gb: 'Soddisfatto o rimborsato.',
     gd: ' Se dopo le prime due settimane non ti torna, ci fermiamo e ti restituisco quanto hai pagato.',
+    subTitleA: 'Come funziona ',
+    subTitleB: "l'abbonamento",
+    subLead: 'Niente preventivo da rifare a ogni modifica: un prezzo fisso al mese e le priorità che decidiamo insieme.',
+    steps: [
+      { k: 'Prima', h: 'Due chiacchiere', d: 'Trenta minuti, gratis: mi racconti cosa state costruendo e dove fa male.' },
+      { k: 'Il primo giorno', h: 'Entro nei vostri strumenti', d: 'Mi date accesso a repository, board e chat che usate già, e scegliamo insieme la prima priorità.' },
+      { k: 'Ogni settimana', h: 'Una priorità alla volta', d: 'La chiudo e passo alla prossima. Ti scrivo due righe: cosa è fatto, cosa blocca.' },
+      { k: 'Ogni mese', h: 'Rivediamo le priorità', d: 'Decidiamo insieme cosa viene dopo. Con il mensile ti fermi quando vuoi, con il trimestrale l\'impegno è di tre mesi.' },
+    ],
+    subNote: 'Le prime due settimane sono coperte: se non ti torna, ci fermiamo e ti restituisco quanto hai pagato.',
     faqTitle: 'Domande frequenti',
     faq: [
       { q: 'Come funziona la prima call?', a: 'Trenta minuti, gratis, senza slide. Mi racconti dove sta il sistema e cosa vi blocca, e vediamo se ha senso lavorare insieme.' },
@@ -111,6 +121,16 @@ const text = {
     ],
     gb: 'Satisfied or refunded.',
     gd: " If after the first two weeks it doesn't work for you, we stop and I give you back what you paid.",
+    subTitleA: 'How the ',
+    subTitleB: 'subscription works',
+    subLead: 'No new quote for every change: a fixed monthly price and priorities we decide together.',
+    steps: [
+      { k: 'First', h: 'A chat', d: "Thirty minutes, free: tell me what you're building and where it hurts." },
+      { k: 'Day one', h: 'I join your tools', d: 'You give me access to the repository, board and chat you already use, and we pick the first priority together.' },
+      { k: 'Every week', h: 'One priority at a time', d: 'I close it and move to the next. I send you two lines: what is done, what is blocked.' },
+      { k: 'Every month', h: 'We review priorities', d: 'We decide together what comes next. Monthly: stop whenever you want. Quarterly: a three-month commitment.' },
+    ],
+    subNote: "The first two weeks are covered: if it doesn't work for you, we stop and I give you back what you paid.",
     faqTitle: 'Frequently asked',
     faq: [
       { q: 'How does the first call work?', a: 'Thirty minutes, free, no slides. You tell me where the system is and what is blocking you, and we see whether it makes sense to work together.' },
@@ -203,6 +223,25 @@ const line = 'border-border';
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-[26px] w-[26px] flex-none text-accent" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
         <p><strong class="text-text-dark">{t.gb}</strong>{t.gd}</p>
       </div>
+    </section>
+
+    <section class="max-w-5xl mx-auto px-5 pb-16 md:pb-20">
+      <h2 class="text-3xl md:text-[2.5rem] font-extrabold tracking-tight leading-[1.1] text-text-dark max-w-3xl">
+        {t.subTitleA}<span class="text-accent">{t.subTitleB}</span>.
+      </h2>
+      <p class="mt-4 text-lg text-text-muted leading-relaxed max-w-2xl">{t.subLead}</p>
+      <ol class="mt-10 grid md:grid-cols-4 gap-8 md:gap-6 relative">
+        <span class="hidden md:block absolute top-[21px] left-[22px] right-[22px] h-[2px] bg-accent/30" aria-hidden="true"></span>
+        {t.steps.map((st, i) => (
+          <li class="relative">
+            <span class="relative z-10 grid place-items-center w-11 h-11 rounded-full bg-accent text-white font-extrabold">{i + 1}</span>
+            <p class="mt-4 font-mono text-[11px] uppercase tracking-[0.12em] text-accent font-bold">{st.k}</p>
+            <h3 class="mt-1 text-lg font-bold text-text-dark">{st.h}</h3>
+            <p class="mt-1 text-[15px] text-text-muted leading-snug">{st.d}</p>
+          </li>
+        ))}
+      </ol>
+      <p class="mt-10 text-text-muted"><strong class="text-text-dark">{lang === 'en' ? 'Satisfied or refunded.' : 'Soddisfatto o rimborsato.'}</strong> {t.subNote}</p>
     </section>
 
     <section class="max-w-3xl mx-auto px-5 pb-16 md:pb-20">
