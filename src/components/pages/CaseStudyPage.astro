@@ -2,18 +2,25 @@
 /**
  * Indice dei case study.
  *
- * Grammatica visiva allineata all'indice del blog: righe con bordo sottile e
- * nessuna ombra, pilastro come etichetta mono invece che pastiglia, e occhiello
- * promosso a prima riga, perche' e' il campo con cui il lettore riconosce la
- * propria situazione. L'introduzione sta nell'hero invece che sospesa in mezzo.
+ * Griglia di card con copertina scura generata (16:9): icona a linea ritagliata
+ * in alto a destra, pilastro in piccolo, primo tag in grande.
+ *
+ * Icona: scelta dal primo tag (o dal topic, se un domani lo schema lo avra')
+ * tramite `iconRules`, una piccola mappa di regex su SVG inline a linea
+ * (viewBox 24, stroke currentColor). Se nessuna regola combacia si usa l'icona
+ * del pilastro. Per aggiungere un'icona: una voce in `icons` e una in `iconRules`.
+ *
+ * Immagine: se esiste src/assets/case-study/<slug>/cover.(webp|jpg|jpeg|png)
+ * sostituisce la copertina generata. <slug> e' l'id del case study.
  */
+import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import FinalCta from '@/components/ui/FinalCta.astro';
 import PageHero from '@/components/ui/PageHero.astro';
-import { pillarLabels } from '@/data/pillars';
+import { pillarLabels, type Pillar } from '@/data/pillars';
 
 interface Props {
   lang?: 'it' | 'en';
@@ -25,6 +32,46 @@ const prefix = lang === 'en' ? '/en' : '';
 const caseStudies = (await getCollection('projects'))
   .filter((p) => p.data.type === 'case-study' && !p.data.hold)
   .sort((a, b) => a.data.weight - b.data.weight);
+
+// Copertine fotografiche opzionali: glob eager (deve stare nel file consumante).
+const coverImages = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/case-study/*/cover.{webp,jpg,jpeg,png}',
+  { eager: true },
+);
+const coverFor = (slug: string): ImageMetadata | null => {
+  const key = Object.keys(coverImages).find((k) => k.startsWith(`/src/assets/case-study/${slug}/cover.`));
+  return key ? coverImages[key].default : null;
+};
+
+// Icone a linea (path del viewBox 24x24).
+const icons: Record<string, string> = {
+  architecture: 'M4 20h16M6 16l4-10 4 6 3-4 3 8',
+  observability: 'M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 9.5a2.5 2.5 0 100 5 2.5 2.5 0 000-5z',
+  integration: 'M9 7H6a4 4 0 000 8h3M15 7h3a4 4 0 010 8h-3M8 11h8',
+  authorization: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zM9 12l2 2 4-4',
+  mobile: 'M8 2h8a1 1 0 011 1v18a1 1 0 01-1 1H8a1 1 0 01-1-1V3a1 1 0 011-1zM11 18h2',
+  archive: 'M3 5h18v4H3zM5 9v10h14V9M10 13h4',
+  maintenance: 'M6 3v12M6 15a3 3 0 100 6 3 3 0 000-6zM18 9a3 3 0 100-6 3 3 0 000 6zM18 9c0 5-6 3-12 6',
+  delivery: 'M3 8l9-5 9 5v8l-9 5-9-5zM3 8l9 5 9-5M12 13v8',
+  // Ripiego per pilastro
+  progettare: 'M4 20h16M6 16l4-10 4 6 3-4 3 8',
+  verificare: 'M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3zM9 12l2 2 4-4',
+  automatizzare: 'M3 8l9-5 9 5v8l-9 5-9-5zM3 8l9 5 9-5M12 13v8',
+};
+const iconRules: [RegExp, keyof typeof icons][] = [
+  [/architettur|architecture|design|system/i, 'architecture'],
+  [/osservabil|observab|tracing|telemetr/i, 'observability'],
+  [/integrazion|integration|reverse|protocoll|api/i, 'integration'],
+  [/autorizz|authoriz|permess|rebac|auth/i, 'authorization'],
+  [/mobile|maui|android|ios/i, 'mobile'],
+  [/dipendenz|archivi|dati|dependenc|data|storage/i, 'archive'],
+  [/manutenzion|versioni|maintenan|version|config/i, 'maintenance'],
+  [/distribuzion|consegna|delivery|distribut|deploy|packag/i, 'delivery'],
+];
+const iconFor = (tags: string[], pillar: Pillar): string => {
+  for (const [re, name] of iconRules) if (tags[0] && re.test(tags[0])) return icons[name];
+  return icons[pillar];
+};
 
 const mailLink = 'mailto:francesco@montelli.dev';
 
@@ -76,40 +123,41 @@ const t = lang === 'en'
     />
 
     <section class="py-12 md:py-16 bg-base-light">
-      <div class="max-w-5xl mx-auto px-5">
+      <div class="max-w-6xl mx-auto px-5">
         {caseStudies.length === 0 ? (
           <div class="max-w-xl mx-auto text-center surface-card border-dashed p-10">
             <h2 class="text-lg font-bold text-text-dark mb-2">{t.emptyTitle}</h2>
             <p class="text-text-muted text-sm">{t.emptyDesc}</p>
           </div>
         ) : (
-          <ul class="border-t border-border">
-            {caseStudies.map((cs) => (
-              <li class="border-b border-border">
-                <a
-                  href={`${prefix}/case-study/${cs.id}/`}
-                  class="group grid md:grid-cols-[1fr_auto] gap-x-8 gap-y-2 py-7 md:py-8"
-                >
-                  <div>
-                    <p class="label-mono mb-2.5">
-                      {cs.data.eyebrow && <span class="text-accent">{cs.data.eyebrow}</span>}
-                      {cs.data.eyebrow && <span class="mx-2 text-border">/</span>}
-                      <span>{pillarLabels[cs.data.pillar][lang]}</span>
-                    </p>
-                    <h2 class="text-xl md:text-2xl font-extrabold tracking-tight text-text-dark leading-snug text-balance group-hover:text-accent transition-colors">
-                      {cs.data.title}
-                    </h2>
-                    <p class="mt-2 text-text-muted leading-relaxed max-w-2xl">{cs.data.description}</p>
-                    <div class="mt-4 flex flex-wrap gap-1.5">
-                      {cs.data.tags.slice(0, 4).map((tg) => (
-                        <span class="text-xs text-text-muted border border-border bg-white rounded-full px-2.5 py-0.5">{tg}</span>
-                      ))}
+          <ul class="grid gap-5 md:grid-cols-3">
+            {caseStudies.map((cs) => {
+              const cover = coverFor(cs.id);
+              return (
+                <li>
+                  <a
+                    href={`${prefix}/case-study/${cs.id}/`}
+                    class="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-white transition hover:border-accent hover:shadow-[0_12px_30px_rgba(45,45,58,0.08)]"
+                  >
+                    {cover ? (
+                      <Image src={cover} alt="" widths={[400, 640]} sizes="(min-width: 768px) 340px, 100vw" class="aspect-video w-full object-cover border-b border-border" />
+                    ) : (
+                      <div class="relative flex aspect-video flex-col justify-end overflow-hidden bg-[#1f1f29] p-4 text-white">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="absolute -right-4 -top-4 h-36 w-36 text-accent opacity-90" aria-hidden="true">
+                          <path d={iconFor(cs.data.tags, cs.data.pillar)} />
+                        </svg>
+                        <span class="relative text-xs font-bold uppercase tracking-[0.12em] text-accent">{pillarLabels[cs.data.pillar][lang]}</span>
+                        <span class="relative mt-1 text-2xl font-extrabold tracking-tight leading-tight">{cs.data.tags[0] ?? pillarLabels[cs.data.pillar][lang]}</span>
+                      </div>
+                    )}
+                    <div class="px-5 pb-6 pt-4">
+                      <h2 class="text-lg font-extrabold leading-snug tracking-tight text-text-dark text-balance group-hover:text-accent transition-colors">{cs.data.title}</h2>
+                      <p class="mt-2 line-clamp-2 text-[15px] leading-snug text-text-muted">{cs.data.description}</p>
                     </div>
-                  </div>
-                  <span class="md:self-center text-sm font-semibold text-accent whitespace-nowrap">{t.readLabel} &rarr;</span>
-                </a>
-              </li>
-            ))}
+                  </a>
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>
