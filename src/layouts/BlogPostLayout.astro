@@ -2,7 +2,6 @@
 import BaseLayout from './BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
-import Badge from '@/components/ui/Badge.astro';
 import TOC from '@/components/blog/TOC.astro';
 import PostCTA from '@/components/blog/PostCTA.astro';
 import AuthorCard from '@/components/ui/AuthorCard.astro';
@@ -117,30 +116,18 @@ const relatedPosts = pillar
 
     <!-- Title block -->
     <header class="mb-10 max-w-3xl">
-      <div class="flex items-center gap-3 mb-3">
-        <time class="text-sm text-text-muted tabular-nums" datetime={date.toISOString()}>
-          {formattedDate}
-        </time>
-        {readingTime && (
-          <span class="text-sm text-text-muted">&middot; {readingTime} min</span>
-        )}
-        {pillar && (
-          <Badge pillar={pillar}>
-            {getPillarLabel(pillar, lang)}
-          </Badge>
-        )}
-      </div>
-      <h1 class="text-3xl md:text-4xl font-bold leading-tight tracking-tight text-text-dark dark:text-text-light mb-4">
+      <p class="label-mono mb-4">
+        {pillar && <span class="!text-accent">{getPillarLabel(pillar, lang)}</span>}
+        {pillar && ' · '}
+        <time class="tabular-nums" datetime={date.toISOString()}>{formattedDate}</time>
+        {readingTime && ` · ${readingTime} min`}
+      </p>
+      <h1 class="text-4xl md:text-5xl font-extrabold leading-[1.08] tracking-tight text-text-dark mb-5">
         {title}
       </h1>
+      {description && <p class="text-lg md:text-xl text-text-muted leading-relaxed">{description}</p>}
       {tags.length > 0 && (
-        <div class="flex flex-wrap gap-1.5">
-          {tags.map(tag => (
-            <span class="text-[11px] text-text-muted/80 bg-text-muted/8 px-1.5 py-0.5 rounded">
-              {tag}
-            </span>
-          ))}
-        </div>
+        <p class="mt-5 label-mono">{tags.join(' · ')}</p>
       )}
     </header>
 
@@ -173,17 +160,17 @@ const relatedPosts = pillar
 
     <!-- Related posts -->
     {relatedPosts.length > 0 && (
-      <div class="mt-12 pt-8 border-t border-border dark:border-border-dark">
-        <h3 class="text-sm font-semibold uppercase tracking-wide text-text-muted mb-4">
+      <div class="mt-14 pt-10 border-t border-border">
+        <h3 class="text-2xl md:text-3xl font-extrabold tracking-tight text-text-dark mb-6">
           {lang === 'it' ? 'Articoli correlati' : 'Related articles'}
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           {relatedPosts.map(rp => (
-            <a href={postHref(rp.id, lang)} class="group block p-4 rounded-lg border border-border/50 dark:border-border-dark/50 hover:border-accent/50 transition-colors">
-              <time class="text-xs text-text-muted">
+            <a href={postHref(rp.id, lang)} class="group surface-link block p-5">
+              <time class="label-mono">
                 {rp.data.date.toLocaleDateString(lang === 'it' ? 'it-IT' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
               </time>
-              <h4 class="text-sm font-medium mt-1 text-text-dark dark:text-text-light group-hover:text-accent transition-colors line-clamp-2">
+              <h4 class="mt-2 font-bold leading-snug text-text-dark group-hover:text-accent transition-colors line-clamp-3">
                 {rp.data.title}
               </h4>
             </a>
