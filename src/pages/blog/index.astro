@@ -1,18 +1,9 @@
 ---
-/**
- * Indice del blog.
- *
- * Il corpus è organizzato in serie: 58 articoli su 64 ne fanno parte. Quindi
- * la pagina è un sommario per pillar, non un feed cronologico: dentro ogni
- * pillar le sue serie, e sotto i pezzi singoli. L'hero fa da indice: le tre
- * colonne portano ai settori, la card a destra all'ultimo arrivato.
- *
- * Una "serie" con un solo articolo è un pezzo singolo e viene trattata così.
- */
+/** Indice del blog: ultimi articoli, serie con filtro, altri articoli. */
 import { getCollection } from 'astro:content';
 import PageLayout from '@/layouts/PageLayout.astro';
-import BlogIndexHero from '@/components/blog/BlogIndexHero.astro';
-import BlogIndexBody from '@/components/blog/BlogIndexBody.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import BlogIndex from '@/components/blog/BlogIndex.astro';
 import { getSeriesIndex } from '@/utils/series';
 
 const allPosts = (await getCollection('posts')).filter(p => p.data.lang === 'it' && !p.data.draft);
@@ -26,7 +17,7 @@ const singoli = allPosts
 ---
 
 <PageLayout title="Blog" description="Quello che imparo, lo scrivo" lang="it" ogImage="/og/blog.png">
-  <BlogIndexHero slot="hero" allPosts={allPosts} series={series} lang="it" />
+  <PageHero slot="hero" variant="index" eyebrow="Blog" title="Quello che ho imparato costruendo, messo in ordine" subtitle="Sistemi veri, scelte prese davvero, vincoli dichiarati insieme ai risultati." note={`${allPosts.length} articoli · ${series.length} serie`} />
 
-  <BlogIndexBody series={series} singoli={singoli} />
+  <BlogIndex allPosts={allPosts} series={series} singoli={singoli} lang="it" />
 </PageLayout>
