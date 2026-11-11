@@ -67,40 +67,48 @@ const linkLabel: Record<LinkKey, string> = {
 ---
 
 <PageLayout title={talk.title[lang]} description={talk.abstract[lang].split("\n\n")[0]} ogImage="/og/talks.png" lang={lang}>
-  <a href={`${prefix}/talks/`} class="inline-block text-sm text-accent hover:underline mb-8">&larr; {t.back}</a>
+  <a href={`${prefix}/talks/`} class="inline-block text-sm font-semibold text-accent hover:underline mb-8">&larr; {t.back}</a>
 
-  <header class="mb-6">
-    <TalkLanguage language={talk.language} lang={lang} class="mb-3 !text-sm" />
-    <p class="text-sm text-text-muted">
+  <header class="mb-10">
+    <p class="label-mono !text-accent font-bold">
       {talk.event} &middot; {fmtDate(talk.date)} &middot; {talk.location}
-      {talk.status === 'upcoming' && <span class="text-accent font-semibold"> &middot; {t.upcoming}</span>}
+      {talk.status === 'upcoming' && <span> &middot; {t.upcoming}</span>}
     </p>
-    <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-text-dark dark:text-text-light mt-2">
+    <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-[1.1] text-text-dark mt-4 max-w-4xl">
       {talk.title[lang]}
     </h1>
+    <TalkLanguage language={talk.language} lang={lang} class="mt-5" />
   </header>
 
-  <p class="text-text-muted text-lg leading-relaxed max-w-3xl mb-8 whitespace-pre-line">{talk.abstract[lang]}</p>
-
-  {talk.links && (
-    <div class="flex flex-wrap gap-3 mb-12">
-      {linkOrder.map((key) => {
-        const href = talk.links?.[key];
-        if (!href) return null;
-        const external = href.startsWith('http');
-        return (
-          <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined} class="inline-flex items-center rounded-lg border border-accent/30 text-accent px-4 py-2 text-sm font-medium hover:bg-accent/5 transition-colors">
-            {linkLabel[key]} &rarr;
-          </a>
-        );
-      })}
-    </div>
-  )}
-
   {images.length > 0 && (
-    <section class="mb-8">
-      <h2 class="text-xs font-semibold uppercase tracking-wide text-text-muted mb-4">{t.gallery}</h2>
+    <section class="mb-12" aria-label={t.gallery}>
       <TalkGallery client:load images={images} title={talk.title[lang]} />
     </section>
   )}
+
+  <div class="grid md:grid-cols-[1fr_16rem] gap-10 md:gap-14 mb-16">
+    <div class="space-y-5 text-lg text-text-muted leading-relaxed max-w-2xl">
+      {talk.abstract[lang].split('\n\n').map((para) => <p class="whitespace-pre-line">{para}</p>)}
+    </div>
+
+    {talk.links && (
+      <aside class="md:pt-1">
+        <ul class="border-y border-border divide-y divide-border md:sticky md:top-24">
+          {linkOrder.map((key) => {
+            const href = talk.links?.[key];
+            if (!href) return null;
+            const external = href.startsWith('http');
+            return (
+              <li>
+                <a href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined} class="group flex items-center justify-between gap-3 py-3.5 font-semibold text-text-dark hover:text-accent transition-colors">
+                  {linkLabel[key]}
+                  <span class="text-accent" aria-hidden="true">&rarr;</span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </aside>
+    )}
+  </div>
 </PageLayout>
