@@ -14,14 +14,14 @@ const text = {
     greeting: 'Ciao, sono Monte.',
     headline: 'Il codice lo produce anche la macchina.',
     headlineAccent: 'Io costruisco il sistema che lo fa reggere.',
-    subtitle: 'Progetto, sviluppo e automatizzo il software del tuo prodotto, da zero o su un sistema che si è irrigidito nel tempo: dall\'architettura ai processi che ne tengono alta la qualità, cioè test, CI/CD, observability e sicurezza. E il team resta capace di andare avanti da solo.',
+    subtitle: 'Progetto, sviluppo e automatizzo il software del tuo prodotto, e il team resta capace di andare avanti da solo.',
     cta: 'Prenota una discovery call',
   },
   en: {
     greeting: "Hi, I'm Monte.",
     headline: 'Machines write code too.',
     headlineAccent: 'I build the system that keeps it standing.',
-    subtitle: "I design, build and automate the software behind your product, from scratch or on a system grown rigid over time: from architecture to the processes that keep quality high, meaning testing, CI/CD, observability and security. And the team stays able to carry on without me.",
+    subtitle: "I design, build and automate the software behind your product, and the team stays able to carry on without me.",
     cta: 'Book a discovery call',
   },
 };
@@ -37,11 +37,11 @@ const t = text[lang];
         <img
           src="/images/author/monte-palco.webp"
           alt="Francesco Montelli sul palco del DevSecOps Day"
-          width="144"
-          height="144"
+          width="224"
+          height="224"
           loading="eager"
           fetchpriority="high"
-          class="w-28 h-28 md:w-36 md:h-36 rounded-full object-cover shadow-lg ring-4 ring-accent"
+          class="w-40 h-40 md:w-56 md:h-56 rounded-full object-cover shadow-lg ring-4 ring-accent"
         />
       </div>
 
@@ -54,7 +54,7 @@ const t = text[lang];
           <br />
           <span class="text-accent">{t.headlineAccent}</span>
         </h1>
-        <p class="mt-5 text-base md:text-lg text-text-muted max-w-xl leading-relaxed">
+        <p class="mt-6 text-lg md:text-2xl text-text-dark/80 dark:text-text-light/80 max-w-2xl leading-snug">
           {t.subtitle}
         </p>
         <div class="mt-8">
