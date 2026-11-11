@@ -280,51 +280,33 @@ const t = lang === 'en'
     eyebrow={t.pageTitle}
     title={t.heroTitle}
     subtitle={t.intro}
-    note={t.heroSubtitle}
   />
 
   {sections.map((section) => {
     const styles = pillarStyles[section.pillar];
     const label = pillarLabels[section.pillar][lang];
     return (
-      <section class="mb-20 fade-in-section">
-        <div class="mb-8">
-          <div class="flex items-baseline gap-3 mb-2">
-            <span class={`text-2xl font-mono font-bold ${styles.text}`}>{styles.num}</span>
-            <h2 class="text-2xl font-bold text-text-dark dark:text-text-light">{label}</h2>
-            <span class="text-sm text-text-muted ml-auto tabular-nums">
-              {section.areas.length} {lang === 'en' ? 'areas' : 'aree'}
-            </span>
+      <section class="mb-16 md:mb-20">
+        <div class="grid md:grid-cols-[200px_1fr] gap-4 md:gap-12">
+          <div>
+            <p class="label-mono !text-accent">{styles.num}</p>
+            <h2 class="mt-2 text-3xl md:text-[2.5rem] leading-[1.1] font-extrabold tracking-tight text-text-dark">{label}</h2>
+            <p class="mt-3 text-text-muted leading-relaxed">{section.intro}</p>
           </div>
-          <div class={`h-0.5 w-full ${styles.bg} opacity-40 mb-3`} />
-          <p class="text-text-muted max-w-2xl">{section.intro}</p>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 stagger-children">
-          {section.areas.map((area) => (
-            <div class={`surface-card border-l-[3px] ${styles.borderLeft} p-6 h-full flex flex-col`}>
-              <h3 class="font-semibold text-base text-text-dark dark:text-text-light mb-2">
-                {area.title}
-              </h3>
-              <p class="text-text-muted text-sm leading-relaxed mb-4 grow">
-                {area.description}
-              </p>
-              <div class="flex flex-wrap gap-1.5 mb-3">
-                {area.tags.map((tag) => (
-                  <span class={`text-[11px] px-2 py-0.5 rounded-full font-medium ${styles.badge}`}>
-                    {tag}
-                  </span>
-                ))}
+          <div class="border-t border-border">
+            {section.areas.map((area) => (
+              <div class="py-5 border-b border-border">
+                <h3 class="font-bold text-text-dark">{area.title}</h3>
+                <p class="mt-1 text-[15px] text-text-muted leading-snug">{area.description}</p>
+                <p class="mt-2 label-mono">{area.tags.join(' · ')}</p>
+                {area.link && (
+                  <a href={area.link.href} class="mt-2 inline-block text-[15px] font-semibold text-accent hover:underline">
+                    {area.link.label} <span aria-hidden="true">&rarr;</span>
+                  </a>
+                )}
               </div>
-              {area.link && (
-                <a
-                  href={area.link.href}
-                  class={`text-sm font-medium ${styles.text} hover:underline inline-flex items-center gap-1`}
-                >
-                  {t.readMore}: {area.link.label} <span aria-hidden="true">→</span>
-                </a>
-              )}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
     );
@@ -334,11 +316,6 @@ const t = lang === 'en'
     slot="after"
     title={t.ctaTitle}
     desc={t.ctaDesc}
-    ctaLabel={t.ctaPrimary}
-    ctaHref="https://cal.com/francesco-montelli-4hfojq/30min"
-    secondaryLabel={t.ctaSecondary}
-    secondaryHref={lang === 'en' ? '/en/services/' : '/servizi/'}
     umamiEvent="cta-competenze-final"
-    fullBleed
   />
 </PageLayout>

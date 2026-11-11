@@ -11,7 +11,6 @@ import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import AuthorCard from '@/components/ui/AuthorCard.astro';
 import Breadcrumb from '@/components/ui/Breadcrumb.astro';
-import StatList from '@/components/ui/StatList.astro';
 import type { EnrichedWorkshop } from '@/utils/workshop';
 
 interface Props {
@@ -22,7 +21,7 @@ const { w } = Astro.props;
 
 const mono = 'label-mono';
 const hair = 'border-border/70 dark:border-border-dark/70';
-const h2 = 'text-xl font-bold text-text-dark dark:text-text-light';
+const h2 = 'text-2xl md:text-3xl font-extrabold tracking-tight text-text-dark';
 const calLink = 'https://cal.com/francesco-montelli-4hfojq/30min';
 
 let n = 0;
@@ -31,9 +30,8 @@ let n = 0;
 <BaseLayout title={w.title} description={w.goal} ogImage="/og/workshop.png" lang="it">
   <Header lang="it" altHref={null} />
   <main>
-    <section class="relative overflow-hidden border-b border-border dark:border-border-dark">
-      <div class="absolute top-0 left-0 right-0 h-1 bg-accent" />
-      <div class="max-w-5xl mx-auto px-5 pt-14 pb-10">
+    <section class="bg-base-light border-b border-border">
+      <div class="max-w-5xl mx-auto px-5 pt-10 pb-12 md:pb-14">
         <Breadcrumb
           class="mb-8"
           items={[
@@ -42,31 +40,16 @@ let n = 0;
             { label: w.title },
           ]}
         />
-
-        <div class="grid lg:grid-cols-[1fr_auto] gap-8 items-start">
-          <div>
-            <span class={`inline-flex items-center gap-1.5 ${mono} px-3 py-1 rounded-full bg-surface dark:bg-surface-dark mb-4`}>
-              <span class="w-1.5 h-1.5 rounded-full bg-accent" />
-              Workshop hands-on
-            </span>
-            <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-text-dark dark:text-text-light leading-tight">
-              {w.title}
-            </h1>
-            <p class="mt-4 text-lg text-text-muted leading-relaxed max-w-2xl">{w.goal}</p>
-          </div>
-
-          <StatList
-            class="lg:min-w-[210px]"
-            items={[
-              ...(w.moduleCount > 0 ? [{ value: w.moduleCount, label: 'Moduli a disposizione' }] : []),
-              { value: w.postCount, label: 'Articoli pubblicati' },
-            ]}
-          />
-        </div>
+        <p class="text-[13px] font-semibold uppercase tracking-[0.12em] text-text-muted mb-4">Workshop hands-on</p>
+        <h1 class="font-extrabold tracking-tight text-text-dark leading-[1.08] text-4xl sm:text-5xl max-w-3xl">{w.title}</h1>
+        <p class="mt-5 text-lg md:text-xl text-text-muted leading-relaxed max-w-2xl">{w.goal}</p>
+        <p class="mt-5 label-mono">
+          {w.moduleCount > 0 ? `${w.moduleCount} moduli a disposizione · ` : ''}{w.postCount} articoli pubblicati
+        </p>
       </div>
     </section>
 
-    <div class="max-w-5xl mx-auto px-5 py-12 grid lg:grid-cols-[1fr_320px] gap-12 items-start">
+    <div class="max-w-5xl mx-auto px-5 py-12 md:py-14 grid lg:grid-cols-[1fr_320px] gap-12 items-start">
       <div>
         {w.basis && (
           <section class="mb-12 max-w-2xl">
@@ -85,18 +68,18 @@ let n = 0;
             {w.groups.map((g) => (
               <div class="mt-6">
                 <p class={`${mono} mb-3`}>{g.label}</p>
-                <ol class="space-y-3">
+                <ol class="border-t border-border">
                   {g.modules.map((m) => (
-                    <li class="surface-card grid grid-cols-[3rem_1fr] gap-4 p-4">
-                      <span class="font-mono text-sm font-medium text-accent pt-0.5">
+                    <li class="grid grid-cols-[2.5rem_1fr] gap-3 py-4 border-b border-border">
+                      <span class="font-mono text-sm font-semibold text-accent pt-0.5">
                         {String(++n).padStart(2, '0')}
                       </span>
                       <span>
                         <span class="flex flex-wrap items-baseline justify-between gap-2">
-                          <span class="font-semibold text-text-dark dark:text-text-light">{m.name}</span>
+                          <span class="font-bold text-text-dark">{m.name}</span>
                           <span class={mono}>{m.note ? `${m.note} · ` : ''}{m.duration}</span>
                         </span>
-                        {m.desc && <span class="block text-sm text-text-muted leading-relaxed mt-1">{m.desc}</span>}
+                        {m.desc && <span class="block text-[15px] text-text-muted leading-snug mt-1">{m.desc}</span>}
                       </span>
                     </li>
                   ))}
@@ -125,9 +108,9 @@ let n = 0;
           <ul class="mt-5 space-y-3">
             {w.takeaway.map((t) => (
               <li class="flex items-start gap-3">
-                <span class="mt-1 shrink-0 w-5 h-5 rounded-full bg-accent text-white flex items-center justify-center text-xs font-bold">✓</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mt-0.5 h-[22px] w-[22px] flex-none text-accent" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg>
                 <span class="text-text-muted leading-relaxed">
-                  <span class="font-semibold text-text-dark dark:text-text-light">{t.title}.</span> {t.desc}
+                  <span class="font-semibold text-text-dark ">{t.title}.</span> {t.desc}
                 </span>
               </li>
             ))}
@@ -149,14 +132,14 @@ let n = 0;
           {w.series.filter((s) => s.posts.length > 0).map((s) => (
             <div class="mt-6">
               <div class="flex flex-wrap items-baseline justify-between gap-2 mb-3">
-                <p class="font-semibold text-text-dark dark:text-text-light">{s.title}</p>
+                <p class="font-semibold text-text-dark ">{s.title}</p>
                 {s.href && <a href={s.href} class="text-sm text-accent hover:underline">Landing della serie &rarr;</a>}
               </div>
               <ul class="space-y-2">
                 {s.posts.map((p) => (
                   <li>
                     <a href={p.href} class="surface-link flex items-baseline justify-between gap-4 p-3">
-                      <span class="text-sm text-text-dark dark:text-text-light">{p.title}</span>
+                      <span class="text-sm text-text-dark ">{p.title}</span>
                       <span class={`${mono} shrink-0`}>{p.readingTime} min</span>
                     </a>
                   </li>
@@ -167,12 +150,12 @@ let n = 0;
 
           {w.talks.length > 0 && (
             <div class="mt-6">
-              <p class="font-semibold text-text-dark dark:text-text-light mb-3">Talk</p>
+              <p class="font-semibold text-text-dark  mb-3">Talk</p>
               <ul class="space-y-2">
                 {w.talks.map((talk) => (
                   <li>
                     <a href={`/talks/${talk.slug}/`} class="surface-link block p-3">
-                      <span class="block text-sm text-text-dark dark:text-text-light">{talk.title.it}</span>
+                      <span class="block text-sm text-text-dark ">{talk.title.it}</span>
                       <span class={`block ${mono} mt-1`}>{talk.event} · {talk.location}</span>
                     </a>
                   </li>
@@ -191,9 +174,9 @@ let n = 0;
           <p class="mt-2 text-sm text-text-muted leading-relaxed">{w.audience}</p>
         </div>
 
-        <div class="rounded-xl border-2 border-accent p-6">
-          <p class="text-xs font-semibold uppercase tracking-widest text-accent mb-3">Discovery call</p>
-          <h3 class="text-lg font-bold text-text-dark dark:text-text-light mb-3 leading-snug">
+        <div class="surface-card p-6">
+          <p class="label-mono !text-accent mb-3">Discovery call</p>
+          <h3 class="text-lg font-bold text-text-dark  mb-3 leading-snug">
             Parliamo del percorso per il tuo team?
           </h3>
           <p class="text-sm text-text-muted leading-relaxed mb-5">
@@ -204,11 +187,11 @@ let n = 0;
             target="_blank"
             rel="noopener noreferrer"
             data-umami-event="cta-workshop-landing"
-            class="block w-full text-center px-4 py-2.5 rounded-lg bg-accent text-white text-sm font-semibold hover:opacity-90 transition-opacity"
+            class="block w-full text-center px-4 py-2.5 rounded-lg bg-accent text-white text-sm font-semibold hover:bg-accent-hover transition-colors"
           >
             Prenota una call &rarr;
           </a>
-          <a href="mailto:francesco@montelli.dev" class="block w-full text-center mt-2 px-4 py-2.5 rounded-lg text-sm font-medium text-text-muted hover:text-accent bg-text-muted/10 transition-colors">
+          <a href="mailto:francesco@montelli.dev" class="block w-full text-center mt-2 px-4 py-2.5 rounded-lg text-sm font-semibold border-[1.5px] border-text-dark/80 text-text-dark hover:border-accent hover:text-accent transition-colors">
             Scrivimi direttamente
           </a>
         </div>
