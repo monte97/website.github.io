@@ -1,38 +1,93 @@
 ---
+/**
+ * Footer scuro, come la foto in cima alla home: chiude la pagina con il logo,
+ * la frase dell'offerta, le pagine e i contatti. Workshop sta qui perche'
+ * e' uscito dalla barra in alto (e' anche linkato da Servizi).
+ */
+import LogoMono from '@/assets/logo-fra-mono.svg?raw';
+
 interface Props {
   lang?: 'it' | 'en';
 }
 
 const { lang = 'it' } = Astro.props;
 const year = new Date().getFullYear();
-const prefix = lang === 'en' ? '/en' : '';
+const calLink = 'https://cal.com/francesco-montelli-4hfojq/30min';
 
-/**
- * Workshop e' uscito dalla barra in alto, che ora e' dedicata a portare
- * clienti. Qui resta raggiungibile da ogni pagina, oltre che dalla pagina
- * Servizi, dove ha senso perche' e' un servizio anche lui.
- */
-const secondarie = lang === 'en'
-  ? [{ label: 'Workshops', href: '/en/workshop/' }]
-  : [{ label: 'Workshop', href: '/workshop/' }];
+const t = lang === 'en'
+  ? {
+      claim: ['Architecture, testing and automation, ', 'on a subscription', '.'],
+      pagesTitle: 'Pages',
+      pages: [
+        { label: 'Services', href: '/en/services/' },
+        { label: 'Work', href: '/en/case-study/' },
+        { label: 'Talks', href: '/en/talks/' },
+        { label: 'Blog', href: '/en/blog/' },
+        { label: 'About', href: '/en/about/' },
+        { label: 'Workshops', href: '/en/workshop/' },
+      ],
+      contactTitle: 'Contact',
+      call: 'Book 30 minutes',
+      privacy: 'Privacy Policy',
+      vat: 'VAT',
+    }
+  : {
+      claim: ['Architettura, test e automazione, ', 'in abbonamento', '.'],
+      pagesTitle: 'Pagine',
+      pages: [
+        { label: 'Servizi', href: '/servizi/' },
+        { label: 'Lavori', href: '/case-study/' },
+        { label: 'Conferenze', href: '/talks/' },
+        { label: 'Blog', href: '/blog/' },
+        { label: 'About', href: '/about/' },
+        { label: 'Workshop', href: '/workshop/' },
+      ],
+      contactTitle: 'Contatti',
+      call: 'Prenota 30 minuti',
+      privacy: 'Privacy Policy',
+      vat: 'P.IVA',
+    };
+
+const link = 'text-white/70 hover:text-accent transition-colors';
+const head = 'text-[12px] font-semibold uppercase tracking-[0.12em] text-white/45 mb-4';
 ---
 
-<footer class="border-t border-border/60 dark:border-border-dark/60 mt-16">
-  <div class="max-w-5xl mx-auto px-5 py-8 flex flex-col sm:flex-row items-start justify-between gap-4">
-    <div class="text-text-muted text-xs space-y-1">
-      <p>&copy; {year} Francesco Montelli</p>
-      <p>P.IVA 02726990399 &middot; <a href="/privacy/" class="hover:text-accent transition-colors">Privacy Policy</a></p>
-    </div>
-    <div class="flex items-center gap-5">
-      {secondarie.map(v => (
-        <a href={v.href} class="text-text-muted hover:text-accent transition-colors text-xs">{v.label}</a>
-      ))}
+<footer class="bg-[#16161d] text-white">
+  <div class="max-w-5xl mx-auto px-5 pt-14 pb-8">
+    <div class="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+      <div>
+        <a href={lang === 'en' ? '/en/' : '/'} class="inline-flex items-center gap-3">
+          <span class="w-[52px] h-[44px] text-white [&_svg]:w-full [&_svg]:h-full" set:html={LogoMono} />
+          <span class="text-sm font-semibold">montelli.dev</span>
+        </a>
+        <p class="mt-5 text-xl font-extrabold tracking-tight leading-snug max-w-xs">
+          {t.claim[0]}<span class="text-accent">{t.claim[1]}</span>{t.claim[2]}
+        </p>
+        <a href={calLink} target="_blank" rel="noopener noreferrer"
+          class="mt-6 inline-flex rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-white hover:bg-accent-hover transition-colors"
+          data-umami-event="cta-footer">{t.call}</a>
+      </div>
+
+      <nav aria-label={t.pagesTitle}>
+        <p class={head}>{t.pagesTitle}</p>
+        <ul class="grid gap-2.5 text-[15px]">
+          {t.pages.map(p => <li><a href={p.href} class={link}>{p.label}</a></li>)}
+        </ul>
+      </nav>
+
+      <div>
+        <p class={head}>{t.contactTitle}</p>
+        <ul class="grid gap-2.5 text-[15px]">
+          <li><a href="mailto:francesco@montelli.dev" class={link} data-umami-event="click-email">francesco@montelli.dev</a></li>
+          <li><a href="https://linkedin.com/in/francesco-montelli" target="_blank" rel="noopener noreferrer" class={link} data-umami-event="click-social" data-umami-event-platform="linkedin">LinkedIn</a></li>
+          <li><a href="https://github.com/monte97" target="_blank" rel="noopener noreferrer" class={link} data-umami-event="click-social" data-umami-event-platform="github">GitHub</a></li>
+        </ul>
+      </div>
     </div>
 
-    <div class="flex items-center gap-5">
-      <a href="mailto:francesco@montelli.dev" class="text-text-muted hover:text-accent transition-colors text-xs" data-umami-event="click-email">Email</a>
-      <a href="https://linkedin.com/in/francesco-montelli" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-accent transition-colors text-xs" data-umami-event="click-social" data-umami-event-platform="linkedin">LinkedIn</a>
-      <a href="https://github.com/monte97" target="_blank" rel="noopener noreferrer" class="text-text-muted hover:text-accent transition-colors text-xs" data-umami-event="click-social" data-umami-event-platform="github">GitHub</a>
+    <div class="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row gap-2 sm:justify-between text-xs text-white/45">
+      <p>&copy; {year} Francesco Montelli &middot; {t.vat} 02726990399</p>
+      <a href="/privacy/" class="hover:text-accent transition-colors">{t.privacy}</a>
     </div>
   </div>
 </footer>
