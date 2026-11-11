@@ -1,23 +1,20 @@
 ---
-import SectionHeading from '@/components/ui/SectionHeading.astro';
 /**
  * Servizi.
  *
- * La pagina dichiara prima come si lavora, poi cosa si fa, poi in che ordine si
- * procede. I deliverable di ogni servizio stanno nel contenuto, in
- * src/content/services/, non qui.
- *
- * Due blocchi restano spenti finche' non hanno testi veri: il riquadro "non
- * sono la scelta giusta se" e la relativa sezione, che senza il lato negativo
- * non regge. Bastano tre righe in `notForYou` per accenderla.
+ * Racconta la stessa storia della home: cosa fa (le aree), come si lavora
+ * (abbonamento trimestrale consigliato, mensile, progetto a corpo), garanzia.
+ * Prezzi e promesse sono quelli di src/components/home/Offer.astro: se cambiano
+ * la, cambiano anche qui. I deliverable di ogni area stanno nel contenuto, in
+ * src/content/services/.
  */
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
+import PageHero from '@/components/ui/PageHero.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
 import FinalCta from '@/components/ui/FinalCta.astro';
-import { signals } from '@/data/signals';
-import { getWorkshops } from '@/utils/workshop';
 
 interface Props {
   lang?: 'it' | 'en';
@@ -27,291 +24,193 @@ const { lang = 'it' } = Astro.props;
 const prefix = lang === 'en' ? '/en' : '';
 
 const calLink = 'https://cal.com/francesco-montelli-4hfojq/30min';
-const mailLink = 'mailto:francesco@montelli.dev';
 
 const services = (await getCollection('services')).sort((a, b) => a.data.weight - b.data.weight);
-const workshops = await getWorkshops();
-const hair = 'border-border/70 dark:border-border-dark/70';
 
-const t = lang === 'en'
-  ? {
-      pageTitle: 'Services',
-      pageDesc: 'I design, build and automate the software behind your product. A 5-day technical assessment or an ongoing engagement. Free 30-minute discovery call.',
-      eyebrow: 'The services',
-      heroTitle: 'I design, build and automate the software behind your product.',
-      heroBody: 'From analysis and architecture choices to the actual build, all the way to the automated processes that keep quality high. Whether it starts from scratch or from a system that has grown rigid over time, the team is left able to go on without me.',
-      heroCta: 'Book a discovery call',
-      howTitle: 'How I work',
-      commitments: [
-        { title: 'The goal is to make myself unnecessary', body: 'Every engagement ends with a handover doc, runbooks and an internal owner I train. The system should not depend on me to keep working.' },
-        { title: 'One active goal at a time', body: 'No parallel tracks stealing attention from each other. What is open gets closed, then the next one opens.' },
-        { title: 'Decisions stay written down', body: 'The choices made, the alternatives rejected and why. The same format the public case studies are told in.' },
-      ],
-      whatTitle: 'What we can do together',
-      whatBody: 'In the order things have to be faced: design first, then verify, then automate. Automation amplifies everything sitting above it, mistakes included.',
-      trainingTitle: 'Training for the team',
-      trainingBody: 'When the problem is not building but knowing how: a path run with the team, on your stack.',
-      trainingMore: 'Modules chosen during the discovery call',
-      assessmentTitle: 'Technical assessment in 5 days',
-      assessmentSubtitle: 'A week inside your system, to see where it gets stuck and where it pays to start.',
-      assessmentBody: 'I look at architecture, release pipeline, tests and monitoring, talk with the people who work on it every day and read the code where it matters. At the end you get:',
-      assessmentItems: [
-        'a report with the problems ranked by impact and cost of intervention',
-        'a 90-day action plan, with the first three moves',
-        'a walkthrough session with the team',
-      ],
-      assessmentClose: 'The report is yours: you can carry it out with me, with your internal team or with whoever you prefer.',
-      assessmentCta: "Let's talk",
-      optional: 'optional',
-      processTitle: 'How it goes',
-      process: [
-        ['01', 'Discovery call', '30 minutes, free. Tell me what the system looks like today and which decision you are stuck on. It is there to see whether there is a problem I can be useful on.'],
-        ['02', 'Assessment', 'Five days at a fixed price, for those who want a clear picture before committing. It ends with a report and a 90-day action plan.', true],
-        ['03', 'Ongoing engagement', 'If the problem calls for continuity. Month to month, one active goal at a time, with everything the system needs included.'],
-        ['04', 'Exit', 'Handover doc, runbooks and a trained internal owner. From there the team goes on by itself.'],
-      ],
-      fitTitle: 'When I am the right choice',
-      fitYes: 'We work well together if…',
-      fitNo: 'I am not the right choice if…',
-      fitExtra: 'you want the team to be able to go on without me at the end',
-      faqTitle: 'Frequently asked',
-      faq: [
-        { q: 'How does the first call work?', a: 'Thirty minutes, free, no commitment and no slides. You tell me where the system is and what is blocking you, and we work out whether and how it makes sense to work together.' },
-        { q: 'Do I have to start with the assessment?', a: 'No. It is meant for those who want to see where to act before committing to an ongoing engagement. If the problem is already clear, we start straight from there.' },
-        { q: 'What is left at the end of an engagement?', a: 'A handover doc, the runbooks and an internal owner I have trained. Plus the code, the tests and the documented decisions: the system should not depend on me to keep working.' },
-      ],
-      ctaTitle: 'Got a technical decision that deserves clarity?',
-      ctaDesc: 'Thirty minutes are enough to see where the problem sits and whether I can be useful. No commitment, no slides.',
-      ctaPrimary: "Let's talk",
-      ctaSecondary: 'or write me',
-    }
-  : {
-      pageTitle: 'Servizi',
-      pageDesc: 'Progetto, sviluppo e automatizzo il software del tuo prodotto. Assessment tecnico in 5 giorni o ingaggio continuativo. Discovery call gratuita di 30 minuti.',
-      eyebrow: 'I servizi',
-      heroTitle: 'Progetto, sviluppo e automatizzo il software del tuo prodotto.',
-      heroBody: "Dall'analisi e le scelte di architettura alla realizzazione, fino ai processi automatici che ne tengono alta la qualità. Che parta da zero o da un sistema irrigidito nel tempo, alla fine il team resta capace di andare avanti da solo.",
-      heroCta: 'Prenota una discovery call',
-      howTitle: 'Come lavoro',
-      commitments: [
-        { title: "L'obiettivo è rendermi inutile", body: 'Ogni ingaggio finisce con un handover doc, i runbook e un owner interno che formo. Il sistema non deve dipendere da me per funzionare.' },
-        { title: 'Un obiettivo attivo per volta', body: 'Niente lavori paralleli che si rubano attenzione. Si chiude quello che è aperto, poi si apre il successivo.' },
-        { title: 'Le decisioni restano scritte', body: 'Le scelte prese, le alternative scartate e il motivo. È lo stesso formato con cui sono raccontati i case study pubblici.' },
-      ],
-      whatTitle: 'Cosa possiamo fare insieme',
-      whatBody: "Nell'ordine in cui le cose vanno affrontate: prima progettare, poi verificare, poi automatizzare. L'automazione amplifica tutto quello che le sta sopra, errori compresi.",
-      trainingTitle: 'Formazione per il team',
-      trainingBody: 'Quando il problema non è costruire ma saper fare: un percorso con il team, sul vostro stack.',
-      trainingMore: 'Moduli da scegliere in discovery call',
-      assessmentTitle: 'Assessment tecnico in 5 giorni',
-      assessmentSubtitle: 'Una settimana dentro il vostro sistema, per capire dove si inceppa e da dove conviene partire.',
-      assessmentBody: 'Analizzo architettura, pipeline di rilascio, test e monitoring, parlo con chi ci lavora ogni giorno e guardo il codice dove serve. Alla fine ricevete:',
-      assessmentItems: [
-        "un report con i problemi ordinati per impatto e costo di intervento",
-        "un piano d'azione a 90 giorni, con le prime tre mosse",
-        'una sessione di restituzione con il team',
-      ],
-      assessmentClose: 'Il report resta vostro: potete realizzarlo con me, con il team interno o con chi preferite.',
-      assessmentCta: 'Parliamone',
-      optional: 'facoltativo',
-      processTitle: 'Come si procede',
-      process: [
-        ['01', 'Discovery call', "30 minuti, gratuiti. Raccontami com'è fatto il sistema adesso e qual è la decisione su cui siete fermi. Serve a capire se c'è un problema su cui posso essere utile."],
-        ['02', 'Assessment', "Cinque giorni a prezzo fisso, per chi vuole un quadro chiaro prima di impegnarsi. Si chiude con un report e un piano d'azione a 90 giorni.", true],
-        ['03', 'Ingaggio continuativo', 'Se il problema chiede continuità. Mese per mese, un obiettivo attivo per volta, con tutto quello che serve al sistema incluso.'],
-        ['04', 'Uscita', 'Handover doc, runbook e un owner interno formato. Da qui in avanti il team va avanti da solo.'],
-      ],
-      fitTitle: 'Quando sono la scelta giusta',
-      fitYes: 'Lavoriamo bene insieme se…',
-      fitNo: 'Non sono la scelta giusta se…',
-      fitExtra: 'vuoi che alla fine il team resti capace di andare avanti da solo',
-      faqTitle: 'Domande frequenti',
-      faq: [
-        { q: 'Come funziona la prima call?', a: 'Trenta minuti, gratuiti, senza impegno e senza slide. Mi racconti dove sta il sistema e cosa vi blocca, e ne esce se e come ha senso lavorare insieme.' },
-        { q: "Devo per forza partire dall'assessment?", a: "No. È pensato per chi vuole capire dove intervenire prima di impegnarsi su un ingaggio continuativo. Se il problema è già chiaro, si parte direttamente da lì." },
-        { q: 'Cosa resta a fine ingaggio?', a: "Un handover doc, i runbook e un owner interno che ho formato. Più il codice, i test e le decisioni documentate: il sistema non deve dipendere da me per funzionare." },
-      ],
-      ctaTitle: 'Hai una decisione tecnica che merita chiarezza?',
-      ctaDesc: 'Trenta minuti bastano per capire dove sta il problema e se posso essere utile. Senza impegno, senza slide.',
-      ctaPrimary: 'Parliamone',
-      ctaSecondary: 'oppure scrivimi',
-    };
+const icons = {
+  tools: '<path d="M4 7h16M4 12h10M4 17h7"/>',
+  clock: '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>',
+  chat: '<path d="M5 5h14v10H8l-3 3z"/>',
+  lock: '<rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0"/>',
+  design: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/><path d="M11 7.5h5v5.5"/>',
+  verify: '<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/>',
+  auto: '<path d="M5 12a7 7 0 0 1 12-4.9L19 9"/><path d="M19 4v5h-5"/><path d="M19 12a7 7 0 0 1-12 4.9L5 15"/><path d="M5 20v-5h5"/>',
+  teach: '<path d="M3 9l9-4 9 4-9 4z"/><path d="M7 11v4c0 1.5 2.2 3 5 3s5-1.5 5-3v-4"/>',
+};
+const areaIcons = ['design', 'verify', 'auto'];
 
-/**
- * I casi in cui declinare. Finche' e' vuoto la sezione "quando sono la scelta
- * giusta" non compare: con una colonna sola non dice niente.
- *
- * Tre candidate, viste renderizzate il 2026-08-28 e messe da parte in attesa
- * delle parole dell'autore. Nessuna e' inventata: ognuna nasce da qualcosa che
- * il sito gia' afferma altrove.
- *
- *   - "cerchi qualcuno che esegua senza mettere in discussione le scelte"
- *     da: le decisioni restano scritte, alternative scartate comprese
- *   - "servono piu' lavori in parallelo, ognuno con la sua scadenza"
- *     da: l'impegno "un obiettivo attivo per volta"
- *   - "il sistema e' piccolo abbastanza che bastano un controllo periodico e un alert"
- *     da: la tabella "quando basta molto meno" del catalogo observability
- *
- * La terza e' la piu' solida: controintuitiva, verificabile, gia' detta altrove.
- * La prima e' la piu' rischiosa: si puo' leggere come "e' uno che discute".
- */
-const notForYou: string[] = [];
+const text = {
+  it: {
+    pageTitle: 'Servizi',
+    pageDesc: 'Architettura, test e automazione in abbonamento: 2.500 €/mese con impegno trimestrale, oppure un progetto a corpo su misura. Soddisfatto o rimborsato nelle prime due settimane.',
+    heroTitle: 'Progetto, verifico e automatizzo il software del tuo prodotto.',
+    heroSub: 'In abbonamento, oppure con un progetto a prezzo chiuso. Alla fine il team sa andare avanti da solo.',
+    heroCta: { href: calLink, label: 'Parliamone in 30 minuti' },
+    whatTitle: 'Cosa faccio',
+    trainingTitle: 'Formazione per il team',
+    trainingBody: 'Workshop sul vostro stack, quando serve saper fare e non solo avere fatto.',
+    plansTitleA: 'Come lavoriamo: ',
+    plansTitleB: 'abbonamento o progetto',
+    badge: 'Consigliato',
+    plans: [
+      { h: 'Abbonamento trimestrale', amt: '2.500 €', per: '/ mese', sub: 'Impegno di tre mesi, poi rinnovi se ti serve.',
+        li: ['Priorità decise insieme ogni mese', 'Progetto, verifica e automazione nello stesso prezzo', 'Il team impara e resta autonomo'],
+        cta: 'Parliamone in 30 minuti', hot: true },
+      { h: 'Abbonamento mensile', amt: '3.000 €', per: '/ mese', sub: 'Mese per mese, ti fermi quando vuoi.',
+        li: ['Tutto quello del trimestrale', 'Per partire con un primo mese di prova'],
+        cta: 'Parliamone' },
+      { h: 'Progetto a corpo', amt: 'Su misura', per: '', sub: 'Un obiettivo preciso, un prezzo chiuso.',
+        li: ["Per esempio: un health check del sistema, una pipeline CI/CD, l'observability da zero, Keycloak", 'Preventivo dopo la prima chiacchierata'],
+        cta: 'Raccontami il progetto' },
+    ],
+    how: [
+      { i: 'tools', b: 'Entro nei vostri strumenti', d: 'Repository, board e chat che usate già.' },
+      { i: 'clock', b: 'Una priorità alla volta', d: 'La decidiamo insieme, la chiudo, passo alla prossima.' },
+      { i: 'chat', b: 'Aggiornamento ogni settimana', d: 'Due righe scritte: cosa è fatto, cosa blocca.' },
+      { i: 'lock', b: 'Niente lock-in', d: 'Codice, documentazione e accessi restano vostri.' },
+    ],
+    gb: 'Soddisfatto o rimborsato.',
+    gd: ' Se dopo le prime due settimane non ti torna, ci fermiamo e ti restituisco quanto hai pagato.',
+    faqTitle: 'Domande frequenti',
+    faq: [
+      { q: 'Come funziona la prima call?', a: 'Trenta minuti, gratis, senza slide. Mi racconti dove sta il sistema e cosa vi blocca, e vediamo se ha senso lavorare insieme.' },
+      { q: 'Abbonamento o progetto a corpo?', a: "Se hai più cose da sistemare e vuoi decidere le priorità strada facendo, l'abbonamento. Se hai un obiettivo preciso, il progetto: il preventivo arriva dopo la prima chiacchierata." },
+      { q: 'Cosa resta alla fine?', a: 'Codice, documentazione e accessi restano vostri, e il team ha imparato a muoversi da solo.' },
+    ],
+    ctaTitle: 'Un caffè?',
+    ctaDesc: 'Mi racconti cosa state costruendo. Se posso aiutarvi te lo dico, se no ti dico chi può.',
+  },
+  en: {
+    pageTitle: 'Services',
+    pageDesc: 'Architecture, testing and automation on a subscription: €2,500/month with a quarterly commitment, or a tailored fixed-price project. Satisfied or refunded in the first two weeks.',
+    heroTitle: 'I design, verify and automate the software behind your product.',
+    heroSub: 'On a subscription, or as a fixed-price project. In the end your team can go on by itself.',
+    heroCta: { href: calLink, label: "Let's talk for 30 minutes" },
+    whatTitle: 'What I do',
+    trainingTitle: 'Training for the team',
+    trainingBody: 'Workshops on your own stack, when the need is knowing how and not only having it built.',
+    plansTitleA: 'How we work: ',
+    plansTitleB: 'subscription or project',
+    badge: 'Recommended',
+    plans: [
+      { h: 'Quarterly subscription', amt: '€2,500', per: '/ month', sub: 'Three-month commitment, then renew if you need it.',
+        li: ['Priorities agreed together every month', 'Design, verification and automation at the same price', 'Your team learns and stays independent'],
+        cta: "Let's talk for 30 minutes", hot: true },
+      { h: 'Monthly subscription', amt: '€3,000', per: '/ month', sub: 'Month by month, stop whenever you want.',
+        li: ['Everything in the quarterly plan', 'To start with a trial month'],
+        cta: "Let's talk" },
+      { h: 'Fixed-price project', amt: 'Tailored', per: '', sub: 'One clear goal, one fixed price.',
+        li: ['For example: a system health check, a CI/CD pipeline, observability from scratch, Keycloak', 'Quote after our first chat'],
+        cta: 'Tell me about the project' },
+    ],
+    how: [
+      { i: 'tools', b: 'I join your tools', d: 'The repository, board and chat you already use.' },
+      { i: 'clock', b: 'One priority at a time', d: 'We pick it together, I close it, I move to the next.' },
+      { i: 'chat', b: 'A weekly update', d: 'Two written lines: what is done, what is blocked.' },
+      { i: 'lock', b: 'No lock-in', d: 'Code, documentation and access stay yours.' },
+    ],
+    gb: 'Satisfied or refunded.',
+    gd: " If after the first two weeks it doesn't work for you, we stop and I give you back what you paid.",
+    faqTitle: 'Frequently asked',
+    faq: [
+      { q: 'How does the first call work?', a: 'Thirty minutes, free, no slides. You tell me where the system is and what is blocking you, and we see whether it makes sense to work together.' },
+      { q: 'Subscription or fixed-price project?', a: 'If you have several things to fix and want to set priorities as you go, the subscription. If you have one precise goal, the project: the quote comes after our first chat.' },
+      { q: 'What is left at the end?', a: 'Code, documentation and access stay yours, and your team has learned to move on its own.' },
+    ],
+    ctaTitle: 'Coffee?',
+    ctaDesc: "Tell me what you're building. If I can help, I'll tell you; if not, I'll tell you who can.",
+  },
+};
+
+const t = text[lang];
+const line = 'border-border';
 ---
 
 <BaseLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/servizi.png" lang={lang}>
   <Header lang={lang} />
-  <main>
+  <main class="bg-base-light">
 
-    <section class="bg-accent-subtle border-b border-border/40 dark:border-border-dark/40">
-      <div class="max-w-3xl mx-auto px-5 py-20 text-center fade-in-section">
-        <p class="label-mono !text-accent">{t.eyebrow}</p>
-        <h1 class="mt-4 text-3xl sm:text-4xl font-bold tracking-tight leading-[1.15] text-text-dark dark:text-text-light text-balance">
-          {t.heroTitle}
-        </h1>
-        <p class="mt-5 text-text-muted leading-relaxed">{t.heroBody}</p>
-        <div class="mt-8 flex flex-wrap gap-3 justify-center">
-          <a href={calLink} target="_blank" rel="noopener noreferrer" data-umami-event="cta-servizi-hero"
-            class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-accent text-white text-sm font-semibold hover:bg-accent-hover transition-colors">
-            {t.heroCta} &rarr;
-          </a>
-        </div>
-      </div>
-    </section>
+    <PageHero variant="index" title={t.heroTitle} subtitle={t.heroSub} cta={t.heroCta} />
 
-    <section class="max-w-5xl mx-auto px-5 py-16">
-      <SectionHeading title={t.howTitle} />
-      <div class="grid md:grid-cols-2 gap-4">
-        {t.commitments.map((c) => (
-          <div class="surface-card p-6">
-            <h3 class="font-semibold text-text-dark dark:text-text-light">{c.title}</h3>
-            <p class="mt-2 text-sm text-text-muted leading-relaxed">{c.body}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <section class="bg-surface dark:bg-surface-dark/40 border-y border-border/40 dark:border-border-dark/40">
-      <div class="max-w-5xl mx-auto px-5 py-16">
-        <SectionHeading title={t.whatTitle} subtitle={t.whatBody} />
-        <div class="grid md:grid-cols-2 gap-4">
-          {services.map((s, i) => (
-            <a href={s.data.link ? `${prefix}${s.data.link}` : `${prefix}/case-study/`} class="group surface-link block p-6">
-              <p class="label-mono !text-accent">{String(i + 1).padStart(2, '0')}</p>
-              <h3 class="mt-2 text-lg font-bold text-text-dark dark:text-text-light group-hover:text-accent transition-colors">
-                {lang === 'en' ? (s.data.titleEn ?? s.data.title) : s.data.title}
-              </h3>
-              <p class="mt-2 text-sm text-text-muted leading-relaxed">
-                {lang === 'en' ? (s.data.descriptionEn ?? s.data.description) : s.data.description}
+    <section class="max-w-5xl mx-auto px-5 py-16 md:py-20">
+      <SectionHeading title={t.whatTitle} />
+      <div class={`grid md:grid-cols-2 border-t ${line}`}>
+        {services.map((s, i) => (
+          <a href={s.data.link ? `${prefix}${s.data.link}` : `${prefix}/case-study/`}
+            class={`group flex gap-4 py-6 border-b ${line} md:odd:pr-8 md:even:pl-8 md:even:border-l`}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-[26px] w-[26px] flex-none text-accent mt-0.5" set:html={icons[areaIcons[i] as keyof typeof icons]} aria-hidden="true"></svg>
+            <div>
+              <h3 class="text-lg font-bold text-text-dark group-hover:text-accent transition-colors">{lang === 'en' ? (s.data.titleEn ?? s.data.title) : s.data.title}</h3>
+              <p class="mt-1 text-[15px] text-text-muted leading-snug">
+                {(lang === 'en' ? (s.data.itemsEn ?? s.data.items) : s.data.items).slice(0, 3).join(' · ')}
               </p>
-              {s.data.items.length > 0 && (
-                <ul class={`mt-4 pt-4 border-t ${hair} space-y-1.5`}>
-                  {(lang === 'en' ? (s.data.itemsEn ?? s.data.items) : s.data.items).map((it) => (
-                    <li class="flex gap-2 text-sm text-text-muted">
-                      <span class="text-accent">&rsaquo;</span>
-                      <span>{it}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </a>
-          ))}
-
-          <a href={`${prefix}/workshop/`} class="group surface-link block p-6">
-            <p class="label-mono !text-accent">{String(services.length + 1).padStart(2, '0')}</p>
-            <h3 class="mt-2 text-lg font-bold text-text-dark dark:text-text-light group-hover:text-accent transition-colors">
-              {t.trainingTitle}
-            </h3>
-            <p class="mt-2 text-sm text-text-muted leading-relaxed">{t.trainingBody}</p>
-            <ul class={`mt-4 pt-4 border-t ${hair} space-y-1.5`}>
-              {workshops.map((w) => (
-                <li class="flex gap-2 text-sm text-text-muted">
-                  <span class="text-accent">&rsaquo;</span>
-                  <span>{lang === 'en' ? w.titleEn : w.title}</span>
-                </li>
-              ))}
-              <li class="flex gap-2 text-sm text-text-muted">
-                <span class="text-accent">&rsaquo;</span>
-                <span>{t.trainingMore}</span>
-              </li>
-            </ul>
+            </div>
           </a>
-        </div>
-      </div>
-    </section>
-
-    <section class="max-w-5xl mx-auto px-5 pt-16">
-      <div class="rounded-xl border-2 border-accent bg-accent-subtle p-6 sm:p-10">
-        <SectionHeading title={t.assessmentTitle} subtitle={t.assessmentSubtitle} class="mb-6" />
-        <p class="text-text-muted leading-relaxed">{t.assessmentBody}</p>
-        <ul class="mt-4 space-y-2">
-          {t.assessmentItems.map((it) => (
-            <li class="flex gap-2 text-text-muted leading-relaxed">
-              <span class="text-accent shrink-0">&rsaquo;</span>
-              <span>{it}</span>
-            </li>
-          ))}
-        </ul>
-        <p class="mt-4 text-text-muted leading-relaxed">{t.assessmentClose}</p>
-        <div class="mt-8">
-          <a href={calLink} target="_blank" rel="noopener noreferrer" data-umami-event="cta-servizi-assessment"
-            class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-accent text-white text-sm font-semibold hover:bg-accent-hover transition-colors">
-            {t.assessmentCta} &rarr;
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <section class="max-w-5xl mx-auto px-5 py-16">
-      <SectionHeading title={t.processTitle} />
-      <div class="grid md:grid-cols-4 gap-8">
-        {t.process.map(([n, titolo, desc, facoltativo]) => (
+        ))}
+        <a href={`${prefix}/workshop/`} class={`group flex gap-4 py-6 border-b ${line} md:odd:pr-8 md:even:pl-8 md:even:border-l`}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-[26px] w-[26px] flex-none text-accent mt-0.5" set:html={icons.teach} aria-hidden="true"></svg>
           <div>
-            <p class="label-mono !text-accent">{n}{facoltativo && <span class="text-text-muted"> · {t.optional}</span>}</p>
-            <h3 class="mt-2 font-semibold text-text-dark dark:text-text-light">{titolo}</h3>
-            <p class="mt-2 text-sm text-text-muted leading-relaxed">{desc}</p>
+            <h3 class="text-lg font-bold text-text-dark group-hover:text-accent transition-colors">{t.trainingTitle}</h3>
+            <p class="mt-1 text-[15px] text-text-muted leading-snug">{t.trainingBody}</p>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <section class="max-w-5xl mx-auto px-5 pb-16 md:pb-20">
+      <h2 class="text-3xl md:text-[2.5rem] font-extrabold tracking-tight leading-[1.1] text-text-dark max-w-3xl">
+        {t.plansTitleA}<span class="text-accent">{t.plansTitleB}</span>.
+      </h2>
+
+      <div class="mt-10 grid md:grid-cols-[1.1fr_1fr_1fr] gap-5 items-stretch">
+        {t.plans.map(p => (
+          <div class:list={[
+            'relative flex flex-col rounded-2xl p-7 bg-white',
+            p.hot ? 'border-2 border-accent shadow-[0_18px_40px_rgba(232,151,58,.18)]' : 'border border-border',
+          ]}>
+            {p.hot && <span class="absolute -top-3 left-6 rounded-full bg-accent px-2.5 py-1 text-xs font-bold text-white">{t.badge}</span>}
+            <h3 class="text-lg font-bold text-text-dark">{p.h}</h3>
+            <div class="mt-3 flex items-baseline gap-1.5">
+              <span class:list={['font-extrabold tracking-tight text-text-dark', p.per ? 'text-[2.75rem] leading-none' : 'text-[2rem] leading-tight']}>{p.amt}</span>
+              {p.per && <span class="text-text-muted">{p.per}</span>}
+            </div>
+            <p class="mt-1.5 text-[15px] text-text-muted">{p.sub}</p>
+            <ul class="mt-5 pt-4 border-t border-border grid gap-2.5 text-[15px] text-text-dark flex-1">
+              {p.li.map(x => (
+                <li class="flex gap-2.5"><span class="mt-[7px] h-[7px] w-[7px] flex-none rounded-full bg-accent"></span>{x}</li>
+              ))}
+            </ul>
+            <a href={calLink} target="_blank" rel="noopener noreferrer" data-umami-event="cta-servizi-piano"
+              class:list={[
+                'mt-6 rounded-lg px-4 py-3 text-center font-semibold transition-colors',
+                p.hot ? 'bg-accent text-white hover:bg-accent-hover' : 'border-[1.5px] border-text-dark/80 text-text-dark hover:border-accent hover:text-accent',
+              ]}>{p.cta}</a>
           </div>
         ))}
       </div>
+
+      <div class={`mt-12 grid md:grid-cols-4 border-y ${line}`}>
+        {t.how.map((h, i) => (
+          <div class:list={['py-6 md:px-5', i > 0 ? `border-t md:border-t-0 md:border-l ${line}` : 'md:pl-0']}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-[26px] w-[26px] text-accent" set:html={icons[h.i as keyof typeof icons]} aria-hidden="true"></svg>
+            <p class="mt-3 font-bold text-text-dark">{h.b}</p>
+            <p class="text-[15px] text-text-muted leading-snug">{h.d}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="mt-9 mx-auto max-w-2xl flex gap-3.5 items-start rounded-2xl border border-border bg-white px-5 py-4 text-text-muted leading-relaxed">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-[26px] w-[26px] flex-none text-accent" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+        <p><strong class="text-text-dark">{t.gb}</strong>{t.gd}</p>
+      </div>
     </section>
 
-    {notForYou.length > 0 && (
-      <section class="bg-surface dark:bg-surface-dark/40 border-y border-border/40 dark:border-border-dark/40">
-        <div class="max-w-5xl mx-auto px-5 py-16">
-          <SectionHeading title={t.fitTitle} />
-          <div class="grid md:grid-cols-2 gap-4">
-            <div class="rounded-xl border-2 border-accent p-6">
-              <h3 class="font-semibold text-text-dark dark:text-text-light">{t.fitYes}</h3>
-              <ul class="mt-4 space-y-2.5">
-                {[...signals[lang].map((s) => s.title.charAt(0).toLowerCase() + s.title.slice(1)), t.fitExtra].map((x) => (
-                  <li class="flex gap-2.5 text-sm text-text-muted leading-relaxed">
-                    <span class="text-accent shrink-0">✓</span>
-                    <span>{x}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div class="surface-card p-6">
-              <h3 class="font-semibold text-text-dark dark:text-text-light">{t.fitNo}</h3>
-              <ul class="mt-4 space-y-2.5">
-                {notForYou.map((x) => (
-                  <li class="flex gap-2.5 text-sm text-text-muted leading-relaxed">
-                    <span class="text-text-muted shrink-0">✕</span>
-                    <span>{x}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-    )}
-
-    <section class="max-w-3xl mx-auto px-5 py-16">
+    <section class="max-w-3xl mx-auto px-5 pb-16 md:pb-20">
       <SectionHeading title={t.faqTitle} />
-      <div class={`border-t ${hair}`}>
+      <div class={`border-t ${line}`}>
         {t.faq.map((f) => (
-          <details class={`group border-b ${hair}`}>
-            <summary class="flex items-center justify-between gap-4 py-4 cursor-pointer font-semibold text-text-dark dark:text-text-light hover:text-accent transition-colors">
+          <details class={`group border-b ${line}`}>
+            <summary class="flex items-center justify-between gap-4 py-4 cursor-pointer font-semibold text-text-dark hover:text-accent transition-colors">
               {f.q}
               <span class="text-accent shrink-0 group-open:rotate-45 transition-transform">+</span>
             </summary>
@@ -321,16 +220,7 @@ const notForYou: string[] = [];
       </div>
     </section>
 
-    <FinalCta
-      title={t.ctaTitle}
-      desc={t.ctaDesc}
-      ctaLabel={t.ctaPrimary}
-      ctaHref={calLink}
-      secondaryLabel={t.ctaSecondary}
-      secondaryHref={mailLink}
-      umamiEvent="cta-servizi-final"
-      fullBleed
-    />
+    <FinalCta title={t.ctaTitle} desc={t.ctaDesc} />
   </main>
   <Footer lang={lang} />
 </BaseLayout>
