@@ -23,7 +23,7 @@ const t = lang === 'en'
   : { follow: 'Seguimi su LinkedIn' };
 ---
 
-<div class:list={['rounded-xl border border-border dark:border-border-dark p-5', extra]}>
+<div class:list={['surface-card p-5', extra]}>
   <div class="flex items-center gap-3 mb-3">
     <img
       src={author.image}
@@ -35,7 +35,7 @@ const t = lang === 'en'
       class="w-10 h-10 rounded-full object-cover"
     />
     <div>
-      <div class="text-sm font-semibold text-text-dark dark:text-text-light">{author.name}</div>
+      <div class="text-sm font-semibold text-text-dark">{author.name}</div>
       <div class="text-xs text-text-muted">{author.role[lang]}</div>
     </div>
   </div>

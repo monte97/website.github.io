@@ -1,0 +1,144 @@
+---
+/**
+ * Indice del blog (IT e EN): ultimi tre articoli, serie con filtro per pillar,
+ * elenco compatto degli altri articoli. Condiviso da /blog/ e /en/blog/.
+ */
+import { Image } from 'astro:assets';
+import { postHref } from '@/utils/blog';
+import { getPillarLabel } from '@/data/pillars';
+import { getCover } from '@/utils/blogCover';
+import type { SeriesEntry } from '@/utils/series';
+
+interface Props {
+  allPosts: any[];
+  series: SeriesEntry[];
+  /** articoli che non stanno in una serie vera */
+  singoli: any[];
+  lang?: 'it' | 'en';
+}
+const { allPosts, series, singoli, lang = 'it' } = Astro.props;
+
+const t = lang === 'en'
+  ? {
+      latest: 'Latest articles', series: 'Series', others: 'Other articles', all: 'All',
+      filter: 'Filter series by pillar', uno: 'article', molti: 'articles', apri: 'Open the series', primo: 'Start from the first',
+    }
+  : {
+      latest: 'Ultimi articoli', series: 'Serie', others: 'Altri articoli', all: 'Tutte',
+      filter: 'Filtra le serie per pillar', uno: 'articolo', molti: 'articoli', apri: 'Apri la serie', primo: 'Parti dal primo',
+    };
+
+const PILLARS = ['progettare', 'verificare', 'automatizzare'] as const;
+const sorted = [...allPosts].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+// un solo articolo per serie, cosi' i tre in cima sono sempre diversi
+const visteSerie = new Set<string>();
+const ultimi = sorted.filter(p => {
+  const k = p.data.series;
+  if (!k) return true;
+  if (visteSerie.has(k)) return false;
+  visteSerie.add(k);
+  return true;
+}).slice(0, 3);
+const ultimiIds = new Set(ultimi.map(p => p.id));
+const altri = singoli.filter(p => !ultimiIds.has(p.id));
+const dateOf = (p: any) => p.data.date.toISOString().slice(0, 10);
+const plabel = (p: any) => (p.data.pillar ? getPillarLabel(p.data.pillar, lang) : '');
+---
+
+<div class="space-y-20">
+  <section>
+    <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-text-dark mb-6">{t.latest}</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      {ultimi.map(p => {
+        const cover = getCover(p);
+        return (
+          <a href={postHref(p.id, lang)} class="group surface-link flex flex-col h-full overflow-hidden">
+            {cover ? (
+              <Image src={cover} alt="" width={640} loading="lazy" class="w-full aspect-video object-contain p-2 bg-[#f3efe9] border-b border-border" />
+            ) : (
+              <div class="aspect-video border-b border-border border-t-4 border-t-accent bg-white p-5 flex flex-col justify-end" aria-hidden="true">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-accent mb-1">{lang === 'en' ? 'Article' : 'Articolo'}</span>
+                <span class="text-3xl font-extrabold tracking-tight text-text-dark leading-none">{plabel(p)}</span>
+              </div>
+            )}
+            <div class="p-5 flex flex-col flex-1">
+              <p class="text-[11px] font-bold uppercase tracking-wider text-accent mb-2">{dateOf(p)}{plabel(p) && ` · ${plabel(p)}`}</p>
+              <h3 class="text-lg font-extrabold leading-snug tracking-tight text-text-dark group-hover:text-accent transition-colors line-clamp-3">{p.data.title}</h3>
+              <p class="mt-2 text-sm text-text-muted leading-relaxed line-clamp-1">{p.data.description}</p>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+  </section>
+
+  <section>
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+      <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-text-dark">{t.series}</h2>
+      <div class="flex flex-wrap gap-2" role="group" aria-label={t.filter} data-series-filter>
+        <button type="button" data-pillar="all" aria-pressed="true" class="series-chip">{t.all}</button>
+        {PILLARS.map(pil => <button type="button" data-pillar={pil} aria-pressed="false" class="series-chip">{getPillarLabel(pil, lang)}</button>)}
+      </div>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {series.map(s => (
+        <a href={s.landingHref ?? s.firstHref} data-series-pillar={s.pillar ?? ''} class="group surface-link flex flex-col h-full p-5">
+          <h3 class="text-lg font-extrabold tracking-tight text-text-dark leading-snug group-hover:text-accent transition-colors">{s.title}</h3>
+          {s.subtitle && <p class="mt-2 text-sm text-text-muted leading-relaxed line-clamp-1">{s.subtitle}</p>}
+          <p class="mt-4 label-mono">{s.count} {s.count === 1 ? t.uno : t.molti} · {s.minutes} min</p>
+          <span class="mt-2 text-sm font-semibold text-accent">{s.landingHref ? t.apri : t.primo} &rarr;</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  {altri.length > 0 && (
+    <section>
+      <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-text-dark mb-4">{t.others}</h2>
+      <ul class="border-t border-border">
+        {altri.map(p => (
+          <li class="border-b border-border">
+            <a href={postHref(p.id, lang)} class="group flex flex-wrap items-baseline gap-x-5 gap-y-1 py-3.5">
+              <span class="label-mono shrink-0 w-24">{dateOf(p)}</span>
+              <span class="flex-1 min-w-[12rem] font-semibold text-text-dark group-hover:text-accent transition-colors leading-snug">{p.data.title}</span>
+              <span class="text-[11px] font-bold uppercase tracking-wider text-accent shrink-0">{plabel(p)}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+</div>
+
+<style>
+  .series-chip {
+    border: 1px solid var(--color-border, #e6e1da);
+    background: #fff;
+    border-radius: 9999px;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #606070;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .series-chip:hover { border-color: #E8973A; color: #2D2D3A; }
+  .series-chip[aria-pressed='true'] { background: #2D2D3A; border-color: #2D2D3A; color: #fff; }
+  /* senza JS il filtro non fa nulla: lo si nasconde */
+  :global(html:not(.js)) [data-series-filter] { display: none; }
+</style>
+
+<script is:inline>
+  document.documentElement.classList.add('js');
+  document.querySelectorAll('[data-series-filter]').forEach(function (bar) {
+    bar.addEventListener('click', function (e) {
+      var btn = e.target.closest('button[data-pillar]');
+      if (!btn) return;
+      var sel = btn.getAttribute('data-pillar');
+      bar.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+      document.querySelectorAll('[data-series-pillar]').forEach(function (c) {
+        c.style.display = (sel === 'all' || c.getAttribute('data-series-pillar') === sel) ? '' : 'none';
+      });
+    });
+  });
+</script>

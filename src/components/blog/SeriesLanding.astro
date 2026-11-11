@@ -70,102 +70,78 @@ const pillarLabel = getPillarLabel(meta.pillar);
 
   <main>
     <!-- ── Hero ── -->
-    <section class="relative overflow-hidden border-b border-border dark:border-border-dark">
-      <div class={`absolute top-0 left-0 right-0 h-1 ${styles.bg}`} />
-
-      <div class="max-w-5xl mx-auto px-5 pt-16 pb-12">
-        <!-- Breadcrumb -->
-        <nav class="flex items-center gap-2 text-sm text-text-muted mb-8" aria-label="Breadcrumb">
+    <section class="bg-base-light border-b border-border">
+      <div class="max-w-5xl mx-auto px-5 py-14 md:py-16">
+        <nav class="flex items-center gap-2 label-mono mb-6" aria-label="Breadcrumb">
           <a href={blogHref} class="hover:text-accent transition-colors">Blog</a>
           <span>/</span>
-          <span class={`${styles.text}`}>{pillarLabel}</span>
-          <span>/</span>
-          <span class="text-text-dark dark:text-text-light font-medium">{meta.breadcrumb}</span>
+          <span>{pillarLabel}</span>
         </nav>
 
-        <div class="grid lg:grid-cols-[1fr_auto] gap-8 items-start">
+        <div class="grid lg:grid-cols-[1fr_auto] gap-10 items-start">
           <div>
-            <span class={`inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest px-3 py-1 rounded-full mb-4 ${styles.badge}`}>
-              <span class={`w-1.5 h-1.5 rounded-full ${styles.bg}`} />
-              {t.serie} · {publishedArticles.length} {t.articoli}
-            </span>
-
-            <h1 class="text-3xl sm:text-4xl font-bold text-text-dark dark:text-text-light leading-tight mb-3">
+            <p class="label-mono !text-accent mb-4">{t.serie} · {publishedArticles.length} {t.articoli}</p>
+            <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-text-dark leading-[1.08] max-w-3xl">
               {meta.title}
             </h1>
-            <p class={`text-lg font-medium mb-5 ${styles.text}`}>
+            <p class="mt-5 text-lg md:text-xl text-text-muted leading-relaxed max-w-2xl">
               {meta.subtitle}
-            </p>
-            <p class="text-text-muted leading-relaxed max-w-2xl">
-              {meta.description}
             </p>
           </div>
 
-          <!-- Stats card -->
-          <div class="lg:min-w-[200px] rounded-xl border border-border dark:border-border-dark bg-surface dark:bg-surface-dark p-5 space-y-4">
+          <div class="lg:min-w-[220px] surface-card p-5 space-y-4">
             <div>
-              <div class="text-2xl font-bold text-text-dark dark:text-text-light">{publishedArticles.length}</div>
-              <div class="text-xs text-text-muted uppercase tracking-wide">{t.pubblicati}</div>
+              <div class="text-3xl font-extrabold tracking-tight text-text-dark">{publishedArticles.length}</div>
+              <div class="label-mono">{t.pubblicati}</div>
             </div>
-            <div class="border-t border-border dark:border-border-dark" />
+            <div class="border-t border-border" />
             <div>
-              <div class="text-2xl font-bold text-text-dark dark:text-text-light">{totalReadingTime}</div>
-              <div class="text-xs text-text-muted uppercase tracking-wide">{t.minuti}</div>
+              <div class="text-3xl font-extrabold tracking-tight text-text-dark">{totalReadingTime}</div>
+              <div class="label-mono">{t.minuti}</div>
             </div>
-            <div class="border-t border-border dark:border-border-dark" />
+            <div class="border-t border-border" />
             <div>
-              <div class={`text-sm font-semibold ${styles.text}`}>{meta.level}</div>
-              <div class="text-xs text-text-muted uppercase tracking-wide">{t.livello}</div>
-            </div>
-            <div class="border-t border-border dark:border-border-dark" />
-            <div class="flex flex-wrap gap-1.5">
-              {meta.tags.map(tag => (
-                <span class="text-xs px-2 py-0.5 rounded-full bg-text-muted/10 text-text-muted">{tag}</span>
-              ))}
+              <div class="text-sm font-bold text-text-dark">{meta.level}</div>
+              <div class="label-mono">{t.livello}</div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <div class="max-w-5xl mx-auto px-5 py-12 grid lg:grid-cols-[1fr_320px] gap-12 items-start">
+    <div class="max-w-5xl mx-auto px-5 py-14 grid lg:grid-cols-[1fr_320px] gap-12 items-start">
 
-      <!-- ── Main column ── -->
       <div>
-        <!-- Il cappello: perché la serie esiste. Vive in seriesMetadata. -->
-        <section class="mb-12 max-w-2xl">
-          <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-5">
+        <section class="mb-14 max-w-2xl">
+          <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-text-dark mb-5 leading-tight">
             {meta.cappello.h2}
           </h2>
           <div class="space-y-4 text-text-muted leading-relaxed">
+            <p class="text-text-dark">{meta.description}</p>
             {meta.cappello.paragrafi.map(par => <p set:html={par} />)}
           </div>
         </section>
 
-        <!-- Learning goals -->
-        <section class="mb-12">
-          <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-5">
+        <section class="mb-14">
+          <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-text-dark mb-5">
             {t.imparerai}
           </h2>
-          <ul class="space-y-3">
+          <ul class="border-t border-border">
             {meta.learningGoals.map(goal => (
-              <li class="flex items-start gap-3">
-                <span class={`mt-1 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold text-white ${styles.bg}`}>
-                  ✓
-                </span>
+              <li class="flex items-start gap-3 py-3 border-b border-border">
+                <span class="text-accent font-bold shrink-0" aria-hidden="true">&check;</span>
                 <span class="text-text-muted leading-relaxed">{goal}</span>
               </li>
             ))}
           </ul>
         </section>
 
-        <!-- Article list -->
         <section>
-          <h2 class="text-xl font-bold text-text-dark dark:text-text-light mb-6">
+          <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-text-dark mb-6">
             {t.elenco}
           </h2>
 
-          <ol class="space-y-4">
+          <ol class="space-y-3">
             {articles.map((post, i) => {
               const isDraft = post.data.draft;
               const readTime = estimateReadingTime(post.body);
@@ -175,39 +151,29 @@ const pillarLabel = getPillarLabel(meta.pillar);
               return (
                 <li>
                   {isDraft ? (
-                    <div class="flex gap-4 p-5 rounded-xl border border-border dark:border-border-dark opacity-50 cursor-not-allowed">
-                      <div class="flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold bg-text-muted/20 text-text-muted">
-                        {num}
-                      </div>
+                    <div class="flex gap-4 p-5 surface-card opacity-50 cursor-not-allowed">
+                      <span class="label-mono pt-1 shrink-0">{num}</span>
                       <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2 mb-1">
-                          <span class="text-base font-semibold text-text-muted">{post.data.title}</span>
-                          <span class="text-xs px-2 py-0.5 rounded-full bg-text-muted/15 text-text-muted">{t.inArrivo}</span>
+                          <span class="font-semibold text-text-muted">{post.data.title}</span>
+                          <span class="label-mono">{t.inArrivo}</span>
                         </div>
                         <p class="text-sm text-text-muted line-clamp-2">{post.data.description}</p>
                       </div>
                     </div>
                   ) : (
-                    <a
-                      href={href}
-                      class={`group flex gap-4 p-5 rounded-xl border border-border dark:border-border-dark hover:border-accent/40 dark:hover:border-accent/40 bg-surface dark:bg-surface-dark hover:bg-accent/5 transition-all`}
-                    >
-                      <div class={`flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold text-white ${styles.bg}`}>
-                        {num}
-                      </div>
+                    <a href={href} class="group surface-link flex gap-4 p-5">
+                      <span class="label-mono !text-accent pt-1 shrink-0">{num}</span>
                       <div class="flex-1 min-w-0">
-                        <div class="flex items-start justify-between gap-2 mb-1">
-                          <span class={`text-base font-semibold text-text-dark dark:text-text-light group-hover:${styles.text} transition-colors leading-snug`}>
+                        <div class="flex items-start justify-between gap-3 mb-1">
+                          <span class="font-bold text-text-dark group-hover:text-accent transition-colors leading-snug">
                             {post.data.title}
                           </span>
-                          <span class="flex-shrink-0 text-xs text-text-muted mt-0.5">{readTime} min</span>
+                          <span class="label-mono shrink-0 pt-1">{readTime} min</span>
                         </div>
                         <p class="text-sm text-text-muted leading-relaxed line-clamp-2">
                           {post.data.description}
                         </p>
-                      </div>
-                      <div class={`flex-shrink-0 self-center text-text-muted group-hover:${styles.text} transition-colors`}>
-                        →
                       </div>
                     </a>
                   )}
@@ -218,15 +184,10 @@ const pillarLabel = getPillarLabel(meta.pillar);
         </section>
       </div>
 
-      <!-- ── Sidebar ── -->
       <aside class="space-y-6 lg:sticky lg:top-6">
-
-        <!-- Service CTA -->
-        <div class={`rounded-xl border-2 ${styles.border} p-6`}>
-          <div class={`text-xs font-semibold uppercase tracking-widest mb-3 ${styles.text}`}>
-            {t.servizio}
-          </div>
-          <h3 class="text-lg font-bold text-text-dark dark:text-text-light mb-3 leading-snug">
+        <div class="surface-card p-6">
+          <p class="label-mono !text-accent mb-3">{t.servizio}</p>
+          <h3 class="text-xl font-extrabold tracking-tight text-text-dark mb-3 leading-snug">
             {meta.serviceCTA}
           </h3>
           <p class="text-sm text-text-muted leading-relaxed mb-5">
@@ -234,20 +195,19 @@ const pillarLabel = getPillarLabel(meta.pillar);
           </p>
           <a
             href={meta.serviceHref}
-            class={`block w-full text-center px-4 py-2.5 rounded-lg text-white text-sm font-semibold transition-opacity hover:opacity-90 ${styles.bg}`}
+            class="block w-full text-center px-4 py-3 rounded-lg bg-accent text-white text-sm font-semibold hover:bg-accent-hover transition-colors"
           >
-            {t.scopri} →
+            {t.scopri} &rarr;
           </a>
           <a
             href="mailto:francesco@montelli.dev"
-            class="block w-full text-center mt-2 px-4 py-2.5 rounded-lg text-sm font-medium text-text-muted hover:text-accent transition-colors bg-text-muted/10 hover:bg-text-muted/15"
+            class="block w-full text-center mt-2 px-4 py-2.5 text-sm font-medium text-text-muted hover:text-accent transition-colors"
           >
             {t.scrivimi}
           </a>
         </div>
 
         <AuthorCard lang={lang} />
-
       </aside>
     </div>
   </main>
