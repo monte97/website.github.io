@@ -1,14 +1,14 @@
 <template>
   <div>
-    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4">
       <button
         v-for="(src, i) in images"
         :key="i"
         type="button"
-        class="block overflow-hidden rounded-lg border border-border/60 bg-surface dark:bg-surface-dark focus:outline-none focus:ring-2 focus:ring-accent"
+        :class="['block overflow-hidden rounded-2xl border border-border bg-surface focus:outline-none focus:ring-2 focus:ring-accent', i === 0 ? 'col-span-2 sm:col-span-3' : '']"
         @click="open(i)"
       >
-        <img :src="src" :alt="`${title} - foto ${i + 1}`" loading="lazy" class="w-full h-64 object-contain hover:opacity-90 transition-opacity" />
+        <img :src="src" :alt="`${title} - foto ${i + 1}`" :loading="i === 0 ? 'eager' : 'lazy'" :class="['w-full object-cover hover:opacity-90 transition-opacity', i === 0 ? 'aspect-[4/3] sm:aspect-[16/9] object-[50%_35%]' : 'aspect-[4/3]']" />
       </button>
     </div>
 

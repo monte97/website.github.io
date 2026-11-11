@@ -3,7 +3,6 @@ import PageLayout from '@/layouts/PageLayout.astro';
 import { talks } from '@/data/talks';
 import { talkImagesFrom } from '@/utils/talks';
 import FinalCta from '@/components/ui/FinalCta.astro';
-import PageHero from '@/components/ui/PageHero.astro';
 import TalkLanguage from '@/components/ui/TalkLanguage.astro';
 
 interface Props {
@@ -22,6 +21,26 @@ const allTalkImages = import.meta.glob<{ default: { src: string } }>(
 );
 const coverFor = (slug: string): string | null => talkImagesFrom(allTalkImages, slug)[0] ?? null;
 
+// Logo dell'evento (public/images/loghi/), abbinato per nome; null se non c'e'.
+const LOGHI: [RegExp, string][] = [
+  [/devfest milano/i, 'devfest-milano.png'],
+  [/devsecops/i, 'devsecopsday.svg'],
+  [/linux day prato/i, 'linuxday-prato.png'],
+  [/mlopsday/i, 'mlopsday.svg'],
+  [/devfest alps/i, 'devfest-alps.svg'],
+  [/devfest bari/i, 'devfest-bari.svg'],
+  [/devromagna/i, 'devromagna-orizz.png'],
+  [/working software/i, 'working-software.svg'],
+];
+// alcuni loghi hanno molto spazio vuoto o scritte sottili: li si alza un po'
+const BIG = /mlopsday|devsecops|working software|linux day/i;
+const logoH = (event: string, base: number) => (BIG.test(event) ? Math.round(base * 1.45) : base);
+const LOGHI_HERO = LOGHI.map(([, f]) => f);
+const logoFor = (event: string): string | null => {
+  const hit = LOGHI.find(([re]) => re.test(event));
+  return hit ? `/images/loghi/${hit[1]}` : null;
+};
+
 const upcoming = talks
   .filter((tk) => tk.status === 'upcoming')
   .sort((a, b) => a.date.localeCompare(b.date));
@@ -32,9 +51,11 @@ const past = talks
 const locale = lang === 'en' ? 'en-US' : 'it-IT';
 const fmtDate = (iso: string) =>
   new Date(iso).toLocaleDateString(locale, { year: 'numeric', month: 'long' });
+const fmtMonth = (iso: string) =>
+  new Date(iso).toLocaleDateString(locale, { month: 'short' }).replace('.', '');
+const fmtYear = (iso: string) => new Date(iso).getFullYear();
 
 const mono = 'label-mono';
-const hair = 'border-border/70 dark:border-border-dark/70';
 
 const t = lang === 'en'
   ? {
@@ -42,7 +63,7 @@ const t = lang === 'en'
       pageDesc: 'Conferences and talks by Francesco Montelli: slides, material and recordings.',
       eyebrow: 'Speaking',
       heroTitle: 'Conferences & speaking',
-      intro: 'Every talk comes out of a real project. Slides, material and recordings are here; if a topic fits your event or your team, we can adapt it.',
+      intro: 'Every talk comes out of a real project. Slides, material and recordings are here.',
       note: 'The same topics I work on every day, including the parts that went wrong',
       upcomingTitle: 'Upcoming',
       pastTitle: 'Past talks',
@@ -56,7 +77,7 @@ const t = lang === 'en'
       pageDesc: 'Conferenze e talk di Francesco Montelli: slide, materiale e registrazioni.',
       eyebrow: 'Speaking',
       heroTitle: 'Conferenze e speaking',
-      intro: 'Ogni talk nasce da un progetto vero. Qui trovi slide, materiale e registrazioni; se un tema è adatto al tuo evento o al tuo team, si adatta.',
+      intro: 'Ogni talk nasce da un progetto vero. Qui trovi slide, materiale e registrazioni.',
       note: 'Gli stessi temi su cui lavoro tutti i giorni, comprese le parti andate storte',
       upcomingTitle: 'Prossimi',
       pastTitle: 'Talk passati',
@@ -68,32 +89,43 @@ const t = lang === 'en'
 ---
 
 <PageLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/talks.png" lang={lang}>
-  <PageHero
-    slot="hero"
-    variant="index"
-    eyebrow={t.eyebrow}
-    title={t.heroTitle}
-    subtitle={t.intro}
-    note={t.note}
-  />
+  <section slot="hero" class="bg-base-light border-b border-border">
+    <div class="max-w-5xl mx-auto px-5 py-14 md:py-16 grid md:grid-cols-[1fr_1.1fr] gap-10 md:gap-14 items-center">
+      <div>
+        <h1 class="font-extrabold tracking-tight text-text-dark leading-[1.06] text-4xl sm:text-5xl">{t.heroTitle}</h1>
+        <p class="mt-5 text-lg text-text-muted leading-relaxed">{t.intro}</p>
+        <p class="mt-5 label-mono">{t.note}</p>
+      </div>
+      <div>
+        <p class="text-[13px] font-semibold uppercase tracking-[0.12em] text-text-muted mb-5">{lang === 'en' ? "You've seen me at" : 'Mi hai visto a'}</p>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 items-center">
+          {LOGHI_HERO.map((f) => (
+            <img src={`/images/loghi/${f}`} alt={f.replace(/[-.].*$/, '')} class="w-full max-w-[200px] h-[50px] object-contain object-left" />
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
 
   {upcoming.length > 0 && (
-    <section class="mb-16 fade-in-section">
-      <h2 class="label-mono !text-accent mb-4">{t.upcomingTitle}</h2>
-      <div class="space-y-4">
+    <section class="mb-20 fade-in-section">
+      <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-text-dark mb-6"><span class="text-accent">{t.upcomingTitle}</span></h2>
+      <div class="surface-card overflow-hidden divide-y divide-border">
         {upcoming.map((talk) => {
-          const img = coverFor(talk.slug);
           return (
-            <a href={`${prefix}/talks/${talk.slug}/`} class="group block surface-link overflow-hidden border-l-[3px] border-l-accent hover:border-l-accent md:flex">
-              {img && (
-                <img src={img} alt={talk.title[lang]} class="w-full h-48 md:h-56 md:w-64 object-cover shrink-0" loading="lazy" />
-              )}
-              <div class="p-6 flex-1">
-                <TalkLanguage language={talk.language} lang={lang} class="mb-3" />
-                <p class="label-mono !text-accent"><span class="whitespace-nowrap">{talk.event}</span>{' '}<span class="whitespace-nowrap">&middot; {fmtDate(talk.date)}</span>{' '}<span class="whitespace-nowrap">&middot; {talk.location}</span></p>
-                <h3 class="text-xl font-bold text-text-dark dark:text-text-light mt-1 group-hover:text-accent transition-colors">{talk.title[lang]}</h3>
-                <p class="text-text-muted mt-2 leading-relaxed line-clamp-3 md:line-clamp-none">{talk.abstract[lang].split("\n\n")[0]}</p>
+            <a href={`${prefix}/talks/${talk.slug}/`} class="group flex items-center gap-4 md:gap-6 p-4 md:p-6 hover:bg-base-light/60 transition-colors">
+              <div class="shrink-0 w-14 md:w-20 text-center">
+                <p class="font-mono text-xs md:text-sm uppercase tracking-[0.12em] font-bold text-accent">{fmtMonth(talk.date)}</p>
+                <p class="text-xl md:text-3xl font-extrabold tracking-tight text-text-dark leading-none mt-1">{fmtYear(talk.date)}</p>
               </div>
+              <div class="flex-1 min-w-0">
+                {logoFor(talk.event)
+                  ? <div class="flex items-center gap-3"><img src={logoFor(talk.event)} alt={talk.event} style={`height:${logoH(talk.event, 32)}px`} class="w-auto max-w-[180px] object-contain object-left" /><span class="label-mono">{talk.location}</span></div>
+                  : <p class="label-mono">{talk.event} &middot; {talk.location}</p>}
+                <h3 class="text-lg md:text-2xl font-bold tracking-tight leading-snug text-text-dark mt-1 group-hover:text-accent transition-colors">{talk.title[lang]}</h3>
+                <TalkLanguage language={talk.language} lang={lang} class="mt-2" />
+              </div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden sm:block h-5 w-5 shrink-0 text-accent" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </a>
           );
         })}
@@ -102,24 +134,24 @@ const t = lang === 'en'
   )}
 
   {past.length > 0 && (
-    <section class="mb-16 fade-in-section">
-      <h2 class={`${mono} mb-4`}>{t.pastTitle}</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    <section class="mb-20 fade-in-section">
+      <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-text-dark mb-6">{t.pastTitle}</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {past.map((talk) => {
           const img = coverFor(talk.slug);
           return (
             <a href={`${prefix}/talks/${talk.slug}/`} class="group surface-link overflow-hidden flex flex-col h-full">
               {img ? (
-                <img src={img} alt={talk.title[lang]} class="w-full h-44 object-cover" loading="lazy" />
+                <img src={img} alt={talk.title[lang]} class="w-full aspect-[4/3] object-cover" loading="lazy" />
               ) : (
-                <div class="w-full h-44 bg-accent/10" aria-hidden="true"></div>
+                <div class="w-full aspect-[4/3] bg-surface" aria-hidden="true"></div>
               )}
               <div class="p-5 flex-1 flex flex-col">
-                <TalkLanguage language={talk.language} lang={lang} class="self-start mb-3" />
-                <p class={mono}><span class="whitespace-nowrap">{talk.event}</span>{' '}<span class="whitespace-nowrap">&middot; {fmtDate(talk.date)}</span></p>
-                <h3 class="text-lg font-bold text-text-dark dark:text-text-light mt-1 leading-snug group-hover:text-accent transition-colors">{talk.title[lang]}</h3>
-                <p class="text-sm text-text-muted mt-2 leading-relaxed line-clamp-3">{talk.abstract[lang].split("\n\n")[0]}</p>
-                <p class="text-xs text-text-muted mt-auto pt-4">{talk.location}</p>
+                {logoFor(talk.event)
+                  ? <div class="flex items-center justify-between gap-3"><img src={logoFor(talk.event)} alt={talk.event} style={`height:${logoH(talk.event, 30)}px`} class="w-auto max-w-[170px] object-contain object-left" loading="lazy" /><span class="label-mono !text-accent font-bold whitespace-nowrap">{fmtDate(talk.date)}</span></div>
+                  : <p class="label-mono !text-accent font-bold">{talk.event} &middot; {fmtDate(talk.date)}</p>}
+                <h3 class="text-lg font-bold tracking-tight text-text-dark mt-2 leading-snug line-clamp-3 group-hover:text-accent transition-colors">{talk.title[lang]}</h3>
+                <p class="text-sm text-text-muted mt-auto pt-4">{talk.location}</p>
               </div>
             </a>
           );
@@ -128,6 +160,6 @@ const t = lang === 'en'
     </section>
   )}
 
-  <FinalCta slot="after" title={t.ctaTitle} desc={t.ctaDesc} ctaLabel={t.ctaPrimary} secondaryLabel={t.ctaSecondary} secondaryHref={mailLink} umamiEvent="cta-talks-final" fullBleed />
+  <FinalCta slot="after" title={t.ctaTitle} desc={t.ctaDesc} />
 
 </PageLayout>
