@@ -30,7 +30,15 @@ const t = lang === 'en'
 
 const PILLARS = ['progettare', 'verificare', 'automatizzare'] as const;
 const sorted = [...allPosts].sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-const ultimi = sorted.slice(0, 3);
+// un solo articolo per serie, cosi' i tre in cima sono sempre diversi
+const visteSerie = new Set<string>();
+const ultimi = sorted.filter(p => {
+  const k = p.data.series;
+  if (!k) return true;
+  if (visteSerie.has(k)) return false;
+  visteSerie.add(k);
+  return true;
+}).slice(0, 3);
 const ultimiIds = new Set(ultimi.map(p => p.id));
 const altri = singoli.filter(p => !ultimiIds.has(p.id));
 const dateOf = (p: any) => p.data.date.toISOString().slice(0, 10);

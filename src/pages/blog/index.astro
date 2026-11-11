@@ -5,6 +5,7 @@ import PageLayout from '@/layouts/PageLayout.astro';
 import PageHero from '@/components/ui/PageHero.astro';
 import BlogIndex from '@/components/blog/BlogIndex.astro';
 import { getSeriesIndex } from '@/utils/series';
+import FinalCta from '@/components/ui/FinalCta.astro';
 
 const allPosts = (await getCollection('posts')).filter(p => p.data.lang === 'it' && !p.data.draft);
 const tutte = getSeriesIndex(allPosts);
@@ -20,4 +21,5 @@ const singoli = allPosts
   <PageHero slot="hero" variant="index" eyebrow="Blog" title="Quello che ho imparato costruendo, messo in ordine" subtitle="Sistemi veri, scelte prese davvero, vincoli dichiarati insieme ai risultati." note={`${allPosts.length} articoli · ${series.length} serie`} />
 
   <BlogIndex allPosts={allPosts} series={series} singoli={singoli} lang="it" />
+  <FinalCta slot="after" title="Ti è servito uno di questi articoli?" desc="Se state affrontando lo stesso problema, raccontamelo: in mezz'ora capiamo insieme da dove partire." />
 </PageLayout>
