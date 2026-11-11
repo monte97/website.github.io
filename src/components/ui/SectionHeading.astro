@@ -28,7 +28,7 @@ const centered = align === 'center';
   {eyebrow && <p class="label-mono !text-accent mb-3">{eyebrow}</p>}
 
   <div class:list={['flex flex-wrap items-baseline gap-x-4 gap-y-1', action && 'justify-between']}>
-    <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-text-dark dark:text-text-light max-w-2xl">
+    <h2 class="text-3xl md:text-[2.5rem] leading-[1.1] font-extrabold tracking-tight text-text-dark max-w-3xl">
       {title}
     </h2>
     {action && (
@@ -39,6 +39,6 @@ const centered = align === 'center';
   </div>
 
   {subtitle && (
-    <p class:list={['mt-4 text-text-muted leading-relaxed max-w-2xl', centered && 'mx-auto']}>{subtitle}</p>
+    <p class:list={['mt-4 text-lg text-text-muted leading-relaxed max-w-2xl', centered && 'mx-auto']}>{subtitle}</p>
   )}
 </div>

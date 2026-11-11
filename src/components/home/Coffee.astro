@@ -5,9 +5,12 @@
  */
 interface Props {
   lang?: 'it' | 'en';
+  /** Titolo e frase al posto di "Un caffè?": le altre pagine chiudono con il loro messaggio. */
+  title?: string;
+  lead?: string;
 }
 
-const { lang = 'it' } = Astro.props;
+const { lang = 'it', title, lead } = Astro.props;
 const prefix = lang === 'en' ? '/en' : '';
 
 const icons = {
@@ -47,8 +50,11 @@ const t = text[lang];
 
 <section id="contatti" class="scroll-mt-16 py-20 md:py-24 bg-surface dark:bg-surface-dark" aria-label={t.h}>
   <div class="max-w-5xl mx-auto px-5">
-    <h2 class="text-3xl md:text-[2.75rem] font-extrabold tracking-tight text-text-dark dark:text-text-light">{t.h}</h2>
-    <p class="mt-3 max-w-2xl text-lg text-text-muted leading-relaxed">{t.pre}<strong class="text-accent font-bold">{t.em}</strong>.</p>
+    <h2 class="text-3xl md:text-[2.75rem] font-extrabold tracking-tight text-text-dark dark:text-text-light">{title ?? t.h}</h2>
+    {lead
+      ? <p class="mt-3 max-w-2xl text-lg text-text-muted leading-relaxed">{lead}</p>
+      : <p class="mt-3 max-w-2xl text-lg text-text-muted leading-relaxed">{t.pre}<strong class="text-accent font-bold">{t.em}</strong>.</p>}
+    <slot />
 
     <div class="mt-10 grid md:grid-cols-4 border-y border-border dark:border-border-dark">
       {t.ways.map((w, i) => (

@@ -312,9 +312,9 @@ html.dark .astro-code span {
 }
 
 @utility surface-card {
-  @apply rounded-xl border border-border/70 bg-surface dark:border-border-dark/70 dark:bg-surface-dark;
+  @apply rounded-2xl border border-border bg-white;
 }
 
 @utility surface-link {
-  @apply rounded-xl border border-border/70 bg-surface transition-all dark:border-border-dark/70 dark:bg-surface-dark hover:border-accent/40 hover:bg-accent/5;
+  @apply rounded-2xl border border-border bg-white transition-all hover:border-accent hover:shadow-[0_12px_30px_rgba(45,45,58,.08)];
 }

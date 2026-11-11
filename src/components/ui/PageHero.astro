@@ -27,21 +27,21 @@ const isIndex = variant === 'index';
 ---
 
 {isIndex ? (
-  <section class="bg-accent-subtle border-b border-border/40 dark:border-border-dark/40">
+  <section class="bg-base-light border-b border-border">
     <div class="max-w-5xl mx-auto px-5 py-14 md:py-16 fade-in-section">
       {eyebrow && (
-        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-4">{eyebrow}</p>
+        <p class="text-[13px] font-semibold uppercase tracking-[0.12em] text-text-muted mb-4">{eyebrow}</p>
       )}
-      <h1 class="font-bold tracking-tight text-text-dark dark:text-text-light leading-[1.15] text-3xl sm:text-4xl max-w-2xl">
+      <h1 class="font-extrabold tracking-tight text-text-dark leading-[1.08] text-4xl sm:text-5xl max-w-3xl">
         {title}
       </h1>
-      {subtitle && <p class="mt-4 text-text-muted leading-relaxed max-w-2xl">{subtitle}</p>}
+      {subtitle && <p class="mt-5 text-lg md:text-xl text-text-muted leading-relaxed max-w-2xl">{subtitle}</p>}
       {note && <p class="mt-5 label-mono">{note}</p>}
       <slot />
     </div>
   </section>
 ) : (
-<section class="bg-accent-subtle border-b border-border/40 dark:border-border-dark/40">
+<section class="bg-base-light border-b border-border">
   <div class:list={['mx-auto px-5 py-16 md:py-24 fade-in-section', centered ? 'max-w-3xl text-center' : 'max-w-5xl']}>
     <div class:list={[
       'flex flex-col',
@@ -61,10 +61,10 @@ const isIndex = variant === 'index';
 
       <div class="flex-1">
         {eyebrow && (
-          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent mb-5">{eyebrow}</p>
+          <p class="text-[13px] font-semibold uppercase tracking-[0.12em] text-text-muted mb-5">{eyebrow}</p>
         )}
-        <h1 class:list={['font-bold tracking-tight text-text-dark dark:text-text-light leading-[1.15]',
-          centered ? 'text-3xl sm:text-4xl text-balance' : 'text-3xl sm:text-4xl md:text-5xl']}>
+        <h1 class:list={['font-extrabold tracking-tight text-text-dark leading-[1.06]',
+          centered ? 'text-4xl sm:text-5xl text-balance' : 'text-4xl sm:text-5xl md:text-[3.5rem]']}>
           {title}
         </h1>
         {subtitle && (
