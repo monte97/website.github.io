@@ -115,7 +115,7 @@ const t = lang === 'en'
       eyebrow: 'Case studies',
       heroTitle: 'What was decided, and why',
       intro: (n: number) =>
-        `${n} analyses of real projects on systems that already had people working inside them. Each piece starts from the constraint that created the work, walks through the choices one by one including the rejected ones, and says what the client was left with.`,
+        `${n} real projects: the starting constraint, the choices made and rejected, what the client was left with.`,
       note: 'Client names are omitted, the decisions are not',
       emptyTitle: 'Nothing published yet',
       emptyDesc: 'The first analyses are being written.',
@@ -131,7 +131,7 @@ const t = lang === 'en'
       eyebrow: 'Case study',
       heroTitle: 'Cosa è stato deciso, e perché',
       intro: (n: number) =>
-        `${n} analisi di progetti reali su sistemi che avevano già gente dentro. Ogni pezzo parte dal vincolo che ha generato il lavoro, ripercorre le scelte una per una comprese quelle scartate, e dice cosa è rimasto in mano a chi ha pagato.`,
+        `${n} progetti reali: il vincolo di partenza, le scelte fatte e quelle scartate, cosa è rimasto al cliente.`,
       note: 'I nomi dei committenti sono omessi, le decisioni no',
       emptyTitle: 'Ancora niente di pubblicato',
       emptyDesc: 'Le prime analisi sono in scrittura.',
@@ -149,10 +149,8 @@ const t = lang === 'en'
 
     <PageHero
       variant="index"
-      eyebrow={t.eyebrow}
       title={t.heroTitle}
       subtitle={t.intro(caseStudies.length)}
-      note={t.note}
     />
 
     <section class="py-12 md:py-16 bg-base-light">
