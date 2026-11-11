@@ -3,9 +3,7 @@ import PageLayout from '@/layouts/PageLayout.astro';
 import { talks } from '@/data/talks';
 import { talkImagesFrom } from '@/utils/talks';
 import FinalCta from '@/components/ui/FinalCta.astro';
-import PageHero from '@/components/ui/PageHero.astro';
 import TalkLanguage from '@/components/ui/TalkLanguage.astro';
-import SeenAt from '@/components/home/SeenAt.astro';
 
 interface Props {
   lang?: 'it' | 'en';
@@ -34,6 +32,10 @@ const LOGHI: [RegExp, string][] = [
   [/devromagna/i, 'devromagna-orizz.png'],
   [/working software/i, 'working-software.svg'],
 ];
+// alcuni loghi hanno molto spazio vuoto o scritte sottili: li si alza un po'
+const BIG = /mlopsday|devsecops|working software|linux day/i;
+const logoH = (event: string, base: number) => (BIG.test(event) ? Math.round(base * 1.45) : base);
+const LOGHI_HERO = LOGHI.map(([, f]) => f);
 const logoFor = (event: string): string | null => {
   const hit = LOGHI.find(([re]) => re.test(event));
   return hit ? `/images/loghi/${hit[1]}` : null;
@@ -87,15 +89,24 @@ const t = lang === 'en'
 ---
 
 <PageLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/talks.png" lang={lang}>
-  <PageHero
-    slot="hero"
-    variant="index"
-    eyebrow={t.eyebrow}
-    title={t.heroTitle}
-    subtitle={t.intro}
-    note={t.note}
-  />
-  <SeenAt slot="hero" lang={lang} />
+  <section slot="hero" class="bg-base-light border-b border-border">
+    <div class="max-w-5xl mx-auto px-5 py-14 md:py-16 grid md:grid-cols-[1fr_1.1fr] gap-10 md:gap-14 items-center">
+      <div>
+        <p class="text-[13px] font-semibold uppercase tracking-[0.12em] text-text-muted mb-4">{t.eyebrow}</p>
+        <h1 class="font-extrabold tracking-tight text-text-dark leading-[1.06] text-4xl sm:text-5xl">{t.heroTitle}</h1>
+        <p class="mt-5 text-lg text-text-muted leading-relaxed">{t.intro}</p>
+        <p class="mt-5 label-mono">{t.note}</p>
+      </div>
+      <div>
+        <p class="text-[13px] font-semibold uppercase tracking-[0.12em] text-text-muted mb-5">{lang === 'en' ? "You've seen me at" : 'Mi hai visto a'}</p>
+        <div class="grid grid-cols-2 gap-x-8 gap-y-6 items-center">
+          {LOGHI_HERO.map((f) => (
+            <img src={`/images/loghi/${f}`} alt={f.replace(/[-.].*$/, '')} class="w-full max-w-[200px] h-[50px] object-contain object-left" />
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
 
   {upcoming.length > 0 && (
     <section class="mb-20 fade-in-section">
@@ -110,7 +121,7 @@ const t = lang === 'en'
               </div>
               <div class="flex-1 min-w-0">
                 {logoFor(talk.event)
-                  ? <div class="flex items-center gap-3"><img src={logoFor(talk.event)} alt={talk.event} class="h-7 md:h-8 w-auto max-w-[170px] object-contain" /><span class="label-mono">{talk.location}</span></div>
+                  ? <div class="flex items-center gap-3"><img src={logoFor(talk.event)} alt={talk.event} style={`height:${logoH(talk.event, 32)}px`} class="w-auto max-w-[180px] object-contain object-left" /><span class="label-mono">{talk.location}</span></div>
                   : <p class="label-mono">{talk.event} &middot; {talk.location}</p>}
                 <h3 class="text-lg md:text-2xl font-bold tracking-tight leading-snug text-text-dark mt-1 group-hover:text-accent transition-colors">{talk.title[lang]}</h3>
                 <TalkLanguage language={talk.language} lang={lang} class="mt-2" />
@@ -138,7 +149,7 @@ const t = lang === 'en'
               )}
               <div class="p-5 flex-1 flex flex-col">
                 {logoFor(talk.event)
-                  ? <div class="flex items-center justify-between gap-3"><img src={logoFor(talk.event)} alt={talk.event} class="h-7 w-auto max-w-[150px] object-contain" loading="lazy" /><span class="label-mono !text-accent font-bold">{fmtDate(talk.date)}</span></div>
+                  ? <div class="flex items-center justify-between gap-3"><img src={logoFor(talk.event)} alt={talk.event} style={`height:${logoH(talk.event, 30)}px`} class="w-auto max-w-[170px] object-contain object-left" loading="lazy" /><span class="label-mono !text-accent font-bold whitespace-nowrap">{fmtDate(talk.date)}</span></div>
                   : <p class="label-mono !text-accent font-bold">{talk.event} &middot; {fmtDate(talk.date)}</p>}
                 <h3 class="text-lg font-bold tracking-tight text-text-dark mt-2 leading-snug line-clamp-3 group-hover:text-accent transition-colors">{talk.title[lang]}</h3>
                 <p class="text-sm text-text-muted mt-auto pt-4">{talk.location}</p>
