@@ -7,6 +7,7 @@ import PostCTA from '@/components/blog/PostCTA.astro';
 import AuthorCard from '@/components/ui/AuthorCard.astro';
 import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 import SeriesNav from '@/components/blog/SeriesNav.astro';
+import TalkBanner from '@/components/blog/TalkBanner.astro';
 import { getPillarLabel } from '@/data/pillars';
 import { getCollection } from 'astro:content';
 import { postHref } from '@/utils/blog';
@@ -130,6 +131,8 @@ const relatedPosts = pillar
         <p class="mt-5 label-mono">{tags.join(' · ')}</p>
       )}
     </header>
+
+    <TalkBanner lang={lang} />
 
     <!-- Series navigation -->
     {series && <SeriesNav series={series} currentId={postId} lang={lang} />}
