@@ -2,7 +2,7 @@
 import BaseLayout from './BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
-import PostCTA from '@/components/blog/PostCTA.astro';
+import FinalCta from '@/components/ui/FinalCta.astro';
 import AuthorCard from '@/components/ui/AuthorCard.astro';
 import SeriesNav from '@/components/blog/SeriesNav.astro';
 import { Image } from 'astro:assets';
@@ -225,7 +225,6 @@ const t = lang === 'en'
     <AuthorCard lang={lang} variant="row" class="mt-14" />
 
     <!-- CTA -->
-    <PostCTA lang={lang} category={category} />
 
     <!-- Related posts -->
     {relatedPosts.length > 0 && (
@@ -262,6 +261,11 @@ const t = lang === 'en'
       </div>
     )}
   </main>
+
+  <FinalCta
+    title={lang === 'en' ? 'Facing the same problem in your system?' : 'State affrontando lo stesso problema?'}
+    desc={lang === 'en' ? 'Tell me how your system looks today: in half an hour we figure out where to start.' : "Raccontami com'è fatto il vostro sistema oggi: in mezz'ora capiamo insieme da dove partire."}
+  />
 
   <Footer lang={lang} />
 
