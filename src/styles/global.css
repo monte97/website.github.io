@@ -90,6 +90,7 @@ textarea:focus-visible {
   font-family: var(--font-mono);
   font-size: 0.9em;
 }
+:not(pre) > code { overflow-wrap: anywhere; }
 .dark :not(pre) > code {
   background-color: var(--color-code-inline-dark);
 }
@@ -110,14 +111,14 @@ pre {
 
 /* ── Prose: links ── */
 .prose a {
-  color: var(--color-accent);
-  font-weight: 500;
+  color: var(--color-text-dark);
   text-decoration: underline;
-  text-decoration-color: color-mix(in srgb, var(--color-accent) 35%, transparent);
-  text-underline-offset: 4px;
+  text-decoration-color: var(--color-accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
 }
 .prose a:hover {
-  text-decoration-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 /* ── Prose: images ── */
@@ -128,13 +129,14 @@ pre {
 
 /* ── Prose: blockquotes (callout: scheda bianca, filetto sottile) ── */
 .prose blockquote {
-  border: 1px solid var(--color-border);
   border-left: 3px solid var(--color-accent);
-  background-color: #fff;
-  border-radius: 16px;
-  padding: 0.5rem 1.25rem;
-  margin: 1.75rem 0;
+  background: none;
+  padding: 0.25rem 0 0.25rem 1rem;
+  margin: 1.6rem 0;
   font-style: normal;
+  font-size: 17px;
+  line-height: 1.6;
+  color: #3a3a48;
 }
 .prose blockquote p:last-child { margin-bottom: 0; }
 
@@ -144,10 +146,15 @@ pre {
 }
 
 /* ── Prose: paragraphs ── */
-.prose p {
+.prose p,
+.prose li {
   line-height: 1.75;
-  margin-bottom: 1.1rem;
 }
+.prose p { margin-bottom: 1.2rem; }
+.prose li { margin-bottom: 0.4rem; }
+.prose { font-size: 18px; color: #3a3a48; }
+.prose figure { margin: 2rem 0; }
+.prose figcaption { font-size: 14px; color: var(--color-text-muted); margin-top: 0.5rem; }
 .prose strong { color: var(--color-text-dark); font-weight: 700; }
 
 /* ── Tables ── */
@@ -190,13 +197,13 @@ pre {
 
 /* ── Headings ── */
 .prose h2:not(:where(.not-prose *)) {
-  font-size: 1.9rem;
+  font-size: 1.875rem;
   line-height: 1.15;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--color-text-dark);
-  margin-top: 3.5rem;
-  margin-bottom: 1.1rem;
+  margin-top: 2.6rem;
+  margin-bottom: 0.9rem;
   scroll-margin-top: 5rem;
 }
 .prose h3:not(:where(.not-prose *)) {

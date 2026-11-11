@@ -13,16 +13,30 @@ interface Props {
   lang?: 'it' | 'en';
   /** Il bottone LinkedIn: si toglie dove la pagina ha gia' una CTA propria */
   linkedin?: boolean;
+  /** `row`: riga orizzontale fra due filetti, per fine articolo */
+  variant?: 'card' | 'row';
   class?: string;
 }
 
-const { lang = 'it', linkedin = true, class: extra = '' } = Astro.props;
+const { lang = 'it', linkedin = true, variant = 'card', class: extra = '' } = Astro.props;
 
 const t = lang === 'en'
   ? { follow: 'Follow me on LinkedIn' }
   : { follow: 'Seguimi su LinkedIn' };
 ---
 
+{variant === 'row' ? (
+  <div class:list={['flex gap-4 items-start py-6 border-y border-border', extra]}>
+    <img src={author.image} alt={author.name} width="56" height="56" loading="lazy" decoding="async" class="w-14 h-14 rounded-full object-cover shrink-0" />
+    <div>
+      <div class="font-semibold text-text-dark">{author.name}</div>
+      <p class="text-[15px] text-text-muted leading-relaxed mt-1 mb-2">{author.bio[lang]}</p>
+      {linkedin && (
+        <a href={author.linkedin} target="_blank" rel="noopener noreferrer" class="text-[15px] font-semibold text-accent hover:underline">{t.follow} &rarr;</a>
+      )}
+    </div>
+  </div>
+) : (
 <div class:list={['surface-card p-5', extra]}>
   <div class="flex items-center gap-3 mb-3">
     <img
@@ -53,3 +67,4 @@ const t = lang === 'en'
     </a>
   )}
 </div>
+)}

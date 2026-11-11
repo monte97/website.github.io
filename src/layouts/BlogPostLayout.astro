@@ -2,12 +2,13 @@
 import BaseLayout from './BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
-import TOC from '@/components/blog/TOC.astro';
 import PostCTA from '@/components/blog/PostCTA.astro';
 import AuthorCard from '@/components/ui/AuthorCard.astro';
-import Breadcrumb from '@/components/ui/Breadcrumb.astro';
 import SeriesNav from '@/components/blog/SeriesNav.astro';
-import TalkBanner from '@/components/blog/TalkBanner.astro';
+import { Image } from 'astro:assets';
+import { talks } from '@/data/talks';
+import { talkImagesFrom, eventLogo } from '@/utils/talks';
+import { getCover } from '@/utils/blogCover';
 import { getPillarLabel } from '@/data/pillars';
 import { getCollection } from 'astro:content';
 import { postHref } from '@/utils/blog';
@@ -102,61 +103,126 @@ const relatedPosts = pillar
       .slice(0, 3)
   : [];
 
+
+// ── Testata: colonna destra (talk, poi figura, poi frase chiave, poi niente) ──
+const thisPost = allPosts.find(p => p.id === postId);
+
+const articlePath = Astro.url.pathname.replace(/^\/en/, '').replace(/\/?$/, '/');
+const talk = talks.find(t => t.links?.article && t.links.article.replace(/\/?$/, '/') === articlePath);
+const allTalkImages = import.meta.glob<{ default: { src: string } }>(
+  '/src/assets/talks/*/*.{webp,jpg,jpeg,png}',
+  { eager: true },
+);
+const talkPhoto = talk ? (talkImagesFrom(allTalkImages, talk.slug)[0] ?? null) : null;
+const talkLogo = talk ? eventLogo(talk.event) : null;
+const cover = !talk && thisPost ? getCover(thisPost) : null;
+
+const allSummary = (thisPost?.data.summary ?? []).slice();
+const keyRe = lang === 'en' ? /^(discovery|result|outcome)/i : /^(scoperta|risultato|esito)/i;
+const keyIdx = !talk && !cover ? allSummary.findIndex(it => keyRe.test(it.label.trim())) : -1;
+const keyItem = keyIdx >= 0 ? allSummary[keyIdx] : null;
+const summaryItems = allSummary.filter((_, i) => i !== keyIdx).slice(0, 4);
+
+const hasRight = !!(talk || cover || keyItem);
+const tocItems = headings.filter(h => h.depth >= 2 && h.depth <= 3);
+
+const t = lang === 'en'
+  ? { stage: 'From the stage', talk: 'the talk', slides: 'the slides', fromArticle: 'From the article', oneSentence: 'In one sentence', toc: 'In this article', cover: 'Cover' }
+  : { stage: 'Dal palco', talk: 'il talk', slides: 'le slide', fromArticle: "Dall'articolo", oneSentence: 'In una frase', toc: 'In questo articolo', cover: 'Copertina' };
 ---
 
 <BaseLayout title={title} seoTitle={seoTitle} description={description} ogImage={ogImage} lang={lang} type="article" publishedTime={date} alternateUrl={alternateUrl} author="Francesco Montelli" jsonLd={blogPostingJsonLd}>
   <Header lang={lang} altHref={alternateUrl ?? null} />
 
-  <main class="max-w-5xl mx-auto px-5 py-8">
-    <Breadcrumb
-      class="mb-6"
-      variant="text"
-      truncateLast
-      items={[...breadcrumbs, { label: title }]}
-    />
+  <header class="bg-[#16161d] text-white">
+    <div class:list={['max-w-[1080px] mx-auto px-5 pt-10 pb-12 md:pt-14 md:pb-14 grid gap-10 md:items-end', hasRight ? 'md:grid-cols-[1.3fr_0.7fr] md:gap-12' : '']}>
+      <div class="min-w-0">
+        <nav aria-label="Breadcrumb" class="text-xs text-white/55 mb-6">
+          <ol class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            {breadcrumbs.map((b, i) => (
+              <>
+                {i > 0 && <li aria-hidden="true" class="opacity-50">/</li>}
+                <li><a href={b.href} class="hover:text-accent transition-colors">{b.label}</a></li>
+              </>
+            ))}
+          </ol>
+        </nav>
+        <p class="text-[13px] font-semibold uppercase tracking-[0.08em] text-white/60">
+          {pillar && <span class="text-accent">{getPillarLabel(pillar, lang)}</span>}
+          {pillar && ' · '}
+          <time datetime={date.toISOString()}>{formattedDate}</time>
+          {readingTime && ` · ${readingTime} min`}
+        </p>
+        <h1 class="mt-3.5 mb-4 text-[34px] md:text-[50px] font-extrabold leading-[1.07] tracking-[-0.03em] text-white">{title}</h1>
+        {description && <p class="text-lg md:text-xl leading-normal text-[#cfcdd6]">{description}</p>}
+      </div>
 
-    <!-- Title block -->
-    <header class="mb-10 max-w-3xl">
-      <p class="label-mono mb-4">
-        {pillar && <span class="!text-accent">{getPillarLabel(pillar, lang)}</span>}
-        {pillar && ' · '}
-        <time class="tabular-nums" datetime={date.toISOString()}>{formattedDate}</time>
-        {readingTime && ` · ${readingTime} min`}
-      </p>
-      <h1 class="text-4xl md:text-5xl font-extrabold leading-[1.08] tracking-tight text-text-dark mb-5">
-        {title}
-      </h1>
-      {description && <p class="text-lg md:text-xl text-text-muted leading-relaxed">{description}</p>}
-      {tags.length > 0 && (
-        <p class="mt-5 label-mono">{tags.join(' · ')}</p>
+      {talk && (
+        <div class="min-w-0">
+          {talkPhoto && <img src={talkPhoto} alt="" class="w-full aspect-[4/3] object-cover rounded-2xl" loading="eager" />}
+          {!talkPhoto && talkLogo && (
+            <span class="inline-flex rounded-lg bg-white px-3 py-2 mb-3"><img src={talkLogo} alt={talk.event} class="h-6 w-auto max-w-[160px] object-contain" /></span>
+          )}
+          <p class="text-[13px] text-white/70 mt-2 leading-relaxed">
+            <b class="text-accent">{t.stage}</b> · {talk.event} ·{' '}
+            <a href={`${prefix}/talks/${talk.slug}/`} class="underline hover:text-accent">{t.talk}</a>
+            {talk.links?.slides && <> · <a href={talk.links.slides} target="_blank" rel="noopener noreferrer" class="underline hover:text-accent">{t.slides}</a></>}
+          </p>
+        </div>
       )}
-    </header>
 
-    <TalkBanner lang={lang} />
+      {cover && (
+        <div class="min-w-0">
+          <div class="rounded-2xl bg-white p-3.5">
+            <Image src={cover} alt="" widths={[360, 540, 720]} sizes="(min-width: 768px) 380px, 90vw" class="w-full aspect-[4/3] object-contain block" loading="eager" />
+          </div>
+          <p class="text-[13px] text-white/60 mt-2">{t.fromArticle}</p>
+        </div>
+      )}
 
-    <!-- Series navigation -->
+      {keyItem && (
+        <div class="min-w-0 border-l-[3px] border-accent pl-5 py-1.5">
+          <b class="block text-xs uppercase tracking-[0.12em] text-accent mb-2">{t.oneSentence}</b>
+          <p class="text-2xl font-extrabold leading-tight tracking-[-0.01em] text-white">{keyItem.value}</p>
+        </div>
+      )}
+    </div>
+  </header>
+
+  {summaryItems.length > 0 && (
+    <section class="max-w-[1080px] mx-auto px-5" aria-label={lang === 'en' ? 'In brief' : 'In sintesi'}>
+      <dl class="grid grid-cols-2 md:[grid-template-columns:repeat(var(--n),minmax(0,1fr))] border-b border-border" style={`--n:${summaryItems.length}`}>
+        {summaryItems.map((it, i) => (
+          <div class:list={['py-6 pr-5 text-[15px] leading-[1.45] text-text-dark', i > 0 && 'md:pl-5 md:border-l md:border-border', i % 2 === 1 && 'pl-5 border-l border-border md:pl-5']}>
+            <dt class="block text-xs font-bold uppercase tracking-[0.1em] text-accent mb-1.5">{it.label}</dt>
+            <dd>{it.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  )}
+
+  <main class="max-w-[720px] mx-auto px-5 pt-3 pb-16">
     {series && <SeriesNav series={series} currentId={postId} lang={lang} />}
 
-    <!-- Two-column layout: content + TOC -->
-    <div class="flex gap-12">
-      <!-- Main content -->
-      <article class="flex-1 min-w-0 prose max-w-none">
-        <slot />
-      </article>
+    {tocItems.length >= 3 && (
+      <details class="toc-details border-b border-border text-[15px]">
+        <summary class="py-3 cursor-pointer font-semibold text-text-dark">{t.toc}</summary>
+        <ul class="pb-3 space-y-1.5 text-sm">
+          {tocItems.map(h => (
+            <li style={`padding-left: ${(h.depth - 2) * 1}rem`}>
+              <a href={`#${h.slug}`} class="text-text-muted hover:text-accent transition-colors">{h.text}</a>
+            </li>
+          ))}
+        </ul>
+      </details>
+    )}
 
-      <!-- Sidebar: indice, e sotto chi ha scritto -->
-      <aside class="hidden lg:block w-64 shrink-0">
-        <div class="sticky top-20 space-y-6">
-          <TOC headings={headings} lang={lang} />
-          <AuthorCard lang={lang} />
-        </div>
-      </aside>
-    </div>
+    <article class="prose max-w-none mt-9">
+      <slot />
+    </article>
 
-    <!-- Sotto lg la sidebar non c'e': il riquadro torna in fondo, prima della CTA -->
-    <div class="lg:hidden mt-12">
-      <AuthorCard lang={lang} />
-    </div>
+    <AuthorCard lang={lang} variant="row" class="mt-14" />
 
     <!-- CTA -->
     <PostCTA lang={lang} category={category} />

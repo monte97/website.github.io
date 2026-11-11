@@ -2,7 +2,6 @@
 import { getCollection, render } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import BlogPostLayout from '@/layouts/BlogPostLayout.astro';
-import PostSummary from '@/components/ui/PostSummary.astro';
 import PostOpenItems from '@/components/ui/PostOpenItems.astro';
 import PostCaseStudy from '@/components/ui/PostCaseStudy.astro';
 import { estimateReadingTime } from '@/utils/blog';
@@ -47,10 +46,6 @@ const alternateUrl = `/blog/${slug}`;
   ogImage={`/og/posts/${slug}.en.png`}
   alternateUrl={alternateUrl}
 >
-  {post.data.summary && post.data.summary.length > 0 && (
-    <PostSummary items={post.data.summary} lang="en" />
-  )}
-
   {post.data.figures?.length
     ? <ArticleBody html={post.rendered?.html ?? ''} figures={post.data.figures} lang="en" />
     : <Content />}
