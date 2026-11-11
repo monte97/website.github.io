@@ -7,7 +7,7 @@
  * così quello che si confronta è solo la testa della pagina.
  */
 import SeriesGrid from '@/components/blog/SeriesGrid.astro';
-import { postHref, estimateReadingTime } from '@/utils/blog';
+import ArticleCard from '@/components/blog/ArticleCard.astro';
 import { pillarStyles } from '@/data/pillar-styles';
 import { getPillarLabel } from '@/data/pillars';
 import type { SeriesEntry } from '@/utils/series';
@@ -59,18 +59,9 @@ export const introPillar: Record<'it' | 'en', Record<string, string>> = {
         {mieiSingoli.length > 0 && (
           <div class={mieSerie.length > 0 ? 'mt-10' : ''}>
             <p class="label-mono mb-2">{tr.singoli}</p>
-            <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-10 border-t border-border">
-              {mieiSingoli.map(p => (
-                <li>
-                  <a href={postHref(p.id, lang)} class="group flex items-baseline gap-3 py-3 border-b border-border">
-                    <span class="flex-1 text-[15px] font-medium text-text-dark group-hover:text-accent transition-colors leading-snug">
-                      {p.data.title}
-                    </span>
-                    <span class="shrink-0 label-mono tabular-nums">{estimateReadingTime(p.body)} min</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {mieiSingoli.map(p => <ArticleCard post={p} lang={lang} />)}
+            </div>
           </div>
         )}
       </section>
