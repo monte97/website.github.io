@@ -23,6 +23,22 @@ const allTalkImages = import.meta.glob<{ default: { src: string } }>(
 );
 const coverFor = (slug: string): string | null => talkImagesFrom(allTalkImages, slug)[0] ?? null;
 
+// Logo dell'evento (public/images/loghi/), abbinato per nome; null se non c'e'.
+const LOGHI: [RegExp, string][] = [
+  [/devfest milano/i, 'devfest-milano.png'],
+  [/devsecops/i, 'devsecopsday.svg'],
+  [/linux day prato/i, 'linuxday-prato.png'],
+  [/mlopsday/i, 'mlopsday.svg'],
+  [/devfest alps/i, 'devfest-alps.svg'],
+  [/devfest bari/i, 'devfest-bari.svg'],
+  [/devromagna/i, 'devromagna-orizz.png'],
+  [/working software/i, 'working-software.svg'],
+];
+const logoFor = (event: string): string | null => {
+  const hit = LOGHI.find(([re]) => re.test(event));
+  return hit ? `/images/loghi/${hit[1]}` : null;
+};
+
 const upcoming = talks
   .filter((tk) => tk.status === 'upcoming')
   .sort((a, b) => a.date.localeCompare(b.date));
@@ -79,6 +95,7 @@ const t = lang === 'en'
     subtitle={t.intro}
     note={t.note}
   />
+  <SeenAt slot="hero" lang={lang} />
 
   {upcoming.length > 0 && (
     <section class="mb-20 fade-in-section">
@@ -92,7 +109,9 @@ const t = lang === 'en'
                 <p class="text-xl md:text-3xl font-extrabold tracking-tight text-text-dark leading-none mt-1">{fmtYear(talk.date)}</p>
               </div>
               <div class="flex-1 min-w-0">
-                <p class="label-mono">{talk.event} &middot; {talk.location}</p>
+                {logoFor(talk.event)
+                  ? <div class="flex items-center gap-3"><img src={logoFor(talk.event)} alt={talk.event} class="h-7 md:h-8 w-auto max-w-[170px] object-contain" /><span class="label-mono">{talk.location}</span></div>
+                  : <p class="label-mono">{talk.event} &middot; {talk.location}</p>}
                 <h3 class="text-lg md:text-2xl font-bold tracking-tight leading-snug text-text-dark mt-1 group-hover:text-accent transition-colors">{talk.title[lang]}</h3>
                 <TalkLanguage language={talk.language} lang={lang} class="mt-2" />
               </div>
@@ -118,7 +137,9 @@ const t = lang === 'en'
                 <div class="w-full aspect-[4/3] bg-surface" aria-hidden="true"></div>
               )}
               <div class="p-5 flex-1 flex flex-col">
-                <p class="label-mono !text-accent font-bold">{talk.event} &middot; {fmtDate(talk.date)}</p>
+                {logoFor(talk.event)
+                  ? <div class="flex items-center justify-between gap-3"><img src={logoFor(talk.event)} alt={talk.event} class="h-7 w-auto max-w-[150px] object-contain" loading="lazy" /><span class="label-mono !text-accent font-bold">{fmtDate(talk.date)}</span></div>
+                  : <p class="label-mono !text-accent font-bold">{talk.event} &middot; {fmtDate(talk.date)}</p>}
                 <h3 class="text-lg font-bold tracking-tight text-text-dark mt-2 leading-snug line-clamp-3 group-hover:text-accent transition-colors">{talk.title[lang]}</h3>
                 <p class="text-sm text-text-muted mt-auto pt-4">{talk.location}</p>
               </div>
@@ -129,7 +150,6 @@ const t = lang === 'en'
     </section>
   )}
 
-  <SeenAt slot="after" lang={lang} />
   <FinalCta slot="after" title={t.ctaTitle} desc={t.ctaDesc} />
 
 </PageLayout>
