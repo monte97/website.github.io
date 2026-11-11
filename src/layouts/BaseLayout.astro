@@ -122,21 +122,10 @@ const websiteJsonLd = {
   <!-- View Transitions -->
   <ClientRouter />
 
-  <!-- Theme init — light by default, dark only if explicitly toggled -->
+  <!-- Tema scuro tolto l'11/11/2026: il sito e' solo chiaro. Ripulisce la preferenza salvata. -->
   <script is:inline>
-    (function() {
-      // One-shot migration: clear stale dark preference from old build
-      if (!localStorage.getItem('theme-v2')) {
-        localStorage.removeItem('theme');
-        localStorage.setItem('theme-v2', '1');
-      }
-      var theme = localStorage.getItem('theme') || 'light';
-      if (theme === 'dark') document.documentElement.classList.add('dark');
-    })();
-    document.addEventListener('astro:after-swap', function() {
-      var theme = localStorage.getItem('theme') || 'light';
-      document.documentElement.classList.toggle('dark', theme === 'dark');
-    });
+    try { localStorage.removeItem('theme'); } catch (e) {}
+    document.documentElement.classList.remove('dark');
   </script>
 </head>
 <body class="bg-base-light dark:bg-base-dark text-text-dark dark:text-text-light min-h-screen transition-colors duration-300">

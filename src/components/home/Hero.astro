@@ -1,6 +1,10 @@
 ---
-import Button from '@/components/ui/Button.astro';
-
+/**
+ * Hero della home: la foto dal palco del DevSecOps Day a tutto schermo
+ * (versione lavorata da Maurizio), la frase di posizionamento e due CTA.
+ * L'header sopra e' in modalita' overlay (trasparente finche' si e' sulla foto).
+ * Su telefono la foto sta sopra e il testo sotto, per non coprire il volto.
+ */
 interface Props {
   lang?: 'it' | 'en';
 }
@@ -11,64 +15,86 @@ const calLink = 'https://cal.com/francesco-montelli-4hfojq/30min';
 
 const text = {
   it: {
-    greeting: 'Ciao, sono Monte.',
-    headline: 'Il codice lo produce anche la macchina.',
-    headlineAccent: 'Io costruisco il sistema che lo fa reggere.',
-    subtitle: 'Progetto, sviluppo e automatizzo il software del tuo prodotto, e il team resta capace di andare avanti da solo.',
-    cta: 'Prenota una discovery call',
+    l1: 'Il codice lo produce anche la macchina.',
+    pre: 'Io ',
+    a1: 'costruisco',
+    mid: ' il sistema che lo fa ',
+    a2: 'reggere',
+    end: '.',
+    sub: 'Software engineer freelance: progetto, sviluppo e automatizzo software, da zero o su sistemi già in produzione.',
+    cta: 'Prenota 30 minuti',
+    cta2: 'Scrivimi, anche solo per due chiacchiere',
+    alt: 'Francesco Montelli sul palco del DevSecOps Day',
   },
   en: {
-    greeting: "Hi, I'm Monte.",
-    headline: 'Machines write code too.',
-    headlineAccent: 'I build the system that keeps it standing.',
-    subtitle: "I design, build and automate the software behind your product, and the team stays able to carry on without me.",
-    cta: 'Book a discovery call',
+    l1: 'Machines write code too.',
+    pre: 'I ',
+    a1: 'build',
+    mid: ' the system that keeps it ',
+    a2: 'standing',
+    end: '.',
+    sub: 'Freelance software engineer: I design, build and automate software, from scratch or on systems already in production.',
+    cta: 'Book 30 minutes',
+    cta2: 'Write me, even just for a chat',
+    alt: 'Francesco Montelli on stage at DevSecOps Day',
   },
 };
 
 const t = text[lang];
 ---
 
-<section class="relative bg-base-light dark:bg-base-dark border-b border-border/30 dark:border-border-dark/30" aria-label={t.greeting}>
-  <div class="relative z-10 max-w-5xl mx-auto px-5 pt-24 pb-20 md:pt-32 md:pb-28">
-    <div class="flex flex-col md:flex-row md:items-center md:gap-16">
+<section id="hero" class="hero-home relative bg-[#16161d] text-white overflow-hidden" aria-label={t.l1}>
+  <img
+    src="/images/home/palco.webp"
+    alt={t.alt}
+    width="830"
+    height="724"
+    loading="eager"
+    fetchpriority="high"
+    class="hero-img"
+  />
+  <div class="hero-shade" aria-hidden="true"></div>
 
-      <div class="shrink-0 mb-8 md:mb-0">
-        <img
-          src="/images/author/monte-palco.webp"
-          alt="Francesco Montelli sul palco del DevSecOps Day"
-          width="224"
-          height="224"
-          loading="eager"
-          fetchpriority="high"
-          class="w-40 h-40 md:w-56 md:h-56 rounded-full object-cover shadow-lg ring-4 ring-accent"
-        />
-      </div>
-
-      <div class="flex-1">
-        <p class="text-accent font-semibold text-base md:text-lg mb-3 tracking-tight">
-          {t.greeting}
-        </p>
-        <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold leading-[1.15] tracking-tight text-text-dark dark:text-text-light">
-          {t.headline}
-          <br />
-          <span class="text-accent">{t.headlineAccent}</span>
-        </h1>
-        <p class="mt-6 text-lg md:text-2xl text-text-dark/80 dark:text-text-light/80 max-w-2xl leading-snug">
-          {t.subtitle}
-        </p>
-        <div class="mt-8">
-          <Button href={calLink} size="lg" data-umami-event="cta-hero-healthcheck">
-            {t.cta} &rarr;
-          </Button>
-        </div>
-      </div>
+  <div class="hero-inner relative z-10 max-w-5xl mx-auto px-5">
+    <h1 class="text-[2.3rem] leading-[1.06] sm:text-5xl md:text-[3.9rem] font-extrabold tracking-tight max-w-[700px]">
+      {t.l1} {t.pre}<span class="text-accent">{t.a1}</span>{t.mid}<span class="text-accent">{t.a2}</span>{t.end}
+    </h1>
+    <p class="mt-5 text-lg md:text-xl text-white/85 max-w-xl">{t.sub}</p>
+    <div class="mt-8 flex flex-wrap gap-3">
+      <a
+        href={calLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center rounded-lg bg-accent px-5 py-3.5 font-semibold text-white hover:bg-accent-hover transition-colors"
+        data-umami-event="cta-hero-call"
+      >{t.cta}</a>
+      <a
+        href="#contatti"
+        class="inline-flex items-center rounded-lg border-[1.5px] border-white/90 px-5 py-3.5 font-semibold text-white hover:bg-white/10 transition-colors"
+        data-umami-event="cta-hero-contatti"
+      >{t.cta2}</a>
     </div>
   </div>
-
-  <div class="absolute bottom-4 left-1/2 -translate-x-1/2" aria-hidden="true">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="text-text-muted/50">
-      <path d="M7 10l5 5 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-    </svg>
-  </div>
 </section>
+
+<style>
+  .hero-home { display: flex; align-items: flex-end; min-height: 88vh; }
+  .hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: right 30%; }
+  .hero-shade {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(180deg, rgba(20,20,28,.55) 0%, rgba(20,20,28,0) 18%),
+      linear-gradient(90deg, rgba(20,20,28,.88) 0%, rgba(20,20,28,.55) 45%, rgba(20,20,28,.05) 75%);
+  }
+  .hero-inner { width: 100%; padding-bottom: 5rem; }
+
+  @media (max-width: 767px) {
+    .hero-home { display: block; min-height: 0; padding-top: calc(100vw * 724 / 830 - 70px); }
+    .hero-img { inset: 0 0 auto 0; height: auto; aspect-ratio: 830 / 724; object-position: center; }
+    .hero-shade {
+      background: linear-gradient(180deg, rgba(20,20,28,.5) 0, rgba(20,20,28,0) 90px,
+        rgba(20,20,28,0) calc(100vw * 724 / 830 - 160px), #16161d calc(100vw * 724 / 830 - 70px));
+    }
+    .hero-inner { padding-bottom: 2.75rem; }
+  }
+</style>

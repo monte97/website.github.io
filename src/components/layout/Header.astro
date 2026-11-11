@@ -1,15 +1,21 @@
 ---
-import ThemeToggle from '@/components/interactive/ThemeToggle.vue';
 import SearchModal from '@/components/interactive/SearchModal.vue';
 import Logo from '@/assets/logo-fra.svg?raw';
+import LogoMono from '@/assets/logo-fra-mono.svg?raw';
 
 interface Props {
   lang?: 'it' | 'en';
   /** URL della stessa pagina nell'altra lingua. `null` = non esiste, il pulsante sparisce. */
   altHref?: string | null;
+  /**
+   * Home: l'header sta sopra la foto del hero. Trasparente con logo bianco
+   * all'inizio, scuro semitrasparente mentre si scorre la foto, normale dopo.
+   * Niente pulsante "Prenota una call": la CTA e' nel hero.
+   */
+  overlay?: boolean;
 }
 
-const { lang = 'it', altHref } = Astro.props;
+const { lang = 'it', altHref, overlay = false } = Astro.props;
 
 /**
  * Quattro voci, non sette. Il sito deve portare clienti: la barra dice cosa
@@ -76,15 +82,26 @@ function isActive(href: string): boolean {
 }
 ---
 
-<header class="sticky top-0 z-50 bg-base-light/95 dark:bg-base-dark/95 backdrop-blur-lg border-b border-border/60 dark:border-border-dark/60">
+<header
+  class:list={[
+    'top-0 z-50 border-b transition-colors duration-200',
+    overlay ? 'site-overlay fixed inset-x-0 is-top' : 'sticky bg-base-light/95 dark:bg-base-dark/95 backdrop-blur-lg border-border/60 dark:border-border-dark/60',
+  ]}
+>
   <nav class="max-w-5xl mx-auto px-5 h-14 flex items-center justify-between">
 
     <!-- Logo -->
     <a href={lang === 'it' ? '/' : '/en/'} class="flex items-center gap-2.5 group">
       <span
-        class="w-[61px] h-[52px] [&_svg]:w-full [&_svg]:h-full"
+        class="logo-color w-[61px] h-[52px] [&_svg]:w-full [&_svg]:h-full"
         set:html={Logo}
       />
+      {overlay && (
+        <span
+          class="logo-mono w-[61px] h-[52px] [&_svg]:w-full [&_svg]:h-full text-white"
+          set:html={LogoMono}
+        />
+      )}
       <span class="text-sm font-semibold text-text-dark dark:text-text-light tracking-tight hidden sm:inline">
         montelli.dev
       </span>
@@ -113,7 +130,7 @@ function isActive(href: string): boolean {
         href={calLink}
         target="_blank"
         rel="noopener noreferrer"
-        class="hidden md:inline-flex items-center justify-center font-medium rounded-md px-3 py-1.5 text-sm bg-accent text-white hover:bg-accent/90 shadow-sm transition-all"
+        class:list={['items-center justify-center font-medium rounded-md px-3 py-1.5 text-sm bg-accent text-white hover:bg-accent/90 shadow-sm transition-all', overlay ? 'hidden' : 'hidden md:inline-flex']}
         data-umami-event="cta-header"
       >
         {ctaLabel}
@@ -130,7 +147,6 @@ function isActive(href: string): boolean {
         </a>
       )}
 
-      <ThemeToggle client:load />
 
       <!-- Mobile hamburger -->
       <button
@@ -182,4 +198,44 @@ function isActive(href: string): boolean {
   }
   initMobileMenu();
   document.addEventListener('astro:after-swap', initMobileMenu);
+
+  function initOverlay() {
+    const header = document.querySelector<HTMLElement>('header.site-overlay');
+    const hero = document.getElementById('hero');
+    if (!header || !hero) return;
+    const update = () => {
+      const bottom = hero.getBoundingClientRect().bottom;
+      const solid = bottom <= header.offsetHeight;
+      header.classList.toggle('is-solid', solid);
+      header.classList.toggle('is-dim', !solid && window.scrollY > 8);
+      header.classList.toggle('is-top', !solid && window.scrollY <= 8);
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  }
+  initOverlay();
+  document.addEventListener('astro:after-swap', initOverlay);
 </script>
+
+<style is:global>
+  header.site-overlay { border-color: transparent; }
+  header.site-overlay .logo-mono { display: none; }
+  header.site-overlay:not(.is-solid) .logo-color { display: none; }
+  header.site-overlay:not(.is-solid) .logo-mono { display: block; }
+  header.site-overlay:not(.is-solid) > nav a,
+  header.site-overlay:not(.is-solid) > nav button,
+  header.site-overlay:not(.is-solid) > nav span { color: #fff !important; }
+  header.site-overlay:not(.is-solid) > nav a:hover,
+  header.site-overlay:not(.is-solid) > nav button:hover { background-color: rgba(255,255,255,.12) !important; }
+  header.site-overlay.is-dim { background-color: rgba(24,24,32,.72); backdrop-filter: blur(10px); }
+  header.site-overlay.is-solid {
+    background-color: color-mix(in srgb, var(--color-base-light) 95%, transparent);
+    backdrop-filter: blur(16px);
+    border-color: color-mix(in srgb, var(--color-border) 60%, transparent);
+  }
+  .dark header.site-overlay.is-solid {
+    background-color: color-mix(in srgb, var(--color-base-dark) 95%, transparent);
+    border-color: color-mix(in srgb, var(--color-border-dark) 60%, transparent);
+  }
+</style>

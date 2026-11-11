@@ -1,0 +1,43 @@
+---
+/**
+ * "Mi hai visto a": i loghi delle conferenze e community dove ha parlato.
+ * File in public/images/loghi/, presi dai siti degli eventi (11/11/2026).
+ * DevFest Bari e Working Software hanno il testo scurito per il fondo chiaro;
+ * DevRomagna e' la versione orizzontale costruita dal sito devromagna-sito.
+ * La fascia resta chiara anche in tema scuro: diversi loghi hanno testo scuro.
+ */
+interface Props {
+  lang?: 'it' | 'en';
+}
+
+const { lang = 'it' } = Astro.props;
+const label = lang === 'en' ? "You've seen me at" : 'Mi hai visto a';
+
+const logos = [
+  { src: 'devfest-milano.png', alt: 'DevFest Milano' },
+  { src: 'devsecopsday.svg', alt: 'DevSecOps Day' },
+  { src: 'linuxday-prato.png', alt: 'Linux Day Prato' },
+  { src: 'mlopsday.svg', alt: 'mlopsday' },
+  { src: 'devfest-alps.svg', alt: 'DevFest Alps' },
+  { src: 'devfest-bari.svg', alt: 'DevFest Bari' },
+  { src: 'devromagna-orizz.png', alt: 'DevRomagna' },
+  { src: 'working-software.svg', alt: 'Working Software Conference' },
+];
+---
+
+<section class="bg-base-light border-b border-border" aria-label={label}>
+  <div class="max-w-5xl mx-auto px-5 py-14">
+    <p class="text-center text-[13px] font-semibold uppercase tracking-[0.12em] text-[#606070]">{label}</p>
+    <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-x-6 md:gap-x-12 gap-y-7 md:gap-y-9 items-center">
+      {logos.map(l => (
+        <img
+          src={`/images/loghi/${l.src}`}
+          alt={l.alt}
+          title={l.alt}
+          loading="lazy"
+          class="justify-self-center w-full max-w-[200px] h-[46px] md:h-[58px] object-contain transition-transform duration-200 hover:scale-[1.03]"
+        />
+      ))}
+    </div>
+  </div>
+</section>

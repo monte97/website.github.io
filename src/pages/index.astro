@@ -3,30 +3,22 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import Hero from '@/components/home/Hero.astro';
-import ForWho from '@/components/home/ForWho.astro';
-import PillarCards from '@/components/home/PillarCards.astro';
-import Proof from '@/components/home/Proof.astro';
-import Training from '@/components/home/Training.astro';
-import LatestTalks from '@/components/home/LatestTalks.astro';
-import FilteredPosts from '@/components/home/FilteredPosts.astro';
-import ContactSection from '@/components/home/ContactSection.astro';
+import SeenAt from '@/components/home/SeenAt.astro';
+import Offer from '@/components/home/Offer.astro';
+import Coffee from '@/components/home/Coffee.astro';
 ---
 
 <BaseLayout
-  title="Progetto, sviluppo e automatizzo il software di prodotto · Francesco Montelli"
-  description="Software Engineer freelance. Progetto, sviluppo e automatizzo il software di prodotto, da zero o su sistemi irrigiditi nel tempo: architettura, realizzazione, test, CI/CD, observability, sicurezza."
+  title="Architettura, test e automazione in abbonamento · Francesco Montelli"
+  description="Software Engineer freelance. Progetto, sviluppo e automatizzo software, da zero o su sistemi irrigiditi nel tempo: architettura, test, CI/CD, observability, sicurezza. In abbonamento o a progetto."
   ogImage="/og/home.png"
 >
-  <Header lang="it" />
+  <Header lang="it" overlay />
   <main>
     <Hero lang="it" />
-    <ForWho lang="it" />
-    <PillarCards lang="it" />
-    <Proof lang="it" />
-    <Training lang="it" />
-    <LatestTalks lang="it" />
-    <FilteredPosts lang="it" />
-    <ContactSection lang="it" />
+    <SeenAt lang="it" />
+    <Offer lang="it" />
+    <Coffee lang="it" />
   </main>
   <Footer lang="it" />
 </BaseLayout>

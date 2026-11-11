@@ -1,0 +1,147 @@
+---
+/**
+ * Offerta: cosa fa (Progetto, Verifico, Automatizzo), le tre formule
+ * (abbonamento trimestrale consigliato, mensile, progetto a corpo),
+ * come lavora e la garanzia. Prezzi dall'11/11/2026: 3.000 €/mese mensile,
+ * 2.500 €/mese con impegno trimestrale, senza nota IVA (scelta di Francesco).
+ */
+interface Props {
+  lang?: 'it' | 'en';
+}
+
+const { lang = 'it' } = Astro.props;
+const calLink = 'https://cal.com/francesco-montelli-4hfojq/30min';
+
+const icons = {
+  tools: '<path d="M4 7h16M4 12h10M4 17h7"/>',
+  clock: '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>',
+  chat: '<path d="M5 5h14v10H8l-3 3z"/>',
+  lock: '<rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0"/>',
+};
+
+const text = {
+  it: {
+    t1: 'Architettura, test e automazione, ',
+    t2: 'in abbonamento',
+    verbs: [
+      { b: 'Progetto', pre: 'Prima di scrivere codice decidiamo ', em: 'cosa serve davvero', post: ' e come farlo stare in piedi.' },
+      { b: 'Verifico', pre: 'Test, metriche e controlli di sicurezza, così te ne accorgi ', em: 'tu', post: ' prima di un cliente.' },
+      { b: 'Automatizzo', pre: 'Rilasci e infrastruttura che vanno ', em: 'da soli', post: ', anche il venerdì pomeriggio.' },
+    ],
+    badge: 'Consigliato',
+    plans: [
+      { h: 'Abbonamento trimestrale', amt: '2.500 €', per: '/ mese', sub: 'Impegno di tre mesi, poi rinnovi se ti serve.',
+        li: ['Priorità decise insieme ogni mese', 'Progetto, verifica e automazione nello stesso prezzo', 'Il team impara e resta autonomo'],
+        cta: 'Parliamone in 30 minuti', href: calLink, hot: true },
+      { h: 'Abbonamento mensile', amt: '3.000 €', per: '/ mese', sub: 'Mese per mese, ti fermi quando vuoi.',
+        li: ['Tutto quello del trimestrale', 'Per partire con un primo mese di prova'],
+        cta: 'Parliamone', href: calLink },
+      { h: 'Progetto a corpo', amt: 'Su misura', per: '', sub: 'Un obiettivo preciso, un prezzo chiuso.',
+        li: ["Per esempio: un health check del sistema, una pipeline CI/CD, l'observability da zero, Keycloak", 'Preventivo dopo la prima chiacchierata'],
+        cta: 'Raccontami il progetto', href: '#contatti' },
+    ],
+    how: [
+      { i: 'tools', b: 'Entro nei vostri strumenti', d: 'Repository, board e chat che usate già.' },
+      { i: 'clock', b: 'Una priorità alla volta', d: 'La decidiamo insieme, la chiudo, passo alla prossima.' },
+      { i: 'chat', b: 'Aggiornamento ogni settimana', d: 'Due righe scritte: cosa è fatto, cosa blocca.' },
+      { i: 'lock', b: 'Niente lock-in', d: 'Codice, documentazione e accessi restano vostri.' },
+    ],
+    gb: 'Soddisfatto o rimborsato.',
+    gd: ' Se dopo le prime due settimane non ti torna, ci fermiamo e ti restituisco quanto hai pagato.',
+  },
+  en: {
+    t1: 'Architecture, testing and automation, ',
+    t2: 'on a subscription',
+    verbs: [
+      { b: 'Design', pre: 'Before writing code we decide ', em: 'what is really needed', post: ' and how to make it hold up.' },
+      { b: 'Verify', pre: 'Tests, metrics and security checks, so ', em: 'you', post: ' notice before a customer does.' },
+      { b: 'Automate', pre: 'Releases and infrastructure that run ', em: 'on their own', post: ', even on a Friday afternoon.' },
+    ],
+    badge: 'Recommended',
+    plans: [
+      { h: 'Quarterly subscription', amt: '€2,500', per: '/ month', sub: 'Three-month commitment, then renew if you need it.',
+        li: ['Priorities agreed together every month', 'Design, verification and automation at the same price', 'Your team learns and stays independent'],
+        cta: "Let's talk for 30 minutes", href: calLink, hot: true },
+      { h: 'Monthly subscription', amt: '€3,000', per: '/ month', sub: 'Month by month, stop whenever you want.',
+        li: ['Everything in the quarterly plan', 'To start with a trial month'],
+        cta: "Let's talk", href: calLink },
+      { h: 'Fixed-price project', amt: 'Tailored', per: '', sub: 'One clear goal, one fixed price.',
+        li: ['For example: a system health check, a CI/CD pipeline, observability from scratch, Keycloak', 'Quote after our first chat'],
+        cta: 'Tell me about the project', href: '#contatti' },
+    ],
+    how: [
+      { i: 'tools', b: 'I join your tools', d: 'The repository, board and chat you already use.' },
+      { i: 'clock', b: 'One priority at a time', d: 'We pick it together, I close it, I move to the next.' },
+      { i: 'chat', b: 'A weekly update', d: 'Two written lines: what is done, what is blocked.' },
+      { i: 'lock', b: 'No lock-in', d: 'Code, documentation and access stay yours.' },
+    ],
+    gb: 'Satisfied or refunded.',
+    gd: " If after the first two weeks it doesn't work for you, we stop and I give you back what you paid.",
+  },
+};
+
+const t = text[lang];
+---
+
+<section class="py-20 md:py-24 bg-base-light dark:bg-base-dark" aria-label={t.t1 + t.t2}>
+  <div class="max-w-5xl mx-auto px-5">
+    <h2 class="text-3xl md:text-[2.9rem] font-extrabold tracking-tight leading-[1.08] text-text-dark dark:text-text-light max-w-3xl">
+      {t.t1}<span class="text-accent">{t.t2}</span>.
+    </h2>
+
+    <div class="mt-9 grid md:grid-cols-3 gap-8">
+      {t.verbs.map(v => (
+        <div>
+          <h3 class="text-xl font-bold text-text-dark dark:text-text-light">{v.b}</h3>
+          <p class="mt-1 text-text-muted leading-relaxed">{v.pre}<strong class="text-accent font-bold">{v.em}</strong>{v.post}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-12 grid md:grid-cols-[1.1fr_1fr_1fr] gap-5 items-stretch">
+      {t.plans.map(p => (
+        <div class:list={[
+          'relative flex flex-col rounded-2xl p-7 bg-white dark:bg-surface-dark',
+          p.hot ? 'border-2 border-accent shadow-[0_18px_40px_rgba(232,151,58,.18)]' : 'border border-border dark:border-border-dark',
+        ]}>
+          {p.hot && <span class="absolute -top-3 left-6 rounded-full bg-accent px-2.5 py-1 text-xs font-bold text-white">{t.badge}</span>}
+          <h3 class="text-lg font-bold text-text-dark dark:text-text-light">{p.h}</h3>
+          <div class="mt-3 flex items-baseline gap-1.5">
+            <span class:list={['font-extrabold tracking-tight text-text-dark dark:text-text-light', p.per ? 'text-[2.75rem] leading-none' : 'text-[2rem] leading-tight']}>{p.amt}</span>
+            {p.per && <span class="text-text-muted">{p.per}</span>}
+          </div>
+          <p class="mt-1.5 text-[15px] text-text-muted">{p.sub}</p>
+          <ul class="mt-5 pt-4 border-t border-border dark:border-border-dark grid gap-2.5 text-[15px] text-text-dark dark:text-text-light flex-1">
+            {p.li.map(x => (
+              <li class="flex gap-2.5"><span class="mt-[7px] h-[7px] w-[7px] flex-none rounded-full bg-accent"></span>{x}</li>
+            ))}
+          </ul>
+          <a
+            href={p.href}
+            {...(p.href.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            class:list={[
+              'mt-6 rounded-lg px-4 py-3 text-center font-semibold transition-colors',
+              p.hot ? 'bg-accent text-white hover:bg-accent-hover' : 'border-[1.5px] border-text-dark/80 dark:border-text-light/70 text-text-dark dark:text-text-light hover:border-accent hover:text-accent',
+            ]}
+            data-umami-event="cta-offerta"
+          >{p.cta}</a>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-12 grid md:grid-cols-4 border-y border-border dark:border-border-dark">
+      {t.how.map((h, i) => (
+        <div class:list={['py-6 md:px-5', i > 0 ? 'border-t md:border-t-0 md:border-l border-border dark:border-border-dark' : 'md:pl-0']}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-[26px] w-[26px] text-accent" set:html={icons[h.i as keyof typeof icons]} aria-hidden="true"></svg>
+          <p class="mt-3 font-bold text-text-dark dark:text-text-light">{h.b}</p>
+          <p class="text-[15px] text-text-muted leading-snug">{h.d}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="mt-9 mx-auto max-w-2xl flex gap-3.5 items-start rounded-2xl border border-border dark:border-border-dark bg-white dark:bg-surface-dark px-5 py-4 text-text-muted leading-relaxed">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-[26px] w-[26px] flex-none text-accent" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+      <p><strong class="text-text-dark dark:text-text-light">{t.gb}</strong>{t.gd}</p>
+    </div>
+  </div>
+</section>
