@@ -12,8 +12,17 @@
  *
  * Immagine: se esiste src/assets/case-study/<slug>/cover.(webp|jpg|jpeg|png)
  * sostituisce la copertina generata. <slug> e' l'id del case study.
+ *
+ * Schermata nel frontmatter: se il case study ha `shots`, la prima schermata
+ * (file in public/) va nella copertina scura al posto dell'icona grande. Verticale
+ * (altezza > larghezza): cornice da telefono a destra, tagliata sotto. Orizzontale:
+ * "finestra" ancorata in basso a destra, tagliata. L'orientamento si legge dalle
+ * dimensioni nell'header del file (webp/png, vedi `imageSize`); senza dimensioni
+ * leggibili si assume orizzontale. La copertina in src/assets ha la precedenza.
  */
 import { Image } from 'astro:assets';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { getCollection } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Header from '@/components/layout/Header.astro';
@@ -71,6 +80,30 @@ const iconRules: [RegExp, keyof typeof icons][] = [
 const iconFor = (tags: string[], pillar: Pillar): string => {
   for (const [re, name] of iconRules) if (tags[0] && re.test(tags[0])) return icons[name];
   return icons[pillar];
+};
+
+// Dimensioni di un file webp/png leggendo solo l'header (niente dipendenze).
+const imageSize = (publicPath: string): { w: number; h: number } | null => {
+  try {
+    const b = readFileSync(join(process.cwd(), 'public', publicPath));
+    if (b.toString('ascii', 0, 4) === 'RIFF' && b.toString('ascii', 8, 12) === 'WEBP') {
+      const kind = b.toString('ascii', 12, 16);
+      if (kind === 'VP8 ') return { w: b.readUInt16LE(26) & 0x3fff, h: b.readUInt16LE(28) & 0x3fff };
+      if (kind === 'VP8L') {
+        const v = b.readUInt32LE(21);
+        return { w: (v & 0x3fff) + 1, h: ((v >> 14) & 0x3fff) + 1 };
+      }
+      if (kind === 'VP8X') return { w: b.readUIntLE(24, 3) + 1, h: b.readUIntLE(27, 3) + 1 };
+    }
+    if (b.toString('ascii', 1, 4) === 'PNG') return { w: b.readUInt32BE(16), h: b.readUInt32BE(20) };
+  } catch {}
+  return null;
+};
+const shotFor = (shots?: { src: string }[]) => {
+  const src = shots?.[0]?.src;
+  if (!src) return null;
+  const d = imageSize(src);
+  return { src, portrait: !!d && d.h > d.w };
 };
 
 const mailLink = 'mailto:francesco@montelli.dev';
@@ -133,6 +166,7 @@ const t = lang === 'en'
           <ul class="grid gap-5 md:grid-cols-3">
             {caseStudies.map((cs) => {
               const cover = coverFor(cs.id);
+              const shot = shotFor(cs.data.shots);
               return (
                 <li>
                   <a
@@ -143,9 +177,15 @@ const t = lang === 'en'
                       <Image src={cover} alt="" widths={[400, 640]} sizes="(min-width: 768px) 340px, 100vw" class="aspect-video w-full object-cover border-b border-border" />
                     ) : (
                       <div class="relative flex aspect-video flex-col justify-end overflow-hidden bg-[#1f1f29] p-4 text-white">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="absolute -right-4 -top-4 h-36 w-36 text-accent opacity-90" aria-hidden="true">
-                          <path d={iconFor(cs.data.tags, cs.data.pillar)} />
-                        </svg>
+                        {shot && shot.portrait ? (
+                          <img src={shot.src} alt="" loading="lazy" class="absolute right-5 top-5 w-[27%] rounded-xl border-[3px] border-[#3a3a48] object-cover object-top shadow-lg" style="height:115%" />
+                        ) : shot ? (
+                          <img src={shot.src} alt="" loading="lazy" class="absolute -right-2 top-5 h-auto w-[84%] rounded-tl-lg border border-white/20 shadow-lg" />
+                        ) : (
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="absolute -right-4 -top-4 h-36 w-36 text-accent opacity-90" aria-hidden="true">
+                            <path d={iconFor(cs.data.tags, cs.data.pillar)} />
+                          </svg>
+                        )}
                         <span class="relative text-xs font-bold uppercase tracking-[0.12em] text-accent">{pillarLabels[cs.data.pillar][lang]}</span>
                         <span class="relative mt-1 text-2xl font-extrabold tracking-tight leading-tight">{cs.data.tags[0] ?? pillarLabels[cs.data.pillar][lang]}</span>
                       </div>
