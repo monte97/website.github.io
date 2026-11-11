@@ -27,8 +27,6 @@ const caseStudies = (await getCollection('projects'))
   .sort((a, b) => a.data.weight - b.data.weight);
 
 const mailLink = 'mailto:francesco@montelli.dev';
-const mono = 'label-mono';
-const hair = 'border-border/70 dark:border-border-dark/70';
 
 const t = lang === 'en'
   ? {
@@ -42,8 +40,6 @@ const t = lang === 'en'
       emptyTitle: 'Nothing published yet',
       emptyDesc: 'The first analyses are being written.',
       readLabel: 'Read the analysis',
-      constraint: 'The constraint',
-      outcome: 'The outcome',
       ctaTitle: 'Holding a similar situation?',
       ctaDesc: 'Tell me how the system looks today and which decision you are stuck on. Half an hour to see whether there is a problem I can be useful on, no commitment.',
       ctaPrimary: 'Book a discovery call',
@@ -60,8 +56,6 @@ const t = lang === 'en'
       emptyTitle: 'Ancora niente di pubblicato',
       emptyDesc: 'Le prime analisi sono in scrittura.',
       readLabel: 'Leggi l’analisi',
-      constraint: 'Il vincolo',
-      outcome: 'L’esito',
       ctaTitle: 'Hai in mano una situazione simile?',
       ctaDesc: 'Raccontami com’è fatto il sistema adesso e qual è la decisione che siete fermi a prendere. Mezz’ora per capire se c’è un problema su cui posso essere utile, senza impegno.',
       ctaPrimary: 'Prenota una discovery call',
@@ -81,61 +75,45 @@ const t = lang === 'en'
       note={t.note}
     />
 
-    <div class="max-w-5xl mx-auto px-5 py-12 md:py-16">
-      {caseStudies.length === 0 ? (
-        <div class={`max-w-xl mx-auto text-center rounded-xl border border-dashed ${hair} p-10`}>
-          <h2 class="text-lg font-bold text-text-dark dark:text-text-light mb-2">{t.emptyTitle}</h2>
-          <p class="text-text-muted text-sm">{t.emptyDesc}</p>
-        </div>
-      ) : (
-        <div class="space-y-4">
-          {caseStudies.map((cs) => (
-            <a
-              href={`${prefix}/case-study/${cs.id}/`}
-              class="group surface-link block p-6 md:p-7"
-            >
-              <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 mb-3">
-                {cs.data.eyebrow && (
-                  <p class="label-mono !text-accent">{cs.data.eyebrow}</p>
-                )}
-                <p class={mono}>{pillarLabels[cs.data.pillar][lang]}</p>
-              </div>
-
-              <h2 class="text-xl md:text-2xl font-bold text-text-dark dark:text-text-light leading-snug text-balance group-hover:text-accent transition-colors">
-                {cs.data.title}
-              </h2>
-              <p class="mt-3 text-text-muted leading-relaxed max-w-2xl">{cs.data.description}</p>
-
-              {(cs.data.problem || cs.data.esito) && (
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 mt-5">
-                  {cs.data.problem && (
-                    <div class={`border-l-2 ${hair} pl-4`}>
-                      <p class={`${mono} mb-1.5`}>{t.constraint}</p>
-                      <p class="text-sm text-text-muted leading-relaxed">{cs.data.problem}</p>
+    <section class="py-12 md:py-16 bg-base-light">
+      <div class="max-w-5xl mx-auto px-5">
+        {caseStudies.length === 0 ? (
+          <div class="max-w-xl mx-auto text-center surface-card border-dashed p-10">
+            <h2 class="text-lg font-bold text-text-dark mb-2">{t.emptyTitle}</h2>
+            <p class="text-text-muted text-sm">{t.emptyDesc}</p>
+          </div>
+        ) : (
+          <ul class="border-t border-border">
+            {caseStudies.map((cs) => (
+              <li class="border-b border-border">
+                <a
+                  href={`${prefix}/case-study/${cs.id}/`}
+                  class="group grid md:grid-cols-[1fr_auto] gap-x-8 gap-y-2 py-7 md:py-8"
+                >
+                  <div>
+                    <p class="label-mono mb-2.5">
+                      {cs.data.eyebrow && <span class="text-accent">{cs.data.eyebrow}</span>}
+                      {cs.data.eyebrow && <span class="mx-2 text-border">/</span>}
+                      <span>{pillarLabels[cs.data.pillar][lang]}</span>
+                    </p>
+                    <h2 class="text-xl md:text-2xl font-extrabold tracking-tight text-text-dark leading-snug text-balance group-hover:text-accent transition-colors">
+                      {cs.data.title}
+                    </h2>
+                    <p class="mt-2 text-text-muted leading-relaxed max-w-2xl">{cs.data.description}</p>
+                    <div class="mt-4 flex flex-wrap gap-1.5">
+                      {cs.data.tags.slice(0, 4).map((tg) => (
+                        <span class="text-xs text-text-muted border border-border bg-white rounded-full px-2.5 py-0.5">{tg}</span>
+                      ))}
                     </div>
-                  )}
-                  {cs.data.esito && (
-                    <div class="border-l-2 border-accent pl-4">
-                      <p class="label-mono !text-accent mb-1.5">{t.outcome}</p>
-                      <p class="text-sm text-text-muted leading-relaxed">{cs.data.esito}</p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <div class={`mt-5 pt-4 border-t ${hair} flex flex-wrap items-center gap-x-4 gap-y-2`}>
-                <div class="flex flex-wrap gap-1.5">
-                  {cs.data.tags.slice(0, 5).map((tg) => (
-                    <span class="text-[11px] text-text-muted/80 bg-text-muted/8 px-1.5 py-0.5 rounded">{tg}</span>
-                  ))}
-                </div>
-                <span class="ml-auto text-sm font-semibold text-accent">{t.readLabel} &rarr;</span>
-              </div>
-            </a>
-          ))}
-        </div>
-      )}
-    </div>
+                  </div>
+                  <span class="md:self-center text-sm font-semibold text-accent whitespace-nowrap">{t.readLabel} &rarr;</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </section>
 
     <FinalCta
       title={t.ctaTitle}

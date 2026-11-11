@@ -25,12 +25,12 @@ const cellClass = {
 
 <figure class="not-prose my-10">
   {figureId && label && (
-    <figcaption class="text-[10px] font-mono uppercase tracking-[0.18em] text-accent mb-3">
+    <figcaption class="label-mono mb-3">
       {figureId} · {label}
     </figcaption>
   )}
 
-  <div class="rounded-2xl border border-border/60 dark:border-border-dark/60 bg-accent-subtle/20 p-4 md:p-6 overflow-x-auto">
+  <div class="rounded-2xl border border-border bg-white p-4 md:p-6 overflow-x-auto">
     <table class="w-full border-collapse min-w-[440px]">
       <thead>
         <tr>
@@ -44,9 +44,9 @@ const cellClass = {
       </thead>
       <tbody>
         {rows.map((r) => (
-          <tr class="border-t border-border/40 dark:border-border-dark/40">
+          <tr class="border-t border-border">
             <th scope="row" class="text-left py-3 pr-4 font-normal align-top">
-              <span class="block text-sm text-text-dark dark:text-text-light leading-snug">{r.label}</span>
+              <span class="block text-sm text-text-dark leading-snug">{r.label}</span>
               {r.note && <span class="block text-xs text-text-muted mt-0.5 leading-snug">{r.note}</span>}
             </th>
             {r.cells.map((state) => (
@@ -60,7 +60,7 @@ const cellClass = {
     </table>
 
     {legend && (
-      <div class="flex flex-wrap gap-x-5 gap-y-2 mt-5 pt-4 border-t border-border/40 dark:border-border-dark/40">
+      <div class="flex flex-wrap gap-x-5 gap-y-2 mt-5 pt-4 border-t border-border">
         {legend.full && (
           <span class="flex items-center gap-2 text-xs text-text-muted">
             <span class={`w-6 h-3 rounded border ${cellClass.full}`} />{legend.full}

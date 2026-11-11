@@ -36,12 +36,12 @@ const y = (i: number) => top + i * (boxH + gap);
 
 <figure class="not-prose my-10">
   {figureId && label && (
-    <figcaption class="text-[10px] font-mono uppercase tracking-[0.18em] text-accent mb-3">
+    <figcaption class="label-mono mb-3">
       {figureId} · {label}
     </figcaption>
   )}
 
-  <div class="rounded-2xl border border-border/60 dark:border-border-dark/60 bg-accent-subtle/20 p-4 md:p-6 overflow-x-auto">
+  <div class="rounded-2xl border border-border bg-white p-4 md:p-6 overflow-x-auto">
     <svg viewBox={`0 0 ${W} ${H}`} width="100%" role="img"
       aria-label={`${requestedLabel}: ${requested.join(', ')}. ${receivedLabel} in ordine diverso.`}
       class="min-w-[520px]">
@@ -59,25 +59,25 @@ const y = (i: number) => top + i * (boxH + gap);
                 ${rightX - 60} ${y(slot) + boxH / 2},
                 ${rightX} ${y(slot) + boxH / 2}`}
           fill="none" stroke="currentColor" stroke-width="1.5"
-          class={from === slot ? 'text-border dark:text-border-dark' : 'text-accent'}
+          class={from === slot ? 'text-border' : 'text-accent'}
           opacity={from === slot ? '0.5' : '0.85'} />
       ))}
 
       {requested.map((q, i) => (
         <>
           <rect x={leftX} y={y(i)} width={boxW} height={boxH} rx="7"
-            class="fill-white dark:fill-surface-dark stroke-current text-border dark:text-border-dark" stroke-width="1" />
+            class="fill-white stroke-current text-border" stroke-width="1" />
           <text x={leftX + 14} y={y(i) + boxH / 2 + 4}
-            class="fill-current text-text-dark dark:text-text-light" font-size="13">{q}</text>
+            class="fill-current text-text-dark" font-size="13">{q}</text>
         </>
       ))}
 
       {order.map((from, slot) => (
         <>
           <rect x={rightX} y={y(slot)} width={boxW} height={boxH} rx="7"
-            class="fill-white dark:fill-surface-dark stroke-current text-border dark:text-border-dark" stroke-width="1" />
+            class="fill-white stroke-current text-border" stroke-width="1" />
           <text x={rightX + 14} y={y(slot) + boxH / 2 + 4}
-            class="fill-current text-text-dark dark:text-text-light" font-size="13">{requested[from]}</text>
+            class="fill-current text-text-dark" font-size="13">{requested[from]}</text>
           <text x={rightX + boxW - 12} y={y(slot) + boxH / 2 + 4} text-anchor="end"
             class="fill-current text-text-muted" font-size="11" font-family="ui-monospace, monospace">
             {`pos. ${slot + 1}`}

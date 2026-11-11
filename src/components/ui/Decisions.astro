@@ -12,16 +12,16 @@ const t = lang === 'en'
 
 <figure class="my-8">
   {figureId && (
-    <figcaption class="text-[10px] font-mono uppercase tracking-[0.18em] text-accent mb-3">
+    <figcaption class="label-mono mb-3">
       {figureId} · {t.title}
     </figcaption>
   )}
 
   {/* Tabella — da md in su */}
-  <div class="hidden md:block overflow-x-auto rounded-2xl border border-border/60 dark:border-border-dark/60">
+  <div class="hidden md:block overflow-x-auto rounded-2xl border border-border">
     <table class="w-full text-sm border-collapse">
       <thead>
-        <tr class="bg-accent-subtle/50">
+        <tr class="border-b border-border">
           <th class="text-left font-mono text-[10px] uppercase tracking-[0.15em] text-text-muted px-4 py-3 w-[18%]">{t.fork}</th>
           <th class="text-left font-mono text-[10px] uppercase tracking-[0.15em] text-accent px-4 py-3 w-[41%]">{t.chosen}</th>
           <th class="text-left font-mono text-[10px] uppercase tracking-[0.15em] text-text-muted px-4 py-3 w-[41%]">{t.rejected}</th>
@@ -29,10 +29,10 @@ const t = lang === 'en'
       </thead>
       <tbody>
         {decisions.map((d) => (
-          <tr class="border-t border-border/50 dark:border-border-dark/50 align-top">
-            <td class="px-4 py-4 font-semibold text-text-dark dark:text-text-light">{d.title}</td>
+          <tr class="border-t border-border align-top">
+            <td class="px-4 py-4 font-semibold text-text-dark">{d.title}</td>
             <td class="px-4 py-4 border-l-2 border-accent">
-              <span class="block font-semibold text-text-dark dark:text-text-light leading-snug">{d.chosen}</span>
+              <span class="block font-semibold text-text-dark leading-snug">{d.chosen}</span>
               {d.chosenWhy && <span class="block text-text-muted text-[13px] mt-1.5 leading-relaxed">{d.chosenWhy}</span>}
             </td>
             <td class="px-4 py-4">
@@ -48,15 +48,15 @@ const t = lang === 'en'
   {/* Card impilate — sotto md */}
   <div class="md:hidden space-y-6">
     {decisions.map((d) => (
-      <div class="rounded-xl border border-border/60 dark:border-border-dark/60 p-4">
+      <div class="rounded-xl border border-border p-4">
         <p class="font-mono text-[10px] uppercase tracking-[0.15em] text-text-muted mb-2">{t.fork}</p>
-        <h3 class="font-bold text-text-dark dark:text-text-light mb-3">{d.title}</h3>
+        <h3 class="font-bold text-text-dark mb-3">{d.title}</h3>
         <div class="pl-3 border-l-2 border-accent mb-3">
           <span class="block font-mono text-[10px] uppercase tracking-[0.15em] text-accent">{t.chosen}</span>
-          <span class="block font-semibold text-text-dark dark:text-text-light text-sm mt-1">{d.chosen}</span>
+          <span class="block font-semibold text-text-dark text-sm mt-1">{d.chosen}</span>
           {d.chosenWhy && <span class="block text-text-muted text-xs mt-1 leading-relaxed">{d.chosenWhy}</span>}
         </div>
-        <div class="pl-3 border-l-2 border-border dark:border-border-dark">
+        <div class="pl-3 border-l-2 border-border">
           <span class="block font-mono text-[10px] uppercase tracking-[0.15em] text-text-muted">{t.rejected}</span>
           <span class="block text-text-muted text-sm mt-1">{d.rejected}</span>
           {d.appeal && <span class="block text-text-muted/80 text-xs italic mt-1 leading-relaxed">{d.appeal}</span>}

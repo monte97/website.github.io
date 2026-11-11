@@ -24,10 +24,10 @@ const { items, class: extra = '' } = Astro.props;
 <dl class:list={['surface-card p-5 space-y-4', extra]}>
   {items.map((s, i) => (
     <>
-      {i > 0 && <div class="border-t border-border/70 dark:border-border-dark/70" />}
+      {i > 0 && <div class="border-t border-border/70" />}
       <div>
         <dt class:list={[
-          s.small ? 'text-sm font-semibold text-text-dark dark:text-text-light' : 'text-2xl font-bold text-text-dark dark:text-text-light',
+          s.small ? 'text-sm font-semibold text-text-dark' : 'text-2xl font-bold text-text-dark',
         ]}>{s.value}</dt>
         <dd class="text-xs text-text-muted uppercase tracking-wide">{s.label}</dd>
       </div>
