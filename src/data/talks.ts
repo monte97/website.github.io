@@ -132,6 +132,22 @@ export const talks: Talk[] = [
     },
   },
   {
+    slug: 'arresta-il-sistema-2026',
+    title: {
+      it: "Arresta il sistema: dibattito e quiz sulla nostra dipendenza dalle big tech",
+      en: "Shut the system down: a debate and quiz on our dependence on big tech",
+    },
+    language: 'it',
+    event: 'Circolo Arci Gianni dal Monte',
+    date: '2026-12-03',
+    location: 'Castel Bolognese, IT',
+    status: 'upcoming',
+    abstract: {
+      it: "Email, mappe, chat: la nostra vita gira su server che non controlliamo.\n\nDue ipotesi: spegniamo tutto e passiamo all'open source, oppure cerchiamo una via di mezzo, ibrida e piena di sfumature. Chi ha ragione?\n\nUna serata tra quiz e dibattiti per capire quanto siamo davvero dipendenti dalle big tech americane e cosa significa sovranità digitale, con Ivan Zini (formatore e consulente sul free open source software), Fabio Trigari (Platform Software Engineer @ Aruba) e me. Modera Lara Lombardi, formatrice per le competenze digitali. Fino alla domanda più difficile: siamo davvero pronti a spegnere tutto?",
+      en: "Email, maps, chat: our lives run on servers we do not control.\n\nTwo hypotheses: switch everything off and move to open source, or look for a middle ground, hybrid and full of nuance. Who is right?\n\nAn evening of quizzes and debate to understand how dependent we really are on American big tech and what digital sovereignty means, with Ivan Zini (trainer and consultant on free open source software), Fabio Trigari (Platform Software Engineer @ Aruba) and me. Moderated by Lara Lombardi, digital skills trainer. Up to the hardest question: are we really ready to switch everything off?",
+    },
+  },
+  {
     slug: 'mutation-testing-devfest-bari-2026',
     title: {
       it: "Come il mutation testing mi ha fatto capire che la suite stava mentendo",
