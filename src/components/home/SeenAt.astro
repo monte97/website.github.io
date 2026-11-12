@@ -27,6 +27,7 @@ const logos = [
   { src: 'linuxday-prato.png', alt: 'Linux Day Prato', talk: 'waf-open-source-coraza-caddy' },
   { src: 'mlopsday.svg', alt: 'mlopsday', talk: 'il-modello-non-ci-sta' },
   { src: 'devfest-alps.svg', alt: 'DevFest Alps', talk: 'dove-sono-finiti-i-tuoi-token' },
+  { src: 'modena-fullstack.png', alt: 'Modena Full Stack', talk: 'dove-sono-finiti-i-tuoi-token-modena' },
   { src: 'devfest-bari.svg', alt: 'DevFest Bari', talk: 'mutation-testing-devfest-bari-2026' },
   { src: 'devromagna-orizz.png', alt: 'DevRomagna', talk: 'il-tuo-collega-piu-produttivo' },
   { src: 'working-software.svg', alt: 'Working Software Conference', talk: 'mutation-testing-working-software-2026' },
@@ -36,12 +37,12 @@ const logos = [
 <section class="bg-base-light border-b border-border" aria-label={label}>
   <div class="max-w-5xl mx-auto px-5 py-14">
     <p class="text-center text-[13px] font-semibold uppercase tracking-[0.12em] text-[#606070]">{label}</p>
-    <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-x-6 md:gap-x-12 gap-y-7 md:gap-y-9 items-center">
+    <div class="mt-8 flex flex-wrap justify-center gap-x-6 md:gap-x-12 gap-y-7 md:gap-y-9 items-center">
       {logos.map(l => (
         <a
           href={`${talksBase}/${l.talk}/`}
           title={`${l.alt}: ${talkLabel}`}
-          class="group justify-self-center flex w-full max-w-[200px] items-center justify-center rounded-md focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-4"
+          class="group flex w-[calc(50%-12px)] md:w-[calc(20%-38px)] max-w-[200px] items-center justify-center rounded-md focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-4"
         >
           <img
             src={`/images/loghi/${l.src}`}

@@ -1,7 +1,7 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
 import { talks } from '@/data/talks';
-import { talkImagesFrom } from '@/utils/talks';
+import { talkImagesFrom, eventLogo, LOGHI } from '@/utils/talks';
 import FinalCta from '@/components/ui/FinalCta.astro';
 import TalkLanguage from '@/components/ui/TalkLanguage.astro';
 
@@ -21,25 +21,14 @@ const allTalkImages = import.meta.glob<{ default: { src: string } }>(
 );
 const coverFor = (slug: string): string | null => talkImagesFrom(allTalkImages, slug)[0] ?? null;
 
-// Logo dell'evento (public/images/loghi/), abbinato per nome; null se non c'e'.
-const LOGHI: [RegExp, string][] = [
-  [/devfest milano/i, 'devfest-milano.png'],
-  [/devsecops/i, 'devsecopsday.svg'],
-  [/linux day prato/i, 'linuxday-prato.png'],
-  [/mlopsday/i, 'mlopsday.svg'],
-  [/devfest alps/i, 'devfest-alps.svg'],
-  [/devfest bari/i, 'devfest-bari.svg'],
-  [/devromagna/i, 'devromagna-orizz.png'],
-  [/working software/i, 'working-software.svg'],
-];
+// Loghi degli eventi: la tabella sta in utils/talks.ts, unica per tutto il sito.
 // alcuni loghi hanno molto spazio vuoto o scritte sottili: li si alza un po'
 const BIG = /mlopsday|devsecops|working software|linux day/i;
 const logoH = (event: string, base: number) => (BIG.test(event) ? Math.round(base * 1.45) : base);
 const LOGHI_HERO = LOGHI.map(([, f]) => f);
-const logoFor = (event: string): string | null => {
-  const hit = LOGHI.find(([re]) => re.test(event));
-  return hit ? `/images/loghi/${hit[1]}` : null;
-};
+// loghi quasi quadrati: allineati a sinistra lasciano un buco a destra, si centrano nella cella
+const CENTRATI = /working-software/;
+const logoFor = eventLogo;
 
 const upcoming = talks
   .filter((tk) => tk.status === 'upcoming')
@@ -90,7 +79,7 @@ const t = lang === 'en'
 
 <PageLayout title={t.pageTitle} description={t.pageDesc} ogImage="/og/talks.png" lang={lang}>
   <section slot="hero" class="bg-base-light border-b border-border">
-    <div class="max-w-5xl mx-auto px-5 py-14 md:py-16 grid md:grid-cols-[1fr_1.1fr] gap-10 md:gap-14 items-center">
+    <div class="max-w-5xl mx-auto px-5 py-14 md:py-16 grid md:grid-cols-[1fr_1.4fr] gap-10 md:gap-12 items-center">
       <div>
         <h1 class="font-extrabold tracking-tight text-text-dark leading-[1.06] text-4xl sm:text-5xl">{t.heroTitle}</h1>
         <p class="mt-5 text-lg text-text-muted leading-relaxed">{t.intro}</p>
@@ -98,9 +87,9 @@ const t = lang === 'en'
       </div>
       <div>
         <p class="text-[13px] font-semibold uppercase tracking-[0.12em] text-text-muted mb-5">{lang === 'en' ? "You've seen me at" : 'Mi hai visto a'}</p>
-        <div class="grid grid-cols-2 gap-x-8 gap-y-6 items-center">
+        <div class="grid grid-cols-3 gap-x-5 gap-y-7 items-center">
           {LOGHI_HERO.map((f) => (
-            <img src={`/images/loghi/${f}`} alt={f.replace(/[-.].*$/, '')} class="w-full max-w-[200px] h-[50px] object-contain object-left" />
+            <img src={`/images/loghi/${f}`} alt={f.replace(/[-.].*$/, '')} class={`w-full max-w-[200px] h-[52px] md:h-[62px] object-contain ${CENTRATI.test(f) ? 'object-center' : 'object-left'}`} />
           ))}
         </div>
       </div>

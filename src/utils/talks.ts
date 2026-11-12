@@ -10,12 +10,13 @@ export function talkImagesFrom(
 }
 
 /** Logo dell'evento (public/images/loghi/), abbinato per nome; null se non c'e'. */
-const LOGHI: [RegExp, string][] = [
+export const LOGHI: [RegExp, string][] = [
   [/devfest milano/i, 'devfest-milano.png'],
   [/devsecops/i, 'devsecopsday.svg'],
   [/linux day prato/i, 'linuxday-prato.png'],
   [/mlopsday/i, 'mlopsday.svg'],
   [/devfest alps/i, 'devfest-alps.svg'],
+  [/modena full ?stack/i, 'modena-fullstack.png'],
   [/devfest bari/i, 'devfest-bari.svg'],
   [/devromagna/i, 'devromagna-orizz.png'],
   [/working software/i, 'working-software.svg'],
