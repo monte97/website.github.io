@@ -5,6 +5,10 @@
  * DevFest Bari e Working Software hanno il testo scurito per il fondo chiaro;
  * DevRomagna e' la versione orizzontale costruita dal sito devromagna-sito.
  * La fascia resta chiara anche in tema scuro: diversi loghi hanno testo scuro.
+ * Ogni logo porta alla pagina del talk tenuto lì (slug in src/data/talks.ts).
+ * Sotto la griglia, la riga "Scrivo anche per": le pubblicazioni dove esce come
+ * autore (The Red Code, logo in public/images/loghi/). Non sta fra i clienti perché
+ * è divulgazione, non lavoro commissionato.
  */
 interface Props {
   lang?: 'it' | 'en';
@@ -12,16 +16,20 @@ interface Props {
 
 const { lang = 'it' } = Astro.props;
 const label = lang === 'en' ? "You've seen me at" : 'Mi hai visto a';
+const talksBase = lang === 'en' ? '/en/talks' : '/talks';
+const talkLabel = lang === 'en' ? 'see the talk' : 'vedi il talk';
+const writesLabel = lang === 'en' ? 'I also write for' : 'Scrivo anche per';
+const writesFor = { name: 'The Red Code', href: 'https://theredcode.it/authors/francesco-montelli/', logo: '/images/loghi/theredcode.webp' };
 
 const logos = [
-  { src: 'devfest-milano.png', alt: 'DevFest Milano' },
-  { src: 'devsecopsday.svg', alt: 'DevSecOps Day' },
-  { src: 'linuxday-prato.png', alt: 'Linux Day Prato' },
-  { src: 'mlopsday.svg', alt: 'mlopsday' },
-  { src: 'devfest-alps.svg', alt: 'DevFest Alps' },
-  { src: 'devfest-bari.svg', alt: 'DevFest Bari' },
-  { src: 'devromagna-orizz.png', alt: 'DevRomagna' },
-  { src: 'working-software.svg', alt: 'Working Software Conference' },
+  { src: 'devfest-milano.png', alt: 'DevFest Milano', talk: 'incidente-non-parla-promql' },
+  { src: 'devsecopsday.svg', alt: 'DevSecOps Day', talk: 'oltre-i-ruoli-openfga' },
+  { src: 'linuxday-prato.png', alt: 'Linux Day Prato', talk: 'waf-open-source-coraza-caddy' },
+  { src: 'mlopsday.svg', alt: 'mlopsday', talk: 'il-modello-non-ci-sta' },
+  { src: 'devfest-alps.svg', alt: 'DevFest Alps', talk: 'dove-sono-finiti-i-tuoi-token' },
+  { src: 'devfest-bari.svg', alt: 'DevFest Bari', talk: 'mutation-testing-devfest-bari-2026' },
+  { src: 'devromagna-orizz.png', alt: 'DevRomagna', talk: 'il-tuo-collega-piu-produttivo' },
+  { src: 'working-software.svg', alt: 'Working Software Conference', talk: 'mutation-testing-working-software-2026' },
 ];
 ---
 
@@ -30,14 +38,25 @@ const logos = [
     <p class="text-center text-[13px] font-semibold uppercase tracking-[0.12em] text-[#606070]">{label}</p>
     <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-x-6 md:gap-x-12 gap-y-7 md:gap-y-9 items-center">
       {logos.map(l => (
-        <img
-          src={`/images/loghi/${l.src}`}
-          alt={l.alt}
-          title={l.alt}
-          loading="lazy"
-          class="justify-self-center w-full max-w-[200px] h-[46px] md:h-[58px] object-contain transition-transform duration-200 hover:scale-[1.03]"
-        />
+        <a
+          href={`${talksBase}/${l.talk}/`}
+          title={`${l.alt}: ${talkLabel}`}
+          class="group justify-self-center flex w-full max-w-[200px] items-center justify-center rounded-md focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-4"
+        >
+          <img
+            src={`/images/loghi/${l.src}`}
+            alt={l.alt}
+            loading="lazy"
+            class="w-full h-[46px] md:h-[58px] object-contain transition-transform duration-200 group-hover:scale-[1.06]"
+          />
+        </a>
       ))}
     </div>
+    <p class="mt-10 flex items-center justify-center gap-3 text-[13px] font-semibold uppercase tracking-[0.12em] text-[#606070]">
+      {writesLabel}
+      <a href={writesFor.href} rel="noopener" target="_blank" title={writesFor.name} class="transition-transform duration-200 hover:scale-[1.03]">
+        <img src={writesFor.logo} alt={writesFor.name} loading="lazy" class="h-[30px] w-auto" />
+      </a>
+    </p>
   </div>
 </section>

@@ -29,6 +29,7 @@ import Header from '@/components/layout/Header.astro';
 import Footer from '@/components/layout/Footer.astro';
 import FinalCta from '@/components/ui/FinalCta.astro';
 import PageHero from '@/components/ui/PageHero.astro';
+import ClientStrip from '@/components/ui/ClientStrip.astro';
 import { pillarLabels, type Pillar } from '@/data/pillars';
 
 interface Props {
@@ -152,6 +153,8 @@ const t = lang === 'en'
       title={t.heroTitle}
       subtitle={t.intro(caseStudies.length)}
     />
+
+    <ClientStrip lang={lang} />
 
     <section class="py-12 md:py-16 bg-base-light">
       <div class="max-w-6xl mx-auto px-5">

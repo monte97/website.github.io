@@ -38,3 +38,6 @@ prompt/
 
 # junk macOS
 .DS_Store
+
+# bozza clienti, privata finché non c'è il consenso
+src/data/clients.local.ts

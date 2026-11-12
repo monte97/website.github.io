@@ -1,0 +1,51 @@
+---
+/**
+ * "Hanno lavorato con me": i loghi dei clienti reali, a colori.
+ * Stessa impostazione di home/SeenAt.astro (titolo centrato, griglia di loghi
+ * alla stessa altezza), usata in home e nella pagina Lavori.
+ * Dati e interruttore di pubblicazione in src/data/clients.ts. Finché
+ * `clientsPublished` è false esce solo in sviluppo, marcata BOZZA.
+ */
+import { clients, clientsPublished } from '@/data/clients';
+
+interface Props {
+  lang?: 'it' | 'en';
+}
+
+const { lang = 'it' } = Astro.props;
+const visible = clientsPublished || import.meta.env.DEV;
+const draft = !clientsPublished;
+const label = lang === 'en' ? 'They worked with me' : 'Hanno lavorato con me';
+const cols = clients.length >= 5 ? 'md:grid-cols-5' : 'md:grid-cols-4';
+---
+
+{visible && clients.length > 0 && (
+  <section id="clienti" class:list={['bg-base-light border-b border-border', draft && 'outline-2 outline-dashed outline-accent -outline-offset-4']} aria-label={label}>
+    <div class="max-w-5xl mx-auto px-5 py-14">
+      <p class="text-center text-[13px] font-semibold uppercase tracking-[0.12em] text-[#606070]">
+        {label}
+        {draft && <span class="ml-2 rounded bg-accent px-1.5 py-0.5 text-[10px] tracking-wider text-white align-middle">Bozza</span>}
+      </p>
+      <div class:list={['mt-8 grid grid-cols-2 gap-x-6 md:gap-x-12 gap-y-7 md:gap-y-9 items-center', cols]}>
+        {clients.map((c) => {
+          const Tag = c.url ? 'a' : 'span';
+          const link = c.url ? { href: c.url, rel: 'noopener', target: '_blank' } : {};
+          return (
+            <Tag {...link} title={c.name} class="justify-self-center flex w-full max-w-[200px] items-center justify-center gap-3 transition-transform duration-200 hover:scale-[1.03]">
+              {c.logo && c.withName ? (
+                <>
+                  <img src={c.logo} alt="" loading="lazy" class="h-[40px] md:h-[48px] w-auto flex-none" />
+                  <span class="text-lg md:text-xl font-extrabold tracking-tight text-text-dark whitespace-nowrap">{c.name}</span>
+                </>
+              ) : c.logo ? (
+                <img src={c.logo} alt={c.name} loading="lazy" class="w-full h-[46px] md:h-[58px] object-contain" />
+              ) : (
+                <span class="text-xl font-extrabold tracking-tight text-text-dark">{c.name}</span>
+              )}
+            </Tag>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+)}
