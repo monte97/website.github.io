@@ -16,7 +16,9 @@ const { lang = 'it' } = Astro.props;
 const visible = clientsPublished || import.meta.env.DEV;
 const draft = !clientsPublished;
 const label = lang === 'en' ? 'They worked with me' : 'Hanno lavorato con me';
-const cols = clients.length >= 5 ? 'md:grid-cols-5' : 'md:grid-cols-4';
+// Righe piene: 6 clienti in 3x2, 8 in 4x2, 9 in 3x3, altrimenti una riga sola fino a 5.
+const n = clients.length;
+const cols = [6, 9].includes(n) ? 'md:grid-cols-3' : [4, 8].includes(n) ? 'md:grid-cols-4' : 'md:grid-cols-5';
 ---
 
 {visible && clients.length > 0 && (
