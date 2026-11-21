@@ -52,10 +52,21 @@ export const qrEvents: QrEvent[] = [
     ],
   },
   {
+    slug: 'modena-full-stack-2026',
+    title: 'Modena Full Stack',
+    links: [
+      { label: 'Il talk su montelli.dev', href: 'https://montelli.dev/talks/dove-sono-finiti-i-tuoi-token-modena/' },
+      { label: 'Slide (PDF)', href: 'https://montelli.dev/files/talk-token-modena-full-stack-2026.pdf' },
+      { label: 'Il codice della demo', href: 'https://github.com/monte97/dove-sono-finiti-i-tuoi-token-demo' },
+    ],
+  },
+  {
     slug: 'devfest-alps-2026',
     title: 'DevFest Alps 2026',
     links: [
       { label: 'Il talk su montelli.dev', href: 'https://montelli.dev/talks/dove-sono-finiti-i-tuoi-token/' },
+      { label: 'Slide (PDF)', href: 'https://montelli.dev/files/talk-token-devfest-alps-2026.pdf' },
+      { label: 'Il codice della demo', href: 'https://github.com/monte97/dove-sono-finiti-i-tuoi-token-demo' },
     ],
   },
   {
