@@ -63,6 +63,7 @@ export const qrEvents: QrEvent[] = [
     title: 'DevFest Bari 2026',
     links: [
       { label: 'Il talk su montelli.dev', href: 'https://montelli.dev/talks/mutation-testing-devfest-bari-2026/' },
+      { label: 'L’articolo', href: 'https://montelli.dev/blog/verificare/testing/mutation-testing-oltre-la-coverage/' },
       { label: 'Il codice della demo', href: 'https://github.com/monte97/mutation-testing-demo' },
     ],
   },

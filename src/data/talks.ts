@@ -183,6 +183,8 @@ export const talks: Talk[] = [
     },
     links: {
       conference: 'https://bari.devfest.it',
+      article: '/blog/verificare/testing/mutation-testing-oltre-la-coverage/',
+      code: 'https://github.com/monte97/mutation-testing-demo',
     },
   },
   {
