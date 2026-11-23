@@ -171,6 +171,25 @@ export const talks: Talk[] = [
     },
   },
   {
+    slug: 'test-stryker-net-copilot',
+    title: {
+      it: "I tuoi test controllano davvero qualcosa? Migliorarli con Stryker.NET e Copilot",
+      en: "Do your tests really check anything? Improving them with Stryker.NET and Copilot",
+    },
+    language: 'it',
+    event: '.NET Conference 2026',
+    date: '2026-12-04',
+    location: 'Milano, IT',
+    status: 'upcoming',
+    abstract: {
+      it: "Tempo fa, in un progetto .NET, un bug è rimasto in produzione per settimane con la coverage alta e la pipeline verde. I test passavano sulla riga sbagliata, perché i dati che usavano davano lo stesso risultato sia con il codice giusto sia con quello sbagliato. Parte di quella suite l'avevano scritta agenti AI.\n\nDa allora faccio ai test un'altra domanda: se questa riga fosse sbagliata, qualcuno se ne accorgerebbe? Stryker.NET risponde introducendo piccoli difetti nel codice e mostrando quali sopravvivono. Ogni sopravvissuto indica un punto preciso in cui i test non controllano abbastanza, ed è una richiesta che si può passare a GitHub Copilot.\n\nNel talk costruiamo questo ciclo su un progetto .NET: Copilot scrive i test, Stryker.NET li misura, i sopravvissuti tornano all'assistente e lo strumento si rilancia per verificare che il buco sia chiuso davvero. Vediamo come si legge il report, come si riconoscono i mutanti che nessun test può uccidere, quale lavoro resta a chi conosce il dominio e come tenere una soglia in CI sul codice che cambia.\n\nSi esce con un metodo per migliorare i test, scritti a mano o generati, sapendo quanto ci si può fidare.",
+      en: "A while ago, on a .NET project, a bug sat in production for weeks with high coverage and a green pipeline. The tests ran through the faulty line and still passed, because their data gave the same result with the right code and with the wrong code. Part of that suite had been written by AI agents.\n\nSince then I ask my tests another question: if this line were wrong, would anyone notice? Stryker.NET answers by introducing small defects into the code and showing which ones survive. Each survivor marks a specific spot where the tests don't check enough, and you can hand it to GitHub Copilot as a request.\n\nIn the talk we build this loop on a .NET project: Copilot writes the tests, Stryker.NET measures them, the survivors go back to the assistant, and Stryker runs again to confirm the gap is closed. We look at how to read the report, how to recognise mutants that no test can kill, what work is left to the people who know the domain, and how to keep a threshold in CI on the code that changes.\n\nYou leave with a method for improving tests, handwritten or generated, and a sense of how far you can trust them.",
+    },
+    links: {
+      conference: 'https://dotnetconference.it/',
+    },
+  },
+  {
     slug: 'mutation-testing-devfest-bari-2026',
     title: {
       it: "Come il mutation testing mi ha fatto capire che la suite stava mentendo",

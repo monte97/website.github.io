@@ -20,6 +20,7 @@ export const LOGHI: [RegExp, string][] = [
   [/devfest bari/i, 'devfest-bari.svg'],
   [/devromagna/i, 'devromagna-orizz.png'],
   [/working software/i, 'working-software.svg'],
+  [/\.net conference/i, 'dotnet-conference.png'],
 ];
 export function eventLogo(event: string): string | null {
   const hit = LOGHI.find(([re]) => re.test(event));

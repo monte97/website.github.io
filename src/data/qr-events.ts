@@ -78,4 +78,11 @@ export const qrEvents: QrEvent[] = [
       { label: 'Il codice della demo', href: 'https://github.com/monte97/mutation-testing-demo' },
     ],
   },
+  {
+    slug: 'dotnet-conference-2026',
+    title: '.NET Conference 2026',
+    links: [
+      { label: 'Il talk su montelli.dev', href: 'https://montelli.dev/talks/test-stryker-net-copilot/' },
+    ],
+  },
 ];
