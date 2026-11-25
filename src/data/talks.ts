@@ -18,6 +18,8 @@ export type Talk = {
   location: string;
   status: 'delivered' | 'upcoming';
   abstract: { it: string; en: string };
+  // resoconto della serata scritto da altri: frase introduttiva, poi il titolo linkato
+  recap?: { it: string; en: string; title: string; url: string };
   links?: TalkLink;
 };
 
@@ -126,8 +128,13 @@ export const talks: Talk[] = [
       it: "Perché il nostro sistema ha prodotto una risposta sbagliata, impiegando più tempo e spendendo più del previsto?\n\nQuando un sistema AI usa più agenti con compiti diversi, capire cosa succede dietro le quinte diventa complicato. Un workflow multi-agente, assieme ai tool coinvolti, è un sistema distribuito a tutti gli effetti: può accumularsi latenza, si possono avere costi più alti del dovuto, i failure si propagano a cascata. Servirebbe visibilità end-to-end per accorgersene prima che i danni aumentino.\n\nMostro come usare OpenTelemetry per seguire passo dopo passo l'esecuzione di un sistema multi-agente, dalla richiesta iniziale alla risposta finale. Vediamo come visualizzare le chiamate ai modelli e ai tool, misurare i tempi di esecuzione, monitorare il consumo di token e stimare i costi, e come individuare errori e colli di bottiglia con le convenzioni OpenTelemetry dedicate alla GenAI.\n\nL'obiettivo è passare da un sistema di agenti difficile da comprendere a uno in cui possiamo ricostruire cosa è successo, capire dove intervenire e tenere sotto controllo prestazioni e costi.\n\nMercoledì 25 novembre, dalle 19 (il talk alle 19:30), poi chiacchiere e birra\nOttantesimo Miglio, via Emilia Ovest 802, Modena",
       en: "Why did our system give a wrong answer, taking longer and spending more than expected?\n\nWhen an AI system uses several agents with different jobs, understanding what happens behind the scenes gets hard. A multi-agent workflow, together with the tools it calls, is a distributed system in every sense: latency piles up, costs run higher than they should, failures cascade. You need end-to-end visibility to notice before the damage grows.\n\nI show how to use OpenTelemetry to follow the execution of a multi-agent system step by step, from the first request to the final answer. We look at how to visualise calls to models and tools, measure execution times, track token usage and estimate costs, and how to spot errors and bottlenecks with the OpenTelemetry conventions for GenAI.\n\nThe goal is to move from an agent system that is hard to understand to one where we can reconstruct what happened, see where to step in, and keep performance and costs under control.\n\nWednesday 25 November, from 7 pm (talk at 7:30 pm), then drinks and chat\nOttantesimo Miglio, via Emilia Ovest 802, Modena, Italy",
     },
+    recap: {
+      it: "Grazie a Netframe, che ha offerto il primo giro e ha raccontato la serata sul suo blog:",
+      en: "Thanks to Netframe, who bought the first round and wrote up the evening on their blog:",
+      title: "Osservabilità degli agenti AI: seguire i token per trovare l'errore",
+      url: 'https://netframe.it/osservabilita-agenti-ai-opentelemetry/',
+    },
     links: {
-      article: 'https://netframe.it/osservabilita-agenti-ai-opentelemetry/',
       slides: '/files/talk-token-modena-full-stack-2026.pdf',
       code: 'https://github.com/monte97/dove-sono-finiti-i-tuoi-token-demo',
       conference: 'https://www.meetup.com/modena-full-stack/events/317552482/',

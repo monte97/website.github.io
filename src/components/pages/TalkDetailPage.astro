@@ -89,6 +89,12 @@ const linkLabel: Record<LinkKey, string> = {
   <div class="grid md:grid-cols-[1fr_16rem] gap-10 md:gap-14 mb-16">
     <div class="space-y-5 text-lg text-text-muted leading-relaxed max-w-2xl">
       {talk.abstract[lang].split('\n\n').map((para) => <p class="whitespace-pre-line">{para}</p>)}
+      {talk.recap && (
+        <p>
+          {talk.recap[lang]}{' '}
+          <a href={talk.recap.url} target="_blank" rel="noopener noreferrer" class="font-semibold text-text-dark underline decoration-accent underline-offset-4 hover:text-accent transition-colors">{talk.recap.title}</a>
+        </p>
+      )}
     </div>
 
     {talk.links && (
